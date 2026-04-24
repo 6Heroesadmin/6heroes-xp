@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6Heroes XP</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 600px;
+    background: linear-gradient(135deg, #0f1923 0%, #1a2535 100%);
+    border-radius: 16px;
+    padding: 24px 28px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .level-badge {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .level-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2px;
+  }
+
+  .level-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  .xp-display {
+    text-align: right;
+  }
+
+  .xp-total {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #4ecdc4;
+    line-height: 1;
+  }
+
+  .xp-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .bar-section {
+    margin-bottom: 12px;
+  }
+
+  .bar-track {
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #4ecdc4, #45b7d1, #96e6a1);
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 40px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35));
+    border-radius: 99px;
+  }
+
+  .bar-glow {
+    position: absolute;
+    top: -2px; left: 0;
+    height: 14px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #4ecdc4, #45b7d1);
+    filter: blur(6px);
+    opacity: 0.5;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bar-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .bar-percent {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #4ecdc4;
+    letter-spacing: 1px;
+  }
+
+  .bar-next {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+  }
+
+  .bar-next span {
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* Animate on load */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card { animation: fadeUp 0.4s ease both; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="top-row">
+    <div class="level-badge">
+      <div class="level-label">Aktuelles Level</div>
+      <div class="level-name" id="levelName">Anwärter</div>
+    </div>
+    <div class="xp-display">
+      <div class="xp-total" id="xpTotal">0</div>
+      <div class="xp-label">XP gesamt</div>
+    </div>
+  </div>
+
+  <div class="bar-section">
+    <div style="position:relative;">
+      <div class="bar-glow" id="barGlow" style="width:0%"></div>
+      <div class="bar-track">
+        <div class="bar-fill" id="barFill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="bar-footer">
+      <div class="bar-percent" id="barPercent">0%</div>
+      <div class="bar-next">Noch <span id="xpNext">100</span> XP bis nächstes Level</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const percent = Math.min(parseInt(params.get('percent') || '0'), 100);
+  const xp      = parseInt(params.get('xp')   || '0');
+  const next    = parseInt(params.get('next')  || '100');
+  const level   = decodeURIComponent(params.get('level') || 'Anwärter');
+
+  document.getElementById('levelName').textContent = level;
+  document.getElementById('xpTotal').textContent   = xp.toLocaleString('de-DE');
+  document.getElementById('xpNext').textContent    = next.toLocaleString('de-DE');
+  document.getElementById('barPercent').textContent = percent + '%';
+
+  // Animate bar after short delay
+  setTimeout(() => {
+    document.getElementById('barFill').style.width  = percent + '%';
+    document.getElementById('barGlow').style.width  = percent + '%';
+  }, 100);
+</script>
+</body>
+</html>
