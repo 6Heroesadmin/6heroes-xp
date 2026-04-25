@@ -6,12 +6,15 @@
 <title>6Heroes XP</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: auto; overflow: hidden; }
+  html, body { height: 100%; }
   body {
     background: transparent;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: stretch;
   }
   .card {
+    flex: 1;
     background: linear-gradient(135deg, #0d1b2a 0%, #1b2d45 60%, #0f2235 100%);
     border-radius: 14px;
     padding: 20px 24px 16px;
@@ -19,6 +22,9 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   .card::before {
     content: '';
@@ -77,29 +83,14 @@
     background: linear-gradient(90deg, #4ecdc4 0%, #45b7d1 50%, #96e6a1 100%);
     width: 0%;
     transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-  }
-  .bar-fill::after {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    background: linear-gradient(90deg, transparent 60%, rgba(255,255,255,0.4));
-    border-radius: 99px;
   }
   .bar-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .bar-percent {
-    font-size: 12px;
-    font-weight: 700;
-    color: #4ecdc4;
-  }
-  .bar-next {
-    font-size: 12px;
-    color: rgba(255,255,255,0.4);
-  }
+  .bar-percent { font-size: 12px; font-weight: 700; color: #4ecdc4; }
+  .bar-next { font-size: 12px; color: rgba(255,255,255,0.4); }
   .bar-next strong { color: rgba(255,255,255,0.8); font-weight: 600; }
 </style>
 </head>
@@ -136,7 +127,11 @@
     { min: 6000, max: 9000, name: 'Legende' },
     { min: 9000, max: 9000, name: 'SuperHero' },
   ];
-  const xp = parseInt(new URLSearchParams(window.location.search).get('xp') || '0');
+
+  // Strip non-numeric chars to handle array values like [25]
+  const raw = new URLSearchParams(window.location.search).get('xp') || '0';
+  const xp  = parseInt(raw.replace(/[^\d]/g, '')) || 0;
+
   let lvl = levels[0];
   for (let i = levels.length - 1; i >= 0; i--) {
     if (xp >= levels[i].min) { lvl = levels[i]; break; }
@@ -144,6 +139,7 @@
   const isMax = lvl.name === 'SuperHero';
   const pct  = isMax ? 100 : Math.round(((xp - lvl.min) / (lvl.max - lvl.min)) * 100);
   const next = isMax ? 0 : lvl.max - xp;
+
   document.getElementById('levelName').textContent  = lvl.name;
   document.getElementById('xpTotal').textContent    = xp.toLocaleString('de-DE');
   document.getElementById('barPercent').textContent = pct + '%';
