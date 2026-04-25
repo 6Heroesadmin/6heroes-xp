@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6Heroes XP</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: transparent;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: stretch;
+  }
+  .card {
+    flex: 1;
+    background: linear-gradient(135deg, #0d1b2a 0%, #1b2d45 60%, #0f2235 100%);
+    border-radius: 14px;
+    padding: 20px 24px 18px;
+    border: 1px solid rgba(78,205,196,0.25);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(78,205,196,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .level-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #4ecdc4;
+    margin-bottom: 3px;
+  }
+  .level-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+  }
+  .xp-block { text-align: right; }
+  .xp-total {
+    font-size: 34px;
+    font-weight: 800;
+    color: #4ecdc4;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .xp-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #4ecdc4 0%, #45b7d1 50%, #96e6a1 100%);
+    width: 0%;
+    transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .bar-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+  .bar-percent { font-size: 12px; font-weight: 700; color: #4ecdc4; }
+  .bar-next { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .bar-next strong { color: rgba(255,255,255,0.8); font-weight: 600; }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .stat-card {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+  .stat-icon { font-size: 13px; }
+  .stat-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+  .stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+  }
+
+  /* Mini bar for badges */
+  .mini-bar-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #f7d794, #f0932b);
+    width: 0%;
+    transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Streak active state */
+  .streak-active .stat-value { color: #ff9f43; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="top-row">
+    <div>
+      <div class="level-label">Aktuelles Level</div>
+      <div class="level-name" id="levelName">Anwärter</div>
+    </div>
+    <div class="xp-block">
+      <div class="xp-total" id="xpTotal">0</div>
+      <div class="xp-label">XP gesamt</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="bar-track">
+      <div class="bar-fill" id="barFill"></div>
+    </div>
+    <div class="bar-footer">
+      <div class="bar-percent" id="barPercent">0%</div>
+      <div class="bar-next" id="barNext">Noch <strong id="xpNext">100</strong> XP bis nächstes Level</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <!-- Streak -->
+    <div class="stat-card" id="streakCard">
+      <div class="stat-header">
+        <span class="stat-icon">🔥</span>
+        <span class="stat-label">Streak</span>
+      </div>
+      <div class="stat-value" id="streakValue">0</div>
+      <div class="stat-sub" id="streakSub">Noch keine aktive Woche</div>
+    </div>
+
+    <!-- Badges -->
+    <div class="stat-card">
+      <div class="stat-header">
+        <span class="stat-icon">🏅</span>
+        <span class="stat-label">Badges</span>
+      </div>
+      <div class="stat-value" id="badgeValue">0</div>
+      <div class="stat-sub" id="badgeSub">von 50 gesammelt</div>
+      <div class="mini-bar-track">
+        <div class="mini-bar-fill" id="badgeBar"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  const levels = [
+    { min:    0, max:  100, name: 'Anwärter',     num: 1 },
+    { min:  100, max:  250, name: 'Aushilfsheld', num: 2 },
+    { min:  250, max:  500, name: 'Pfadfinder',   num: 3 },
+    { min:  500, max:  900, name: 'Vorreiter',     num: 4 },
+    { min:  900, max: 1500, name: 'Aufsteiger',   num: 5 },
+    { min: 1500, max: 2500, name: 'Champion',     num: 6 },
+    { min: 2500, max: 4000, name: 'Mythos',       num: 7 },
+    { min: 4000, max: 6000, name: 'Titan',        num: 8 },
+    { min: 6000, max: 9000, name: 'Legende',      num: 9 },
+    { min: 9000, max: 9000, name: 'SuperHero',    num: 10 },
+  ];
+
+  const params  = new URLSearchParams(window.location.search);
+  const xp      = parseInt((params.get('xp')     || '0').replace(/[^\d]/g, '')) || 0;
+  const streak  = parseInt((params.get('streak') || '0').replace(/[^\d]/g, '')) || 0;
+  const badges  = parseInt((params.get('badges') || '0').replace(/[^\d]/g, '')) || 0;
+  const total   = parseInt((params.get('total')  || '50').replace(/[^\d]/g, '')) || 50;
+
+  // Level
+  let lvl = levels[0];
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (xp >= levels[i].min) { lvl = levels[i]; break; }
+  }
+  const isMax = lvl.name === 'SuperHero';
+  const pct   = isMax ? 100 : Math.round(((xp - lvl.min) / (lvl.max - lvl.min)) * 100);
+  const next  = isMax ? 0 : lvl.max - xp;
+
+  document.getElementById('levelName').textContent  = lvl.name;
+  document.getElementById('xpTotal').textContent    = xp.toLocaleString('de-DE');
+  document.getElementById('barPercent').textContent = pct + '%';
+
+  if (isMax) {
+    document.getElementById('barNext').textContent = '🏆 Maximum erreicht!';
+  } else {
+    document.getElementById('xpNext').textContent = next.toLocaleString('de-DE');
+  }
+
+  // Streak
+  document.getElementById('streakValue').textContent = streak;
+  if (streak === 0) {
+    document.getElementById('streakSub').textContent = 'Noch keine aktive Woche';
+  } else if (streak === 1) {
+    document.getElementById('streakSub').textContent = '1 Woche aktiv in Folge';
+    document.getElementById('streakCard').classList.add('streak-active');
+  } else {
+    document.getElementById('streakSub').textContent = streak + ' Wochen aktiv in Folge';
+    document.getElementById('streakCard').classList.add('streak-active');
+  }
+
+  // Badges
+  const badgePct = Math.round((badges / total) * 100);
+  document.getElementById('badgeValue').textContent = badges;
+  document.getElementById('badgeSub').textContent   = 'von ' + total + ' gesammelt';
+
+  // Animate bars
+  setTimeout(() => {
+    document.getElementById('barFill').style.width   = pct + '%';
+    document.getElementById('badgeBar').style.width  = badgePct + '%';
+  }, 150);
+</script>
+</body>
+</html>
