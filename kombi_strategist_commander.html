@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #334155; --hero-light: #e8eaed; --hero-bg: #f1f5f9; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Decisive Strategist</div>
+<p class="intro">Du planst pr&#228;zise &#8211; und du setzt durch. Diese Kombination verbindet methodische Weitsicht mit unaufhaltsamer Umsetzungsenergie. Du bist nicht nur derjenige, der den besten Weg kennt &#8211; du bist auch derjenige, der ihn geht.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Strukturierte Tatkraft</span>
+  <span class="merkmal-text"> &ndash; Du verbindest methodische Weitsicht mit hoher Umsetzungsgeschwindigkeit. Qualit&#228;t und Tempo schlie&#223;en sich bei dir nicht aus.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Entschlussfreudige Ordnung</span>
+  <span class="merkmal-text"> &ndash; Du nutzt pr&#228;zise Systeme nicht als Selbstzweck, sondern als Basis f&#252;r schnelle Entscheidungen. Struktur ist bei dir der Startblock.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Radikaler Ergebnisfokus</span>
+  <span class="merkmal-text"> &ndash; Du schneidest durch Komplexit&#228;t hindurch, um den effizientesten Weg zum Ziel zu finden.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Methodische F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du f&#252;hrst Teams durch klare Prozesse, kombiniert mit direkter Kommunikation. Bei dir wei&#223; jeder, was gilt &#8211; und warum.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Qualit&#228;ts-Momentum</span>
+  <span class="merkmal-text"> &ndash; Du gew&#228;hrleistest exzellente Ergebnisse, ohne dich in der Analyse-Falle zu verlieren. Das ist die seltene F&#228;higkeit, Durchdachtheit und Geschwindigkeit zu verbinden.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Dein Strategist will den Ablauf noch kurz optimieren &#8211; dein Commander will sofort loslegen. Du wirst ungeduldig und scharf, wenn andere den Ablauf st&#246;ren.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Einen minimalen 2-Schritte-Plan erstellen &#8211; und sobald er steht, mit einem klaren Signalwort in den Ausf&#252;hrungsmodus wechseln: &#132;Tempo-Modus.&#8220; Danach keine Prozess-Optimierungen mehr bis das Ziel erreicht ist.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du schwankst zwischen dem Wunsch nach 100% Sicherheit und dem Bed&#252;rfnis, endlich einen Pflock einzuschlagen &#8211; was entweder zu langer Verz&#246;gerung oder einem &#252;berrumpelnden Commitment f&#252;hrt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Pfade aktiv gegen&#252;berstellen: Pfad A (schnell, risikobehaftet) vs. Pfad B (sauber, zeitintensiv). Eine bewusste Entscheidung f&#252;r einen der Pfade erzwingen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Du greifst tief in die Aufgaben anderer ein, um letzte Fehler zu vermeiden. Das l&#228;hmt die Eigenverantwortung des Teams kurz vor dem Ziel.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Einen festen Freeze-Zeitpunkt festlegen &#8211; ab diesem Punkt wird der Scope eingefroren. Die Commander-Energie flie&#223;t dann ausschlie&#223;lich in Koordination und finale Lieferung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch ist sachlich korrekt und direkt &#8211; blendet aber die emotionale Ebene des Gegen&#252;bers vollst&#228;ndig aus. Das Ergebnis wirkt klinisch kalt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Care &#8211; Cut &#8211; Coach: Erst echte Wertsch&#228;tzung in einem Satz. Dann den kritischen Punkt direkt mit maximal zwei Beispielen. Dann sofort einen konkreten 10-Tage-Plan erarbeiten.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

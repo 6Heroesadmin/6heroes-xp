@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #1F9D62;
+    --hero-light: #d1fae5;
+    --hero-bg: #f0fdf4;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Verbindung. Nicht ueber Ergebnisse, nicht ueber Systeme - ueber das lebendige Miteinander zwischen Menschen. Dein innerer Motor ist Fuersorge: Du fuehlst dich am staerksten, wenn es den Menschen um dich herum gut geht und wenn du weisst, dass deine Anwesenheit dazu beigetragen hat.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du bildest das stabile Fundament, auf dem andere ihr Bestes geben koennen. Du erkennst Spannungen frueh, bevor sie eskalieren. Du fuehrst ueber Vertrauen, nicht ueber Druck.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten, wo deine Fuersorge nicht erwidert wird, entsteht ein Muster: Du gibst weiter, auch wenn du selbst leer bist. Du vermeidest notwendige Konflikte, um Harmonie zu schuetzen - und traegst den Preis allein.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Selbstfuersorge nicht als Egoismus erleben, sondern als die Voraussetzung fuer eine gesunde Fuersorge fuer andere.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die Beduerfnis-Balance</div>
+    <div class="block-text">Notiere eine Situation, in der du dich gerade fuer jemanden anderen aufopferst. Beantworte dann ehrlich: Was brauche ich gerade in diesem Moment, um mich sicher und wertgeschaetzt zu fuehlen? Formuliere eine Bitte oder eine Grenze, die dein eigenes Beduerfnis schuetzt. Du wirst merken, dass du anderen am meisten gibst, wenn du zuerst fuer dich gesorgt hast.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst in Beziehungen, nicht in Modellen. Du erfasst soziale Dynamiken intuitiv - wer gerade Abstand braucht, wer Naehe, wo eine Spannung unausgesprochen brodelt. Diese emotionale Intelligenz ist keine weiche Kompetenz, sie ist ein hochpraezises Wahrnehmungsinstrument.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du wirkst als emotionaler Kompass. Du erkennst Spannungen, bevor sie ausbrechen, und deeskalierst durch deine blosse Anwesenheit. In Raeumen, in denen andere nur Sachthemen sehen, siehst du die Menschen dahinter.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Deine Sensibilitaet kann zur Uebernahme werden. Du nimmst die Emotionen anderer ungefiltert auf, fuehlst dich fuer die Stimmung im Raum verantwortlich - und verlierst dabei deine sachliche Distanz.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Emotionaler Beobachter bleiben, statt zum emotionalen Schwamm zu werden.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der innere Schutzraum</div>
+    <div class="block-text">In einer emotional aufgeladenen Situation: Visualisiere eine klare, transparente Grenze um dich herum. Sage dir innerlich: &bdquo;Das ist das Gefuehl des anderen - das ist nicht mein Gefuehl.&ldquo; Atme ruhig und bleibe bei deiner Praesenz, ohne das Problem sofort loesen zu wollen. Du wirst merken, dass deine Ruhe mehr hilft als jede Intervention.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich belastbar - solange du dich gebraucht und verbunden fuehlst. Was dir Energie raubt, ist nicht Arbeit, sondern Kaelte: Ignoranz, harte Konfrontation, das Gefuehl, dass deine Fuersorge nicht gesehen wird.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">In Krisenzeiten bist du derjenige, dem andere ihre Unsicherheit zeigen, weil sie wissen, dass du nicht urteilst. Diese Verlaesslichkeit ist deine tiefste Staerke.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Dein emotionaler Trigger ist die Angst, jemanden zu enttaeuschen. In solchen Momenten vermeidest du den Konflikt - nicht aus Feigheit, sondern weil du tief ueberzeugt bist, dass Reibung die Verbindung zerstoert.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Konflikte nicht als Beziehungsbedrohung erleben, sondern als den mutigsten Ausdruck von Fuersorge.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Klarheits-Brief</div>
+    <div class="block-text">Schreibe auf, was dich an einer Person oder Situation wirklich stoert - ohne Ruecksicht auf Harmonie. Streiche dann alle Entschuldigungen und Relativierungen. Formuliere aus dem Kern einen einzigen, klaren Satz, den du der Person im Gespraech sagen koenntest. Du musst den Brief nie absenden. Aber du wirst merken, dass deine eigene Wahrheit viel klarer ist, als du dachtest.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst ueber Vertrauen und Verbindung. Dein Stil gibt Menschen das Gefuehl, gesehen zu werden - und das ist das Fundament jeder echten Leistungskultur.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du schaffst Atmosphaeren, in denen sich Menschen trauen, ehrlich zu sein. Das ist in den meisten Umgebungen das, was am staerksten fehlt - und was du ganz natuerlich mitbringst.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn du Konflikte zu lang vermeidest oder Minderleistung aus falsch verstandener Loyalitaet schuetzt, erodiert das Vertrauen derjenigen, die liefern.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Menschliche Naehe und sachliche Fuehrung als zwei Seiten derselben Muenze erleben.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Rollen-Check</div>
+    <div class="block-text">Wenn du eine Korrektur aussprechen musst: Trenne die Rolle von der Person. Adressiere ausschliesslich die Rolle: &bdquo;Fuer diese Funktion brauchen wir dieses Ergebnis.&ldquo; Bestatige danach kurz die Beziehung zur Person: &bdquo;Ich schaetze dich als Kollegen sehr.&ldquo; Du wirst merken, dass sachliche Klarheit keine Naehe zerstoert - sie schafft eine belastbarere Art davon.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

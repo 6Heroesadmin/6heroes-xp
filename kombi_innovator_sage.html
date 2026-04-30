@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #D4A017; --hero-light: #fef9c3; --hero-bg: #fefce8; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Meaning Maker</div>
+<p class="intro">Du erschaffst nicht nur Neues &#8211; du gibst ihm Sinn. Diese Kombination verbindet kreative Visionen mit intellektuellem Tiefgang und ethischer Substanz.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Inspirierende Substanz</span>
+  <span class="merkmal-text"> &ndash; Du verbindest kreative Visionen mit intellektuellem Tiefgang und fundierter Logik. Deine Ideen sind nicht nur neu &#8211; sie sind durchdacht.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Reflektierte Erneuerung</span>
+  <span class="merkmal-text"> &ndash; Du hinterfragst den Status quo nicht nur, um anders zu sein, sondern um eine tiefere Wahrheit zu finden.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Wertebasierte Vision</span>
+  <span class="merkmal-text"> &ndash; Du entwickelst Ideen, die nicht nur neuartig, sondern ethisch fundiert und langfristig stimmig sind.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Analytische Kreativit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du nutzt messerscharfe Mustererkennung, um aus komplexen Informationen v&#246;llig neue Konzepte zu formen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Sinnstiftende Innovation</span>
+  <span class="merkmal-text"> &ndash; Du erkl&#228;rst und verankerst das Neue so, dass es f&#252;r andere eine klare Orientierung bietet. Deine Visionen f&#252;hren, statt zu verwirren.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du wechselst zwischen p&#228;dagogisch und spielerisch &#8211; was auf andere unberechenbar wirkt. Mitten im Chaos h&#228;ltst du noch eine Sinn-Erkl&#228;rung.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Principle + Play: Genau ein Satz Prinzip, dann sofort die Aktion. Jede tiefere Erkl&#228;rung bekommt abends ihre Zeit. Die Verbindung von Sinn und Leichtigkeit entsteht durch diese Reihenfolge.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du blockierst die Entscheidung durch zu komplexe Analyse der fachlichen Bedenken. Der Innovationsgeist wird durch die Wahrheitssuche gel&#228;hmt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Truth Sandwich: Starte mit dem Willen zum Ergebnis, benenne die fachliche Grenze, schlage dann einen 48-st&#252;ndigen Mini-Test f&#252;r den innovativen Weg vor.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Perfektionismus und Last-Minute-Idee in einem &#8211; das Team hat das Gef&#252;hl, dass die Regeln st&#228;ndig ge&#228;ndert werden.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">T-14 Truth Gate: ein verbindlicher Qualit&#228;tscheck 14 Tage vor der Deadline. Danach keine grundlegenden &#196;nderungen an der Logik, keine neuen Tools ab T-10.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch wird philosophisch und moral aufgeladen &#8211; das Gegen&#252;ber wei&#223; nicht, was es morgen fr&#252;h konkret anders machen soll.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst das Verhalten benennen &#8211; zwei Beispiele. Dann das Prinzip in maximal 60 Sekunden. Dann ein 10-t&#228;giges Experiment, mit festem Review-Termin.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

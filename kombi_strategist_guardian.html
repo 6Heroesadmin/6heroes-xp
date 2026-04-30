@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #334155; --hero-light: #e8eaed; --hero-bg: #f1f5f9; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Reliable Builder</div>
+<p class="intro">Du baust Systeme, die tragen &#8211; und in denen Menschen sich sicher f&#252;hlen. Diese Kombination verbindet methodische Verl&#228;sslichkeit mit echter F&#252;rsorge.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Verl&#228;ssliche Struktur</span>
+  <span class="merkmal-text"> &ndash; Du schaffst Systeme, die nicht nur logisch, sondern auch f&#252;r Menschen sicher und tragf&#228;hig sind. Struktur ist bei dir keine Kontrolle &#8211; sie ist F&#252;rsorge.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Methodische Sorgfalt</span>
+  <span class="merkmal-text"> &ndash; Du garantierst h&#246;chste Ausf&#252;hrungsqualit&#228;t durch gr&#252;ndliche Absicherung und klare Standards.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Stabile Routinen</span>
+  <span class="merkmal-text"> &ndash; Du baust Prozesse auf, die dem System langfristig Halt, Sicherheit und Orientierung geben.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pr&#228;zise Unterst&#252;tzung</span>
+  <span class="merkmal-text"> &ndash; Du verbindest strategische Planung mit einer hohen Dienstleistungsbereitschaft. Du planst nicht nur f&#252;r dich &#8211; du planst f&#252;r andere.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Harmonische Exzellenz</span>
+  <span class="merkmal-text"> &ndash; Du strebst nach fehlerfreien Ergebnissen, die das Vertrauen und den Zusammenhalt im Team st&#228;rken.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du verlierst Tempo durch st&#228;ndige Detail-Checks. Wenn andere deine Standards nicht erf&#252;llen, reagierst du scharf und ungeduldig.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Nur zwei Pflicht-Checks definieren, maximal einen Bonus. Dann bewusst in den Execution-Modus wechseln &#8211; weitere Korrekturen erst nach Abschluss.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Entscheidungen werden hinausgez&#246;gert &#8211; das Team erlebt dich als Bremser, weil du versuchst, jedes Restrisiko zu eliminieren.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Pfade aktiv gegen&#252;berstellen: schnell mit Restrisiko oder sauber mit hohem Zeitaufwand. Eine bewusste Entscheidung f&#252;r einen Pfad &#8211; statt beides gleichzeitig anzustreben.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Dein Guardian bekommt kurz vor Schluss eine Qualit&#228;tspanik. Kombiniert entstehen sp&#228;te Review-Schleifen und Last-Minute-&#196;nderungen, die das Team ersch&#246;pfen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Freeze Dates fr&#252;h festlegen: ab T-10 kein neuer Scope, ab T-5 nur noch kritische Bugfixes. Feste Review-Fenster von 30 Minuten t&#228;glich statt permanenter Unterbrechung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch wird zu lang, zu korrekt, zu formell. Die menschliche W&#228;rme geht unter der Performance-Review-Struktur verloren.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Vier S&#228;tze: zwei konkrete Beobachtungen, die sachliche Folge f&#252;rs Team, eine klare Erwartung, echte Unterst&#252;tzung anbieten. Genau ein Hauptziel pro Gespr&#228;ch &#8211; nicht f&#252;nf.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

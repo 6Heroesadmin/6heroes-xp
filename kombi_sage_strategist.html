@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #C0266A; --hero-light: #fce7f3; --hero-bg: #fdf4f8; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Systems Philosopher</div>
+<p class="intro">Du verstehst die Welt &#8211; und du baust Systeme, die dieses Verst&#228;ndnis f&#252;r andere nutzbar machen. Diese Kombination verbindet intellektuelle Tiefe mit methodischer Pr&#228;zision.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Strukturierte Erkenntnis</span>
+  <span class="merkmal-text"> &ndash; Du &#252;bersetzt tiefe Einsichten in belastbare Rahmenwerke und klare Architektur. Deine Erkenntnisse bleiben nicht im Kopf &#8211; sie werden zum System.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Analytische Integrit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du sicherst fachliche Wahrheit durch messerscharfe Logik und methodische Pr&#252;fung.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Vorausschauende Besonnenheit</span>
+  <span class="merkmal-text"> &ndash; Du bleibst unter Druck ruhig, weil du Situationen sofort in Modelle und Priorit&#228;ten einordnen kannst.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Logische Sinnstiftung</span>
+  <span class="merkmal-text"> &ndash; Du erkl&#228;rst den Sinn des Ganzen nicht nur philosophisch, sondern machst ihn durch Prozesse greifbar und umsetzbar.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Methodische Tiefe</span>
+  <span class="merkmal-text"> &ndash; Du verbindest die Suche nach dem Wesentlichen mit der F&#228;higkeit, den effizientesten Weg dorthin zu entwerfen.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du optimierst so lange, dass du statt zu handeln weiter nachdenkst. Das erh&#246;ht den Stress, statt ihn zu senken.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Das Prinzip in einem einzigen Satz, dann maximal zwei konkrete Handlungsschritte &#8211; und danach keine weitere Diskussion oder Optimierung im Stress.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du landest in einer Analyse-Paralyse: zu viele Optionen, zu viele Szenarien &#8211; du wirkst f&#252;r andere kompliziert, obwohl du pr&#228;ziser denkst als alle anderen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Drei Zeilen nach oben: Gew&#252;nschtes Outcome, entscheidender Engpass, Entscheidung die jetzt gebraucht wird. Scope Swap: &#132;Ja zu A, wenn wir daf&#252;r B stoppen.&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Du versuchst kurz vor der Deadline, die Logik noch einmal zu korrigieren &#8211; was das Team l&#228;hmt und die Lieferung paradoxerweise gef&#228;hrdet.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">T-14 Truth Gate: Verbindlicher Logik- und Qualit&#228;tscheck 14 Tage vor der Deadline &#8211; danach keine grundlegenden &#196;nderungen mehr. Ein Critical Path Board mit nur f&#252;nf bis sieben Kernaufgaben.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch wird zu komplex: tiefe Reflexion plus strukturiertes Framework &#8211; der Mitarbeiter f&#252;hlt sich analysiert, aber nicht wirklich geh&#246;rt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Now &#8211; Next &#8211; Path: den Gap mit zwei konkreten Beispielen, dann genau ein Zielverhalten, dann einen 10-Tage-Plan mit Review-Termin. Gemeinsam eine Definition of Great in drei Bulletpoints schreiben.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

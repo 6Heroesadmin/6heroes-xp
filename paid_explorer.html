@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #F0672A;
+    --hero-light: #ffe4d6;
+    --hero-bg: #fff7ed;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Bewegung. Nicht ueber Plaene, nicht ueber Systeme - ueber das lebendige Erleben von Moeglichkeiten. Dein innerer Motor ist Neugier: Du fuehlst dich am staerksten, wenn du etwas entdeckst, das noch niemand so gesehen hat, und dich frei genug fuehlst, dem zu folgen.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du fuehrst durch Moeglichkeiten, nicht durch Vorgaben. Du schaffst eine Energie der Offenheit, in der andere aufatmen und sich trauen, auszuprobieren. Du bringst Leichtigkeit in Raeume, die sich laengst festgefahren haben.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten, wo Erwartungsdruck entsteht oder Verbindlichkeiten schwer werden, aktiviert sich ein Muster: der Impuls zur Flucht. Du wirst unscharf in der Kommunikation oder laesst Dinge fallen, die dir eigentlich wichtig sind.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Freiheit nicht als Abwesenheit von Verpflichtung erleben, sondern als die Faehigkeit, innerhalb eines gewaehlten Rahmens autonom zu handeln.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Freiheits-Rahmen</div>
+    <div class="block-text">Notiere eine Aufgabe, die sich gerade eng anfuehlt. Beantworte dann: Welche zwei unterschiedlichen Wege habe ich innerhalb dieser Aufgabe? Entscheide dich fuer einen - und lege fest, bis wann du diesen Schritt abgeschlossen hast. Nicht weil du musst. Sondern weil du es so waehlst. Du wirst merken, dass echter Spielraum durch Konsequenz entsteht - nicht durch Abbruch.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst in Bewegung, nicht in Modellen. Ideen entstehen bei dir nicht am Schreibtisch - sondern im Tun, im Gespraech, im Experiment. Deine kognitive Staerke liegt in blitzschneller Intuition und der Faehigkeit, Chancen zu erfassen, bevor andere sie ueberhaupt formulieren koennen.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du findest spielerisch Loesungen fuer Probleme, die andere als Sackgassen erleben. Du bist der Mensch, der eine neue Perspektive einbringt, wenn alle anderen bereits aufgehoert haben zu suchen.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Das Denken wird oberflaechlich. Du springst von Thema zu Thema, verlierst den roten Faden - und manchmal auch andere unterwegs, die nicht wissen, wohin das gerade fuehrt.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Deine intuitive Kraft auf ein Ziel lenken - statt sie in zu vielen parallelen Entdeckungen zu zerstreuen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Anker-Check</div>
+    <div class="block-text">Wenn du merkst, dass du gedanklich abschweifst: Halte inne. Frage dich: Bringt mich dieser Weg meinem eigentlichen Ziel naeher - oder ist es Ablenkung vor der Anstrengung? Notiere die neue Idee fuer spaeter. Bleibe danach noch 15 Minuten bei der aktuellen Sache. Kognitive Ausdauer ist kein Widerspruch zu Neugier - sie ist ihre Voraussetzung.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich anpassungsfaehig. In offenen, unklaren Situationen wirst du produktiv, wo andere erstarren. Du haeltst Ambiguitaet aus - meistens sogar mit Leichtigkeit.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">In Krisen, wo Flexibilitaet gefragt ist, bist du unschlagbar. Du findest Auswege, die kein Handbuch kennt - weil du im Tun denkst, nicht im Planen.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Dein emotionaler Trigger sind Situationen, in denen du dich festgestellt oder kontrolliert fuehlst. In solchen Momenten kann aus deiner Leichtigkeit eine Reaktion werden - ein inneres oder aeusseres Verschwinden.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Druck als Signal wahrnehmen - nicht als Zwang. Standhaftigkeit als aktive Wahl erleben, nicht als Verlust von Freiheit.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die Wahl-Analyse</div>
+    <div class="block-text">Wenn der Drang entsteht, eine Situation zu verlassen - halte kurz inne. Schreibe auf: Ich muss nicht bleiben. Ich entscheide mich heute zu bleiben, weil ... Benenne einen konkreten Vorteil, den das Durchhalten fuer dich persoenlich hat. Du wirst merken, dass der Unterschied zwischen Zwang und Freiheit nicht in der Situation liegt - sondern in der Frage, wer entscheidet.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst durch Moeglichkeiten und Vertrauen. Dein Stil gibt Menschen Raum - besonders dort, wo andere zu eng fuehren. Bei dir fuehlen sich Menschen gesehen, nicht kontrolliert.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du schaffst eine Atmosphaere, in der Experimente erlaubt sind und Fehler zum Lernen gehoeren. Das ist das Fundament einer echten Innovationskultur.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn Verbindlichkeiten zu lose formuliert sind, entsteht manchmal eine stille Unklarheit. Menschen arbeiten - aber niemand weiss genau, wer wofuer verantwortlich ist.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Vertrauen und Klarheit nicht als Gegensatz erleben. Den Rahmen definieren - und darin wirklich loslassen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Spielraum-Dialog</div>
+    <div class="block-text">Bevor eine Aufgabe beginnt: Definiere gemeinsam den Rahmen - was muss erfuellt sein? Und den Spielraum - wo darf experimentiert werden? Formuliere beides in zwei Saetzen. Frage dann: &bdquo;Ist das klar genug, um darin frei zu arbeiten?&ldquo; Du wirst merken, dass ein klar benannter Rahmen nicht weniger Freiheit bedeutet - sondern mehr davon fuer alle Beteiligten.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

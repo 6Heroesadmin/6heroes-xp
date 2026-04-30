@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #0B63CE;
+    --hero-light: #dbeafe;
+    --hero-bg: #eff6ff;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Wirkung. Nicht ueber Planung, nicht ueber Absichten - ueber das, was am Ende wirklich passiert ist. Dein innerer Motor ist Handeln: Du fuehlst dich am staerksten, wenn du entscheidest, gestaltest und das Ruder in der Hand hast.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du fuehrst mit einer Klarheit, die andere aufatmen laesst. Du erzeugst ein Momentum, das mitreisst. Du schuetzt dein Team nach aussen - durch Entschlossenheit, nicht durch Worte.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten, wo du keine Kontrolle hast, entsteht Unruhe. Und manchmal reagierst du darauf mit mehr Druck, mehr Tempo, mehr Direktheit - auch dann, wenn Innehalten eigentlich mehr bewirken wuerde.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Delegation nicht als Kontrollverlust erleben, sondern als eine Form von Fuehrung, die deine Wirkung vervielfacht.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Prioritaeten-Check</div>
+    <div class="block-text">Notiere drei Bereiche, in denen du gerade die volle Kontrolle behaltst. Frage dich ehrlich: Muss ich hier wirklich selbst entscheiden, um das Ergebnis zu sichern? Waehle einen Bereich aus - und uebegib ihn bewusst an jemand anderen. Definiere den Rahmen, lass den Rest los. Du wirst merken, dass das Ergebnis oft genauso gut ist - und du gleichzeitig mehr Raum fuer das gewinnst, was wirklich deinen Einsatz braucht.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst in Klarheit, nicht in Komplexitaet. Informationen filtert du sofort: Was ist relevant? Was bringt uns weiter? Was lenkt ab? Diese Faehigkeit macht dich in Gespraechen, Meetings und Entscheidungssituationen aussergewoehnlich wirksam.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du raeumst Hindernisse aus dem Weg, bevor andere sie ueberhaupt bemerkt haben. Du gibst dem System Sicherheit - durch Fokus, nicht durch Lautstaerke.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Manchmal ist deine Direktheit so stark, dass andere sich nicht mehr trauen, eine andere Sicht einzubringen. Du bekommst dann weniger Feedback - und damit auch weniger von den Informationen, die du eigentlich braeuchtest.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Deine Direktheit durch echtes Zuhoeren ergaenzen - nicht als Kompromiss, sondern weil es deine Entscheidungen besser macht.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die Warte-Minute</div>
+    <div class="block-text">Hoere dir in deinem naechsten wichtigen Gespraech einen Vorschlag vollstaendig an. Warte danach bewusst 10 Sekunden - bevor du antwortest. Stelle dann eine echte Rueckfrage: nicht um Zeit zu gewinnen, sondern weil du die andere Perspektive wirklich verstehen willst. Du wirst ueberrascht sein, was du dabei hoerst - und wie sich die Atmosphaere im Gespraech veraendert.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich belastbar. In Momenten, wo andere wackeln, wirst du ruhiger. Du funktionierst unter Druck - oft sogar besser als in ruhigen Phasen.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Wenn alle anderen unter Druck kurzschlussig werden, bleibst du der Mensch, der einen klaren Kopf behalt und die Richtung vorgibt. Das ist in Krisen eine unbezahlbare Ressource.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn du dich nicht wirksam fuehlst, kann aus deiner Staerke eine Reaktion werden, die mehr Distanz erzeugt als Loesung. Der tiefere Mechanismus: Wenn du keine Kontrolle hast, entsteht Unruhe - und die vertraute Antwort ist: mehr Druck.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Situationen, die sich deiner Kontrolle entziehen, als Teil des Prozesses annehmen - nicht als persoenliches Scheitern.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die Fehler-Analyse-Pause</div>
+    <div class="block-text">Wenn etwas nicht klappt und du spuerst, dass du reaktiv wirst - halte kurz inne. Atme durch. Frage dich: Was ist jetzt der hilfreichste naechste Schritt? Und schliesse mit der Frage an dein Team: &bdquo;Was brauchen wir, damit das beim naechsten Mal besser laeuft?&ldquo; Du wirst merken, dass du damit mehr bewegst als mit jedem anderen Werkzeug.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst durch Klarheit und Verbindlichkeit. Dein Stil gibt Orientierung - besonders in Phasen, wo andere nicht wissen, wo es langgeht. Menschen wissen bei dir: Die Richtung ist klar. Die Verantwortung ist klar. Es wird geliefert.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du bist der Mensch, den andere in schwierigen Momenten anrufen. Du bringst Energie in den Raum, wenn alle anderen noch in Erklaerungen versinken.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn Entscheidungen nur von dir kommen, entsteht manchmal eine stille Abhaengigkeit. Menschen liefern - aber nicht aus eigener Ueberzeugung, sondern weil du es so gesagt hast.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Verbindlichkeit nicht nur durch klare Ansagen, sondern durch echte Einbindung erzeugen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Das 3-Minuten-Briefing</div>
+    <div class="block-text">Bevor du die Richtung vorgibst: Stelle dem Team eine einzige, ehrliche Frage - &bdquo;Was uebersehe ich?&ldquo; Warte die Antwort wirklich ab. Entscheide danach. Die Richtung bleibt deine - aber die Menschen fuehlen sich als Teil davon. Das ist der Unterschied zwischen einem Team, das gehorcht, und einem Team, das mitgeht.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

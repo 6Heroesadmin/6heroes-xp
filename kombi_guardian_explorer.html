@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #1F9D62; --hero-light: #d1fae5; --hero-bg: #f0fdf4; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Safe Adventurer</div>
+<p class="intro">Du erm&#246;glichst Wachstum und neue Erfahrungen, ohne die Essentials aus den H&#228;nden zu geben. Diese Kombination verbindet Offenheit und Beweglichkeit mit einem stabilen Sicherheitsnetz.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Sicherer Komfortzonen-Austritt</span>
+  <span class="merkmal-text"> &ndash; Du erm&#246;glichst Wachstum und neue Erfahrungen, indem du die wesentlichen Grundlagen stets im Griff beh&#228;ltst.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pragmatische Verl&#228;sslichkeit</span>
+  <span class="merkmal-text"> &ndash; Du nutzt Explorer-Tempo, um Guardian-Routinen effizienter zu gestalten, ohne die Sorgfalt zu verlieren.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Flexibler Schutz</span>
+  <span class="merkmal-text"> &ndash; Du bleibst offen f&#252;r spontane L&#246;sungen und achtest dabei sensibel auf die Stabilit&#228;t des Umfelds.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Kontrolliertes Loslassen</span>
+  <span class="merkmal-text"> &ndash; Du findest die Balance zwischen l&#252;ckenloser Absicherung und echtem Vertrauen in deine Improvisationskraft.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Nachhaltige Neugier</span>
+  <span class="merkmal-text"> &ndash; Du erkundest unbekanntes Terrain mit einem stabilen Sicherheitsnetz. Das macht deine Entdeckungen langfristig nutzbar.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du f&#252;hlst dich schlampig, wenn du abk&#252;rtzt &#8211; also kontrollierst du nach und erzeugst genau den Stress, den du vermeiden wolltest.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Fixpunkte definieren, die absolut sicher sein m&#252;ssen &#8211; alles andere bleibt flexibel. Ein Departure Kit an der T&#252;r l&#246;st das dauerhaft.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du steckst fest zwischen Vorw&#228;rtsdrang und der Angst, durch ein zu schnelles Ja jemanden zu entt&#228;uschen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Kein bedingungsloses Ja. Die Formel: &#132;Ja, wenn Bedingung X gekl&#228;rt ist.&#8220; Oder: schnell mit Risiko vs. sauber mit mehr Zeit. Das gibt dem Explorer seinen Aufbruch und dem Guardian seine Absicherung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Du schwankst zwischen spielerischem Ausprobieren und dem Drang, alles noch einmal zu pr&#252;fen &#8211; Scope-Spr&#252;nge und sp&#228;te Review-Schleifen gef&#228;hrden die Deadline.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Eine klare Definition of Done fr&#252;h festlegen. Timeboxed Loops: maximal zwei Stunden f&#252;r Tests. Ab T-10 kein neuer Scope mehr. Das ist F&#252;rsorge f&#252;r das Team.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Entweder zu weich &#8211; oder durch zu viele Beispiele so schwer, dass das Gegen&#252;ber demotiviert statt entwickelt wird.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Wertsch&#228;tzung in einem Satz. Dann maximal zwei konkrete Beobachtungen. Eine klare Erwartung f&#252;r die n&#228;chsten zehn Tage. Ein festes Review-Datum.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

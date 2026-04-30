@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #334155;
+    --hero-light: #e8eaed;
+    --hero-bg: #f1f5f9;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Exzellenz. Nicht ueber Schnelligkeit, nicht ueber Popularitaet - ueber die Qualitaet dessen, was du tust. Dein innerer Motor ist Ordnung: Du fuehlst dich am staerksten, wenn Strukturen funktionieren, Ablauefe klar sind und das Ergebnis dem entspricht, was du dir vorgestellt hast.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du schaffst hocheffiziente Systeme, in denen jeder weiss, was zu tun ist. Du findest sofort den naechsten logischen Schritt und gibst dem Team die Sicherheit, die es braucht, um sein Bestes zu geben.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten von Chaos oder impulsiven Richtungswechseln steigt das Beduerfnis nach Kontrolle. Du gehst tiefer in Details, erhoehst die Anforderungen - und was als Qualitaetssicherung beginnt, wirkt auf andere wie Mikromanagement.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Fehler nicht als Bedrohung deines Wertes erleben, sondern als Information im Prozess. Und lernen, dass &bdquo;gut genug&ldquo; manchmal die klugste Entscheidung ist.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Gut-genug-Check</div>
+    <div class="block-text">Waehle eine Aufgabe und definiere, was 100&thinsp;% perfekt waere. Beantworte dann: Was waere in diesem Fall 80&thinsp;% - gut genug, um das Ziel effektiv zu erreichen? Verpflichte dich, die Arbeit bei diesem Niveau zu stoppen. Du wirst merken, dass die letzten 20&thinsp;% selten den Unterschied machen - aber immer Zeit kosten.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst systematisch, logisch, in klaren Abfolgen. Du erkennst Strukturfehler, bevor andere sie bemerken - und du weisst instinktiv, welcher Hebel das System stabilisiert. Diese analytische Kraft macht dich zu einem aussergewoehnlichen Partner in Situationen, die Verlaesslichkeit und Durchdachtheit fordern.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du findest sofort den naechsten logischen Schritt. Deine Qualitaetskriterien schaffen Sicherheit fuer das gesamte System. Deine Sprache folgt einem roten Faden - das gibt anderen das Gefuehl: Jemand hier hat wirklich nachgedacht.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Die kognitive Staerke wird zur Rigidität. Du verlierst das grosse Ganze aus dem Blick, weil du tief in Details gegangen bist. Fuer andere wirkst du dann unflexibel oder bremsend.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Deine methodische Staerke fuer andere oeffnen - statt sie als Standard vorauszusetzen, den alle erfuellen muessen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Logik-Struktur-Dialog</div>
+    <div class="block-text">Wenn du einen Prozess planst: Frage dich zuerst, welche Struktur wirklich hilft. Definiere dann nur die Qualitaetskriterien, die tatsaechlich notwendig sind. Und frage das Team: &bdquo;Wo brauchen wir Freiheit, um effektiv zu sein?&ldquo; Du wirst merken, dass eine Struktur, die Raum laesst, mehr Compliance erzeugt als eine, die alles vorschreibt.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich belastbar, solange du Ordnung hast. Du kannst unter hohem Druck liefern - weil du weisst, wie. Klar definierte Aufgaben, verlaessliche Prozesse, messbare Ziele: Das ist dein Betriebsmodus, in dem du aufbluehst.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">In gut strukturierten Situationen bist du nicht zu erschuttern. Du wirst unter Druck nicht kleiner - du wirst praeziser.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Dein emotionaler Trigger ist Kontrollverlust: Chaos, Fehler, impulsive Entscheidungen ohne Grundlage. Die vertraute Antwort ist: mehr Kontrolle, mehr Korrekturen, mehr Standards - was das Team langfristig erschoepft.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Die Erfahrung machen, dass Sicherheit auch ohne totale Fehlerfreiheit existiert - und dass ein Team, dem du vertraust, oft besser liefert als eines, das du kontrollierst.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Das Experiment der kleinen Unvollkommenheit</div>
+    <div class="block-text">Waehle eine unwichtige Aufgabe. Lasse bewusst einen kleinen Fehler stehen. Beobachte die Reaktion deiner Umgebung. Du wirst meistens merken: Es faellt niemandem auf. Und wenn doch - dann ist es handhabbar. Sicherheit entsteht durch Vertrauen, nicht durch Perfektion.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst ueber Systeme und Prozesse. Dein Stil gibt Teams das, was sie in chaotischen Umgebungen am meisten brauchen: Verlaesslichkeit, klare Erwartungen, nachvollziehbare Ablauefe. Bei dir weiss jeder, woran er ist.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du schaffst die Rahmenbedingungen, unter denen andere ihr Bestes geben koennen. Deine Qualitaetsstandards sind kein Selbstzweck - sie sind ein Geschenk an alle, die verlaessliche Strukturen brauchen.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn alles durch die Brille der Fehlerfreiheit bewertet wird, verlieren kreative und beziehungsorientierte Menschen ihre Energie. Echter Fuehrungserfolg zeigt sich nicht nur in Qualitaet der Ergebnisse - sondern darin, dass das Team auch in unvollstaendigen Momenten sein Bestes gibt.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Zwischenmenschliche Waerme und Akzeptanz von Spontaneitaet als Ergaenzung zur Methodik - nicht als deren Gegenteil.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Qualitaets-Sinn-Dialog</div>
+    <div class="block-text">Beginne ein Feedbackgespraech mit dem Satz: &bdquo;Ich schaetze deine Kompetenz in diesem Bereich.&ldquo; Stelle dann eine Frage statt einer Kritik: &bdquo;Welche Struktur wuerde dir helfen, das Ziel noch effektiver zu erreichen?&ldquo; Einigt euch auf ein gemeinsames Gut-genug-Kriterium. Du wirst merken, dass Fuehrung durch Fragen mehr bewegt als Fuehrung durch Vorgaben.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

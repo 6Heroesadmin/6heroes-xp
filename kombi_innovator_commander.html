@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #D4A017; --hero-light: #fef9c3; --hero-bg: #fefce8; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Vision-Executor</div>
+<p class="intro">Du denkst gro&#223; &#8211; und du setzt um. Diese Kombination verbindet das &#214;ffnen neuer R&#228;ume mit dem entschlossenen Willen, sie auch zu betreten.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Vision&#228;re Tatkraft</span>
+  <span class="merkmal-text"> &ndash; Du verbindest das Gro&#223;denken mit einer konsequenten Umsetzung. Eine Idee, die nicht geliefert wird, ver&#228;ndert nichts.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Entscheidungsfreudige Neuerung</span>
+  <span class="merkmal-text"> &ndash; Du nutzt F&#252;hrung und Verantwortung, um unkonventionelle Visionen in die Realit&#228;t zu bringen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Fokussierte Inspiration</span>
+  <span class="merkmal-text"> &ndash; Du schaffst einen klaren Cut zwischen kreativer Ideenfindung und der disziplinierten Lieferung von Ergebnissen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Durchsetzungsstarker Weitblick</span>
+  <span class="merkmal-text"> &ndash; Du f&#252;hrst Teams mutig durch Ver&#228;nderungsprozesse und h&#228;ltst auch in komplexem Gel&#228;nde den Kurs.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Ergebnisorientierte Agilit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du nutzt kreative Freiheit als Basis f&#252;r schnelles Handeln und klare Meilensteine.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du startest locker-kreativ &#8211; und schaltest dann abrupt auf deinen Commander um. Das Umfeld erlebt einen Stimmungsbruch.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Das Spiel mit Exit-Rule spielen: &#132;Wir spielen 3 Minuten &#8211; wenn es dann nicht l&#228;uft, schalten wir auf den Plan.&#8220; Ein klares Commander-Startsignal leitet den Moduswechsel f&#252;r alle h&#246;rbar ein.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Der Commander geht ins Commitment, bevor der Innovator die Idee kritisch hinterfragt hat &#8211; zu schnelle Zusagen ohne echte Pr&#252;fung der Machbarkeit.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">30 Minuten, drei Fragen: Ziel, absolut Nicht-Verhandelbares, eigentlicher Engpass. Erst danach die Entscheidung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Du erzeugst durch den &#132;letzten genialen Einfall&#8220; Chaos im Team, w&#228;hrend du gleichzeitig Verbindlichkeit f&#252;r die Lieferung einforderst.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Ab T-10 keine neuen Tools oder Prozesse mehr. Ein t&#228;glicher Innovation Slot von maximal 45 Minuten &#8211; die restliche Zeit geh&#246;rt der kompromisslosen Execution.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Feedback ist eine Mischung aus hohem Druck und vision&#228;rer Erwartung &#8211; zu viel auf einmal.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst W&#228;rme &#8211; einen Satz. Dann Klarheit &#8211; den kritischen Punkt mit maximal zwei Beispielen. Dann Plan &#8211; einen 10-Tage-Plan mit genau einem Entwicklungsziel.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #C0266A; --hero-light: #fce7f3; --hero-bg: #fdf4f8; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Steady Mentor</div>
+<p class="intro">Du gibst anderen nicht nur Orientierung &#8211; du gibst ihnen Halt. Diese Kombination verbindet intellektuelle Klarheit mit menschlicher W&#228;rme und Verl&#228;sslichkeit.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Empathische F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du verbindest tiefes menschliches Verst&#228;ndnis mit praktischer F&#252;rsorge und Verl&#228;sslichkeit.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Souver&#228;ne Stabilit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du schaffst in unsicheren Zeiten einen ruhigen, sicheren Raum, in dem sich Menschen gest&#228;rkt und orientiert f&#252;hlen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Sinnstiftende Verl&#228;sslichkeit</span>
+  <span class="merkmal-text"> &ndash; Du gibst Orientierung, die nicht nur auf Logik basiert, sondern auf stabilen Werten und sozialer Sicherheit.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Behutsame Begleitung</span>
+  <span class="merkmal-text"> &ndash; Du f&#252;hrst Menschen durch Ver&#228;nderungen, ohne sie zu dr&#228;ngen, und achtest auf deren Belastungsgrenzen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Qualit&#228;tsorientierte F&#252;rsorge</span>
+  <span class="merkmal-text"> &ndash; Du beh&#228;ltst sowohl fachliche Wahrheit als auch die Stabilit&#228;t der Beziehungen im Blick.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du wirst langsam durch das Verweilen in Details oder streng, wenn Regeln verletzt werden. Prinzipien vermitteln im Zeitdruck erzeugt Widerstand statt der gew&#252;nschten Ruhe.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Pflichtchecks und maximal einen Bonus. Der Vorabend-Guardian: Taschen und Kleidung abends 5 Minuten vorbereiten. Die Ruhe entsteht durch Vorbereitung, nicht durch Erkl&#228;rung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Angst vor dem falschen Ja: entweder verbiegst du die Wahrheit oder du verbrennst das Team &#8211; beides kostet sp&#228;ter Vertrauen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Bedingtes Commitment: &#132;Ja, wenn Priorit&#228;t X oder Ressource Y gekl&#228;rt ist.&#8220; Die Downstream-&#220;bersetzung: &#132;Wir stoppen Projekt A, damit Projekt B stabil geliefert werden kann.&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Endlose Pr&#252;fprozesse kurz vor dem Ziel &#8211; das Team ist ersch&#246;pft, die Deadline wackelt, und alle fragen sich, wann es endlich fertig ist.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Eine klare Definition of Done fr&#252;h festlegen &#8211; drei Kriterien und zwei No-Gos. Feste Review-Fenster statt permanenter Unterbrechung.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Ergebnis: zu lang, zu moralisch aufgeladen, zu viele Beispiele. Das Gegen&#252;ber f&#252;hlt sich eher belehrt als unterst&#252;tzt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Warm einsteigen: &#132;Ich spreche das an, weil du wichtig bist.&#8220; Dann maximal zwei konkrete Beobachtungen. Dann die sachliche Folge in einem Satz. Dann echte Frage: &#132;Wie kann ich dich dabei unterst&#252;tzen?&#8220;</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

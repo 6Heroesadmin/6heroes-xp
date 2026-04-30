@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #C0266A; --hero-light: #fce7f3; --hero-bg: #fdf4f8; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Guiding Authority</div>
+<p class="intro">Du denkst tief &#8211; und du setzt durch. Diese Kombination verbindet fundierte Erkenntnis mit entschlossener F&#252;hrung. Du bist nicht nur derjenige, der die Wahrheit kennt &#8211; du bist derjenige, der ihr auch Wirkung verschafft.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Fundierte Entscheidungskraft</span>
+  <span class="merkmal-text"> &ndash; Du verbindest tiefes, logisches Abw&#228;gen mit der F&#228;higkeit, im entscheidenden Moment konsequent Position zu beziehen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Wertebasierte F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du setzt klare Ziele, die auf einem festen Fundament aus Sinnhaftigkeit und Integrit&#228;t stehen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Reflektierte Souver&#228;nit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du bleibst auch unter Druck besonnen &#8211; und kommst schneller aus dem Gr&#252;beln in eine sichtbare, leitende Rolle, als man dir zutraut.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Integrit&#228;t in Aktion</span>
+  <span class="merkmal-text"> &ndash; Du garantierst Ergebnisse, die sowohl fachlich wahr als auch praktisch wirksam sind.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Klarheit durch Tiefe</span>
+  <span class="merkmal-text"> &ndash; Du schaffst Orientierung, indem du komplexe Zusammenh&#228;nge in einfache, entschlossene Handlungsschritte &#252;bersetzt.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du wirkst abrupt streng &#8211; das Umfeld erlebt dich als unvermutet autorit&#228;r, weil der &#220;bergang von Erkl&#228;rung zu Ansage zu abrupt kommt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Das Prinzip auf einen einzigen Satz bringen &#8211; und sofort handeln, ohne weitere Diskussion. Teaching later statt Predigt im Moment.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du steckst fest zwischen dem Drang zur vollst&#228;ndigen Wahrheit und dem Druck zur Entschlossenheit &#8211; Commitment, das du innerlich bereust, oder zu lange Argumentation.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Truth Sandwich: Starte mit dem Willen zum Ergebnis, benenne die fachliche Einschr&#228;nkung, schlie&#223;e mit einem bedingten Commitment. Das 2-Pfad-Angebot: &#132;Schnell mit Risiko X oder sauber mit mehr Zeit &#8211; was w&#228;hlen wir?&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Dein Sage will kurz vor Schluss noch Logikfehler ausraumen &#8211; kombiniert entstehen gef&#228;hrliche Late Corrections, die das Team &#252;berfordern.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Einen verbindlichen Qualit&#228;tscheck bei T-14 einbauen. Danach keine grundlegenden &#196;nderungen mehr. Ein Error Budget definieren: Was ist eine tolerierbare Unsch&#228;rfe?</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch schwankt zwischen philosophischer Schwere und hartem Leistungsdruck &#8211; das Gegen&#252;ber f&#252;hlt sich moralisch bewertet statt professionell begleitet.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Wertsch&#228;tzendes Er&#246;ffnen in einem Satz. Dann das Verhalten mit maximal zwei Beispielen benennen. Dann das Prinzip in maximal 60 Sekunden. Dann einen 10-Tage-Plan mit festem Review-Termin.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

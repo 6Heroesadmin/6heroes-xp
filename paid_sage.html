@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #C0266A;
+    --hero-light: #fce7f3;
+    --hero-bg: #fdf4f8;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Erkenntnis. Nicht ueber Geschwindigkeit, nicht ueber Lautstaerke - ueber das Durchdringen von Zusammenhaengen und das Finden von Wahrheit. Dein innerer Motor ist Klarheit: Du fuehlst dich am staerksten, wenn alles logisch zusammenpasst und du weisst, warum etwas so ist, wie es ist.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du erkennst komplexe Muster, bevor sie fuer andere sichtbar werden. Du schaffst intellektuelle Durchbrueche und gibst dem System einen Rahmen, in dem Entscheidungen wirklich Sinn machen.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten von Zeitdruck oder Unklarheit kannst du nicht aufhoeren zu denken. Der Wunsch nach vollstaendiger Wahrheit haelt dich in der Analyse - und im Aussen wirkt das wie Zoegerlichkeit, obwohl es in dir intensive Arbeit ist.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Den Uebergang vom Verstehen zum Handeln beschleunigen - nicht weil Genauigkeit unwichtig ist, sondern weil eine Entscheidung bei 70 % der Information oft mehr bewegt als das Warten auf die letzten 30 %.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die 70%-Entscheidungs-Logik</div>
+    <div class="block-text">Wenn eine Entscheidung ansteht: Sammle die wichtigsten Fakten. Frage dich dann: Habe ich 70 % der notwendigen Informationen, um die Richtung logisch zu begruenden? Wenn ja - triff die Entscheidung sofort, statt auf die restlichen 30 % zu warten. Du wirst merken, dass die letzten Details kaum noch etwas an der Richtung aendern - aber viel Zeit kosten.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst systematisch, tiefenorientiert, mit einer Geduld, die andere nicht aufbringen. Du trennst Wesentliches von Unwesentlichem mit einer Praezision, die in komplexen Situationen aussergewoehnlich wirksam ist. Kognitive Ruhe ist deine Staerke - du wirst klarer, wenn andere unruhiger werden.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du bist der objektive Ratgeber, der durch Ruhe und Sachlichkeit Sicherheit vermittelt. In Krisen gibst du anderen das Gefuehl: Jemand denkt hier wirklich nach.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Die kognitive Tiefe wird zur Distanz. Du wirkst auf andere wie der Professor - klug, aber schwer erreichbar. Die Komplexitaet deiner Gedanken ueberfordert, statt zu orientieren.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Deine Erkenntnisse so uebersetzen, dass sie fuer andere sofort anschlussfaehig sind - nicht weniger denken, sondern klarer kommunizieren.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Sinn-Satz-Check</div>
+    <div class="block-text">Nimm ein komplexes Thema, an dem du gerade arbeitest. Formuliere das Kern-Ergebnis in einem einzigen Satz, den auch jemand ohne Fachkenntnis versteht. Frage dich dann: Welcher konkrete Nutzen entsteht durch diese Erkenntnis fuer unser aktuelles Ziel? Du wirst merken, dass dieser eine Satz mehr bewirkt als drei Seiten Analyse.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich belastbar durch geistige Distanz. In Momenten, wo andere emotional reagieren, behaltst du den Ueberblick. Deine Ruhe ist keine Gleichgueltigkeit - sie ist das Ergebnis einer tiefen Ueberzeugung, dass Klarheit wichtiger ist als Reaktion.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Wenn alle anderen unter Druck kurzschlussig werden, bleibst du der Mensch, der systematisch denkt. Das ist in Krisen eine unbezahlbare Ressource.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Dein emotionaler Trigger ist Druck zur Unlogik. In solchen Momenten zieht dich dein Schatten in den Rueckzug - kuehl, distanziert, ueberkritisch. Was als Schutzmechanismus beginnt, wirkt nach aussen als Arroganz.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Den Moment erkennen, in dem Analyse in Gruebeln umschlaegt - und bewusst den Schritt in die Handlung waehlen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Das Stopp-Gruebel-Protokoll</div>
+    <div class="block-text">Wenn du merkst, dass du dich im Kreis drehst: Stehe physisch auf und wechsle den Raum. Notiere die drei Fragen, die dich blockieren. Entscheide dann: Welche davon ist fuer das Projekt wirklich kritisch? Bearbeite nur diese - lass die anderen los. Du wirst merken, dass Bewegung den Kopf befreit, den weiteres Denken nur weiter zumacht.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst ueber Kompetenz, Fachwissen und Sinn. Dein Stil gibt dem Team einen Rahmen, in dem Entscheidungen logisch und nachvollziehbar sind. In Projekten mit hoher Komplexitaet bist du derjenige, der verhindert, dass alles im blinden Aktionismus versandet.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du gibst dem Team den roten Faden - intellektuell und inhaltlich. Bei dir weiss jeder, warum eine Entscheidung sinnvoll ist. Das schafft nachhaltiges Commitment, nicht nur kurzfristigen Gehorsam.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn Prozesse zu lange geprueft werden oder Konflikte nur auf der Sachebene gefuehrt werden, verlieren Menschen die Verbindung.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Geschwindigkeit und emotionale Intelligenz als Ergaenzung zur Tiefe, nicht als deren Gegenteil.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Das Bauchgefuehl-Experiment</div>
+    <div class="block-text">Nimm in einem Meeting eine Position ein, bevor du alle Daten analysiert hast. Vertraue auf deine Erfahrung: Mein fachliches Bauchgefuehl sagt mir, dass ... Beobachte, wie das Team reagiert, wenn du dich frueher positionierst. Du wirst merken, dass Mut zur Luecke deine Praesenz staerkt - und anderen mehr Orientierung gibt als das perfekteste Argument.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

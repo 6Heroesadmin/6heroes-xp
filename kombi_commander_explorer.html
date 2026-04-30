@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #0B63CE; --hero-light: #dbeafe; --hero-bg: #eff6ff; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Action-Leader</div>
+<p class="intro">Du bewegst dich schnell und improvisierst brillant. Keine andere Kombination erzeugt so schnell Energie und Vorw&#228;rtsbewegung aus dem Nichts.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Intuitive Entscheidungskraft</span>
+  <span class="merkmal-text"> &ndash; Du bist auch in unbekannten Lagen sofort handlungsf&#228;hig. Du brauchst keine vollst&#228;ndige Karte &#8211; du orientierst dich im Gehen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pragmatisches Momentum</span>
+  <span class="merkmal-text"> &ndash; Du glaubst daran, dass Handeln klugmacht als Planen. &#132;Raus aus dem Kopf &#8211; rein ins Tun&#8220; ist keine Ungeduld, sondern eine Philosophie.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Flexible F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du gibst klare Richtung &#8211; bleibst aber beweglich genug, um dich spontan anzupassen, wenn neue Informationen kommen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Mut zum Experiment</span>
+  <span class="merkmal-text"> &ndash; Du integrierst schnelle Test-Loops und echtes Feedback in dein Vorgehen. Du lernst durch Machen, nicht durch Analysieren.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Begeisternde Tatkraft</span>
+  <span class="merkmal-text"> &ndash; Du motivierst andere durch eine Mischung aus Klarheit und ansteckender, spielerischer Energie. In deiner N&#228;he trauen sich Menschen mehr.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du kombinierst klare Ansagen mit radikaler Improvisation. Dein Umfeld f&#252;hlt sich manchmal &#252;berfahren, weil die hohe Geschwindigkeit keinen Raum f&#252;r Mitgestaltung l&#228;sst.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Einen festen Mini-Rahmen schaffen, der wichtigste Dinge automatisch erledigt &#8211; damit du die Explorer-Energie f&#252;r echten Vorw&#228;rtsdrang nutzen kannst, ohne Wichtiges zu vergessen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du triffst Entscheidungen schnell und testest sie &#8211; was oft funktioniert. Manchmal entstehen dabei Entscheidungen ohne das n&#246;tige strategische Fundament.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Einen minimalen Rahmen schaffen, bevor du losgehst: &#252;bergeordnetes Ziel, nicht Verhandelbares, erste Aktion. Diese drei Punkte in 30 Minuten &#8211; dann sofort handeln.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Dein Explorer will neue Wege finden und den Kurs anpassen &#8211; was Scope-Spr&#252;nge erzeugt, kurz bevor alle nur noch ins Ziel wollen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Definierte Zeitfenster f&#252;r Experimente &#8211; au&#223;erhalb dieser Fenster gilt volle Konzentration auf die Fertigstellung. Das h&#228;lt deinen Explorer lebendig, ohne die Delivery zu gef&#228;hrden.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Du verpackst kritisches Feedback manchmal mit Humor oder &#220;bst dich in Leichtigkeit, die die Dringlichkeit der Botschaft abschw&#228;cht.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst echtes Vertrauen zeigen &#8211; ein Satz. Dann klar und direkt benennen, was sich konkret &#228;ndern muss. Dann gemeinsam ein Experiment f&#252;r die neue Arbeitsweise vereinbaren.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

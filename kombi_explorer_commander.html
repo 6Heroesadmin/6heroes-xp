@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #F0672A; --hero-light: #ffe4d6; --hero-bg: #fff7ed; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Expedition Leader</div>
+<p class="intro">Du brichst auf &#8211; und du bringst andere mit. Diese Kombination verbindet Neugier und Vorw&#228;rtsdrang mit entschlossener F&#252;hrung und Verbindlichkeit.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Zielgerichtete Freiheit</span>
+  <span class="merkmal-text"> &ndash; Du verbindest Abenteuerlust und Neugier mit klarer F&#252;hrung. Du willst nicht nur losrennen &#8211; du wei&#223;t, wohin du l&#228;ufst, und nimmst andere mit.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Entschlussfreudiger Aufbruch</span>
+  <span class="merkmal-text"> &ndash; Du nutzt den Mut zum Neuen, um schnell und verantwortlich Weichen zu stellen. Unsicherheit macht dich nicht langsamer &#8211; sie macht dich entschlossener.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pragmatische F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du gehst voran und setzt klare Ziele, ohne den Raum f&#252;r Flexibilit&#228;t zu opfern.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Tatenreiches Momentum</span>
+  <span class="merkmal-text"> &ndash; Du beschleunigst Entdeckungen durch klare Ansagen und konsequentes Handeln. Bei dir entsteht aus Energie kein Hektik, sondern Fortschritt.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Souver&#228;ner Kurs</span>
+  <span class="merkmal-text"> &ndash; Du h&#228;ltst auch in komplexen Situationen die Richtung und nimmst andere aktiv mit in die Umsetzung.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Diese innere Spannung ist produktiv, kann aber unter Druck nach au&#223;en als Sch&#228;rfe wirken. Du willst Tempo erzwingen, statt die Situation spielerisch zu l&#246;sen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei feste Ankerpunkte definieren, die immer gesichert sein m&#252;ssen &#8211; und danach ohne Z&#246;gern loslassen. Ein kurzes Soft Command: &#132;60 Sekunden Commander, dann freie Fahrt.&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Kombiniert f&#252;hrt das oft zu einer zu schnellen Zusage &#8211; sp&#228;ter f&#252;hlst du dich durch deine eigene Entscheidung eingesperrt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">30 Minuten, drei Fragen: Ziel, Nicht-Verhandelbares, Engpass. Danach entscheiden &#8211; aber bewusst, wenn n&#246;tig mit einem &#132;Conditional Yes&#8220;: &#132;Ja, wenn Bedingung X erf&#252;llt ist.&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Du sp&#252;rst den Drang, das Ziel dynamisch zu halten &#8211; erzeugst dabei aber Scope-Spr&#252;nge, die das Team verunsichern.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Timeboxed Loops: maximal zwei Stunden f&#252;r einen letzten Feldtest. Danach Execution-Modus. Ein sichtbares One Outcome Board mit nur einem Ziel und drei Meilensteinen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Die Kritik wird entweder zu weich verpackt &#8211; oder du wechselst zwischen kumpelhafter Erm&#252;tigung und harter Ansage.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst echtes Vertrauen zeigen &#8211; einen Satz. Dann klar benennen, was sich &#228;ndern muss &#8211; zwei Beispiele. Dann gemeinsam ein Experiment vereinbaren, mit festem Review-Datum.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

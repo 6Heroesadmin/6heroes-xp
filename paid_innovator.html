@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --hero: #D4A017;
+    --hero-light: #fef9c3;
+    --hero-bg: #fefce8;
+    --text: #1a1a2e;
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: var(--text);
+    padding: 20px 20px 32px;
+    font-size: 14px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border: 1.5px solid var(--hero-light);
+    border-radius: 20px;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--hero); color: var(--hero); }
+  .tab.active { background: var(--hero); border-color: var(--hero); color: #fff; }
+  .intro {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.65;
+    color: #374151;
+    margin-bottom: 16px;
+    padding-left: 14px;
+    border-left: 3px solid var(--hero);
+  }
+  .kraft-block, .challenge-block, .wachstum-block, .uebung-block {
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+  .kraft-block    { background: var(--hero-bg); border-left: 3px solid var(--hero); }
+  .challenge-block { background: #fafafa; border-left: 3px solid #e5e7eb; }
+  .wachstum-block { background: #f8fafc; border-left: 3px solid var(--hero-light); }
+  .uebung-block   { background: #f1f5f9; border: 1px dashed var(--hero-light); border-radius: 8px; }
+  .block-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .kraft-label     { color: var(--hero); }
+  .challenge-label { color: #9ca3af; }
+  .wachstum-label  { color: #6b7280; }
+  .block-text { color: #374151; }
+  .uebung-titel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hero);
+    margin-bottom: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="tabs">
+<button class="tab active" onclick="switchTab('identitaet')" id="tab-identitaet">Deine Identit&#228;t</button>
+<button class="tab " onclick="switchTab('denken')" id="tab-denken">Dein Denken</button>
+<button class="tab " onclick="switchTab('resilienz')" id="tab-resilienz">Deine Resilienz</button>
+<button class="tab " onclick="switchTab('team')" id="tab-team">Deine Wirkung im Team</button>
+
+</div>
+
+<div class="panel" id="panel-identitaet" style="display:block">
+  <p class="intro">Du definierst dich ueber Moeglichkeiten. Nicht ueber das, was ist - sondern ueber das, was sein koennte. Dein innerer Motor ist Neugier gepaart mit dem tiefen Glauben, dass die Welt formbar ist: Du fuehlst dich am staerksten, wenn du etwas infrage stellst, das alle fuer selbstverstaendlich halten, und einen neuen Weg siehst.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du oeffnest Tueren, die andere nicht einmal sehen. Du motivierst durch Bilder und Visionen, nicht durch Kontrolle. Du schaffst eine Kultur, in der Fehler zum Lernen gehoeren - und in der Menschen wagen, was sie allein nicht wagen wuerden.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">In Momenten, wo Routine oder Verbindlichkeit gefragt sind, entsteht ein Sog: der Drang, weiterzuziehen, bevor etwas fertig ist. Neue Ideen ueberlagern das Bestehende, Prioritaeten verschwimmen - und andere verlieren den Faden.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Kreative Freiheit und strukturierte Umsetzung nicht als Gegensaetze erleben, sondern als zwei Phasen desselben Prozesses.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die Wichtigste-Moeglichkeit-Matrix</div>
+    <div class="block-text">Notiere drei Ideen oder Zukunftsbilder, die dich gerade begeistern. Beantworte fuer jede die Frage: Welche hat aktuell die hoechste Bedeutung? Waehle genau eine aus. Definiere fuer diese eine Idee die Version 1.0: Was ist der kleinste, erste Schritt, der ohne grosse Umwege sofort umsetzbar ist? Du wirst merken, dass Fokus keine Einschraenkung deiner Kreativitaet ist - er ist ihre Vollendung.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-denken" style="display:none">
+  <p class="intro">Du denkst assoziativ, netzartig, in Hoechstgeschwindigkeit. Du verbindest Konzepte, die fuer andere nichts miteinander zu tun haben - und siehst in dieser Verbindung das, was als naechstes kommen wird. Das macht dich zu einem aussergewoehnlichen Gespraechspartner in Momenten, wo neue Antworten gefragt sind.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du agierst als intellektuelles Raketentriebwerk. Du findest unkonventionelle Loesungen fuer Probleme, an denen andere scheitern - und du begeisterst dabei durch Charisma statt Druck.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Die kognitive Geschwindigkeit wird zur Komplexitaetsfalle. Du verzettelt dich in Moeglichkeiten, verlierst die Prioritaeten aus dem Blick - und ueberforderst andere durch sprunghafte Gedankengaenge, die fuer sie nicht anschlussfaehig sind.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Deine assoziative Kraft filtern und destillieren - nicht um weniger zu denken, sondern um mehr zu bewegen.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Kreatives Reframing der Einfachheit</div>
+    <div class="block-text">Nimm ein komplexes Problem oder eine neue Idee. Erklaere die Kernidee in maximal drei Saetzen ohne Metaphern. Frage dich dann: Wenn ich nur 20 % dieser Idee umsetzen duerfte - welche 20 % haetten den groessten Impact? Du wirst merken, dass Reduktion keine Einschraenkung ist - sie ist das Werkzeug, das deine Kraft fuer andere nutzbar macht.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-resilienz" style="display:none">
+  <p class="intro">Du bist aussergewoehnlich resilient in Situationen des Aufbruchs. Du brauchst keine Sicherheit, um loszugehen - du brauchst Weite. Wo andere auf Garantien warten, bist du schon in Bewegung.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">In offenen, unklaren Situationen wirst du produktiv, wo andere erstarren. Ambiguitaet ist fuer dich kein Problem - sie ist dein Spielfeld.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Dein emotionaler Trigger sind Enge, Mikromanagement und Routine. In solchen Momenten entsteht der Impuls, das Projekt abzubrechen, die Richtung zu wechseln oder sich mental zu entfernen - was nach aussen als Unzuverlaessigkeit wirkt.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Routinen und Verbindlichkeiten nicht als Feind der Kreativitaet erleben, sondern als das Fundament, auf dem echte Wirkung entsteht.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Die 24-Stunden-Impuls-Sperre</div>
+    <div class="block-text">Wenn unter Stress der Drang entsteht, ein Projekt abzubrechen oder eine radikale Aenderung sofort umzusetzen: Stopp. Schreibe den Impuls auf - aber unternimm keine Handlung. Pruefe nach 24 Stunden: Ist die Aenderung strategisch sinnvoll - oder war sie ein Fluchtreflex vor der aktuellen Anstrengung? Du wirst merken, dass die besten Ideen den naechsten Tag ueberstehen.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-team" style="display:none">
+  <p class="intro">Du fuehrst durch Visionen und Moeglichkeiten. Dein Stil schafft eine Kultur, in der Fehler als Lernchancen gelten und Menschen sich trauen, mehr zu wagen. In Phasen des Wandels bist du unersetzlich - du gibst dem Neuen eine Sprache.</p>
+  <div class="kraft-block">
+    <div class="block-label kraft-label">&#10022; Wenn du in deiner Kraft bist</div>
+    <div class="block-text">Du bist der Mensch, den andere rufen, wenn das Alte nicht mehr funktioniert. Du bringst Energie und Richtung in Raeume, die sich festgefahren haben.</div>
+  </div>
+  <div class="challenge-block">
+    <div class="block-label challenge-label">&#8639; Wenn es herausfordernd wird</div>
+    <div class="block-text">Wenn die Richtung sich zu oft aendert oder Entscheidungen im Vagen bleiben, verlieren Menschen den Faden. Echter Fuehrungserfolg zeigt sich nicht nur in der Qualitaet der Ideen - sondern darin, dass das Team weiss, wohin es morgen geht.</div>
+  </div>
+  <div class="wachstum-block">
+    <div class="block-label wachstum-label">&#8594; Dein Wachstumsfeld</div>
+    <div class="block-text">Vom Moeglichkeitsraum in den Umsetzungsraum uebersetzen - nicht einmal, sondern konsequent.</div>
+  </div>
+  <div class="uebung-block">
+    <div class="uebung-titel">&#9654; &#220;bung: Der Action-Check</div>
+    <div class="block-text">Beende jedes Meeting mit einer einzigen Frage: &bdquo;Was haben wir heute verbindlich entschieden?&ldquo; Benenne explizit, welche Moeglichkeiten ihr heute nicht verfolgt. Formuliere den naechsten Schritt als Version-1.0-Auftrag. Du wirst merken, dass Klarheit ueber das Nein deinem Ja erst die Kraft gibt, die es braucht.</div>
+  </div>
+</div>
+
+<script>
+function switchTab(key) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + key).classList.add('active');
+  document.getElementById('panel-' + key).style.display = 'block';
+}
+</script>
+</body>
+</html>

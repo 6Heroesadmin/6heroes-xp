@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #0B63CE; --hero-light: #dbeafe; --hero-bg: #eff6ff; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Protective Commander</div>
+<p class="intro">Du f&#252;hrst konsequent &#8211; und hast dabei immer die Menschen im Blick. Diese Kombination erzeugt eine seltene Qualit&#228;t: Du bist gleichzeitig fordernd und f&#252;rsorglich, klar und loyal.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Protektive F&#252;hrung</span>
+  <span class="merkmal-text"> &ndash; Du verbindest starke Durchsetzungskraft mit echter F&#252;rsorge. Das ist keine Schw&#228;che &#8211; das ist F&#252;hrung auf einem h&#246;heren Level.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Qualit&#228;tsorientierte Umsetzung</span>
+  <span class="merkmal-text"> &ndash; Du treibst Ergebnisse voran und sicherst gleichzeitig Standards. F&#252;r dich geht beides &#8211; Tempo und Sorgfalt.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Verl&#228;sslicher Rahmen</span>
+  <span class="merkmal-text"> &ndash; Du schaffst psychologische Sicherheit durch klare Richtung und stabile Regeln. Menschen wissen bei dir, woran sie sind.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Menschliche St&#228;rke</span>
+  <span class="merkmal-text"> &ndash; Du bleibst streng in der Sache &#8211; und bist dabei tief unterst&#252;tzend gegen&#252;ber den Menschen. Das macht dich zu einer F&#252;hrungsperson, der andere wirklich vertrauen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Strukturierte F&#252;rsorge</span>
+  <span class="merkmal-text"> &ndash; Deine klaren Ansagen sch&#252;tzen dein Team vor Chaos und &#220;berforderung. Das ist F&#252;rsorge in Aktion.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du gibst sehr viele Anweisungen. Wenn Widerstand kommt oder die Zeit wegl&#228;uft, kann deine Stimme sch&#228;rfer werden als du es eigentlich wolltest.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Entscheide vorab: Tempo-Modus oder Qualit&#228;ts-Modus. Ein klarer Satz vorab &#8211; &#132;Heute ist Tempo-Modus&#8220; &#8211; schafft Klarheit f&#252;r dich und alle anderen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du triffst Entscheidungen, vertraust ihnen aber nicht ganz &#8211; was eine Dauernachkontrolle erzeugt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Reduziere jede Entscheidung auf drei Punkte: gew&#252;nschtes Ergebnis, echter Engpass, ben&#246;tigte Entscheidung. Danach entscheiden und f&#252;r einen festen Zeitraum keine Nachkontrolle erlauben.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Kurz vor dem Ziel bekommt dein Guardian eine Qualit&#228;tspanik &#8211; noch einmal alles pr&#252;fen und absichern, was sp&#228;te Review-Schleifen erzeugt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Lege fr&#252;h klare Einfriertermine fest. Ab einem Punkt keine neuen Anforderungen mehr. Das sch&#252;tzt dein Team &#8211; und ist selbst ein Akt der F&#252;rsorge.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Du sammelst Beispiele, um deine Kritik wassersdicht zu machen. Manchmal f&#252;hlt sich das Gegen&#252;ber durch die Menge an Beweisen erdr&#252;ckt statt entwickelt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Maximal zwei konkrete Beispiele. Dann die sachliche Folge f&#252;r das Team. Dann eine klare Erwartung. Und zum Abschluss eine echte Frage: &#132;Wie k&#246;nnen wir das gut hinbekommen?&#8220;</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

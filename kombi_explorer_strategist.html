@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #F0672A; --hero-light: #ffe4d6; --hero-bg: #fff7ed; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Smart Adventurer</div>
+<p class="intro">Du improvisierst &#8211; aber mit Methode. Diese Kombination verbindet spontane Beweglichkeit mit vorausschauender Planung. Du bist nicht nur schnell &#8211; du bist klug schnell.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Strukturierte Beweglichkeit</span>
+  <span class="merkmal-text"> &ndash; Du verbindest die Spontaneit&#228;t des Entdeckers mit der vorausschauenden Planung des Strategen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Effiziente Erfahrung</span>
+  <span class="merkmal-text"> &ndash; Du verwandelst Erlebnisse und Learning by Doing systematisch in bew&#228;hrte Muster und Prozesse.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Methodischer Vorw&#228;rtsdrang</span>
+  <span class="merkmal-text"> &ndash; Du nutzt Struktur nicht als Bremse, sondern als Anker, um sicherer und schneller zu improvisieren.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Priorisierte Flexibilit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du erkennst instinktiv den n&#228;chsten logischen Schritt, um unn&#246;tige Umwege zu vermeiden. Du bist flexibel &#8211; aber nicht beliebig.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Adaptive Planung</span>
+  <span class="merkmal-text"> &ndash; Du entwickelst Konzepte, die robust genug f&#252;r die Realit&#228;t und flexibel genug f&#252;r spontane Chancen sind.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Wenn du Abk&#252;rzungen nimmst, reagiert der Strategist-Teil in dir genervt, weil die fehlende Ordnung als Risiko wahrgenommen wird.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei feste Pflicht-Checks definieren &#8211; und dann loslassen. Einen Engpass ein f&#252;r alle Mal l&#246;sen durch eine kleine organisatorische Ma&#223;nahme. Das ist Freiheit durch Struktur.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du schwankst zwischen einem schnellen Ja und einem sp&#228;ten Blockieren &#8211; was beides Vertrauen kostet.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">30 Minuten, drei Fragen: Ziel, Nicht-Verhandelbares, Engpass. Diese Struktur gibt dem Strategist seinen Check &#8211; und dem Explorer seinen Startschuss.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Scope-Spr&#252;nge durch neue Ideen gef&#228;hrden die Deadline, weil die methodische Strenge durch den Drang nach Abwechslung verw&#228;ssert wird.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Klar getrennte Experimentierfenster: maximal zwei Stunden f&#252;r Tests, danach Execution-Modus ohne Ausnahmen. Ein Board mit einem Hauptziel und drei Meilensteinen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Du schwankst zwischen kumpelhaftem Ton und fast technischer K&#252;hle &#8211; und findest keinen Mittelpunkt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst echte Wertsch&#228;tzung in einem Satz. Dann klar und direkt benennen, was sich &#228;ndern muss &#8211; zwei Beispiele. Dann einen konkreten Zehn-Tage-Plan vereinbaren.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

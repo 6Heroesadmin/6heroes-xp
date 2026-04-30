@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #334155; --hero-light: #e8eaed; --hero-bg: #f1f5f9; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Wise Architect</div>
+<p class="intro">Du baust Systeme, die nicht nur funktionieren, sondern auch stimmen. Diese Kombination verbindet methodische Pr&#228;zision mit intellektueller Tiefe und ethischer Substanz.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Stimmige Systeme</span>
+  <span class="merkmal-text"> &ndash; Du baust Strukturen, die nicht nur logisch funktionieren, sondern auch eine tiefe Bedeutung und ethische Basis haben.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Logische Tiefe</span>
+  <span class="merkmal-text"> &ndash; Du verbindest pr&#228;zise Ursache-Wirkungs-Modelle mit tiefgehender Reflexion. Das macht deine Analysen nicht nur scharf &#8211; sondern auch weise.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Sinnorientierte Optimierung</span>
+  <span class="merkmal-text"> &ndash; Du verbesserst Prozesse nicht nur f&#252;r mehr Tempo, sondern f&#252;r eine h&#246;here Qualit&#228;t. Effizienz und Bedeutung geh&#246;ren bei dir zusammen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pr&#228;zise Ethik</span>
+  <span class="merkmal-text"> &ndash; Du nutzt einen starken inneren Kompass, um sicherzustellen, dass deine Methoden mit h&#246;heren Werten &#252;bereinstimmen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Reflektierte Souver&#228;nit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du bewahrst auch in komplexen Lagen durch intellektuelle Tiefe und Sachlichkeit einen ruhigen, objektiven &#220;berblick.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Du willst gleichzeitig Effizienz und moralische Qualit&#228;t sicherstellen, h&#228;ltst mitten im Zeitdruck Prinzipienreden und erzeugst Stress statt Klarheit.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Das Prinzip auf einen einzigen Satz bringen &#8211; innerlich einmal aussprechen, dann sofort handeln. Ein Satz sch&#252;tzt deine Integrit&#228;t, ohne den Moment zu stoppen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Ein pragmatischer Mittelweg f&#252;hlt sich oft unwahr an &#8211; du blockierst Entscheidungen durch zu komplexe Argumentation.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Pfade aktiv kontrastieren: schnell mit Risiko oder sauber mit Fokus auf Wahrheit. Eine bewusste Entscheidung erzwingen &#8211; statt nach der perfekten Synthese zu suchen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Dein Sage erkennt kurz vor Schluss einen Logikfehler. Du schwankst zwischen Zeitplan und dem Drang, etwas wirklich Richtiges abzuliefern.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">T-14 Truth Gate: 14 Tage vor der Deadline einen letzten Wahrheits-Check &#8211; danach keine grundlegenden Fragen mehr. Version 1.0 eines guten Systems ist besser als Version 0.9 eines perfekten.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Das Gespr&#228;ch wirkt wie eine Standpauke: der Mitarbeiter f&#252;hlt sich moralisch bewertet statt professionell gecoacht.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Verhalten benennen &#8211; zwei Beispiele. Das verletzte Prinzip einmalig ansprechen, maximal 60 Sekunden. Den Rest der Zeit einem konkreten 10-Tage-Plan mit festem Review-Termin widmen.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

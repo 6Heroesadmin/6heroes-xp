@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #334155; --hero-light: #e8eaed; --hero-bg: #f1f5f9; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Adaptive Planner</div>
+<p class="intro">Du planst &#8211; und du bleibst beweglich. Diese Kombination verbindet methodische St&#228;rke mit der F&#228;higkeit, im Tun zu lernen und Pl&#228;ne an die Realit&#228;t anzupassen.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Adaptive Planung</span>
+  <span class="merkmal-text"> &ndash; Du entwickelst fundierte Pl&#228;ne, die beweglich bleiben. Dein Plan ist kein K&#228;fig &#8211; er ist ein Kompass.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Pragmatisches Lernen</span>
+  <span class="merkmal-text"> &ndash; Du findest L&#246;sungen oft direkt im Tun. Das gibt dir eine Erdung, die viele Planer vermissen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Experimentierfreude</span>
+  <span class="merkmal-text"> &ndash; Du nutzt kurze Testphasen, um Konzepte fr&#252;hzeitig zu validieren. Echte Daten aus der Realit&#228;t schlagen das beste Modell am Schreibtisch.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Dynamische Balance</span>
+  <span class="merkmal-text"> &ndash; Du verbindest methodische Logik mit flexibler Anpassung. Ordnung und Offenheit schlie&#223;en sich bei dir nicht aus.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Intuitive Agilit&#228;t</span>
+  <span class="merkmal-text"> &ndash; Du erkennst Chancen blitzschnell und integrierst sie effizient in bestehende Rahmenwerke.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Wenn du ohne fertigen Plan losgehst, f&#252;hlst du dich innerlich unsauber. Die Angst, etwas zu vergessen, treibt dich nachher in einen extremen Kontrollmodus.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Zwei Fixpunkte definieren, die absolut sicher sein m&#252;ssen &#8211; alles andere bleibt flexibel. Bei der Ankunft einen kurzen Reset: Was fehlt wirklich, was ist jetzt wichtig?</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du neigst zum Overplanning: perfekte Konzepte, die den Kontakt zur Realit&#228;t verlieren, weil das Ausprobieren zu sp&#228;t kommt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Analysezeit auf 30 Minuten begrenzen. Nur Ziel, Nicht-Verhandelbares und gr&#246;&#223;ten Engpass definieren. Dann eine vorl&#228;ufige Entscheidung f&#252;r einen Testlauf.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Dein Strategist sch&#252;tzt den kritischen Pfad, dein Explorer sieht neue M&#246;glichkeiten und Abk&#252;rzungen &#8211; kombiniert entstehen Scope-Spr&#252;nge.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Timeboxed Loops: zwei Stunden f&#252;r eine neue Idee testen. Wenn sie danach nicht signifikant besser ist &#8211; zur&#252;ck zum Critical Path Board, ohne weitere &#196;nderungen.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Kritik wird so weich verpackt, dass die eigentliche Botschaft verloren geht. Gute Stimmung &#8211; aber keine Ver&#228;nderung.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Wertsch&#228;tzung in einem Satz. Dann den kritischen Punkt glasklar benennen &#8211; zwei Beispiele. Dann genau eine Sache definieren, die sich in zehn Tagen &#228;ndern muss.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>

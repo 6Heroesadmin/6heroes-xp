@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --hero: #F0672A; --hero-light: #ffe4d6; --hero-bg: #fff7ed; }
+  body { font-family:'DM Sans',sans-serif; background:#fff; color:#1a1a2e; padding:20px 20px 32px; font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased; }
+  .title { font-size:18px; font-weight:700; color:var(--hero); margin-bottom:6px; }
+  .intro { font-size:14px; color:#374151; line-height:1.65; margin-bottom:18px; padding-left:14px; border-left:3px solid var(--hero); }
+  .merkmale-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .merkmal { margin-bottom:8px; font-size:13.5px; padding-left:12px; border-left:2px solid var(--hero-light); }
+  .merkmal-titel { font-weight:700; color:var(--hero); }
+  .merkmal-text { color:#374151; }
+  .divider { border:none; border-top:1px solid #f1f5f9; margin:18px 0; }
+  .situations-label { font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#9ca3af; margin-bottom:10px; }
+  .situation { margin-bottom:8px; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden; }
+  .situation-header { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; cursor:pointer; font-weight:600; font-size:13px; color:#374151; background:#fafafa; transition:background 0.15s; }
+  .situation-header:hover { background:var(--hero-bg); }
+  .arrow { font-size:10px; color:#9ca3af; transition:transform 0.2s; }
+  .arrow.open { transform:rotate(90deg); }
+  .situation-body { padding:12px 14px; background:#fff; }
+  .situation-text { font-size:13.5px; color:#6b7280; margin-bottom:10px; line-height:1.65; }
+  .hilft-block { background:var(--hero-bg); border-left:3px solid var(--hero); border-radius:6px; padding:10px 12px; }
+  .hilft-label { font-size:11px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; color:var(--hero); margin-bottom:4px; }
+  .hilft-text { font-size:13.5px; color:#374151; line-height:1.65; }
+</style>
+</head>
+<body>
+<div class="title">Der Trailblazer</div>
+<p class="intro">Du denkst nicht nur au&#223;erhalb der Box &#8211; du baust eine neue. Diese Kombination erzeugt eine ungew&#246;hnliche Intensit&#228;t aus kreativem Vorw&#228;rtsdrang und spielerischer Experimentierfreude.</p>
+<div class="merkmale-label">Deine 5 Kernmerkmale</div>
+
+<div class="merkmal">
+  <span class="merkmal-titel">Erfinderischer Vorw&#228;rtsdrang</span>
+  <span class="merkmal-text"> &ndash; Du erfindest direkt im Tun neue Wege und Optionen, die f&#252;r andere unsichtbar bleiben. Du bist kein Planer &#8211; du bist ein Pfadfinder.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Kreative Improvisation</span>
+  <span class="merkmal-text"> &ndash; Du verkn&#252;pfst pragmatisches Handeln mit originellen Shortcuts und unkonventionellen L&#246;sungen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Spielerische Dynamik</span>
+  <span class="merkmal-text"> &ndash; Du nutzt kreative Hacks und Challenges, um starre Routinen aufzubrechen und Bewegung zu erzeugen.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Vision&#228;re Offenheit</span>
+  <span class="merkmal-text"> &ndash; Du erkennst w&#228;hrend der Exploration st&#228;ndig neue Potenziale und verkn&#252;pfst sie mit dem aktuellen Ziel.</span>
+</div>
+<div class="merkmal">
+  <span class="merkmal-titel">Mut zum Unkonventionellen</span>
+  <span class="merkmal-text"> &ndash; Du kombinierst die Lust am einfachen Machen mit der F&#228;higkeit, den Standardweg radikal neuzudenken.</span>
+</div>
+<hr class="divider">
+<div class="situations-label">Situationen &amp; Strategien</div>
+
+<div class="situation">
+  <div class="situation-header" onclick="toggle(0)">
+    <span>Im Alltag unter Zeitdruck</span>
+    <span class="arrow" id="arrow-0">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-0" style="display:none">
+    <p class="situation-text">Wenn zu viele Hacks gleichzeitig laufen oder die Methode st&#228;ndig wechselt, entsteht Chaos statt Tempo. Basics werden vergessen.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Ein Hack pro Situation &#8211; nicht mehr. Zwei feste Basics sichern, dann genau eine neue Idee zulassen. Der Repeatability Check: &#132;Kann das f&#252;nfmal funktionieren?&#8220;</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(1)">
+    <span>Bei komplexen Entscheidungen</span>
+    <span class="arrow" id="arrow-1">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-1" style="display:none">
+    <p class="situation-text">Du wirkst unzuverl&#228;ssig &#8211; nicht aus Absicht, sondern weil die Entscheidung im M&#246;glichkeitsraum verschwimmt.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">30 Minuten, drei Fragen: Ziel, Nicht-Verhandelbares, Engpass. Danach eine Entscheidung &#8211; in drei Bulletpoints. Keine offenen Alternativen mehr danach.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(2)">
+    <span>In Deadline-Phasen</span>
+    <span class="arrow" id="arrow-2">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-2" style="display:none">
+    <p class="situation-text">Scope-Spr&#252;nge und sp&#228;te Optimierungen verunsichern das Team und gef&#228;hrden die Deadline.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Klar getrennte Phasen: Experimentieren hat seinen Platz &#8211; aber nicht im Endspurt. Ein kleines t&#228;gliches Fenster f&#252;r neue Ideen, die nach dem Launch umgesetzt werden.</div>
+    </div>
+  </div>
+</div>
+<div class="situation">
+  <div class="situation-header" onclick="toggle(3)">
+    <span>In schwierigen Feedbackgespr&#228;chen</span>
+    <span class="arrow" id="arrow-3">&#9654;</span>
+  </div>
+  <div class="situation-body" id="body-3" style="display:none">
+    <p class="situation-text">Die Kritik wird in Visions-Sprech verpackt &#8211; spannend, aber ohne die n&#246;tige Klarheit &#252;ber das, was sich konkret &#228;ndern muss.</p>
+    <div class="hilft-block">
+      <div class="hilft-label">Was hilft</div>
+      <div class="hilft-text">Erst die direkte R&#252;ckmeldung &#8211; zwei konkrete Beispiele, klar ausgesprochen. Dann erst die gemeinsame Vision f&#252;r die Entwicklung.</div>
+    </div>
+  </div>
+</div>
+<script>
+function toggle(i) {
+  var b = document.getElementById('body-' + i);
+  var a = document.getElementById('arrow-' + i);
+  var open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  a.classList.toggle('open', !open);
+}
+</script>
+</body>
+</html>
