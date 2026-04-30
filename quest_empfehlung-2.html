@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #fff;
+    color: #1a1a2e;
+    padding: 16px 18px 28px;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HERO SELECTOR ── */
+  .hero-selector {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .hero-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: 1.5px solid #e5e7eb;
+    background: #fff;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .hero-btn:hover { border-color: var(--hc); color: var(--hc); }
+  .hero-btn.active { background: var(--hc); border-color: var(--hc); color: #fff; }
+
+  .hero-btn .badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 6px;
+    margin-left: 4px;
+    background: rgba(0,0,0,0.15);
+    color: inherit;
+  }
+
+  /* ── TYPE TABS ── */
+  .type-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  .type-tab {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .type-tab.all    { background: #f1f5f9; color: #6b7280; }
+  .type-tab.act    { background: #eff6ff; color: #1d4ed8; }
+  .type-tab.perf   { background: #f0fdf4; color: #166534; }
+  .type-tab.stop   { background: #fff7ed; color: #c2410c; }
+
+  .type-tab.active.all  { background: #334155; color: #fff; }
+  .type-tab.active.act  { background: #1d4ed8; color: #fff; }
+  .type-tab.active.perf { background: #166534; color: #fff; }
+  .type-tab.active.stop { background: #c2410c; color: #fff; }
+
+  /* ── PROFILE CONTEXT ── */
+  .profile-hint {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+    padding: 6px 10px;
+    background: #f8fafc;
+    border-radius: 6px;
+    line-height: 1.5;
+  }
+
+  .profile-hint strong { color: #6b7280; }
+
+  /* ── QUEST CARDS ── */
+  .quest-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .quest-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid var(--hc, #e5e7eb);
+  }
+
+  .quest-card:hover { border-color: var(--hc); background: var(--hbg); }
+
+  .quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+    gap: 8px;
+  }
+
+  .quest-title {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #1a1a2e;
+    flex: 1;
+  }
+
+  .quest-meta {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .tag-act  { background: #eff6ff; color: #1d4ed8; }
+  .tag-perf { background: #f0fdf4; color: #166534; }
+  .tag-stop { background: #fff7ed; color: #c2410c; }
+  .tag-hero { background: #f1f5f9; color: #374151; }
+
+  .quest-instruction {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.55;
+    margin-bottom: 7px;
+  }
+
+  .quest-footer {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: #9ca3af;
+  }
+
+  .quest-footer span { display: flex; align-items: center; gap: 3px; }
+
+  /* ── RECOMMENDATION LABEL ── */
+  .rec-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    margin: 14px 0 6px;
+    padding-left: 2px;
+  }
+
+  /* ── EMPTY + LOADING ── */
+  .empty, .loading {
+    text-align: center;
+    padding: 24px 16px;
+    color: #9ca3af;
+    font-size: 13px;
+  }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #334155;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── HERO COLORS ── */
+  :root {
+    --strategist: #334155; --strategist-bg: #f1f5f9;
+    --commander:  #0B63CE; --commander-bg:  #eff6ff;
+    --guardian:   #1F9D62; --guardian-bg:   #f0fdf4;
+    --innovator:  #D4A017; --innovator-bg:  #fefce8;
+    --explorer:   #F0672A; --explorer-bg:   #fff7ed;
+    --sage:       #C0266A; --sage-bg:       #fdf4f8;
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="loading"><div class="spinner"></div>Quests werden geladen…</div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+// Token is passed via URL param ?token=... from Airtable formula field (not hardcoded)
+const BASE_ID = "appO19P3GW2gNHFWm";
+const TABLE   = "Quests";
+
+const HERO_COLORS = {
+  strategist: { color: "#334155", bg: "#f1f5f9", label: "Strategist" },
+  commander:  { color: "#0B63CE", bg: "#eff6ff", label: "Commander"  },
+  guardian:   { color: "#1F9D62", bg: "#f0fdf4", label: "Guardian"   },
+  innovator:  { color: "#D4A017", bg: "#fefce8", label: "Innovator"  },
+  explorer:   { color: "#F0672A", bg: "#fff7ed", label: "Explorer"   },
+  sage:       { color: "#C0266A", bg: "#fdf4f8", label: "Sage"       },
+};
+
+// HeroTypes Record ID → slug mapping
+const HERO_ID_MAP = {
+  "recC5UAnHPTEibul7": "innovator",
+  "recOImMXYt9zFJoWM": "commander",
+  "recsrdJvdgNFlq3fM": "strategist",
+  "recpVdcakErqE3bJy": "sage",
+  "recEflFoexOQ2Gkko": "guardian",
+  "recsfl5Wrl2dRb8FB": "explorer",
+};
+
+// Quest type config – handles both "StopLimit" and "Stop/Limit"
+const TYPE_CONFIG = {
+  "Activate":   { key: "act",  label: "Activate",   tagClass: "tag-act"  },
+  "Perform":    { key: "perf", label: "Perform",     tagClass: "tag-perf" },
+  "StopLimit":  { key: "stop", label: "Stop/Limit",  tagClass: "tag-stop" },
+  "Stop/Limit": { key: "stop", label: "Stop/Limit",  tagClass: "tag-stop" },
+};
+
+// QuestID prefix → hero slug
+const QUESTID_MAP = {
+  "Q_INO": "innovator",
+  "Q_CMD": "commander",
+  "Q_STR": "strategist",
+  "Q_SAG": "sage",
+  "Q_GRD": "guardian",
+  "Q_EXP": "explorer",
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let allQuests = [];
+let activeHero = null;   // slug or null = profile-based
+let activeType = "all";  // all | act | perf | stop
+let profileHeroes = {};  // { base, second, s1, s2 }
+
+// ── URL PARAMS ───────────────────────────────────────────────────────────────
+function getParams() {
+  const p = new URLSearchParams(window.location.search);
+  return {
+    token:  p.get("token")  || "",
+    base:   (p.get("base")   || "").toLowerCase(),
+    second: (p.get("second") || "").toLowerCase(),
+    s1:     (p.get("s1")     || "").toLowerCase(),
+    s2:     (p.get("s2")     || "").toLowerCase(),
+  };
+}
+
+// ── FETCH QUESTS ─────────────────────────────────────────────────────────────
+async function fetchQuests(token) {
+  if (!token) throw new Error("Kein API-Token übergeben.");
+  let records = [];
+  let offset = null;
+
+  do {
+    const url = new URL(`https://api.airtable.com/v0/${BASE_ID}/${TABLE}`);
+    url.searchParams.set("filterByFormula", "{IsActive}=1");
+    url.searchParams.set("maxRecords", "100");
+    if (offset) url.searchParams.set("offset", offset);
+
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    records = records.concat(data.records || []);
+    offset = data.offset || null;
+  } while (offset);
+
+  return records.map(r => {
+    const f = r.fields;
+    let heroSlug = "";
+
+    // 1. Try QuestID prefix (most reliable: Q_INO_, Q_CMD_ etc.)
+    if (f.QuestID) {
+      const prefix = f.QuestID.substring(0, 5); // e.g. "Q_INO"
+      heroSlug = QUESTID_MAP[prefix] || "";
+    }
+    // 2. Fallback: linked record ID
+    if (!heroSlug && Array.isArray(f.Hero) && f.Hero.length > 0) {
+      heroSlug = HERO_ID_MAP[f.Hero[0]] || "";
+    }
+    // 3. Fallback: text field
+    if (!heroSlug && typeof f.Hero === "string") {
+      heroSlug = f.Hero.toLowerCase();
+    }
+
+    return {
+      id:          r.id,
+      title:       f.Title || f.QuestTitle || "Quest",
+      type:        f.Type  || f.QuestType  || "",
+      hero:        heroSlug,
+      instruction: f.Instruction || f.Description || "",
+      duration:    f.DurationMin || f.Duration || null,
+      xp:          f.XP_Base || f.XP || 10,
+    };
+  });
+}
+
+// ── QUEST LOGIC ───────────────────────────────────────────────────────────────
+// Returns priority label for a quest given profile heroes
+function getQuestPriority(quest, profile) {
+  const { base, second, s1, s2 } = profile;
+  const h = quest.hero;
+  const t = quest.type;
+  const isStop = (t === "StopLimit" || t === "Stop/Limit");
+
+  if (h === base) {
+    if (t === "Perform" || isStop) return "base";
+  }
+  if (h === second) {
+    if (t === "Activate" || t === "Perform") return "second";
+  }
+  if (h === s1 && isStop) return "s1";
+  if (h === s2 && isStop) return "s2";
+  return null;
+}
+
+// ── FILTER & RENDER ───────────────────────────────────────────────────────────
+function getFilteredQuests() {
+  let quests = allQuests;
+
+  // Hero filter
+  if (activeHero) {
+    quests = quests.filter(q => q.hero === activeHero);
+  }
+
+  // Type filter
+  if (activeType !== "all") {
+    const typeMap = { act: "Activate", perf: "Perform", stop: "Stop/Limit" };
+    quests = quests.filter(q => q.type === typeMap[activeType]);
+  }
+
+  return quests;
+}
+
+function render() {
+  const app = document.getElementById("app");
+  const params = profileHeroes;
+  const filtered = getFilteredQuests();
+  const heroes = Object.keys(HERO_COLORS);
+
+  // Count quests per hero
+  const heroCounts = {};
+  heroes.forEach(h => { heroCounts[h] = allQuests.filter(q => q.hero === h).length; });
+
+  let html = "";
+
+  // ── Hero Selector
+  html += `<div class="hero-selector">`;
+  html += `<button class="hero-btn ${!activeHero ? "active" : ""}"
+    style="--hc:${!activeHero ? "#334155" : "#9ca3af"}"
+    onclick="setHero(null)">Profil-Mix</button>`;
+
+  heroes.forEach(slug => {
+    const hc = HERO_COLORS[slug];
+    html += `<button class="hero-btn ${activeHero === slug ? "active" : ""}"
+      style="--hc:${hc.color}"
+      onclick="setHero('${slug}')">${hc.label}
+      <span class="badge">${heroCounts[slug] || 0}</span>
+    </button>`;
+  });
+  html += `</div>`;
+
+  // ── Type Tabs
+  html += `<div class="type-tabs">
+    <button class="type-tab all ${activeType==="all" ? "active" : ""}" onclick="setType('all')">Alle</button>
+    <button class="type-tab act ${activeType==="act" ? "active" : ""}" onclick="setType('act')">Activate</button>
+    <button class="type-tab perf ${activeType==="perf" ? "active" : ""}" onclick="setType('perf')">Perform</button>
+    <button class="type-tab stop ${activeType==="stop" ? "active" : ""}" onclick="setType('stop')">Stop/Limit</button>
+  </div>`;
+
+  // ── Profile Hint
+  if (!activeHero && params.base) {
+    const roleLabels = {
+      base:   `Basisheld (Perform + Stop/Limit)`,
+      second: `Zweitheld (Activate + Perform)`,
+      s1:     `Stressheld 1 (Stop/Limit)`,
+      s2:     `Stressheld 2 (Stop/Limit)`,
+    };
+    const profileNames = {
+      base:   params.base   ? HERO_COLORS[params.base]?.label   : "",
+      second: params.second ? HERO_COLORS[params.second]?.label : "",
+      s1:     params.s1     ? HERO_COLORS[params.s1]?.label     : "",
+      s2:     params.s2     ? HERO_COLORS[params.s2]?.label     : "",
+    };
+    html += `<div class="profile-hint">
+      Dein Profil: 
+      <strong>${profileNames.base}</strong> als Basisheld &middot;
+      <strong>${profileNames.second}</strong> als Zweitheld &middot;
+      S1 <strong>${profileNames.s1}</strong> &middot;
+      S2 <strong>${profileNames.s2}</strong>
+    </div>`;
+  }
+
+  // ── Quest List
+  if (filtered.length === 0) {
+    html += `<div class="empty">Keine Quests gefunden.</div>`;
+  } else if (!activeHero && params.base) {
+    // Profile-based view: group by priority
+    const groups = {
+      base:   { label: `Basisheld · ${HERO_COLORS[params.base]?.label || ""}`, quests: [] },
+      second: { label: `Zweitheld · ${HERO_COLORS[params.second]?.label || ""}`, quests: [] },
+      s1:     { label: `Stressheld 1 · ${HERO_COLORS[params.s1]?.label || ""}`, quests: [] },
+      s2:     { label: `Stressheld 2 · ${HERO_COLORS[params.s2]?.label || ""}`, quests: [] },
+      other:  { label: "Weitere Quests", quests: [] },
+    };
+
+    filtered.forEach(q => {
+      const prio = getQuestPriority(q, params);
+      if (prio && groups[prio]) groups[prio].quests.push(q);
+      else groups.other.quests.push(q);
+    });
+
+    Object.entries(groups).forEach(([key, group]) => {
+      if (group.quests.length === 0) return;
+      html += `<div class="rec-label">${group.label}</div>`;
+      html += `<div class="quest-list">`;
+      group.quests.forEach(q => { html += renderCard(q, params); });
+      html += `</div>`;
+    });
+  } else {
+    // Single hero view
+    html += `<div class="quest-list">`;
+    filtered.forEach(q => { html += renderCard(q, params); });
+    html += `</div>`;
+  }
+
+  app.innerHTML = html;
+}
+
+function renderCard(q, params) {
+  const hc = HERO_COLORS[q.hero] || { color: "#6b7280", bg: "#f9fafb", label: q.hero };
+  const tc = TYPE_CONFIG[q.type] || { tagClass: "tag-act", label: q.type };
+  const prio = getQuestPriority(q, params);
+
+  const roleTag = {
+    base:   "Basisheld",
+    second: "Zweitheld",
+    s1:     "S1",
+    s2:     "S2",
+  }[prio] || "";
+
+  return `
+    <div class="quest-card" style="--hc:${hc.color}; --hbg:${hc.bg}; border-left-color:${hc.color}">
+      <div class="quest-header">
+        <div class="quest-title">${q.title}</div>
+        <div class="quest-meta">
+          <span class="tag ${tc.tagClass}">${tc.label}</span>
+          <span class="tag tag-hero" style="background:${hc.bg};color:${hc.color}">${hc.label}</span>
+          ${roleTag ? `<span class="tag" style="background:#f1f5f9;color:#374151">${roleTag}</span>` : ""}
+        </div>
+      </div>
+      ${q.instruction ? `<div class="quest-instruction">${q.instruction}</div>` : ""}
+      <div class="quest-footer">
+        ${q.duration ? `<span>⏱ ${q.duration} Min</span>` : ""}
+        ${q.xp ? `<span>⭐ ${q.xp} XP</span>` : ""}
+      </div>
+    </div>`;
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────────────
+function setHero(slug) {
+  activeHero = slug;
+  render();
+}
+
+function setType(type) {
+  activeType = type;
+  render();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  profileHeroes = getParams();
+
+  try {
+    allQuests = await fetchQuests(profileHeroes.token);
+    render();
+  } catch (e) {
+    document.getElementById("app").innerHTML =
+      `<div class="empty">Fehler beim Laden der Quests.<br><small>${e.message}</small></div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
