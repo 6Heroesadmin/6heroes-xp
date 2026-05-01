@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willkommen – 6Heroes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #f8f9fb;
+    --surface:     #ffffff;
+    --surface2:    #f1f3f7;
+    --border:      #e4e7ed;
+    --text:        #1a2030;
+    --muted:       #6b7a99;
+    --commander:   #0B63CE;
+    --guardian:    #1F9D62;
+    --innovator:   #F2B705;
+    --explorer:    #F0672A;
+    --sage:        #C0266A;
+    --strategist:  #334155;
+    --base-url:    'https://6heroesadmin.github.io/6heroes-xp/';
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 2rem 1.25rem 4rem;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .page-header { text-align: center; padding: 2rem 0 2rem; }
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 5vw, 38px); font-weight: 400;
+    color: var(--text); line-height: 1.2; margin-bottom: 1rem;
+  }
+  .lead {
+    color: var(--muted); font-size: 15px;
+    max-width: 500px; margin: 0 auto;
+  }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.75rem 0; }
+
+  /* ── Intro text blocks ── */
+  .intro-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .intro-block p { color: var(--text); font-size: 15px; line-height: 1.75; }
+  .intro-block p + p { margin-top: 1rem; }
+
+  .highlight-block {
+    border-left: 3px solid var(--border);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    background: var(--surface2);
+  }
+  .highlight-block .hl-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+  .highlight-block p { font-size: 14px; color: var(--text); }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 1rem;
+  }
+
+  /* ── Hero grid ── */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .hero-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .hero-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .hero-img-wrap {
+    width: 100%;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    background: var(--surface2);
+  }
+  .hero-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    display: block;
+  }
+  .hero-info {
+    padding: 0.75rem 0.5rem 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .hero-name {
+    font-size: 13px; font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .hero-sub {
+    font-size: 11px; color: var(--muted);
+  }
+  .hero-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    margin: 0 auto 6px;
+  }
+
+  /* hero accent colors */
+  .h-commander .hero-name { color: var(--commander); }
+  .h-commander .hero-dot  { background: var(--commander); }
+  .h-guardian  .hero-name { color: var(--guardian); }
+  .h-guardian  .hero-dot  { background: var(--guardian); }
+  .h-innovator .hero-name { color: var(--innovator); }
+  .h-innovator .hero-dot  { background: var(--innovator); }
+  .h-explorer  .hero-name { color: var(--explorer); }
+  .h-explorer  .hero-dot  { background: var(--explorer); }
+  .h-sage      .hero-name { color: var(--sage); }
+  .h-sage      .hero-dot  { background: var(--sage); }
+  .h-strategist .hero-name { color: var(--strategist); }
+  .h-strategist .hero-dot  { background: var(--strategist); }
+
+  /* ── Key questions ── */
+  .key-questions { display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem; }
+  .key-q {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 10px;
+    align-items: start;
+  }
+  .key-q-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--muted);
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .key-q-text { font-size: 14px; color: var(--text); }
+  .key-q-text strong { font-weight: 600; display: block; margin-bottom: 2px; }
+  .key-q-text span { color: var(--muted); font-size: 13px; }
+
+  .footer-note { text-align: center; color: #c0c8d8; font-size: 12px; padding-top: 0.5rem; }
+
+  @media (max-width: 480px) {
+    .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="eyebrow">6Heroes · Willkommen</div>
+  <h1>Deine persönliche<br>Heldenkonferenz</h1>
+  <p class="lead">Herzlich willkommen zu deiner persönlichen 6Heroes-Profilanalyse!</p>
+</div>
+
+<hr class="divider">
+
+<div class="intro-block">
+  <p>Hast du dich schon einmal gefragt, warum dir manche Aufgaben spielend leichtfallen, während andere dich völlig erschöpfen? Oder warum du in entspannten Momenten völlig anders kommunizierst als unter großem Zeitdruck?</p>
+  <p>Die Antwort liegt in deiner <strong>„inneren Heldenkonferenz"</strong>. Das 6Heroes-Modell basiert auf der Erkenntnis, dass wir nicht nur „eine" feste Persönlichkeit haben, sondern dass in jedem von uns sechs verschiedene archetypische Kräfte – unsere <strong>Helden</strong> – wirken. Jeder dieser Helden bringt einen eigenen Stil mit, wie er denkt, kommuniziert und Probleme löst.</p>
+</div>
+
+<div class="highlight-block">
+  <div class="hl-label">Wichtig zu wissen</div>
+  <p>Kein Held ist besser als ein anderer. Jeder hat Stärken – und typische Fallen, wenn er überdreht oder unter Druck gerät.</p>
+</div>
+
+<hr class="divider">
+<div class="section-label">Die sechs Heldenmodi</div>
+
+<div class="hero-grid">
+
+  <div class="hero-card h-commander">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Commander_male.png" alt="Commander" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Commander</div>
+      <div class="hero-sub">Der Gestalter</div>
+    </div>
+  </div>
+
+  <div class="hero-card h-guardian">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Guardian_male.png" alt="Guardian" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Guardian</div>
+      <div class="hero-sub">Der Bewahrer</div>
+    </div>
+  </div>
+
+  <div class="hero-card h-innovator">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Innovator_male.png" alt="Innovator" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Innovator</div>
+      <div class="hero-sub">Der Visionär</div>
+    </div>
+  </div>
+
+  <div class="hero-card h-explorer">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Explorer_male.png" alt="Explorer" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Explorer</div>
+      <div class="hero-sub">Der Praktiker</div>
+    </div>
+  </div>
+
+  <div class="hero-card h-sage">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Sage_male.png" alt="Sage" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Sage</div>
+      <div class="hero-sub">Der Analytiker</div>
+    </div>
+  </div>
+
+  <div class="hero-card h-strategist">
+    <div class="hero-img-wrap">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Strategist_male.png" alt="Strategist" loading="lazy">
+    </div>
+    <div class="hero-info">
+      <div class="hero-dot"></div>
+      <div class="hero-name">Strategist</div>
+      <div class="hero-sub">Der Architekt</div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="divider">
+<div class="section-label">Was dich erwartet</div>
+
+<div class="key-questions">
+
+  <div class="key-q">
+    <div class="key-q-icon">1</div>
+    <div class="key-q-text">
+      <strong>Wer führt dich im Alltag?</strong>
+      <span>Dein Basisheld und Zweitheld bilden dein Fundament – sie bestimmen, wie du arbeitest und wie andere dich erleben.</span>
+    </div>
+  </div>
+
+  <div class="key-q">
+    <div class="key-q-icon">2</div>
+    <div class="key-q-text">
+      <strong>Was gibt dir Kraft – und was kostet sie dich?</strong>
+      <span>Manche Helden laden dich auf. Andere kosten bewusste Anstrengung. Du lernst, wann du welchen Modus nutzt.</span>
+    </div>
+  </div>
+
+  <div class="key-q">
+    <div class="key-q-icon">3</div>
+    <div class="key-q-text">
+      <strong>Was passiert unter Druck?</strong>
+      <span>Wenn es stressig wird, schaltet dein System auf Autopilot. Du lernst deine persönlichen Stressmuster kennen – bevor sie eskalieren.</span>
+    </div>
+  </div>
+
+  <div class="key-q">
+    <div class="key-q-icon">4</div>
+    <div class="key-q-text">
+      <strong>Wie steuerst du bewusst?</strong>
+      <span>Am Ende weißt du, welche Hebel du bewegen musst, um aus dem Stressmodus zurück in deine volle Energie zu finden.</span>
+    </div>
+  </div>
+
+</div>
+
+<p class="footer-note">6Heroes Platform · v53</p>
+
+</body>
+</html>
