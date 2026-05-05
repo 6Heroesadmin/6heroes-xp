@@ -166,6 +166,60 @@
   @media (max-width: 480px) {
     .hero-grid { grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* Hero card clickable */
+  .hero-card { cursor: pointer; }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .modal-overlay.active { display: flex; }
+
+  .modal-inner {
+    position: relative;
+    max-width: 820px;
+    width: 100%;
+    animation: modalIn 0.2s ease;
+  }
+
+  .modal-inner img {
+    width: 100%;
+    border-radius: 12px;
+    display: block;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    color: #334155;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
 </style>
 </head>
 <body>
@@ -224,27 +278,27 @@
 <div class="section-label">Die sechs Heldenmodi</div>
 
 <div class="hero-grid">
-  <div class="hero-card h-commander">
+  <div class="hero-card h-commander" onclick="openModal('card_commander.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Commander_male.png" alt="Commander" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Commander</div><div class="hero-sub">Der Gestalter</div></div>
   </div>
-  <div class="hero-card h-guardian">
+  <div class="hero-card h-guardian" onclick="openModal('card_guardian.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Guardian_male.png" alt="Guardian" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Guardian</div><div class="hero-sub">Der Bewahrer</div></div>
   </div>
-  <div class="hero-card h-innovator">
+  <div class="hero-card h-innovator" onclick="openModal('card_innovator.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Innovator_male.png" alt="Innovator" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Innovator</div><div class="hero-sub">Der Visionär</div></div>
   </div>
-  <div class="hero-card h-explorer">
+  <div class="hero-card h-explorer" onclick="openModal('card_explorer.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Explorer_male.png" alt="Explorer" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Explorer</div><div class="hero-sub">Der Praktiker</div></div>
   </div>
-  <div class="hero-card h-sage">
+  <div class="hero-card h-sage" onclick="openModal('card_sage.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Sage_male.png" alt="Sage" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Sage</div><div class="hero-sub">Der Analytiker</div></div>
   </div>
-  <div class="hero-card h-strategist">
+  <div class="hero-card h-strategist" onclick="openModal('card_strategist.png')">
     <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Strategist_male.png" alt="Strategist" loading="lazy"></div>
     <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Strategist</div><div class="hero-sub">Der Architekt</div></div>
   </div>
@@ -291,6 +345,33 @@
 </div>
 
 <p class="footer-note">6Heroes Platform · v53</p>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="heroModal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="document.getElementById('heroModal').classList.remove('active')">×</button>
+    <img id="modalImg" src="" alt="Heldendetail">
+  </div>
+</div>
+
+<script>
+  const BASE = 'https://6heroesadmin.github.io/6heroes-xp/';
+
+  function openModal(img) {
+    document.getElementById('modalImg').src = BASE + img;
+    document.getElementById('heroModal').classList.add('active');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('heroModal')) {
+      document.getElementById('heroModal').classList.remove('active');
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.getElementById('heroModal').classList.remove('active');
+  });
+</script>
 
 </body>
 </html>
