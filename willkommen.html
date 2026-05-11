@@ -23,10 +23,6 @@
     --strategist: #334155;
   }
 
-  html, body {
-    overflow: hidden; /* Verhindert internen Scroll im iframe */
-  }
-
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
@@ -382,25 +378,12 @@
     if (e.key === 'Escape') document.getElementById('heroModal').classList.remove('active');
   });
 
-  // ── iframe Auto-Resize ──────────────────────────────────────────────────
-  // Sendet die tatsächliche Seitenhöhe ans Parent (Noloco),
-  // damit der iframe exakt so hoch wird wie der Inhalt → kein internes Scrollen.
-  function sendHeight() {
-    // overflow:hidden kurz aufheben um echte scrollHeight zu messen
-    document.body.style.overflow = 'visible';
-    const h = document.documentElement.scrollHeight;
-    document.body.style.overflow = 'hidden';
-    window.parent.postMessage({ type: 'setHeight', height: h }, '*');
-    // Fallback: auch als iFrameResizer-kompatibles Format
-    window.parent.postMessage('[iFrameSizer]' + document.body.id + ':' + h + ':0:heightCalculationMethod', '*');
-  }
+  // ── iframe Auto-Resize via iFrameResizer ───────────────────────────────
+  // Falls Noloco iFrameResizer nutzt, übernimmt dieses Script die Höhe automatisch.
+  // Fallback: Noloco iframe-Höhe manuell auf mind. 2400px setzen.
 
-  // Nach dem vollständigen Laden + bei Größenänderungen
-  window.addEventListener('load', sendHeight);
-  if (window.ResizeObserver) {
-    new ResizeObserver(sendHeight).observe(document.body);
-  }
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.6/iframeResizer.contentWindow.min.js"></script>
 </body>
 </html>
