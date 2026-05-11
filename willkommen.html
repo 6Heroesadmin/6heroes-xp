@@ -21,7 +21,10 @@
     --explorer:   #F0672A;
     --sage:       #C0266A;
     --strategist: #334155;
-    --gh: 'https://6heroesadmin.github.io/6heroes-xp/';
+  }
+
+  html, body {
+    overflow: hidden; /* Verhindert internen Scroll im iframe */
   }
 
   body {
@@ -94,6 +97,7 @@
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; overflow: hidden; text-align: center;
     transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
   }
   .hero-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
   .hero-img-wrap { width: 100%; aspect-ratio: 2/3; overflow: hidden; background: var(--surface2); }
@@ -144,6 +148,26 @@
     border-top: 1px solid var(--border);
   }
 
+  /* Heldenrad – transparenter Hintergrund */
+  .img-block-transparent {
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .img-block-transparent img {
+    width: 100%;
+    max-width: 520px;
+    display: inline-block;
+    border-radius: 12px;
+  }
+  .img-block-transparent .img-caption {
+    border-top: none;
+    padding-top: 0.3rem;
+  }
+
   /* Konferenz section */
   .konferenz-prose {
     background: var(--surface);
@@ -166,9 +190,6 @@
   @media (max-width: 480px) {
     .hero-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
-  /* Hero card clickable */
-  .hero-card { cursor: pointer; }
 
   /* Modal overlay */
   .modal-overlay {
@@ -323,28 +344,17 @@
   <div class="img-caption">Die Heldenkonferenz – alle 6 Helden stimmen ab, wer die Führung übernimmt</div>
 </div>
 
-<!-- HELDENMODELL RAD -->
-<div class="img-block">
-  <img src="https://6heroesadmin.github.io/6heroes-xp/Heldenmodell.png" alt="6Heroes Heldenmodell – Rad mit allen 6 Helden">
+<!-- HELDENRAD – neues Bild, transparenter Hintergrund -->
+<div class="img-block-transparent">
+  <img src="https://6heroesadmin.github.io/6heroes-xp/Heldentafel_Heldenrad.png" alt="Das 6Heroes-Modell – Heldenrad mit allen 6 Helden">
   <div class="img-caption">Das 6Heroes-Modell – alle sechs Heldenmodi im Überblick</div>
-</div>
-
-<hr class="divider">
-
-<!-- KURZÜBERBLICK -->
-<div class="section-label">Kurzüberblick</div>
-<div class="section-heading">Die sechs Heldenmodi auf einen Blick</div>
-
-<div class="img-block">
-  <img src="https://6heroesadmin.github.io/6heroes-xp/6Heroes_Kurzueberblick_transparent.png" alt="6Heroes Kurzüberblick aller Heldenmodi">
-  <div class="img-caption">Denk-, Kommunikations- und Handlungsmuster aller sechs Heldenmodi</div>
 </div>
 
 <div class="callout">
   Dein persönliches Profil zeigt dir, <strong>welcher Held dich im Alltag führt</strong>, welcher dich unter Druck begleitet – und wo dein größtes Entwicklungspotenzial liegt. Du findest dein Profil unter <strong>Mein Profil</strong>.
 </div>
 
-<p class="footer-note">6Heroes Platform · v53</p>
+<p class="footer-note">6Heroes Platform · v59</p>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="heroModal" onclick="closeModal(event)">
@@ -371,6 +381,25 @@
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') document.getElementById('heroModal').classList.remove('active');
   });
+
+  // ── iframe Auto-Resize ──────────────────────────────────────────────────
+  // Sendet die tatsächliche Seitenhöhe ans Parent (Noloco),
+  // damit der iframe exakt so hoch wird wie der Inhalt → kein internes Scrollen.
+  function sendHeight() {
+    // overflow:hidden kurz aufheben um echte scrollHeight zu messen
+    document.body.style.overflow = 'visible';
+    const h = document.documentElement.scrollHeight;
+    document.body.style.overflow = 'hidden';
+    window.parent.postMessage({ type: 'setHeight', height: h }, '*');
+    // Fallback: auch als iFrameResizer-kompatibles Format
+    window.parent.postMessage('[iFrameSizer]' + document.body.id + ':' + h + ':0:heightCalculationMethod', '*');
+  }
+
+  // Nach dem vollständigen Laden + bei Größenänderungen
+  window.addEventListener('load', sendHeight);
+  if (window.ResizeObserver) {
+    new ResizeObserver(sendHeight).observe(document.body);
+  }
 </script>
 
 </body>
