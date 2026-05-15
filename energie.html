@@ -263,7 +263,7 @@ function render() {
 
   // Legend
   html += `<div class="legend">`;
-  LEVELS.forEach(l => {
+  [...LEVELS].reverse().forEach(l => {
     html += `
       <div class="legend-item">
         <div class="legend-bar" style="background:${l.color}"></div>
