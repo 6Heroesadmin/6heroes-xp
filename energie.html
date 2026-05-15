@@ -8,179 +8,218 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy: #0C1D35;
     --c-innovator:  #F2B705;
     --c-commander:  #1167D6;
     --c-strategist: #7A8FA6;
     --c-sage:       #C0266A;
     --c-guardian:   #1F9D62;
     --c-explorer:   #F0672A;
-    --bg: #0f1f38;
-    --card: rgba(255,255,255,0.05);
-    --border: rgba(255,255,255,0.08);
     --text: #F0EFE8;
     --text-muted: #7A9BBE;
+    --border: rgba(255,255,255,0.09);
+    --card: rgba(255,255,255,0.05);
   }
-
   html, body {
     background: transparent;
     font-family: 'Nunito', sans-serif;
     color: var(--text);
-    min-height: 100vh;
-    padding: 20px 16px 28px;
+    padding: 20px 16px 32px;
   }
 
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-  }
+  /* HEADER */
+  .header { text-align: center; margin-bottom: 22px; }
+  .header h1 { font-size: 18px; font-weight: 900; margin-bottom: 3px; }
+  .header p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-  .header h1 {
-    font-size: 18px;
-    font-weight: 900;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-bottom: 4px;
+  /* SCALE */
+  .scale-labels {
+    display: grid;
+    grid-template-columns: 90px 1fr 42px;
+    gap: 10px;
+    margin-bottom: 6px;
   }
-
-  .header p {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-
-  .bars {
+  .scale-track {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    justify-content: space-between;
+    padding: 0 2px;
   }
+  .scale-track span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
 
+  /* BARS */
+  .bars { display: flex; flex-direction: column; gap: 11px; }
   .bar-row {
     display: grid;
     grid-template-columns: 90px 1fr 42px;
     align-items: center;
     gap: 10px;
     opacity: 0;
-    transform: translateX(-12px);
+    transform: translateX(-10px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-
-  .bar-row.visible {
-    opacity: 1;
-    transform: none;
-  }
-
+  .bar-row.visible { opacity: 1; transform: none; }
   .bar-label {
-    font-size: 13px;
-    font-weight: 800;
+    font-size: 13px; font-weight: 800;
     color: var(--hero-color);
-    text-align: right;
-    white-space: nowrap;
+    text-align: right; white-space: nowrap;
   }
-
+  .bar-label .role-badge {
+    display: block;
+    font-size: 9px; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 1px;
+  }
   .bar-track {
     background: rgba(255,255,255,0.07);
     border-radius: 50px;
     height: 22px;
     overflow: hidden;
-    position: relative;
   }
-
   .bar-fill {
-    height: 100%;
-    border-radius: 50px;
-    background: var(--hero-color);
+    height: 100%; border-radius: 50px;
     width: 0%;
-    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: width 0.85s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 8px;
   }
-
   .bar-fill::after {
     content: '';
-    position: absolute;
-    inset: 0;
+    position: absolute; inset: 0;
     background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.15));
     border-radius: 50px;
   }
+  .bar-score { font-size: 13px; font-weight: 900; color: var(--text); }
 
-  .bar-score {
-    font-size: 13px;
-    font-weight: 900;
-    color: var(--text);
-    text-align: left;
-  }
-
+  /* LEGEND */
   .legend-row {
     display: grid;
     grid-template-columns: 90px 1fr 42px;
     gap: 10px;
     margin-top: 8px;
   }
-
   .legend-track {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
   }
-
   .legend-item {
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
     align-items: center;
-    width: 0;
-    overflow: visible;
+    width: 0; overflow: visible;
   }
-
-  .legend-bar {
-    height: 3px;
-    border-radius: 2px;
-    width: 20px;
-    margin-bottom: 5px;
-    flex-shrink: 0;
-  }
-
+  .legend-bar { height: 3px; border-radius: 2px; width: 20px; margin-bottom: 4px; flex-shrink: 0; }
   .legend-item .l-label {
-    font-size: 8.5px;
-    font-weight: 800;
+    font-size: 8px; font-weight: 800;
     color: var(--text-muted);
-    letter-spacing: 0.03em;
+    text-align: center; white-space: nowrap;
     line-height: 1.3;
-    text-align: center;
-    white-space: nowrap;
   }
 
-  .scale-labels {
-    display: grid;
-    grid-template-columns: 90px 1fr 42px;
-    gap: 10px;
-    margin-bottom: 6px;
-    padding: 0;
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0 20px;
   }
 
-  .scale-track {
+  /* INTERPRETATION */
+  .interp-title {
+    font-size: 14px; font-weight: 900;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .interp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--role-color);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .interp-card.visible { opacity: 1; transform: none; }
+
+  .interp-card-header {
     display: flex;
-    justify-content: space-between;
-    padding: 0 2px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .interp-role {
+    font-size: 10px; font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--role-color);
+  }
+  .interp-hero {
+    font-size: 15px; font-weight: 900;
+    color: var(--role-color);
+  }
+  .interp-level {
+    font-size: 11px; font-weight: 700;
+    color: var(--level-color);
+    background: color-mix(in srgb, var(--level-color) 12%, transparent);
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin-left: auto;
   }
 
-  .scale-track span {
-    font-size: 9px;
-    font-weight: 700;
+  .interp-text {
+    font-size: 13px; font-weight: 600;
     color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .interp-impulse {
+    font-size: 12px; font-weight: 700;
+    color: var(--text);
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 10px 12px;
+    line-height: 1.55;
+  }
+  .interp-impulse strong {
+    color: var(--role-color);
+    display: block;
+    margin-bottom: 3px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  /* PATTERN BOX */
+  .pattern-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
+  }
+  .pattern-box.visible { opacity: 1; transform: none; }
+  .pattern-title {
+    font-size: 12px; font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .pattern-text {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    line-height: 1.65;
   }
 
   .no-data {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 600;
+    text-align: center; padding: 40px 20px;
+    color: var(--text-muted); font-size: 14px; font-weight: 600;
   }
 </style>
 </head>
@@ -188,7 +227,7 @@
 
 <div class="header">
   <h1>Meine Energiebilanz</h1>
-  <p>Wie viel Energie gibt dir jeder Held?</p>
+  <p>Wie viel Energie gibt dir jeder Held-Modus?</p>
 </div>
 
 <div id="content"></div>
@@ -204,15 +243,129 @@ const HEROES = [
 ];
 
 const LEVELS = [
-  { min: 4.0, max: 5.0, label: 'Sehr energievoll',      color: '#1F9D62' },
-  { min: 3.1, max: 3.9, label: 'Gibt eher Energie',     color: '#84cc16' },
-  { min: 2.6, max: 3.0, label: 'Teils-teils',           color: '#F2B705' },
-  { min: 2.1, max: 2.5, label: 'Eher anstrengend',      color: '#F0672A' },
-  { min: 0.0, max: 2.0, label: 'Kostet Energie',        color: '#C0266A' },
+  { min: 4.0, max: 5.0, label: 'Sehr energievoll', color: '#1F9D62' },
+  { min: 3.1, max: 3.9, label: 'Gibt eher Energie', color: '#84cc16' },
+  { min: 2.6, max: 3.0, label: 'Teils-teils',       color: '#F2B705' },
+  { min: 2.1, max: 2.5, label: 'Eher anstrengend',  color: '#F0672A' },
+  { min: 0.0, max: 2.0, label: 'Kostet Energie',    color: '#C0266A' },
 ];
 
 function getLevel(score) {
   return LEVELS.find(l => score >= l.min && score <= l.max) || LEVELS[4];
+}
+
+function getHeroColor(name) {
+  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
+  return h ? h.color : '#7A9BBE';
+}
+
+function getHeroScore(scores, name) {
+  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
+  return h ? scores[h.key] : null;
+}
+
+/* ── INTERPRETATION TEXTS ── */
+function getInterpText(role, heroName, score, heroColor) {
+  const level = getLevel(score);
+
+  const TEXTS = {
+    basis: {
+      low: {
+        main: `Du führst deinen Alltag gerade überwiegend aus einem Modus heraus, der dir Energie kostet. Das bedeutet nicht, dass du den ${heroName}-Modus nicht beherrschst – oft ist das Gegenteil der Fall. Es bedeutet aber: Du zahlst dabei einen Preis. Dauerhafter Einsatz dieses Modus kann sich als Erschöpfung, Gereiztheit oder innerer Leere zeigen.`,
+        impulse: `Schau dir an, welche Situationen dich zwingen, hauptsächlich als ${heroName} zu agieren. Rollenerwartungen, Teamdynamiken oder alte Gewohnheiten sind häufige Treiber. Ziel ist nicht, den ${heroName} loszuwerden – sondern zu verstehen, wann du ihn brauchst und wann du dir erlauben kannst, aus energiereicheren Helden heraus zu agieren.`
+      },
+      mid: {
+        main: `Dein ${heroName}-Modus ist energetisch neutral bis leicht aufladend – je nach Kontext. Du kannst stabil aus diesem Modus führen, aber er trägt dich nicht automatisch. In passenden Situationen fließt es, in unpassenden kostet es.`,
+        impulse: `Wir schauen gemeinsam, welche Rahmenbedingungen deinen ${heroName}-Modus von „3" auf „4" heben – und welche ihn auf „2" ziehen. Kontext, Timing und Aufgabenart machen hier den Unterschied.`
+      },
+      high: {
+        main: `Dein ${heroName}-Modus ist eine echte Kraftquelle. Du kannst länger aus diesem Modus heraus agieren, ohne auszubrennen. Andere erleben dich hier oft besonders authentisch und wirksam.`,
+        impulse: `Diese Stärke ist dein natürlicher Anker. Wichtig: Nutze sie bewusst – und ergänze sie durch deinen Zweithelden, damit keine Einseitigkeit entsteht.`
+      }
+    },
+    zweit: {
+      low: {
+        main: `Dein ${heroName}-Modus als Zweitheld kostet dich aktuell Energie. Das ist ein wichtiges Signal: Wenn dein Hauptpartner im Alltag ein erschöpfender Modus ist, fehlt dir die natürliche Entlastung, die ein energiegebender Zweitheld bieten könnte.`,
+        impulse: `Prüfe, ob du bewusst andere Helden aktivieren kannst, die dir mehr Energie geben. Dein Zweitheld muss nicht immer ${heroName} sein – im Alltag kannst du flexibel schalten.`
+      },
+      mid: {
+        main: `Dein ${heroName}-Modus als Zweitheld ist situativ nutzbar. Manchmal ergänzt er deinen Basishelden gut, manchmal kostet er etwas. Der Kontext entscheidet.`,
+        impulse: `Identifiziere die Situationen, in denen der ${heroName}-Modus dich wirklich unterstützt – und setze ihn gezielt dort ein.`
+      },
+      high: {
+        main: `Dein ${heroName}-Modus als Zweitheld ist eine echte Ressource. Er ergänzt deinen Basishelden auf eine Weise, die dich stärkt statt kostet. Das ist eine stabile Kombination.`,
+        impulse: `Nutze diese Kombination bewusst: Wann setzt du ${heroName} als Ergänzung ein? Ritualisiere diese Momente – sie sind deine natürlichen Energiequellen.`
+      }
+    },
+    stress1: {
+      low: {
+        main: `Dein erster Stressheld ${heroName} kostet dich schon im Normalzustand Energie. Wenn du unter Druck in diesen Modus rutschst, wird es doppelt belastend: Du bist bereits im Stressmodus und agierst zusätzlich aus einem energiearmen Helden heraus. Das erklärt, warum dich stressige Phasen besonders erschöpfen können.`,
+        impulse: `Lerne deine frühen Stress-Warnsignale kennen: Wann kippt der ${heroName}-Modus bei dir? Je früher du es merkst, desto schneller kannst du gegensteuern – und zurück in einen energiereichen Modus wechseln.`
+      },
+      mid: {
+        main: `Dein erster Stressheld ${heroName} ist energetisch neutral. Das bedeutet: Stress erschöpft dich nicht automatisch doppelt – du zahlst keinen Extra-Preis für das Aktivieren dieses Modus unter Druck.`,
+        impulse: `Trotzdem: Kenne die Kontexte, die diesen Modus von „3" auf „2" ziehen. Achte besonders auf lange Stressphasen, in denen der Kontext sich verschlechtert.`
+      },
+      high: {
+        main: `Dein erster Stressheld ${heroName} gibt dir sogar unter Druck eher Energie. Das ist eine ungewöhnliche Stärke: Du aktivierst unter Stress einen Modus, der dich nicht zusätzlich belastet.`,
+        impulse: `Nutze dieses Wissen bewusst: In Drucksituationen kannst du dem ${heroName}-Modus vertrauen. Achte aber darauf, dass du danach wieder in deinen Basismodus zurückfindest.`
+      }
+    },
+    stress2: {
+      low: {
+        main: `Dein zweiter Stressheld ${heroName} wird bei später, tief eskaliertem Stress aktiv – und kostet dich dabei viel Energie. Das ist die kritischste Kombination: tiefe Erschöpfung trifft auf einen anstrengenden Modus. Lange Stressperioden sind für dich deshalb besonders zehrend.`,
+        impulse: `Auf Langzeitstress achten ist hier besonders wichtig. Baue aktiv Erholungsphasen ein, bevor es zur zweiten Eskalation kommt – denn auf diesem Level ist Gegensteuern deutlich schwerer.`
+      },
+      mid: {
+        main: `Dein zweiter Stressheld ${heroName} ist energetisch neutral – auch bei später Eskalation zahlst du keinen Extra-Preis durch den Modus selbst.`,
+        impulse: `Der Fokus liegt hier auf dem generellen Stressmanagement – nicht auf dem Modus selbst. Erholungsroutinen und frühe Warnsignale sind dein wichtigstes Werkzeug.`
+      },
+      high: {
+        main: `Dein zweiter Stressheld ${heroName} gibt dir auch bei tiefer Eskalation noch eher Energie. Das ist eine echte Resilienz-Ressource.`,
+        impulse: `Vertraue diesem Modus in extremen Stressphasen – aber vergiss nicht, danach bewusst zu regenerieren.`
+      }
+    }
+  };
+
+  const roleTexts = TEXTS[role];
+  let category;
+  if (score <= 2.5) category = 'low';
+  else if (score <= 3.5) category = 'mid';
+  else category = 'high';
+
+  return roleTexts[category];
+}
+
+/* ── PATTERN INTERPRETATION ── */
+function getPatternText(scores) {
+  const vals = Object.values(scores);
+  const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const highCount = vals.filter(v => v >= 4).length;
+  const lowCount = vals.filter(v => v <= 2.5).length;
+  const midCount = vals.filter(v => v > 2.5 && v < 4).length;
+
+  if (lowCount >= 4) {
+    return {
+      title: 'Gesamtbild: Hohes Energiedefizit',
+      text: 'Dein Profil zeigt, dass du aktuell viele Helden-Modi als energiearmen erlebst. Das bedeutet nicht, dass du diese Modi nicht beherrschst – häufig ist es ein Hinweis auf Dauerstress, Rollenanpassung oder eine Phase des Funktionierens. Bevor wir tiefer in die einzelnen Helden gehen, lohnt sich die Frage: Wie voll ist dein Akku gerade grundsätzlich? Der erste Schritt ist Stabilisierung – erst dann können die Helden ihre volle Wirkung entfalten.'
+    };
+  }
+  if (highCount >= 4) {
+    return {
+      title: 'Gesamtbild: Starke Ressourcenbasis',
+      text: 'Du hast insgesamt viele energiegebende Modi. Das ist eine gute Ausgangslage – du kannst dich in vielen Situationen gut aufladen und bleibst auch unter Druck stabiler. Achte darauf, deine Stärken nicht zu übernutzen und ergänze sie bewusst durch Helden, die dir helfen, Lücken zu schließen.'
+    };
+  }
+  if (midCount >= 4) {
+    return {
+      title: 'Gesamtbild: Viel Potenzial im mittleren Bereich',
+      text: 'Dein Profil zeigt viele „Teils-teils"-Werte. Du bist flexibel und funktionierst in vielen Situationen gut – aber du ladest dich nicht automatisch auf. Der entscheidende Hebel ist Kontext: Welche Umgebungen, Aufgaben und Menschen machen deine Helden von „3" auf „4"? Das ist die Feinjustierung, die den größten Unterschied macht.'
+    };
+  }
+  return {
+    title: 'Gesamtbild: Gemischtes Profil',
+    text: 'Dein Profil zeigt eine Mischung: einige Modi die dir Energie geben und andere die dich mehr kosten. Das ist normal – und gibt dir klare Orientierung, welche Helden du bewusst stärken und welche du dosieren solltest. Die Kombination aus Basis- und Zweitheld ist dabei dein wichtigster Hebel.'
+  };
 }
 
 function getParams() {
@@ -224,11 +377,24 @@ function getParams() {
     scores[h.key] = isNaN(v) ? 0 : Math.min(5, Math.max(0, v));
     if (!isNaN(v) && v > 0) hasData = true;
   });
-  return { scores, hasData };
+  const basis   = p.get('basis')   || '';
+  const zweit   = p.get('zweit')   || '';
+  const stress1 = p.get('stress1') || '';
+  const stress2 = p.get('stress2') || '';
+  return { scores, hasData, basis, zweit, stress1, stress2 };
+}
+
+function getRoleBadge(heroName, basis, zweit, stress1, stress2) {
+  const n = heroName.toLowerCase();
+  if (n === basis.toLowerCase())   return 'Basisheld';
+  if (n === zweit.toLowerCase())   return 'Zweitheld';
+  if (n === stress1.toLowerCase()) return 'Stressheld 1';
+  if (n === stress2.toLowerCase()) return 'Stressheld 2';
+  return '';
 }
 
 function render() {
-  const { scores, hasData } = getParams();
+  const { scores, hasData, basis, zweit, stress1, stress2 } = getParams();
   const el = document.getElementById('content');
 
   if (!hasData) {
@@ -236,6 +402,7 @@ function render() {
     return;
   }
 
+  /* ── BAR CHART ── */
   let html = `
     <div class="scale-labels">
       <div></div>
@@ -250,10 +417,13 @@ function render() {
   HEROES.forEach((h, i) => {
     const score = scores[h.key];
     const pct = (score / 5) * 100;
-    const level = getLevel(score);
+    const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
     html += `
       <div class="bar-row" style="--hero-color:${h.color}; transition-delay:${i * 0.08}s">
-        <div class="bar-label">${h.label}</div>
+        <div class="bar-label">
+          ${h.label}
+          ${badge ? `<span class="role-badge">${badge}</span>` : ''}
+        </div>
         <div class="bar-track">
           <div class="bar-fill" data-pct="${pct}" style="background:${h.color}"></div>
         </div>
@@ -264,30 +434,85 @@ function render() {
 
   html += `</div>`;
 
-  // Legend – aligned to bar track
+  /* ── LEGEND ── */
   html += `<div class="legend-row"><div></div><div class="legend-track">`;
   [...LEVELS].reverse().forEach(l => {
-    html += `
-      <div class="legend-item">
-        <div class="legend-bar" style="background:${l.color}"></div>
-        <div class="l-label">${l.label.replace(' ', '<br>')}</div>
-      </div>
-    `;
+    html += `<div class="legend-item">
+      <div class="legend-bar" style="background:${l.color}"></div>
+      <div class="l-label">${l.label.replace(' ', '<br>')}</div>
+    </div>`;
   });
   html += `</div><div></div></div>`;
 
+  /* ── INTERPRETATION (only if hero names provided) ── */
+  const roles = [
+    { key: 'basis',   name: basis,   label: 'Basisheld' },
+    { key: 'zweit',   name: zweit,   label: 'Zweitheld' },
+    { key: 'stress1', name: stress1, label: 'Stressheld 1' },
+    { key: 'stress2', name: stress2, label: 'Stressheld 2' },
+  ].filter(r => r.name);
+
+  if (roles.length > 0) {
+    html += `<hr class="divider"><div class="interp-title">Deine persönliche Auswertung</div>`;
+
+    /* Pattern box */
+    const pattern = getPatternText(scores);
+    html += `<div class="pattern-box" id="pattern-box">
+      <div class="pattern-title">${pattern.title}</div>
+      <div class="pattern-text">${pattern.text}</div>
+    </div>`;
+
+    /* Per-role cards */
+    roles.forEach((r, i) => {
+      const score = getHeroScore(scores, r.name);
+      if (score === null) return;
+      const level = getLevel(score);
+      const heroColor = getHeroColor(r.name);
+      const interp = getInterpText(r.key, r.name, score, heroColor);
+
+      html += `
+        <div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; --level-color:${level.color}; transition-delay:${0.1 + i * 0.1}s">
+          <div class="interp-card-header">
+            <div>
+              <div class="interp-role">${r.label}</div>
+              <div class="interp-hero">${r.name}</div>
+            </div>
+            <div class="interp-level">${level.label} (${score.toFixed(1)})</div>
+          </div>
+          <div class="interp-text">${interp.main}</div>
+          <div class="interp-impulse">
+            <strong>Coaching-Impuls</strong>
+            ${interp.impulse}
+          </div>
+        </div>
+      `;
+    });
+  }
+
   el.innerHTML = html;
 
-  // Animate
+  /* ── ANIMATE ── */
   requestAnimationFrame(() => {
+    // Bars
     document.querySelectorAll('.bar-row').forEach((row, i) => {
       setTimeout(() => {
         row.classList.add('visible');
         const fill = row.querySelector('.bar-fill');
-        const pct = fill.dataset.pct;
-        setTimeout(() => { fill.style.width = pct + '%'; }, 50);
+        setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 50);
       }, i * 80);
     });
+
+    // Interpretation cards
+    setTimeout(() => {
+      const pb = document.getElementById('pattern-box');
+      if (pb) pb.classList.add('visible');
+      roles.forEach((_, i) => {
+        setTimeout(() => {
+          const card = document.getElementById(`icard-${i}`);
+          if (card) card.classList.add('visible');
+        }, i * 120);
+      });
+    }, 700);
   });
 }
 
