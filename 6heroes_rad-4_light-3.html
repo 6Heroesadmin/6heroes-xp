@@ -96,26 +96,35 @@ function draw(){
   ctx.restore();
   ctx.beginPath();ctx.arc(cx,cy,innerR,0,Math.PI*2);ctx.strokeStyle='rgba(0,0,0,0.4)';ctx.lineWidth=2;ctx.stroke();
 
-  function iMark(angle,hName,lbl){
-    const h=HEROES.find(x=>x.name===hName);if(!h)return;
-    const r=innerR+14,mx=cx+Math.cos(angle)*r,my=cy+Math.sin(angle)*r;
-    ctx.beginPath();ctx.arc(mx,my,12,0,Math.PI*2);ctx.fillStyle=h.color;ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,0.7)';ctx.lineWidth=2;ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font='bold 9px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(lbl,mx,my);
-  }
-  function oBadge(hName,lbl,off){
-    const a=ma[hName]+(off||0),r=outerR+20,lx=cx+Math.cos(a)*r,ly=cy+Math.sin(a)*r;
-    ctx.fillStyle='#BB1111';rr(ctx,lx-13,ly-8,26,16,4);ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(lbl,lx,ly);
-  }
-  iMark(ma[PROFILE.base],PROFILE.base,'B');
+  // Collect badges per hero segment
+  const heroBadges={};
+  HEROES.forEach(h=>{heroBadges[h.name]=[];});
+  const bHeroObj=HEROES.find(h=>h.name===PROFILE.base);
+  heroBadges[PROFILE.base].push({lbl:'B',color:bHeroObj?bHeroObj.color:'#334155'});
   if(mode==='full'){
-    if(PROFILE.second===PROFILE.base)iMark(ma[PROFILE.second]+SWEEP*0.25,PROFILE.second,'Z');
-    else iMark(ma[PROFILE.second],PROFILE.second,'Z');
-    if(PROFILE.stress1===PROFILE.stress2){oBadge(PROFILE.stress1,'S1',-SWEEP*0.18);oBadge(PROFILE.stress2,'S2',SWEEP*0.18);}
-    else{oBadge(PROFILE.stress1,'S1',0);oBadge(PROFILE.stress2,'S2',0);}
+    const zHeroObj=HEROES.find(h=>h.name===PROFILE.second);
+    heroBadges[PROFILE.second].push({lbl:'Z',color:zHeroObj?zHeroObj.color:'#0B63CE'});
+    heroBadges[PROFILE.stress1].push({lbl:'S1',color:'#BB1111'});
+    if(PROFILE.stress2!==PROFILE.stress1||heroBadges[PROFILE.stress2].filter(b=>b.lbl==='S2').length===0)
+      heroBadges[PROFILE.stress2].push({lbl:'S2',color:'#BB1111'});
   }
+
+  // Draw all badges outside the wheel, auto-fanned per segment
+  const badgeR=outerR+22;
+  const step=30/(badgeR); // ~30px arc spacing in radians
+  HEROES.forEach(h=>{
+    const badges=heroBadges[h.name];
+    if(!badges.length)return;
+    const mid=ma[h.name];
+    badges.forEach((badge,i)=>{
+      const offset=(i-(badges.length-1)/2)*step;
+      const a=mid+offset;
+      const lx=cx+Math.cos(a)*badgeR,ly=cy+Math.sin(a)*badgeR;
+      ctx.fillStyle=badge.color;rr(ctx,lx-13,ly-8,26,16,4);ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,0.35)';ctx.lineWidth=1;ctx.stroke();
+      ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(badge.lbl,lx,ly);
+    });
+  });
 
   // Hero legend
   const leg=document.getElementById('legend');
