@@ -438,5 +438,21 @@
   <a href="https://6heroesadmin.github.io/6heroes-xp/impressum.html" target="_blank">Impressum</a>
   <a href="https://6heroesadmin.github.io/6heroes-xp/datenschutz.html" target="_blank">Datenschutz</a>
 </div>
+
+<script>
+  // Resize Observer: sendet Höhe an Parent damit Noloco iframe-Höhe anpasst
+  function sendHeight() {
+    const h = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: h }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+  // Nach Tab-Wechsel auch neu messen
+  document.addEventListener('click', function() {
+    setTimeout(sendHeight, 100);
+  });
+  const ro = new ResizeObserver(sendHeight);
+  ro.observe(document.body);
+</script>
 </body>
 </html>
