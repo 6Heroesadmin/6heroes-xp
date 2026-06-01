@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datenschutzerklärung – 6Heroes</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --navy: #0f172a;
+    --navy-mid: #1e293b;
+    --accent: #F2B705;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .sep { color: var(--text-muted); font-size: 0.85rem; }
+  header span { color: var(--text-muted); font-size: 0.9rem; }
+
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .notice {
+    background: rgba(242,183,5,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 0.9rem 1.2rem;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 2.5rem;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  /* TOC */
+  .toc {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .toc-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .toc ol { padding-left: 1.2rem; }
+  .toc li { margin-bottom: 0.3rem; }
+  .toc a { color: #94a3b8; font-size: 0.85rem; text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  section { margin-bottom: 3rem; }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 2rem;
+  }
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #e2e8f0;
+    margin: 1.25rem 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+  }
+
+  p { margin-bottom: 0.75rem; color: #cbd5e1; font-size: 0.95rem; }
+  p:last-child { margin-bottom: 0; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .block {
+    background: var(--navy-mid);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  ul { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+  ul li { color: #cbd5e1; font-size: 0.95rem; margin-bottom: 0.3rem; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .rights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .right-item {
+    background: var(--navy-mid);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+  }
+
+  .right-item strong { display: block; color: #e2e8f0; font-size: 0.8rem; margin-bottom: 0.2rem; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  footer a { color: var(--text-muted); margin: 0 0.5rem; }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    .rights-grid { grid-template-columns: 1fr; }
+    table { font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="https://6heroes.de">6Heroes</a>
+  <span class="sep">›</span>
+  <span>Datenschutzerklärung</span>
+</header>
+
+<main>
+  <h1>Datenschutzerklärung</h1>
+  <p class="subtitle">Stand: Juni 2026 · 6Heroes GbR</p>
+
+  <div class="notice">
+    ⚠ Dieses Dokument ist ein Entwurf und ersetzt keine Rechtsberatung. Vor Veröffentlichung durch einen Rechtsanwalt prüfen lassen.
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Inhalt</div>
+    <ol class="toc">
+      <li><a href="#verantwortlicher">Verantwortlicher</a></li>
+      <li><a href="#daten">Welche Daten wir verarbeiten</a></li>
+      <li><a href="#zwecke">Zwecke und Rechtsgrundlagen</a></li>
+      <li><a href="#ki">KI-gestütztes Coaching</a></li>
+      <li><a href="#auftragsverarbeiter">Auftragsverarbeiter und Empfänger</a></li>
+      <li><a href="#drittland">Drittlandtransfers</a></li>
+      <li><a href="#speicher">Speicherdauer</a></li>
+      <li><a href="#rechte">Ihre Rechte</a></li>
+      <li><a href="#beschwerde">Beschwerderecht</a></li>
+      <li><a href="#bereitstellung">Datenbereitstellung</a></li>
+    </ol>
+  </div>
+
+  <section id="verantwortlicher">
+    <h2>1. Verantwortlicher</h2>
+    <div class="block">
+      <p><strong>6Heroes GbR</strong>, vertreten durch Anna Christina Reichert und Stefan Rempel</p>
+      <p>Lindenstraße 2c, 81545 München</p>
+      <p>E-Mail: <a href="mailto:admin@6heroes.de">admin@6heroes.de</a></p>
+    </div>
+  </section>
+
+  <section id="daten">
+    <h2>2. Welche Daten wir verarbeiten</h2>
+    <p>Im Rahmen der Nutzung unserer Plattform und Website verarbeiten wir folgende personenbezogene Daten:</p>
+    <ul>
+      <li><strong>Stammdaten:</strong> Name, E-Mail-Adresse</li>
+      <li><strong>Zahlungsdaten:</strong> Zahlungsart, Transaktions-ID (verarbeitet über Ablefy)</li>
+      <li><strong>Nutzungsdaten:</strong> Quest-Einträge (Freitexte), KI-Coaching-Antworten, XP-Punkte, Level, Streak, Badges, Assessmentergebnisse (Heldenprofil)</li>
+      <li><strong>Technische Daten:</strong> IP-Adresse, Browsertyp, Zugriffszeitpunkt (durch Hosting-Dienstleister)</li>
+    </ul>
+  </section>
+
+  <section id="zwecke">
+    <h2>3. Zwecke und Rechtsgrundlagen</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Zweck</th>
+          <th>Rechtsgrundlage</th>
+          <th>Datenkategorien</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Vertragserfüllung (Plattformzugang, Gamification, KI-Coaching)</td><td>Art. 6 Abs. 1 lit. b DSGVO</td><td>Stammdaten, Nutzungsdaten</td></tr>
+        <tr><td>Zahlungsabwicklung</td><td>Art. 6 Abs. 1 lit. b DSGVO</td><td>Zahlungsdaten, E-Mail</td></tr>
+        <tr><td>Accountverwaltung und Zugangskontrolle</td><td>Art. 6 Abs. 1 lit. b DSGVO</td><td>E-Mail, Nutzerrolle</td></tr>
+        <tr><td>E-Mail-Newsletter und Motivations-Mails</td><td>Art. 6 Abs. 1 lit. a DSGVO (Einwilligung)</td><td>E-Mail, Name</td></tr>
+        <tr><td>Betrieb und Sicherheit, Fehleranalyse</td><td>Art. 6 Abs. 1 lit. f DSGVO</td><td>Technische Daten</td></tr>
+        <tr><td>Gesetzliche Aufbewahrungspflichten (HGB, AO)</td><td>Art. 6 Abs. 1 lit. c DSGVO</td><td>Zahlungsdaten, Rechnungen</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="ki">
+    <h2>4. KI-gestütztes Coaching</h2>
+    <p>Unsere Plattform verwendet KI-Modelle von OpenAI (GPT-4o) zur Erzeugung personalisierter Coaching-Antworten. Dabei werden Ihre Quest-Einträge (Freitexte) sowie Ihr Heldenprofil an die OpenAI-API übermittelt. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung).</p>
+    <p>Es findet keine vollautomatisierte Entscheidungsfindung im Sinne von Art. 22 DSGVO statt; die KI-Antworten dienen ausschließlich als Coaching-Unterstützung ohne rechtliche oder ähnlich erhebliche Wirkung.</p>
+  </section>
+
+  <section id="auftragsverarbeiter">
+    <h2>5. Auftragsverarbeiter und Empfänger</h2>
+    <p>Wir setzen folgende Dienstleister als Auftragsverarbeiter gem. Art. 28 DSGVO ein:</p>
+    <table>
+      <thead>
+        <tr><th>Anbieter</th><th>Sitz</th><th>Zweck</th><th>Schutzmaßnahmen</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Airtable Inc.</td><td>USA</td><td>Datenbankhosting</td><td>EU-US DPF; SCCs</td></tr>
+        <tr><td>Make (Celonis SE)</td><td>Tschechien (EU)</td><td>Workflow-Automatisierung</td><td>DSGVO-konform, AVV</td></tr>
+        <tr><td>Noloco Ltd.</td><td>Irland (EU)</td><td>PWA-Frontend, Nutzerverwaltung</td><td>DSGVO-konform, AVV</td></tr>
+        <tr><td>OpenAI LLC</td><td>USA</td><td>KI-Coaching (GPT-4o)</td><td>SCCs</td></tr>
+        <tr><td>Microsoft (GitHub Pages)</td><td>USA</td><td>Webhosting statischer Seiten</td><td>EU-US DPF; SCCs</td></tr>
+        <tr><td>Brevo (Sendinblue SAS)</td><td>Frankreich (EU)</td><td>Newsletter, Motivations-Mails</td><td>DSGVO-konform, AVV</td></tr>
+        <tr><td>Tally Solutions BV</td><td>Belgien (EU)</td><td>Online-Formulare (Assessment)</td><td>DSGVO-konform, AVV</td></tr>
+        <tr><td>Zapier Inc.</td><td>USA</td><td>Automatisierung Zahlungsevents</td><td>SCCs</td></tr>
+        <tr><td>Ablefy GmbH, Potsdamer Str. 125, 10783 Berlin</td><td>Deutschland</td><td>Zahlungsabwicklung, Abo-Verwaltung</td><td>DSGVO-konform; AVV abschließen</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="drittland">
+    <h2>6. Drittlandtransfers</h2>
+    <p>Einige unserer Dienstleister haben ihren Sitz in den USA. Für diese Transfers bestehen geeignete Garantien gemäß Art. 46 DSGVO in Form von EU-Standardvertragsklauseln (SCCs) und/oder einer Zertifizierung nach dem EU-US Data Privacy Framework (DPF). Auf Anfrage stellen wir Ihnen Kopien der relevanten Garantien zur Verfügung.</p>
+  </section>
+
+  <section id="speicher">
+    <h2>7. Speicherdauer</h2>
+    <ul>
+      <li><strong>Nutzungsdaten</strong> (Quest-Einträge, Coaching, Profildaten): Dauer der Vertragsbeziehung + 6 Monate nach Vertragsende</li>
+      <li><strong>Rechnungs- und Zahlungsdaten:</strong> 10 Jahre (§ 147 AO)</li>
+      <li><strong>Newsletter-Einwilligung:</strong> bis zum Widerruf</li>
+      <li><strong>Kontaktanfragen:</strong> 3 Jahre nach letztem Kontakt</li>
+    </ul>
+  </section>
+
+  <section id="rechte">
+    <h2>8. Ihre Rechte als betroffene Person</h2>
+    <p>Sie haben folgende Rechte hinsichtlich Ihrer personenbezogenen Daten:</p>
+    <div class="rights-grid">
+      <div class="right-item"><strong>Art. 15 DSGVO</strong>Recht auf Auskunft</div>
+      <div class="right-item"><strong>Art. 16 DSGVO</strong>Recht auf Berichtigung</div>
+      <div class="right-item"><strong>Art. 17 DSGVO</strong>Recht auf Löschung</div>
+      <div class="right-item"><strong>Art. 18 DSGVO</strong>Recht auf Einschränkung der Verarbeitung</div>
+      <div class="right-item"><strong>Art. 20 DSGVO</strong>Recht auf Datenübertragbarkeit</div>
+      <div class="right-item"><strong>Art. 21 DSGVO</strong>Widerspruchsrecht</div>
+      <div class="right-item"><strong>Art. 7 Abs. 3 DSGVO</strong>Recht auf Widerruf einer Einwilligung</div>
+    </div>
+    <p>Zur Ausübung Ihrer Rechte wenden Sie sich bitte an: <a href="mailto:admin@6heroes.de">admin@6heroes.de</a></p>
+  </section>
+
+  <section id="beschwerde">
+    <h2>9. Beschwerderecht</h2>
+    <p>Sie haben das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde. Die für uns zuständige Behörde ist:</p>
+    <div class="block">
+      <p><strong>Bayerisches Landesamt für Datenschutzaufsicht (BayLDA)</strong></p>
+      <p>Promenade 18, 91522 Ansbach</p>
+      <p><a href="https://www.lda.bayern.de" target="_blank">www.lda.bayern.de</a></p>
+    </div>
+  </section>
+
+  <section id="bereitstellung">
+    <h2>10. Datenbereitstellung</h2>
+    <p>Die Bereitstellung Ihrer E-Mail-Adresse und die Zustimmung zur Datenverarbeitung sind für den Vertragsschluss und die Nutzung der Plattform erforderlich. Ohne diese Angaben können wir Ihnen keinen Zugang zur Plattform gewähren.</p>
+  </section>
+</main>
+
+<footer>
+  <a href="https://6heroesadmin.github.io/6heroes-xp/impressum.html">Impressum</a>
+  <a href="https://6heroesadmin.github.io/6heroes-xp/datenschutz.html">Datenschutz</a>
+  <a href="https://6heroes.de">6heroes.de</a>
+</footer>
+
+</body>
+</html>
