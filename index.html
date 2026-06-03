@@ -783,6 +783,8 @@
       padding: 4px 14px;
       border-radius: 100px;
     }
+    .pc-badge.badge-beliebt   { background: #0B63CE; color: #fff; }
+    .pc-badge.badge-empfohlen { background: #1F9D62; color: #fff; }
 
     .pc-name {
       font-size: 0.85rem;
@@ -1501,12 +1503,12 @@
           <span class="plan-price-hint">€19,99 / Monat</span>
         </div>
         <div class="plan-btn" id="plan-6months" onclick="switchPlan('6months')">
-          <span class="plan-save-tag">25% sparen</span>
+          <span class="plan-save-tag" style="background:#0B63CE;">Beliebt</span>
           <span class="plan-name">6 Monate</span>
           <span class="plan-price-hint">€14,99 / Monat</span>
         </div>
         <div class="plan-btn" id="plan-yearly" onclick="switchPlan('yearly')">
-          <span class="plan-save-tag">50% sparen</span>
+          <span class="plan-save-tag">Empfohlen</span>
           <span class="plan-name">12 Monate</span>
           <span class="plan-price-hint">€9,99 / Monat</span>
         </div>
@@ -1531,7 +1533,7 @@
       </div>
 
       <div class="pricing-card pc-paid fade-up" style="transition-delay:0.1s">
-        <div class="pc-badge">Empfohlen</div>
+        <div class="pc-badge" id="hero-badge" style="display:none;"></div>
         <div class="pc-name">Hero</div>
         <div class="pc-price" id="price-display">19,99 <span>€</span></div>
         <div class="pc-period" id="period-display">pro Monat · jederzeit kündbar</div>
@@ -1624,6 +1626,7 @@
     const price  = document.getElementById('price-display');
     const period = document.getElementById('period-display');
     const cta    = document.getElementById('cta-pricing');
+    const badge  = document.getElementById('hero-badge');
 
     ['monthly', '6months', 'yearly'].forEach(p => {
       document.getElementById('plan-' + p).classList.toggle('active', p === plan);
@@ -1632,6 +1635,20 @@
     price.innerHTML     = plans[plan].price;
     period.textContent  = plans[plan].period;
     cta.textContent     = plans[plan].cta;
+
+    // Badge auf Hero-Card
+    badge.classList.remove('badge-beliebt', 'badge-empfohlen');
+    if (plan === 'yearly') {
+      badge.textContent = 'Empfohlen';
+      badge.classList.add('badge-empfohlen');
+      badge.style.display = 'block';
+    } else if (plan === '6months') {
+      badge.textContent = 'Beliebt';
+      badge.classList.add('badge-beliebt');
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
   }
 
   // ── SCROLL ANIMATIONS ──────────────────────────────────────────────────────
