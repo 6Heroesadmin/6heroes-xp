@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGB – 6Heroes</title>
+  <meta name="description" content="Allgemeine Geschäftsbedingungen der Reichert & Rempel GbR für die Nutzung der 6Heroes-Plattform." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:       #1E293B;
+      --navy-mid:   #2D3F57;
+      --navy-light: #334155;
+      --gold:       #F2B705;
+      --gold-dark:  #D49E00;
+      --white:      #FFFFFF;
+      --text-muted: #94A3B8;
+      --text-body:  #CBD5E1;
+      --commander:  #0B63CE;
+      --guardian:   #1F9D62;
+      --innovator:  #F2B705;
+      --strategist: #475569;
+      --sage:       #C0266A;
+      --explorer:   #F0672A;
+      --radius-md:  16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: 'DM Serif Display', serif; line-height: 1.2; }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo-dots { display: flex; gap: 3px; }
+    .logo-dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      animation: dot-pulse 3s ease-in-out infinite;
+    }
+    .logo-dots span:nth-child(1) { background: var(--commander); animation-delay: 0s; }
+    .logo-dots span:nth-child(2) { background: var(--guardian);  animation-delay: 0.2s; }
+    .logo-dots span:nth-child(3) { background: var(--innovator); animation-delay: 0.4s; }
+    .logo-dots span:nth-child(4) { background: var(--strategist);animation-delay: 0.6s; }
+    .logo-dots span:nth-child(5) { background: var(--sage);      animation-delay: 0.8s; }
+    .logo-dots span:nth-child(6) { background: var(--explorer);  animation-delay: 1.0s; }
+
+    @keyframes dot-pulse {
+      0%, 80%, 100% { transform: scale(1); opacity: 0.7; }
+      40% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .btn-nav {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-nav:hover { background: var(--gold-dark); transform: translateY(-1px); text-decoration: none; }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      padding: 108px 0 80px;
+    }
+
+    .page-header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 48px;
+    }
+
+    .page-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .page-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ── LEGAL CONTENT ── */
+    .legal-section {
+      margin-bottom: 48px;
+    }
+
+    .legal-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: 20px;
+    }
+
+    .legal-section p {
+      color: var(--text-body);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .legal-section ul, .legal-section ol {
+      margin: 0 0 14px 0;
+      padding-left: 24px;
+      color: var(--text-body);
+      font-size: 0.95rem;
+    }
+
+    .legal-section li {
+      margin-bottom: 8px;
+    }
+
+    .highlight-box {
+      background: rgba(242,183,5,0.08);
+      border: 1px solid rgba(242,183,5,0.2);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      color: var(--text-body);
+      font-size: 0.9rem;
+    }
+
+    .highlight-box strong { color: var(--gold); }
+
+    .price-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+    }
+    .price-table th {
+      background: rgba(255,255,255,0.07);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .price-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-body);
+      vertical-align: top;
+    }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-table .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 6px;
+    }
+    .badge-blue { background: #0B63CE; color: #fff; }
+    .badge-green { background: #1F9D62; color: #fff; }
+
+    /* ── TOC ── */
+    .toc {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-md);
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .toc h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--text-muted); transition: color 0.2s; }
+    .toc a:hover { color: var(--gold); text-decoration: none; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #141E2D;
+      padding: 40px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .footer-links a { color: var(--text-muted); }
+    .footer-links a:hover { color: var(--white); text-decoration: none; }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(148,163,184,0.5);
+    }
+
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-dots">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    6Heroes
+  </a>
+  <a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="container">
+
+    <div class="page-header">
+      <div class="page-tag">Rechtliches</div>
+      <h1>Allgemeine Geschäftsbedingungen</h1>
+      <p class="page-meta">Reichert &amp; Rempel GbR · Stand: Juni 2026 · Version 2.0</p>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <h3>Inhalt</h3>
+      <ol>
+        <li><a href="#s1">§ 1 Geltungsbereich und Vertragspartner</a></li>
+        <li><a href="#s2">§ 2 Leistungsumfang</a></li>
+        <li><a href="#s3">§ 3 Vertragsschluss</a></li>
+        <li><a href="#s4">§ 4 Preise und Zahlung</a></li>
+        <li><a href="#s5">§ 5 Laufzeit, Verlängerung und Kündigung</a></li>
+        <li><a href="#s6">§ 6 Widerrufsrecht für Verbraucher</a></li>
+        <li><a href="#s7">§ 7 Verfügbarkeit</a></li>
+        <li><a href="#s8">§ 8 Nutzungsrechte und geistiges Eigentum</a></li>
+        <li><a href="#s9">§ 9 Pflichten des Kunden</a></li>
+        <li><a href="#s10">§ 10 Haftung</a></li>
+        <li><a href="#s11">§ 11 Datenschutz</a></li>
+        <li><a href="#s12">§ 12 Schlussbestimmungen</a></li>
+      </ol>
+    </div>
+
+    <!-- § 1 -->
+    <div class="legal-section" id="s1">
+      <h2>§ 1 Geltungsbereich und Vertragspartner</h2>
+      <p>(1) Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die zwischen der Reichert &amp; Rempel GbR, vertreten durch Anna Christina Reichert und Stefan Rempel, Lindenstraße 2c, 81545 München, E-Mail: <a href="mailto:admin@6heroes.de">admin@6heroes.de</a> (nachfolgend „Anbieter") und dem Nutzer (nachfolgend „Kunde") über die Nutzung der Online-Plattform 6Heroes (nachfolgend „Plattform") geschlossen werden.</p>
+      <p>(2) Abweichende Bedingungen des Kunden werden nicht anerkannt, es sei denn, der Anbieter stimmt ihrer Geltung ausdrücklich schriftlich zu.</p>
+      <p>(3) Verbraucher im Sinne dieser AGB ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbstständigen beruflichen Tätigkeit zugerechnet werden können (§ 13 BGB).</p>
+    </div>
+
+    <!-- § 2 -->
+    <div class="legal-section" id="s2">
+      <h2>§ 2 Leistungsumfang</h2>
+      <p>(1) Die Plattform 6Heroes ist ein gamifiziertes Coaching-Angebot zur Persönlichkeits- und Führungsentwicklung. Die Leistung umfasst:</p>
+      <ul>
+        <li>Zugang zur webbasierten Plattform unter app.6heroes.de</li>
+        <li>Persönliches Heldenprofil auf Basis eines diagnostischen Assessments</li>
+        <li>Quests (Coaching-Aufgaben) abgestimmt auf das individuelle Profil</li>
+        <li>KI-gestützte Coaching-Antworten (powered by OpenAI GPT)</li>
+        <li>Gamification-Elemente: XP-Punkte, Level, Streak, Badges</li>
+      </ul>
+      <p>(2) Nicht im Leistungsumfang enthalten sind therapeutische Begleitung, Rechts- oder Finanzberatung sowie die Verfügbarkeit menschlicher Coaches in Echtzeit.</p>
+      <p>(3) Der Anbieter behält sich vor, den Funktionsumfang der Plattform laufend weiterzuentwickeln. Wesentliche Leistungsreduzierungen werden dem Kunden mit angemessener Frist angekündigt.</p>
+    </div>
+
+    <!-- § 3 -->
+    <div class="legal-section" id="s3">
+      <h2>§ 3 Vertragsschluss</h2>
+      <p>(1) Die Darstellung der Leistungen auf der Website stellt kein verbindliches Angebot, sondern eine Aufforderung zur Abgabe eines Angebots dar.</p>
+      <p>(2) Der Kunde gibt durch Abschluss des Bestellvorgangs auf 6heroes.de ein verbindliches Angebot ab. Der Vertrag kommt zustande, wenn der Anbieter dieses Angebot durch Freischaltung des Zugangs und/oder eine Bestätigungs-E-Mail annimmt.</p>
+      <p>(3) Die Vertragssprache ist Deutsch. Der Vertragstext wird vom Anbieter gespeichert; die AGB sind jederzeit unter www.6heroes.de/agb.html abrufbar.</p>
+    </div>
+
+    <!-- § 4 -->
+    <div class="legal-section" id="s4">
+      <h2>§ 4 Preise und Zahlung</h2>
+      <p>(1) Für die kostenpflichtige Nutzung der Plattform gelten folgende Preise (inkl. gesetzlicher MwSt.):</p>
+
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Tarif</th>
+            <th>Preis</th>
+            <th>Fälligkeit</th>
+            <th>Mindestlaufzeit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monatsabonnement</td>
+            <td>19,99 €/Monat</td>
+            <td>Monatlich im Voraus</td>
+            <td>1 Monat</td>
+          </tr>
+          <tr>
+            <td>6-Monats-Paket <span class="badge badge-blue">Beliebt</span></td>
+            <td>14,99 €/Monat<br><small style="color:var(--text-muted);">89,94 € einmalig</small></td>
+            <td>Einmalig zu Vertragsbeginn im Voraus</td>
+            <td>6 Monate</td>
+          </tr>
+          <tr>
+            <td>12-Monats-Paket <span class="badge badge-green">Empfohlen</span></td>
+            <td>9,99 €/Monat<br><small style="color:var(--text-muted);">119,88 € einmalig</small></td>
+            <td>Einmalig zu Vertragsbeginn im Voraus</td>
+            <td>12 Monate</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Hinweis Vorauszahlung:</strong> Beim 6-Monats-Paket und beim 12-Monats-Paket wird der vollständige Gesamtbetrag einmalig zu Vertragsbeginn fällig und begründet die jeweilige Mindestlaufzeit.
+      </div>
+
+      <p>(2) Die Abrechnung erfolgt über den Zahlungsdienstleister Ablefy. Akzeptierte Zahlungsmethoden sind auf der Bestellseite ausgewiesen.</p>
+      <p>(3) Beim Monatsabonnement erfolgt die Abbuchung monatlich im Voraus. Beim 6-Monats-Paket und beim 12-Monats-Paket wird der gesamte Betrag einmalig zu Vertragsbeginn im Voraus fällig.</p>
+      <p>(4) Im Falle eines Zahlungsverzugs ist der Anbieter berechtigt, den Zugang zur Plattform zu sperren, bis der ausstehende Betrag beglichen ist.</p>
+    </div>
+
+    <!-- § 5 -->
+    <div class="legal-section" id="s5">
+      <h2>§ 5 Laufzeit, Verlängerung und Kündigung</h2>
+      <p>(1) <strong>Monatsabonnement:</strong> Das Monatsabonnement hat eine Mindestlaufzeit von einem Monat und verlängert sich automatisch um jeweils einen weiteren Monat, sofern nicht fristgerecht zum Ende des laufenden Monats gekündigt wird.</p>
+      <p><strong>6-Monats-Paket:</strong> Das 6-Monats-Paket hat eine Mindestlaufzeit von sechs Monaten. Nach Ablauf dieser Mindestlaufzeit verlängert sich der Vertrag automatisch auf ein monatlich kündbares Abonnement zum dann geltenden Monatspreis (derzeit 19,99 €/Monat), sofern der Kunde nicht bis zum Ende der Mindestlaufzeit kündigt.</p>
+      <p><strong>12-Monats-Paket:</strong> Das 12-Monats-Paket hat eine Mindestlaufzeit von zwölf Monaten. Nach Ablauf dieser Mindestlaufzeit verlängert sich der Vertrag automatisch auf ein monatlich kündbares Abonnement zum dann geltenden Monatspreis (derzeit 19,99 €/Monat), sofern der Kunde nicht bis zum Ende der Mindestlaufzeit kündigt.</p>
+
+      <div class="highlight-box">
+        <strong>Hinweis automatische Verlängerung:</strong> Der Anbieter wird den Kunden rechtzeitig vor Ablauf der Mindestlaufzeit per E-Mail über die bevorstehende automatische Verlängerung und das Kündigungsrecht informieren.
+      </div>
+
+      <p>(2) Die Kündigung ist jederzeit per E-Mail an <a href="mailto:admin@6heroes.de">admin@6heroes.de</a> möglich. Eine anteilige Erstattung für nicht genutzte Zeiträume innerhalb der bezahlten Mindestlaufzeit erfolgt nicht, außer bei wirksamem Widerruf (§ 6).</p>
+      <p>(3) Der Anbieter ist berechtigt, das Vertragsverhältnis aus wichtigem Grund fristlos zu kündigen, insbesondere bei schwerwiegenden Verstößen des Kunden gegen diese AGB.</p>
+      <p>(4) Nach Vertragsende werden Nutzerdaten gemäß der Datenschutzerklärung aufbewahrt und anschließend gelöscht.</p>
+    </div>
+
+    <!-- § 6 -->
+    <div class="legal-section" id="s6">
+      <h2>§ 6 Widerrufsrecht für Verbraucher</h2>
+      <p>Verbraucher haben ein gesetzliches Widerrufsrecht von 14 Tagen ab Vertragsschluss. Einzelheiten entnehmen Sie bitte der separaten <a href="/widerruf.html">Widerrufsbelehrung</a>.</p>
+      <div class="highlight-box">
+        <strong>Hinweis sofortiger Leistungsbeginn:</strong> Beim Checkout wird der Kunde ausdrücklich aufgefordert zu bestätigen, dass die Leistung sofort nach Kaufabschluss beginnt und das Widerrufsrecht damit gemäß § 356 Abs. 5 BGB erlischt, sobald die Leistung vollständig erbracht ist. Bei teilweiser Inanspruchnahme ist ein anteiliger Betrag zu zahlen (§ 357 Abs. 8 BGB).
+      </div>
+    </div>
+
+    <!-- § 7 -->
+    <div class="legal-section" id="s7">
+      <h2>§ 7 Verfügbarkeit</h2>
+      <p>(1) Der Anbieter strebt eine Verfügbarkeit der Plattform von 99 % im Jahresdurchschnitt an. Hiervon ausgenommen sind Wartungsarbeiten, höhere Gewalt und Umstände außerhalb des Einflussbereichs des Anbieters.</p>
+      <p>(2) Geplante Wartungsfenster werden nach Möglichkeit vorab angekündigt.</p>
+    </div>
+
+    <!-- § 8 -->
+    <div class="legal-section" id="s8">
+      <h2>§ 8 Nutzungsrechte und geistiges Eigentum</h2>
+      <p>(1) Der Anbieter gewährt dem Kunden ein nicht ausschließliches, nicht übertragbares, auf die Vertragslaufzeit beschränktes Recht zur Nutzung der Plattform ausschließlich für den persönlichen Gebrauch.</p>
+      <p>(2) Eine kommerzielle Weitergabe von Zugangsdaten, eine Mehrfachnutzung über einen Account oder eine Weiterveräußerung von Zugängen ist nicht gestattet.</p>
+      <p>(3) Alle Inhalte der Plattform (Texte, Grafiken, KI-Prompts, Konzepte, das 6-Helden-Modell) sind urheberrechtlich geschützt und verbleiben im Eigentum des Anbieters.</p>
+    </div>
+
+    <!-- § 9 -->
+    <div class="legal-section" id="s9">
+      <h2>§ 9 Pflichten des Kunden</h2>
+      <p>(1) Der Kunde verpflichtet sich, seine Zugangsdaten vertraulich zu behandeln und den Anbieter unverzüglich zu informieren, wenn er Kenntnis von unbefugter Nutzung erlangt.</p>
+      <p>(2) Der Kunde darf keine rechtswidrigen, beleidigenden oder diskriminierenden Inhalte in die Plattform eingeben. Der Anbieter behält sich das Recht vor, entsprechende Inhalte zu entfernen.</p>
+    </div>
+
+    <!-- § 10 -->
+    <div class="legal-section" id="s10">
+      <h2>§ 10 Haftung</h2>
+      <p>(1) Der Anbieter haftet unbeschränkt für Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit sowie für Schäden, die auf vorsätzlicher oder grob fahrlässiger Pflichtverletzung beruhen.</p>
+      <p>(2) Im Übrigen ist die Haftung des Anbieters auf den bei Vertragsschluss vorhersehbaren, vertragstypischen Schaden begrenzt. Eine weitergehende Haftung ist ausgeschlossen.</p>
+      <p>(3) Die KI-generierten Coaching-Antworten ersetzen keine professionelle psychologische, medizinische oder rechtliche Beratung. Der Anbieter übernimmt keine Haftung für Entscheidungen, die auf Basis der KI-Inhalte getroffen werden.</p>
+      <p>(4) Die vorstehenden Haftungsbeschränkungen gelten auch zugunsten der einzelnen Gesellschafter der Reichert &amp; Rempel GbR.</p>
+    </div>
+
+    <!-- § 11 -->
+    <div class="legal-section" id="s11">
+      <h2>§ 11 Datenschutz</h2>
+      <p>Die Verarbeitung personenbezogener Daten erfolgt gemäß unserer <a href="/datenschutz.html">Datenschutzerklärung</a>, die Bestandteil dieser AGB ist.</p>
+    </div>
+
+    <!-- § 12 -->
+    <div class="legal-section" id="s12">
+      <h2>§ 12 Schlussbestimmungen</h2>
+      <p>(1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts (CISG). Gegenüber Verbrauchern gilt dies nur, soweit nicht zwingende Vorschriften des Staates ihres gewöhnlichen Aufenthalts entgegenstehen.</p>
+      <p>(2) Gerichtsstand für Klagen gegen den Anbieter ist München, soweit der Kunde Kaufmann, juristische Person des öffentlichen Rechts oder öffentlich-rechtliches Sondervermögen ist.</p>
+      <p>(3) Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, berührt dies die Wirksamkeit der übrigen Bestimmungen nicht.</p>
+    </div>
+
+  </div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">6Heroes</div>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
+      <a href="mailto:admin@6heroes.de">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2025 Reichert &amp; Rempel GbR · Anna Christina Reichert &amp; Stefan Rempel</div>
+  </div>
+</footer>
+
+</body>
+</html>
