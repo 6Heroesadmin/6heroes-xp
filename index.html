@@ -1019,6 +1019,20 @@
     }
 
     /* ── MOBILE ───────────────────────────────────────────────────── */
+    .btn-nav-mobile {
+      display: none;
+      align-items: center;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 999px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-nav-mobile:hover { background: var(--gold-dark); }
+
     @media (max-width: 768px) {
       .hero-grid, .problem-grid, .stress-banner { grid-template-columns: 1fr; }
       .hero-visual { display: none; }
@@ -1028,6 +1042,7 @@
       .features-grid { grid-template-columns: 1fr; }
       .pricing-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
+      .btn-nav-mobile { display: flex; }
       .footer-inner { flex-direction: column; text-align: center; }
       #konferenz .container > div { grid-template-columns: 1fr !important; }
     }
@@ -1054,6 +1069,7 @@
     <li><a href="#pricing">Preise</a></li>
     <li><a href="https://6heroes.noloco.co" class="btn-nav" target="_top">Login →</a></li>
   </ul>
+  <a href="https://6heroes.noloco.co" class="btn-nav-mobile" target="_top">Login →</a>
 </nav>
 
 <!-- ── HERO ───────────────────────────────────────────────────────────────── -->
