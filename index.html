@@ -863,51 +863,64 @@
       color: var(--text-muted);
     }
 
-    /* Yearly toggle */
+    /* Plan selector (3-way) */
     .pricing-toggle {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
       margin-bottom: 40px;
     }
 
-    .toggle-label {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .toggle-label.active { color: var(--white); font-weight: 600; }
-
-    .toggle-switch {
-      width: 48px; height: 26px;
-      background: rgba(255,255,255,0.15);
+    .plan-selector {
+      display: inline-flex;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 100px;
+      padding: 4px;
+      gap: 2px;
+    }
+
+    .plan-btn {
       position: relative;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .toggle-switch.on { background: var(--gold); }
-
-    .toggle-knob {
-      width: 20px; height: 20px;
-      background: white;
-      border-radius: 50%;
-      position: absolute;
-      top: 3px; left: 3px;
-      transition: transform 0.2s;
-    }
-    .toggle-switch.on .toggle-knob { transform: translateX(22px); }
-
-    .save-badge {
-      font-size: 0.75rem;
-      font-weight: 700;
-      background: rgba(31,157,98,0.2);
-      color: #4ADE80;
-      border: 1px solid rgba(31,157,98,0.3);
-      padding: 3px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 22px;
       border-radius: 100px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .plan-btn .plan-name { font-weight: 600; font-size: 0.88rem; }
+    .plan-btn .plan-price-hint { font-size: 0.75rem; opacity: 0.8; margin-top: 1px; }
+
+    .plan-btn.active {
+      background: var(--gold);
+      color: #1a1200;
+    }
+    .plan-btn.active .plan-price-hint { opacity: 0.75; }
+
+    .plan-save-tag {
+      position: absolute;
+      top: -10px;
+      right: 6px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: #1F9D62;
+      color: #fff;
+      padding: 2px 7px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 480px) {
+      .plan-btn { padding: 9px 14px; }
+      .plan-btn .plan-name { font-size: 0.82rem; }
+      .plan-btn .plan-price-hint { font-size: 0.7rem; }
     }
 
     /* ── CTA SECTION ──────────────────────────────────────────────── */
@@ -1482,12 +1495,22 @@
     </div>
 
     <div class="pricing-toggle fade-up">
-      <span class="toggle-label active" id="lbl-monthly">Monatlich</span>
-      <div class="toggle-switch" id="toggle" onclick="switchPricing()">
-        <div class="toggle-knob"></div>
+      <div class="plan-selector">
+        <div class="plan-btn active" id="plan-monthly" onclick="switchPlan('monthly')">
+          <span class="plan-name">Monatlich</span>
+          <span class="plan-price-hint">€19,99 / Monat</span>
+        </div>
+        <div class="plan-btn" id="plan-6months" onclick="switchPlan('6months')">
+          <span class="plan-save-tag">25% sparen</span>
+          <span class="plan-name">6 Monate</span>
+          <span class="plan-price-hint">€14,99 / Monat</span>
+        </div>
+        <div class="plan-btn" id="plan-yearly" onclick="switchPlan('yearly')">
+          <span class="plan-save-tag">50% sparen</span>
+          <span class="plan-name">12 Monate</span>
+          <span class="plan-price-hint">€9,99 / Monat</span>
+        </div>
       </div>
-      <span class="toggle-label" id="lbl-yearly">Jährlich</span>
-      <span class="save-badge">33% sparen</span>
     </div>
 
     <div class="pricing-grid">
@@ -1510,7 +1533,7 @@
       <div class="pricing-card pc-paid fade-up" style="transition-delay:0.1s">
         <div class="pc-badge">Empfohlen</div>
         <div class="pc-name">Hero</div>
-        <div class="pc-price" id="price-display">9,90 <span>€</span></div>
+        <div class="pc-price" id="price-display">19,99 <span>€</span></div>
         <div class="pc-period" id="period-display">pro Monat · jederzeit kündbar</div>
         <ul class="pc-features">
           <li>Alles aus Entdecker</li>
@@ -1524,7 +1547,7 @@
         <a href="https://myablefy.com/s/6heroes/testprodukt-zapier-7ae4eae2/payment" class="btn-price btn-price-primary" target="_top" id="cta-pricing">Jetzt Hero werden</a>
       </div>
     </div>
-    <p class="pricing-note fade-up">Alle Preise inkl. MwSt. · Zahlung via Ablefy · Keine Kreditkarte für kostenlosen Einstieg nötig</p>
+    <p class="pricing-note fade-up">Alle Preise inkl. MwSt. · Zahlung via Ablefy · 6- und 12-Monats-Pakete werden einmalig im Voraus fällig und begründen eine Mindestlaufzeit · Nach Ablauf der Mindestlaufzeit verlängert sich das Abo automatisch monatlich und ist jederzeit kündbar · Keine Kreditkarte für kostenlosen Einstieg nötig</p>
   </div>
 </section>
 
@@ -1572,31 +1595,43 @@
 </footer>
 
 <script>
-  // ── PRICING TOGGLE ─────────────────────────────────────────────────────────
-  let isYearly = false;
+  // ── PRICING SELECTOR ───────────────────────────────────────────────────────
+  let currentPlan = 'monthly';
 
-  function switchPricing() {
-    isYearly = !isYearly;
-    const toggle = document.getElementById('toggle');
+  const plans = {
+    monthly: {
+      price:   '19,99 <span>€</span>',
+      period:  'pro Monat · jederzeit kündbar',
+      total:   null,
+      cta:     'Jetzt Hero werden'
+    },
+    '6months': {
+      price:   '14,99 <span>€</span>',
+      period:  '€89,94 einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit',
+      total:   null,
+      cta:     'Jetzt 6-Monate-Hero werden'
+    },
+    yearly: {
+      price:   '9,99 <span>€</span>',
+      period:  '€119,88 einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit',
+      total:   null,
+      cta:     'Jetzt Jahres-Hero werden'
+    }
+  };
+
+  function switchPlan(plan) {
+    currentPlan = plan;
     const price  = document.getElementById('price-display');
     const period = document.getElementById('period-display');
-    const lblM   = document.getElementById('lbl-monthly');
-    const lblY   = document.getElementById('lbl-yearly');
     const cta    = document.getElementById('cta-pricing');
 
-    toggle.classList.toggle('on', isYearly);
-    lblM.classList.toggle('active', !isYearly);
-    lblY.classList.toggle('active',  isYearly);
+    ['monthly', '6months', 'yearly'].forEach(p => {
+      document.getElementById('plan-' + p).classList.toggle('active', p === plan);
+    });
 
-    if (isYearly) {
-      price.innerHTML  = '79 <span>€</span>';
-      period.textContent = 'pro Jahr · jederzeit kündbar · 2 Monate gratis';
-      cta.textContent  = 'Jetzt Jahres-Hero werden';
-    } else {
-      price.innerHTML  = '9,90 <span>€</span>';
-      period.textContent = 'pro Monat · jederzeit kündbar';
-      cta.textContent  = 'Jetzt Hero werden';
-    }
+    price.innerHTML     = plans[plan].price;
+    period.textContent  = plans[plan].period;
+    cta.textContent     = plans[plan].cta;
   }
 
   // ── SCROLL ANIMATIONS ──────────────────────────────────────────────────────
