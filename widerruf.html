@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Widerrufsbelehrung – 6Heroes</title>
+  <meta name="description" content="Widerrufsbelehrung und Muster-Widerrufsformular der Reichert & Rempel GbR für die 6Heroes-Plattform." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:       #1E293B;
+      --navy-mid:   #2D3F57;
+      --navy-light: #334155;
+      --gold:       #F2B705;
+      --gold-dark:  #D49E00;
+      --white:      #FFFFFF;
+      --text-muted: #94A3B8;
+      --text-body:  #CBD5E1;
+      --commander:  #0B63CE;
+      --guardian:   #1F9D62;
+      --innovator:  #F2B705;
+      --strategist: #475569;
+      --sage:       #C0266A;
+      --explorer:   #F0672A;
+      --radius-md:  16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 { font-family: 'DM Serif Display', serif; line-height: 1.2; }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 24px;
+      background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo-dots { display: flex; gap: 3px; }
+    .logo-dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      animation: dot-pulse 3s ease-in-out infinite;
+    }
+    .logo-dots span:nth-child(1) { background: var(--commander); animation-delay: 0s; }
+    .logo-dots span:nth-child(2) { background: var(--guardian);  animation-delay: 0.2s; }
+    .logo-dots span:nth-child(3) { background: var(--innovator); animation-delay: 0.4s; }
+    .logo-dots span:nth-child(4) { background: var(--strategist);animation-delay: 0.6s; }
+    .logo-dots span:nth-child(5) { background: var(--sage);      animation-delay: 0.8s; }
+    .logo-dots span:nth-child(6) { background: var(--explorer);  animation-delay: 1.0s; }
+
+    @keyframes dot-pulse {
+      0%, 80%, 100% { transform: scale(1); opacity: 0.7; }
+      40% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .btn-nav {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .btn-nav:hover { background: var(--gold-dark); transform: translateY(-1px); text-decoration: none; }
+
+    /* ── MAIN ── */
+    main { padding: 108px 0 80px; }
+
+    .page-header {
+      padding: 48px 0 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 48px;
+    }
+
+    .page-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .page-meta { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* ── LEGAL CONTENT ── */
+    .legal-section { margin-bottom: 48px; }
+
+    .legal-section h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.05);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: 20px;
+    }
+
+    .legal-section h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 24px 0 10px;
+    }
+
+    .legal-section p {
+      color: var(--text-body);
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .legal-section ul, .legal-section ol {
+      margin: 0 0 14px 0;
+      padding-left: 24px;
+      color: var(--text-body);
+      font-size: 0.95rem;
+    }
+
+    .legal-section li { margin-bottom: 8px; }
+
+    .highlight-box {
+      background: rgba(242,183,5,0.08);
+      border: 1px solid rgba(242,183,5,0.2);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      color: var(--text-body);
+      font-size: 0.9rem;
+    }
+    .highlight-box strong { color: var(--gold); }
+
+    .warning-box {
+      background: rgba(192,38,106,0.08);
+      border: 1px solid rgba(192,38,106,0.25);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      color: var(--text-body);
+      font-size: 0.9rem;
+    }
+    .warning-box strong { color: #E05A9A; }
+
+    /* ── FORMULAR BOX ── */
+    .formular-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 28px 32px;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--text-body);
+      line-height: 1.8;
+    }
+
+    .formular-box .form-field {
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding: 6px 0;
+      margin: 8px 0;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .formular-box .form-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #141E2D;
+      padding: 40px 24px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 24px; font-size: 0.82rem; color: var(--text-muted); }
+    .footer-links a { color: var(--text-muted); }
+    .footer-links a:hover { color: var(--white); text-decoration: none; }
+    .footer-copy { font-size: 0.8rem; color: rgba(148,163,184,0.5); }
+
+    @media (max-width: 640px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="logo-dots">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    6Heroes
+  </a>
+  <a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+  <div class="container">
+
+    <div class="page-header">
+      <div class="page-tag">Rechtliches</div>
+      <h1>Widerrufsbelehrung</h1>
+      <p class="page-meta">Reichert &amp; Rempel GbR · Stand: Juni 2026 · Version 2.0</p>
+    </div>
+
+    <!-- Widerrufsrecht -->
+    <div class="legal-section" id="widerrufsrecht">
+      <h2>Widerrufsrecht</h2>
+      <p>Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen.</p>
+      <p>Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.</p>
+      <p>Um Ihr Widerrufsrecht auszuüben, müssen Sie uns</p>
+      <div class="highlight-box">
+        <strong>Reichert &amp; Rempel GbR</strong><br>
+        Anna Christina Reichert, Stefan Rempel<br>
+        Lindenstraße 2c, 81545 München<br>
+        E-Mail: <a href="mailto:admin@6heroes.de">admin@6heroes.de</a>
+      </div>
+      <p>mittels einer eindeutigen Erklärung (z. B. per E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren. Sie können dafür das Muster-Widerrufsformular am Ende dieser Seite verwenden, das jedoch nicht vorgeschrieben ist.</p>
+      <p>Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.</p>
+    </div>
+
+    <!-- Folgen des Widerrufs -->
+    <div class="legal-section" id="folgen">
+      <h2>Folgen des Widerrufs</h2>
+      <p>Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser Rückzahlung Entgelte berechnet.</p>
+    </div>
+
+    <!-- Besonderer Hinweis -->
+    <div class="legal-section" id="sofortbeginn">
+      <h2>Besonderer Hinweis bei sofortigem Leistungsbeginn</h2>
+
+      <div class="warning-box">
+        <strong>Wichtig – Erlöschen des Widerrufsrechts:</strong> Haben Sie ausdrücklich verlangt, dass die Dienstleistung während der Widerrufsfrist beginnen soll, so haben Sie uns einen angemessenen Betrag zu zahlen, der dem Anteil der bis zum Zeitpunkt des Widerrufs bereits erbrachten Dienstleistungen im Vergleich zum Gesamtumfang der im Vertrag vorgesehenen Dienstleistungen entspricht (§ 357 Abs. 8 BGB).
+      </div>
+
+      <p>Beim Abschluss eines Abonnements auf 6heroes.de werden Sie ausdrücklich aufgefordert zu bestätigen, dass die Leistung sofort nach Kaufabschluss beginnt. Mit dieser Bestätigung stimmen Sie zu, dass Ihr Widerrufsrecht gemäß § 356 Abs. 5 BGB erlischt, sobald die Leistung vollständig erbracht ist.</p>
+
+      <div class="highlight-box">
+        <strong>Pflicht-Checkbox beim Checkout (Ablefy):</strong><br>
+        „Ich stimme zu, dass der Anbieter mit der Ausführung des Vertrags vor Ablauf der Widerrufsfrist beginnt. Mir ist bekannt, dass mein Widerrufsrecht bei vollständiger Leistungserfüllung erlischt und bei teilweiser Inanspruchnahme ein anteiliger Betrag zu zahlen ist."
+      </div>
+    </div>
+
+    <!-- Muster-Widerrufsformular -->
+    <div class="legal-section" id="formular">
+      <h2>Muster-Widerrufsformular</h2>
+      <p>Wenn Sie den Vertrag widerrufen möchten, füllen Sie bitte dieses Formular aus und senden Sie es per E-Mail an <a href="mailto:admin@6heroes.de">admin@6heroes.de</a>.</p>
+
+      <div class="formular-box">
+        <p><strong>An:</strong><br>
+        Reichert &amp; Rempel GbR<br>
+        Lindenstraße 2c, 81545 München<br>
+        E-Mail: admin@6heroes.de</p>
+
+        <br>
+
+        <p>Hiermit widerrufe(n) ich/wir den von mir/uns abgeschlossenen Vertrag über die Erbringung der folgenden Dienstleistung:</p>
+
+        <br>
+
+        <p><strong>Dienstleistung:</strong> Nutzung der 6Heroes-Plattform (Abonnement)</p>
+
+        <div class="form-field">Bestellt am: ________________________________</div>
+        <div class="form-label">Datum des Vertragsschlusses</div>
+
+        <div class="form-field">Name des/der Verbraucher(s): ________________________________</div>
+
+        <div class="form-field">Anschrift des/der Verbraucher(s): ________________________________</div>
+        <div class="form-label">Straße, PLZ, Ort</div>
+
+        <div class="form-field">E-Mail-Adresse (mit der das Konto angelegt wurde): ________________________________</div>
+
+        <br>
+
+        <div class="form-field">Datum: ________________________________</div>
+
+        <div class="form-field">Unterschrift (nur bei postalischer Mitteilung): ________________________________</div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">6Heroes</div>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
+      <a href="mailto:admin@6heroes.de">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2025 Reichert &amp; Rempel GbR · Anna Christina Reichert &amp; Stefan Rempel</div>
+  </div>
+</footer>
+
+</body>
+</html>
