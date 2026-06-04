@@ -47,7 +47,7 @@
   .scale-track span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
 
   /* BARS */
-  .bars { display: flex; flex-direction: column; gap: 11px; }
+  .bars { display: flex; flex-direction: column; gap: 14px; }
   .bar-row {
     display: grid;
     grid-template-columns: 90px 1fr 42px;
@@ -71,11 +71,18 @@
     letter-spacing: 0.06em;
     margin-top: 1px;
   }
+  .bar-tracks { display: flex; flex-direction: column; gap: 4px; }
+  .bar-track-wrap { display: flex; align-items: center; gap: 6px; }
+  .bar-track-label { font-size: 8px; font-weight: 800; color: var(--text-muted); width: 28px; text-align: right; flex-shrink: 0; text-transform: uppercase; }
   .bar-track {
     background: rgba(255,255,255,0.07);
     border-radius: 50px;
-    height: 22px;
+    height: 16px;
     overflow: hidden;
+    flex: 1;
+  }
+  .bar-track.netto-track {
+    background: rgba(255,255,255,0.04);
   }
   .bar-fill {
     height: 100%; border-radius: 50px;
@@ -89,7 +96,17 @@
     background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.15));
     border-radius: 50px;
   }
-  .bar-score { font-size: 13px; font-weight: 900; color: var(--text); }
+  .bar-fill.netto-fill {
+    opacity: 0.55;
+  }
+  .bar-fill.netto-negative {
+    background: rgba(192,38,106,0.6) !important;
+    opacity: 0.8;
+  }
+  .bar-scores { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+  .bar-score { font-size: 11px; font-weight: 900; color: var(--text); line-height: 16px; }
+  .bar-score.netto-score { color: var(--text-muted); font-size: 10px; }
+  .bar-score.netto-negative { color: #C0266A; }
 
   /* LEGEND */
   .legend-row {
@@ -115,6 +132,17 @@
     text-align: center; white-space: nowrap;
     line-height: 1.3;
   }
+
+  /* NETTO LEGEND */
+  .netto-legend {
+    display: flex; gap: 14px; align-items: center;
+    margin-top: 10px; padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .netto-legend-item { display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; color: var(--text-muted); }
+  .netto-legend-bar { height: 6px; width: 18px; border-radius: 3px; }
 
   /* DIVIDER */
   .divider {
@@ -168,6 +196,16 @@
     margin-left: auto;
   }
 
+  /* NETTO BADGE */
+  .netto-badge {
+    font-size: 10px; font-weight: 800;
+    padding: 3px 9px; border-radius: 20px;
+    margin-left: 6px;
+  }
+  .netto-badge.pos { background: rgba(31,157,98,0.15); color: #1F9D62; }
+  .netto-badge.neu { background: rgba(242,183,5,0.15); color: #F2B705; }
+  .netto-badge.neg { background: rgba(192,38,106,0.15); color: #C0266A; }
+
   .interp-text {
     font-size: 13px; font-weight: 600;
     color: var(--text-muted);
@@ -190,6 +228,18 @@
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.07em;
+  }
+
+  /* NETTO INSIGHT */
+  .netto-insight {
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    border-left: 2px solid var(--role-color);
+    line-height: 1.5;
   }
 
   /* PATTERN BOX */
@@ -234,12 +284,12 @@
 
 <script>
 const HEROES = [
-  { key: 'innovator',  label: 'Innovator',  color: '#F2B705' },
-  { key: 'commander',  label: 'Commander',  color: '#1167D6' },
-  { key: 'strategist', label: 'Strategist', color: '#7A8FA6' },
-  { key: 'sage',       label: 'Sage',       color: '#C0266A' },
-  { key: 'guardian',   label: 'Guardian',   color: '#1F9D62' },
-  { key: 'explorer',   label: 'Explorer',   color: '#F0672A' },
+  { key: 'innovator',  label: 'Innovator',  color: '#F2B705', nettoKey: 'ni' },
+  { key: 'commander',  label: 'Commander',  color: '#1167D6', nettoKey: 'nc' },
+  { key: 'strategist', label: 'Strategist', color: '#7A8FA6', nettoKey: 'nst' },
+  { key: 'sage',       label: 'Sage',       color: '#C0266A', nettoKey: 'ns' },
+  { key: 'guardian',   label: 'Guardian',   color: '#1F9D62', nettoKey: 'ng' },
+  { key: 'explorer',   label: 'Explorer',   color: '#F0672A', nettoKey: 'ne' },
 ];
 
 const LEVELS = [
@@ -262,6 +312,27 @@ function getHeroColor(name) {
 function getHeroScore(scores, name) {
   const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
   return h ? scores[h.key] : null;
+}
+
+function getHeroNetto(nettos, name) {
+  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
+  return h ? nettos[h.key] : null;
+}
+
+function getNettoBadge(netto) {
+  if (netto === null) return '';
+  if (netto > 0.5) return `<span class="netto-badge pos">Netto +${netto.toFixed(1)}</span>`;
+  if (netto < -0.5) return `<span class="netto-badge neg">Netto ${netto.toFixed(1)}</span>`;
+  return `<span class="netto-badge neu">Netto ±0</span>`;
+}
+
+function getNettoInsight(heroName, netto) {
+  if (netto === null) return '';
+  if (netto >= 1.5) return `Die Energiekosten dieses Modus sind gering – du ladest dich beim Einsatz des ${heroName}-Modus deutlich mehr auf als du ausgibst.`;
+  if (netto >= 0.5) return `Du gewinnst netto Energie durch diesen Modus. Die Kosten sind vorhanden, aber die Quellen überwiegen.`;
+  if (netto >= -0.5) return `Dieser Modus ist energetisch ausgeglichen – was du investierst, bekommst du ungefähr zurück.`;
+  if (netto >= -1.5) return `Die Kosten dieses Modus übersteigen die Quellen leicht. Dosiere ihn bewusst und baue Erholungsphasen ein.`;
+  return `Dieser Modus kostet dich netto deutlich Energie. Langfristiger Einsatz zehrt an deinen Ressourcen – achte auf Ausgleich.`;
 }
 
 /* ── INTERPRETATION TEXTS ── */
@@ -299,7 +370,7 @@ function getInterpText(role, heroName, score, heroColor) {
     },
     stress1: {
       low: {
-        main: `Dein erster Stressheld ${heroName} kostet dich schon im Normalzustand Energie. Wenn du unter Druck in diesen Modus rutschst, wird es doppelt belastend: Du bist bereits im Stressmodus und agierst zusätzlich aus einem energiearmen Helden heraus. Das erklärt, warum dich stressige Phasen besonders erschöpfen können.`,
+        main: `Dein erster Stressheld ${heroName} kostet dich schon im Normalzustand Energie. Wenn du unter Druck in diesen Modus rutschst, wird es doppelt belastend: Du bist bereits im Stressmodus und agierst zusätzlich aus einem energiearmen Helden heraus.`,
         impulse: `Lerne deine frühen Stress-Warnsignale kennen: Wann kippt der ${heroName}-Modus bei dir? Je früher du es merkst, desto schneller kannst du gegensteuern – und zurück in einen energiereichen Modus wechseln.`
       },
       mid: {
@@ -313,7 +384,7 @@ function getInterpText(role, heroName, score, heroColor) {
     },
     stress2: {
       low: {
-        main: `Dein zweiter Stressheld ${heroName} wird bei später, tief eskaliertem Stress aktiv – und kostet dich dabei viel Energie. Das ist die kritischste Kombination: tiefe Erschöpfung trifft auf einen anstrengenden Modus. Lange Stressperioden sind für dich deshalb besonders zehrend.`,
+        main: `Dein zweiter Stressheld ${heroName} wird bei später, tief eskaliertem Stress aktiv – und kostet dich dabei viel Energie. Das ist die kritischste Kombination: tiefe Erschöpfung trifft auf einen anstrengenden Modus.`,
         impulse: `Auf Langzeitstress achten ist hier besonders wichtig. Baue aktiv Erholungsphasen ein, bevor es zur zweiten Eskalation kommt – denn auf diesem Level ist Gegensteuern deutlich schwerer.`
       },
       mid: {
@@ -347,7 +418,7 @@ function getPatternText(scores) {
   if (lowCount >= 4) {
     return {
       title: 'Gesamtbild: Hohes Energiedefizit',
-      text: 'Dein Profil zeigt, dass du aktuell viele Helden-Modi als energiearmen erlebst. Das bedeutet nicht, dass du diese Modi nicht beherrschst – häufig ist es ein Hinweis auf Dauerstress, Rollenanpassung oder eine Phase des Funktionierens. Bevor wir tiefer in die einzelnen Helden gehen, lohnt sich die Frage: Wie voll ist dein Akku gerade grundsätzlich? Der erste Schritt ist Stabilisierung – erst dann können die Helden ihre volle Wirkung entfalten.'
+      text: 'Dein Profil zeigt, dass du aktuell viele Helden-Modi als energiearmen erlebst. Das bedeutet nicht, dass du diese Modi nicht beherrschst – häufig ist es ein Hinweis auf Dauerstress, Rollenanpassung oder eine Phase des Funktionierens. Bevor wir tiefer in die einzelnen Helden gehen, lohnt sich die Frage: Wie voll ist dein Akku gerade grundsätzlich?'
     };
   }
   if (highCount >= 4) {
@@ -359,29 +430,34 @@ function getPatternText(scores) {
   if (midCount >= 4) {
     return {
       title: 'Gesamtbild: Viel Potenzial im mittleren Bereich',
-      text: 'Dein Profil zeigt viele „Teils-teils"-Werte. Du bist flexibel und funktionierst in vielen Situationen gut – aber du ladest dich nicht automatisch auf. Der entscheidende Hebel ist Kontext: Welche Umgebungen, Aufgaben und Menschen machen deine Helden von „3" auf „4"? Das ist die Feinjustierung, die den größten Unterschied macht.'
+      text: 'Dein Profil zeigt viele „Teils-teils"-Werte. Du bist flexibel und funktionierst in vielen Situationen gut – aber du ladest dich nicht automatisch auf. Der entscheidende Hebel ist Kontext: Welche Umgebungen, Aufgaben und Menschen machen deine Helden von „3" auf „4"?'
     };
   }
   return {
     title: 'Gesamtbild: Gemischtes Profil',
-    text: 'Dein Profil zeigt eine Mischung: einige Modi die dir Energie geben und andere die dich mehr kosten. Das ist normal – und gibt dir klare Orientierung, welche Helden du bewusst stärken und welche du dosieren solltest. Die Kombination aus Basis- und Zweitheld ist dabei dein wichtigster Hebel.'
+    text: 'Dein Profil zeigt eine Mischung: einige Modi die dir Energie geben und andere die dich mehr kosten. Das ist normal – und gibt dir klare Orientierung, welche Helden du bewusst stärken und welche du dosieren solltest.'
   };
 }
 
 function getParams() {
   const p = new URLSearchParams(window.location.search);
   const scores = {};
+  const nettos = {};
   let hasData = false;
+  let hasNetto = false;
   HEROES.forEach(h => {
     const v = parseFloat(p.get(h.key));
     scores[h.key] = isNaN(v) ? 0 : Math.min(5, Math.max(0, v));
     if (!isNaN(v) && v > 0) hasData = true;
+    const n = parseFloat(p.get(h.nettoKey));
+    nettos[h.key] = isNaN(n) ? null : n;
+    if (!isNaN(n)) hasNetto = true;
   });
   const basis   = p.get('basis')   || '';
   const zweit   = p.get('zweit')   || '';
   const stress1 = p.get('stress1') || '';
   const stress2 = p.get('stress2') || '';
-  return { scores, hasData, basis, zweit, stress1, stress2 };
+  return { scores, nettos, hasData, hasNetto, basis, zweit, stress1, stress2 };
 }
 
 function getRoleBadge(heroName, basis, zweit, stress1, stress2) {
@@ -394,7 +470,7 @@ function getRoleBadge(heroName, basis, zweit, stress1, stress2) {
 }
 
 function render() {
-  const { scores, hasData, basis, zweit, stress1, stress2 } = getParams();
+  const { scores, nettos, hasData, hasNetto, basis, zweit, stress1, stress2 } = getParams();
   const el = document.getElementById('content');
 
   if (!hasData) {
@@ -416,26 +492,78 @@ function render() {
 
   HEROES.forEach((h, i) => {
     const score = scores[h.key];
+    const netto = nettos[h.key];
     const pct = (score / 5) * 100;
     const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
+
+    // Netto bar: range is -4 to +4, map to 0-100% where 50% = 0
+    let nettoPct = 0;
+    let nettoNegative = false;
+    if (netto !== null) {
+      if (netto >= 0) {
+        nettoPct = (netto / 4) * 100;
+      } else {
+        nettoPct = (Math.abs(netto) / 4) * 100;
+        nettoNegative = true;
+      }
+      nettoPct = Math.min(100, nettoPct);
+    }
+
+    const nettoDisplay = netto !== null ? (netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1)) : '–';
+    const nettoClass = netto !== null && netto < 0 ? 'netto-score netto-negative' : 'netto-score';
+
     html += `
       <div class="bar-row" style="--hero-color:${h.color}; transition-delay:${i * 0.08}s">
         <div class="bar-label">
           ${h.label}
           ${badge ? `<span class="role-badge">${badge}</span>` : ''}
         </div>
-        <div class="bar-track">
-          <div class="bar-fill" data-pct="${pct}" style="background:${h.color}"></div>
+        <div class="bar-tracks">
+          <div class="bar-track-wrap">
+            <div class="bar-track-label">E+</div>
+            <div class="bar-track">
+              <div class="bar-fill" data-pct="${pct}" style="background:${h.color}"></div>
+            </div>
+          </div>
+          ${netto !== null ? `
+          <div class="bar-track-wrap">
+            <div class="bar-track-label">Netto</div>
+            <div class="bar-track netto-track">
+              <div class="bar-fill netto-fill ${nettoNegative ? 'netto-negative' : ''}" data-pct="${nettoPct}" style="${!nettoNegative ? 'background:' + h.color : ''}"></div>
+            </div>
+          </div>` : ''}
         </div>
-        <div class="bar-score">${score.toFixed(1)}</div>
+        <div class="bar-scores">
+          <div class="bar-score">${score.toFixed(1)}</div>
+          ${netto !== null ? `<div class="${nettoClass}">${nettoDisplay}</div>` : ''}
+        </div>
       </div>
     `;
   });
 
   html += `</div>`;
 
-  /* ── LEGEND ── */
-  html += `<div class="legend-row"><div></div><div class="legend-track">`;
+  /* ── NETTO LEGEND ── */
+  if (hasNetto) {
+    html += `
+      <div class="netto-legend" style="margin-top:12px;">
+        <div class="netto-legend-item">
+          <div class="netto-legend-bar" style="background:rgba(255,255,255,0.3)"></div>
+          E+ = Energie aus Quellen (1–5)
+        </div>
+        <div class="netto-legend-item">
+          <div class="netto-legend-bar" style="background:rgba(255,255,255,0.2)"></div>
+          Netto = E+ minus Energiekosten
+        </div>
+        <div class="netto-legend-item">
+          <div class="netto-legend-bar" style="background:rgba(192,38,106,0.6)"></div>
+          Negativ = Kosten überwiegen
+        </div>
+      </div>`;
+  }
+
+  /* ── ENERGY LEVEL LEGEND ── */
+  html += `<div class="legend-row" style="margin-top:12px;"><div></div><div class="legend-track">`;
   [...LEVELS].reverse().forEach(l => {
     html += `<div class="legend-item">
       <div class="legend-bar" style="background:${l.color}"></div>
@@ -444,7 +572,7 @@ function render() {
   });
   html += `</div><div></div></div>`;
 
-  /* ── INTERPRETATION (only if hero names provided) ── */
+  /* ── INTERPRETATION ── */
   const roles = [
     { key: 'basis',   name: basis,   label: 'Basisheld' },
     { key: 'zweit',   name: zweit,   label: 'Zweitheld' },
@@ -455,20 +583,21 @@ function render() {
   if (roles.length > 0) {
     html += `<hr class="divider"><div class="interp-title">Deine persönliche Auswertung</div>`;
 
-    /* Pattern box */
     const pattern = getPatternText(scores);
     html += `<div class="pattern-box" id="pattern-box">
       <div class="pattern-title">${pattern.title}</div>
       <div class="pattern-text">${pattern.text}</div>
     </div>`;
 
-    /* Per-role cards */
     roles.forEach((r, i) => {
       const score = getHeroScore(scores, r.name);
       if (score === null) return;
+      const netto = getHeroNetto(nettos, r.name);
       const level = getLevel(score);
       const heroColor = getHeroColor(r.name);
       const interp = getInterpText(r.key, r.name, score, heroColor);
+      const nettoBadge = hasNetto ? getNettoBadge(netto) : '';
+      const nettoInsight = (hasNetto && netto !== null) ? getNettoInsight(r.name, netto) : '';
 
       html += `
         <div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; --level-color:${level.color}; transition-delay:${0.1 + i * 0.1}s">
@@ -477,10 +606,14 @@ function render() {
               <div class="interp-role">${r.label}</div>
               <div class="interp-hero">${r.name}</div>
             </div>
-            <div class="interp-level">${level.label} (${score.toFixed(1)})</div>
+            <div style="display:flex; align-items:center; margin-left:auto;">
+              ${nettoBadge}
+              <div class="interp-level" style="margin-left:6px;">${level.label} (${score.toFixed(1)})</div>
+            </div>
           </div>
           <div class="interp-text">${interp.main}</div>
-          <div class="interp-impulse">
+          ${nettoInsight ? `<div class="netto-insight">${nettoInsight}</div>` : ''}
+          <div class="interp-impulse" style="margin-top:10px;">
             <strong>Coaching-Impuls</strong>
             ${interp.impulse}
           </div>
@@ -493,16 +626,15 @@ function render() {
 
   /* ── ANIMATE ── */
   requestAnimationFrame(() => {
-    // Bars
     document.querySelectorAll('.bar-row').forEach((row, i) => {
       setTimeout(() => {
         row.classList.add('visible');
-        const fill = row.querySelector('.bar-fill');
-        setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 50);
+        row.querySelectorAll('.bar-fill').forEach(fill => {
+          setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 50);
+        });
       }, i * 80);
     });
 
-    // Interpretation cards
     setTimeout(() => {
       const pb = document.getElementById('pattern-box');
       if (pb) pb.classList.add('visible');
