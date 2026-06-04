@@ -26,39 +26,27 @@
   .header h1 { font-size: 18px; font-weight: 900; margin-bottom: 3px; }
   .header p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-  /* SCALE LABELS */
   .scale-row {
     display: grid;
-    grid-template-columns: 100px 1fr 48px;
-    gap: 10px;
-    margin-bottom: 4px;
-    align-items: center;
+    grid-template-columns: 110px 1fr 52px;
+    gap: 10px; margin-bottom: 4px; align-items: center;
   }
   .scale-track {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2px;
-    position: relative;
+    display: flex; justify-content: space-between;
+    padding: 0 2px; position: relative;
   }
   .scale-track span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
   .scale-zero-line {
-    position: absolute;
-    left: 50%;
-    top: -4px;
-    bottom: -4px;
-    width: 1px;
-    background: rgba(255,255,255,0.2);
+    position: absolute; left: 50%; top: -4px; bottom: -4px;
+    width: 1px; background: rgba(255,255,255,0.2);
   }
 
-  /* BARS */
   .bars { display: flex; flex-direction: column; gap: 11px; }
   .bar-row {
     display: grid;
-    grid-template-columns: 100px 1fr 48px;
-    align-items: center;
-    gap: 10px;
-    opacity: 0;
-    transform: translateX(-10px);
+    grid-template-columns: 110px 1fr 52px;
+    align-items: center; gap: 10px;
+    opacity: 0; transform: translateX(-10px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .bar-row.visible { opacity: 1; transform: none; }
@@ -69,158 +57,121 @@
     text-align: right; white-space: nowrap;
   }
   .bar-label .role-badge {
-    display: block;
-    font-size: 9px; font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-top: 1px;
+    display: block; font-size: 9px; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.06em; margin-top: 1px;
   }
 
-  /* NETTO TRACK: split at center */
-  .netto-track-wrap {
-    position: relative;
-    height: 22px;
-  }
+  .netto-track-wrap { position: relative; height: 22px; }
   .netto-bg {
     position: absolute; inset: 0;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50px;
+    background: rgba(255,255,255,0.06); border-radius: 50px;
   }
   .netto-zero {
-    position: absolute;
-    left: 50%; top: 0; bottom: 0;
-    width: 2px;
-    background: rgba(255,255,255,0.25);
-    transform: translateX(-50%);
-    border-radius: 1px;
+    position: absolute; left: 50%; top: 0; bottom: 0;
+    width: 2px; background: rgba(255,255,255,0.25);
+    transform: translateX(-50%); border-radius: 1px;
   }
   .netto-fill {
-    position: absolute;
-    top: 0; bottom: 0;
+    position: absolute; top: 0; bottom: 0;
     border-radius: 50px;
     transition: width 0.85s cubic-bezier(0.16, 1, 0.3, 1);
     width: 0%;
   }
   .netto-fill::after {
-    content: '';
-    position: absolute; inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.15));
     border-radius: 50px;
   }
-  /* positive: grows right from center */
-  .netto-fill.pos {
-    left: 50%;
-  }
-  /* negative: grows left from center */
+  .netto-fill.pos { left: 50%; }
   .netto-fill.neg {
-    right: 50%;
-    background: var(--neg-color) !important;
+    right: 50%; background: #9B1239 !important;
   }
   .netto-fill.neg::after {
     background: linear-gradient(270deg, transparent 40%, rgba(255,255,255,0.1));
   }
 
-  .bar-score {
-    font-size: 13px; font-weight: 900;
-    text-align: left;
-  }
-  .bar-score.neg { color: var(--neg-color); }
+  .bar-score { font-size: 13px; font-weight: 900; text-align: left; }
+  .bar-score.neg { color: #F9A8C9; }
 
-  /* SCALE LABELS ROW */
-  .scale-labels-bottom {
-    display: grid;
-    grid-template-columns: 100px 1fr 48px;
-    gap: 10px;
-    margin-top: 6px;
-  }
-  .scale-labels-inner {
-    display: flex; justify-content: space-between;
-  }
-  .scale-labels-inner span {
-    font-size: 9px; font-weight: 700; color: var(--text-muted);
-  }
-
-  /* LEGEND */
+  /* LEGEND – semantische Farben, keine Heldenfarben */
   .netto-legend {
-    display: flex; gap: 16px; flex-wrap: wrap;
+    display: flex; gap: 12px; flex-wrap: wrap;
     margin-top: 12px; padding: 8px 10px;
     background: rgba(255,255,255,0.03);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    border-radius: 8px; border: 1px solid var(--border);
   }
   .netto-legend-item {
     display: flex; align-items: center; gap: 5px;
     font-size: 9px; font-weight: 700; color: var(--text-muted);
   }
-  .netto-legend-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-  }
+  .netto-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 
-  /* DIVIDER */
   .divider {
-    border: none;
-    border-top: 1px solid var(--border);
+    border: none; border-top: 1px solid var(--border);
     margin: 24px 0 20px;
   }
 
-  /* INTERPRETATION */
   .interp-title { font-size: 14px; font-weight: 900; margin-bottom: 14px; }
 
   .interp-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
     border-left: 3px solid var(--role-color);
-    opacity: 0;
-    transform: translateY(8px);
+    opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .interp-card.visible { opacity: 1; transform: none; }
 
   .interp-card-header {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
   }
   .interp-role {
-    font-size: 10px; font-weight: 800;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--role-color);
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--role-color);
   }
   .interp-hero { font-size: 15px; font-weight: 900; color: var(--role-color); }
+
+  /* Level badge – semantische Farben */
   .interp-level {
     font-size: 11px; font-weight: 700;
-    color: var(--level-color);
-    background: color-mix(in srgb, var(--level-color) 12%, transparent);
     padding: 3px 9px; border-radius: 20px; margin-left: auto;
+    color: var(--sem-text); background: var(--sem-bg);
   }
   .netto-badge {
     font-size: 10px; font-weight: 800;
     padding: 3px 9px; border-radius: 20px; margin-left: 6px;
+    color: var(--sem-text); background: var(--sem-bg);
   }
-  .netto-badge.pos { background: rgba(31,157,98,0.15); color: #1F9D62; }
-  .netto-badge.neu { background: rgba(242,183,5,0.15); color: #F2B705; }
-  .netto-badge.neg { background: rgba(192,38,106,0.15); color: #C0266A; }
 
   .interp-text {
     font-size: 13px; font-weight: 600;
-    color: var(--text-muted); line-height: 1.65; margin-bottom: 10px;
+    color: var(--text); line-height: 1.7; margin-bottom: 10px;
   }
   .netto-insight {
-    font-size: 12px; font-weight: 700;
-    color: var(--text-muted);
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px; padding: 8px 12px; margin-bottom: 10px;
-    border-left: 2px solid var(--role-color); line-height: 1.5;
+    font-size: 13px; font-weight: 600; color: var(--text);
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
+    border-left: 3px solid var(--role-color); line-height: 1.65;
+  }
+  .potential-box {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
+    border-left: 3px solid rgba(255,255,255,0.25); line-height: 1.65;
+  }
+  .potential-box strong {
+    display: block; margin-bottom: 4px;
+    font-size: 11px; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.07em; color: rgba(255,255,255,0.5);
   }
   .interp-impulse {
-    font-size: 12px; font-weight: 700; color: var(--text);
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px; padding: 10px 12px; line-height: 1.55;
+    font-size: 13px; font-weight: 600; color: var(--text);
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 12px 14px; line-height: 1.65;
   }
   .interp-impulse strong {
-    color: var(--role-color); display: block; margin-bottom: 3px;
+    color: var(--role-color); display: block; margin-bottom: 5px;
     font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em;
   }
 
@@ -235,7 +186,14 @@
     font-size: 12px; font-weight: 900; text-transform: uppercase;
     letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px;
   }
-  .pattern-text { font-size: 13px; font-weight: 600; color: var(--text-muted); line-height: 1.65; }
+  .pattern-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.7; }
+
+  .potential-section { margin-top: 6px; }
+  .potential-section-title {
+    font-size: 12px; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-muted);
+    margin-bottom: 8px; margin-top: 20px;
+  }
 
   .no-data {
     text-align: center; padding: 40px 20px;
@@ -262,15 +220,15 @@ const HEROES = [
   { key: 'explorer',   label: 'Explorer',   color: '#F0672A', nettoKey: 'ne' },
 ];
 
+// Semantische Farben – keine Überschneidung mit Heldenfarben
 const NETTO_LEVELS = [
-  { min:  2.0, max:  4.0, label: 'Stark aufladend',   color: '#1F9D62' },
-  { min:  0.5, max:  1.9, label: 'Leicht aufladend',  color: '#84cc16' },
-  { min: -0.4, max:  0.4, label: 'Ausgeglichen',      color: '#F2B705' },
-  { min: -1.9, max: -0.5, label: 'Leicht zehrend',    color: '#F0672A' },
-  { min: -4.0, max: -2.0, label: 'Stark zehrend',     color: '#C0266A' },
+  { min:  2.0, max:  4.0, label: 'Stark aufladend',  semBg: 'rgba(20,83,45,0.35)',   semText: '#86EFAC' },
+  { min:  0.5, max:  1.9, label: 'Aufladend',        semBg: 'rgba(30,58,138,0.3)',   semText: '#93C5FD' },
+  { min: -0.4, max:  0.4, label: 'Ausgeglichen',     semBg: 'rgba(120,53,15,0.35)',  semText: '#FDE68A' },
+  { min: -1.9, max: -0.5, label: 'Zehrend',          semBg: 'rgba(124,45,18,0.35)',  semText: '#FDBA74' },
+  { min: -4.0, max: -2.0, label: 'Stark zehrend',    semBg: 'rgba(136,19,55,0.35)',  semText: '#FDA4AF' },
 ];
 
-// Keep old LEVELS for E+ interpretation texts
 const LEVELS = [
   { min: 4.0, max: 5.0, label: 'Sehr energievoll', color: '#1F9D62' },
   { min: 3.1, max: 3.9, label: 'Gibt eher Energie', color: '#84cc16' },
@@ -282,73 +240,113 @@ const LEVELS = [
 function getNettoLevel(n) {
   return NETTO_LEVELS.find(l => n >= l.min && n <= l.max) || NETTO_LEVELS[4];
 }
-function getLevel(score) {
-  return LEVELS.find(l => score >= l.min && score <= l.max) || LEVELS[4];
+function getLevel(s) {
+  return LEVELS.find(l => s >= l.min && s <= l.max) || LEVELS[4];
+}
+function getHeroByName(name) {
+  return HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
 }
 function getHeroColor(name) {
-  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
-  return h ? h.color : '#7A9BBE';
+  const h = getHeroByName(name); return h ? h.color : '#7A9BBE';
 }
 function getHeroScore(scores, name) {
-  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
-  return h ? scores[h.key] : null;
+  const h = getHeroByName(name); return h ? scores[h.key] : null;
 }
 function getHeroNetto(nettos, name) {
-  const h = HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
-  return h ? nettos[h.key] : null;
+  const h = getHeroByName(name); return h ? nettos[h.key] : null;
 }
 
-function getNettoBadge(netto) {
-  if (netto === null) return '';
-  if (netto > 0.4) return `<span class="netto-badge pos">Netto +${netto.toFixed(1)}</span>`;
-  if (netto < -0.4) return `<span class="netto-badge neg">Netto ${netto.toFixed(1)}</span>`;
-  return `<span class="netto-badge neu">Netto ±0</span>`;
+function getLevelStyle(netto) {
+  const l = getNettoLevel(netto);
+  return `style="--sem-bg:${l.semBg}; --sem-text:${l.semText}; background:var(--sem-bg); color:var(--sem-text);"`;
 }
 
-function getNettoInsight(heroName, netto) {
-  if (netto === null) return '';
-  if (netto >= 2.0)  return `Die Energiekosten dieses Modus sind gering – du gewinnst beim Einsatz des ${heroName}-Modus deutlich mehr als du ausgibst.`;
-  if (netto >= 0.5)  return `Du gewinnst netto Energie durch diesen Modus. Die Kosten sind vorhanden, aber die Quellen überwiegen.`;
-  if (netto >= -0.4) return `Dieser Modus ist energetisch ausgeglichen – was du investierst, bekommst du in etwa zurück.`;
-  if (netto >= -1.9) return `Die Kosten dieses Modus übersteigen die Quellen leicht. Dosiere ihn bewusst und baue Erholungsphasen ein.`;
-  return `Dieser Modus kostet dich netto deutlich Energie. Langfristiger Einsatz zehrt an deinen Ressourcen – achte auf Ausgleich.`;
-}
+function getInterpText(role, heroName, score, netto) {
+  const nettoLvl = getNettoLevel(netto);
+  const isNeg = netto < -0.4;
+  const isHigh = netto >= 2.0;
+  const isMid = netto >= 0.5 && netto < 2.0;
+  const isNeutral = netto >= -0.4 && netto < 0.5;
 
-function getInterpText(role, heroName, score) {
-  const TEXTS = {
+  const nettoInsight = isHigh
+    ? `Dieser Modus lädt dich netto stark auf: Die Energie, die du beim Einsatz des ${heroName}-Modus gewinnst, übersteigt die Kosten deutlich. Du kannst ihn großzügig einsetzen.`
+    : isMid
+    ? `Dieser Modus lädt dich netto leicht auf. Die Quellen überwiegen die Kosten – du kannst ihn regelmäßig einsetzen, solange du auf Erholungsphasen achtest.`
+    : isNeutral
+    ? `Dieser Modus ist energetisch ausgeglichen. Was du investierst, bekommst du in etwa zurück. Er belastet dich nicht – aber er lädt dich auch nicht aktiv auf.`
+    : `Die Kosten dieses Modus übersteigen die Quellen. Das bedeutet nicht, dass du ihn meiden sollst – aber dosierter Einsatz und bewusste Erholung danach sind wichtig.`;
+
+  const ROLE_TEXTS = {
     basis: {
-      low:  { main: `Du führst deinen Alltag gerade überwiegend aus einem Modus heraus, der dir Energie kostet. Das bedeutet nicht, dass du den ${heroName}-Modus nicht beherrschst – oft ist das Gegenteil der Fall. Es bedeutet aber: Du zahlst dabei einen Preis.`, impulse: `Schau dir an, welche Situationen dich zwingen, hauptsächlich als ${heroName} zu agieren. Ziel ist nicht, den ${heroName} loszuwerden – sondern zu verstehen, wann du dir erlauben kannst, aus energiereicheren Helden heraus zu agieren.` },
-      mid:  { main: `Dein ${heroName}-Modus ist energetisch neutral bis leicht aufladend – je nach Kontext. Du kannst stabil aus diesem Modus führen, aber er trägt dich nicht automatisch.`, impulse: `Welche Rahmenbedingungen heben deinen ${heroName}-Modus von „3" auf „4"? Kontext, Timing und Aufgabenart machen hier den Unterschied.` },
-      high: { main: `Dein ${heroName}-Modus ist eine echte Kraftquelle. Du kannst länger aus diesem Modus heraus agieren, ohne auszubrennen.`, impulse: `Diese Stärke ist dein natürlicher Anker. Ergänze sie durch deinen Zweithelden, damit keine Einseitigkeit entsteht.` }
+      main: isNeg
+        ? `Dein Basisheld ${heroName} ist der Modus, aus dem du am häufigsten heraus agierst – und er kostet dich aktuell netto Energie. Das erklärt, warum sich dauerhaftes Funktionieren anstrengend anfühlen kann. Die Fähigkeiten sind da, aber der Preis ist spürbar.`
+        : isNeutral
+        ? `Dein Basisheld ${heroName} ist energetisch ausgeglichen. Du agierst stabil aus diesem Modus – er erschöpft dich nicht, aber er trägt dich auch nicht automatisch. Der Kontext entscheidet, ob er aufladt oder kostet.`
+        : `Dein Basisheld ${heroName} lädt dich netto auf. Das ist eine starke Ausgangslage: Du agierst am häufigsten aus einem Modus, der dir mehr gibt als er nimmt. Das macht dich langfristig belastbarer.`,
+      impulse: isNeg
+        ? `Schau dir an, welche Situationen oder Rahmenbedingungen die Kosten dieses Modus erhöhen – Rollenerwartungen, Teamdynamiken oder Dauerdruck sind häufige Treiber. Ziel: die Kontexte reduzieren, die den ${heroName}-Modus von aufladend auf zehrend kippen.`
+        : isNeutral
+        ? `Welche konkreten Situationen heben deinen ${heroName}-Modus von ausgeglichen auf aufladend? Kontext, Aufgabenart und Zusammenarbeit machen hier den entscheidenden Unterschied. Das ist der Hebel für mehr Energie.`
+        : `Diese Stärke ist dein natürlicher Anker. Achte darauf, diese aufladenden Kontexte bewusst zu schützen – und ergänze sie durch deinen Zweithelden, damit keine Einseitigkeit entsteht.`
     },
     zweit: {
-      low:  { main: `Dein ${heroName}-Modus als Zweitheld kostet dich aktuell Energie. Wenn dein Hauptpartner im Alltag ein erschöpfender Modus ist, fehlt dir die natürliche Entlastung.`, impulse: `Prüfe, ob du bewusst andere Helden aktivieren kannst, die dir mehr Energie geben.` },
-      mid:  { main: `Dein ${heroName}-Modus als Zweitheld ist situativ nutzbar. Manchmal ergänzt er deinen Basishelden gut, manchmal kostet er etwas.`, impulse: `Identifiziere die Situationen, in denen der ${heroName}-Modus dich wirklich unterstützt – und setze ihn gezielt dort ein.` },
-      high: { main: `Dein ${heroName}-Modus als Zweitheld ist eine echte Ressource. Er ergänzt deinen Basishelden auf eine Weise, die dich stärkt statt kostet.`, impulse: `Ritualisiere die Momente, in denen du ${heroName} als Ergänzung einsetzt – sie sind deine natürlichen Energiequellen.` }
+      main: isNeg
+        ? `Dein Zweitheld ${heroName} ergänzt deinen Basishelden im Alltag – aber er kostet dich aktuell netto Energie. Das bedeutet: Auch dein wichtigster Ausgleichsmodus zehrt. Wenn beide Haupthelden netto kosten, fehlt dir ein natürlicher Erholungskanal.`
+        : isNeutral
+        ? `Dein Zweitheld ${heroName} ist energetisch neutral. Er ist situativ einsetzbar und belastet dich nicht – aber er gibt dir auch keinen aktiven Energieschub.`
+        : `Dein Zweitheld ${heroName} ist eine echte Ressource. Er ergänzt deinen Basishelden auf eine Weise, die dich netto stärkt. Diese Kombination ist eine stabile Energiebasis.`,
+      impulse: isNeg
+        ? `Prüfe, welche Kontexte den ${heroName}-Modus bei dir von netto neutral auf zehrend kippen. Manchmal hilft es, diesen Modus bewusster einzusetzen – weniger als Dauerzustand, mehr als gezieltes Werkzeug.`
+        : isNeutral
+        ? `Identifiziere die Situationen, in denen der ${heroName}-Modus dich wirklich auflädt – und setze ihn gezielt dort ein, statt ihn als Standard-Ergänzung zu verwenden.`
+        : `Ritualisiere die Momente, in denen du ${heroName} als Ergänzung einsetzt. Diese Kombination aus Basis- und Zweitheld ist dein natürlicher Energiekreislauf.`
     },
     stress1: {
-      low:  { main: `Dein erster Stressheld ${heroName} kostet dich schon im Normalzustand Energie. Wenn du unter Druck in diesen Modus rutschst, wird es doppelt belastend.`, impulse: `Lerne deine frühen Stress-Warnsignale kennen: Wann kippt der ${heroName}-Modus bei dir? Je früher du es merkst, desto schneller kannst du gegensteuern.` },
-      mid:  { main: `Dein erster Stressheld ${heroName} ist energetisch neutral. Du zahlst keinen Extra-Preis für das Aktivieren dieses Modus unter Druck.`, impulse: `Kenne die Kontexte, die diesen Modus von „3" auf „2" ziehen – besonders in langen Stressphasen.` },
-      high: { main: `Dein erster Stressheld ${heroName} gibt dir sogar unter Druck eher Energie. Du aktivierst unter Stress einen Modus, der dich nicht zusätzlich belastet.`, impulse: `In Drucksituationen kannst du dem ${heroName}-Modus vertrauen. Achte darauf, danach wieder in deinen Basismodus zurückzufinden.` }
+      main: isNeg
+        ? `Dein erster Stressheld ${heroName} aktiviert sich bei frühem Druck – und kostet dich netto Energie. Das ist eine doppelte Belastung: Stress selbst plus ein zehrender Modus. Frühe Stressphasen können dich dadurch schneller erschöpfen als du erwartest.`
+        : isNeutral
+        ? `Dein erster Stressheld ${heroName} ist energetisch ausgeglichen. Du zahlst keinen Extra-Preis für frühen Stress – der Modus selbst belastet dich nicht zusätzlich.`
+        : `Dein erster Stressheld ${heroName} gibt dir sogar unter frühem Druck netto Energie. Das ist eine ungewöhnliche Stärke: Du aktivierst unter Stress einen Modus, der dich nicht zusätzlich belastet.`,
+      impulse: isNeg
+        ? `Lerne deine frühen Stress-Warnsignale kennen. Je früher du merkst, dass du in den ${heroName}-Modus rutschst, desto schneller kannst du gegensteuern – zum Beispiel durch bewussten Wechsel in einen aufladenderen Modus.`
+        : isNeutral
+        ? `Kenne die Kontexte, die diesen Modus unter Druck von ausgeglichen auf zehrend kippen – besonders in längeren Stressphasen ist das wichtig zu beobachten.`
+        : `In Drucksituationen kannst du dem ${heroName}-Modus vertrauen. Nutze dieses Wissen bewusst – und achte darauf, danach wieder in deinen Basismodus zurückzufinden.`
     },
     stress2: {
-      low:  { main: `Dein zweiter Stressheld ${heroName} wird bei tief eskaliertem Stress aktiv – und kostet dich dabei viel Energie. Das ist die kritischste Kombination.`, impulse: `Baue aktiv Erholungsphasen ein, bevor es zur zweiten Eskalation kommt – auf diesem Level ist Gegensteuern deutlich schwerer.` },
-      mid:  { main: `Dein zweiter Stressheld ${heroName} ist energetisch neutral – auch bei später Eskalation zahlst du keinen Extra-Preis durch den Modus selbst.`, impulse: `Der Fokus liegt auf dem generellen Stressmanagement. Erholungsroutinen und frühe Warnsignale sind dein wichtigstes Werkzeug.` },
-      high: { main: `Dein zweiter Stressheld ${heroName} gibt dir auch bei tiefer Eskalation noch eher Energie. Das ist eine echte Resilienz-Ressource.`, impulse: `Vertraue diesem Modus in extremen Stressphasen – vergiss aber nicht, danach bewusst zu regenerieren.` }
+      main: isNeg
+        ? `Dein zweiter Stressheld ${heroName} aktiviert sich bei tiefer, lang anhaltender Erschöpfung – und er kostet dich netto Energie. Das ist die kritischste Kombination: Tiefe Erschöpfung plus ein zehrender Modus. Langzeitstress ist für dich besonders zehrend.`
+        : isNeutral
+        ? `Dein zweiter Stressheld ${heroName} ist energetisch ausgeglichen – auch bei tiefer Eskalation zahlst du keinen Extra-Preis durch den Modus selbst.`
+        : `Dein zweiter Stressheld ${heroName} gibt dir auch bei tiefer Eskalation netto Energie. Das ist eine echte Resilienz-Ressource – du bleibst auch in extremen Stressphasen handlungsfähig.`,
+      impulse: isNeg
+        ? `Baue aktiv Erholungsphasen ein, bevor es zur zweiten Eskalation kommt. Auf diesem Level ist Gegensteuern deutlich schwerer – Prävention ist wichtiger als Reaktion.`
+        : isNeutral
+        ? `Der Fokus liegt auf dem generellen Stressmanagement. Erholungsroutinen und frühe Warnsignale sind dein wichtigstes Werkzeug – nicht der Modus selbst.`
+        : `Vertraue diesem Modus in extremen Stressphasen. Vergiss aber nicht, danach bewusst zu regenerieren – auch starke Ressourcen brauchen Erholung.`
     }
   };
-  const cat = score <= 2.5 ? 'low' : score <= 3.5 ? 'mid' : 'high';
-  return TEXTS[role][cat];
+
+  return { main: ROLE_TEXTS[role].main, nettoInsight, impulse: ROLE_TEXTS[role].impulse };
+}
+
+function getPotentialText(heroName, netto, roleHeroes) {
+  if (netto < 0.5) return null;
+  const isHigh = netto >= 2.0;
+  if (isHigh) {
+    return `Der ${heroName}-Modus lädt dich netto stark auf – auch wenn er nicht dein zugewiesener Basis- oder Zweitheld ist. Das bedeutet: Du hast hier eine brachliegende Ressource. In Situationen, die dem ${heroName}-Modus entgegenkommen, kannst du bewusst in diesen Modus wechseln – ohne dass es dich erschöpft. Frage dich: Wann im Alltag hast du die Möglichkeit, aus dem ${heroName}-Modus heraus zu handeln?`;
+  }
+  return `Der ${heroName}-Modus gibt dir netto Energie, auch wenn er nicht dein Hauptheld ist. Er kann als situativer Verstärker dienen – zum Beispiel in Phasen, in denen dein Basisheld gerade viel Energie kostet.`;
 }
 
 function getPatternText(nettos) {
   const vals = Object.values(nettos).filter(v => v !== null);
   if (!vals.length) return null;
-  const posCount = vals.filter(v => v > 0.4).length;
+  const posCount = vals.filter(v => v >= 0.5).length;
   const negCount = vals.filter(v => v < -0.4).length;
-  if (negCount >= 4) return { title: 'Gesamtbild: Hohes Netto-Energiedefizit', text: 'Dein Profil zeigt, dass die Kosten deiner Heldenmodi aktuell die Quellen in vielen Bereichen übersteigen. Das ist ein wichtiges Signal: Nicht die Fähigkeiten fehlen – sondern der Kontext oder die Erholung, die nötig wäre, um die Balance zu halten.' };
-  if (posCount >= 4) return { title: 'Gesamtbild: Starke Netto-Ressourcenbasis', text: 'Deine Heldenmodi laden dich netto auf – die Quellen übersteigen die Kosten in den meisten Bereichen. Das ist eine stabile Ausgangslage für nachhaltiges Führen und Entscheiden.' };
-  return { title: 'Gesamtbild: Gemischte Energiebilanz', text: 'Dein Profil zeigt eine Mischung aus netto aufladenden und zehrenden Modi. Das gibt dir klare Orientierung: Welche Helden kannst du großzügig einsetzen – und welche solltest du dosieren?' };
+  if (negCount >= 4) return { title: 'Gesamtbild: Hohes Netto-Energiedefizit', text: 'Dein Profil zeigt, dass die Kosten deiner Heldenmodi aktuell die Quellen in vielen Bereichen übersteigen. Das ist ein wichtiges Signal: Nicht die Fähigkeiten fehlen – sondern der Kontext oder die Erholung, die nötig wäre, um die Balance zu halten. Der erste Schritt ist zu verstehen, welche Rahmenbedingungen die Kosten treiben – bevor du an den einzelnen Helden arbeitest.' };
+  if (posCount >= 4) return { title: 'Gesamtbild: Starke Netto-Ressourcenbasis', text: 'Deine Heldenmodi laden dich netto in den meisten Bereichen auf. Das ist eine stabile Ausgangslage: Du kannst aus vielen Modi heraus agieren, ohne schnell auszubrennen. Nutze dieses Wissen, um gezielt die aufladendsten Kontexte zu schützen und zu stärken.' };
+  return { title: 'Gesamtbild: Gemischte Energiebilanz', text: 'Dein Profil zeigt eine Mischung aus aufladenden und zehrenden Modi. Das ist normal – und gibt dir klare Orientierung. Die aufladenden Helden sind deine natürlichen Ressourcen, die zehrenden brauchen bewussteren Einsatz und mehr Erholung danach.' };
 }
 
 function getParams() {
@@ -389,82 +387,56 @@ function render() {
     return;
   }
 
-  const useNetto = hasNetto;
+  const roleHeroes = [basis, zweit, stress1, stress2].map(s => s.toLowerCase()).filter(Boolean);
 
-  let html = '';
-
-  /* SCALE HEADER */
-  if (useNetto) {
-    html += `<div class="scale-row"><div></div><div class="scale-track">
-      <span>−4</span><span>−2</span><span>0</span><span>+2</span><span>+4</span>
-      <div class="scale-zero-line"></div>
-    </div><div></div></div>`;
-  } else {
-    html += `<div class="scale-row"><div></div><div class="scale-track">
-      <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-    </div><div></div></div>`;
-  }
-
-  html += `<div class="bars">`;
+  let html = `<div class="scale-row"><div></div><div class="scale-track">
+    <span>−4</span><span>−2</span><span>0</span><span>+2</span><span>+4</span>
+    <div class="scale-zero-line"></div>
+  </div><div></div></div><div class="bars">`;
 
   HEROES.forEach((h, i) => {
-    const score  = scores[h.key];
-    const netto  = nettos[h.key];
-    const badge  = getRoleBadge(h.label, basis, zweit, stress1, stress2);
+    const netto = nettos[h.key];
+    const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
+    let trackHtml = '', scoreHtml = '';
 
-    let trackHtml = '';
-    let scoreHtml = '';
-
-    if (useNetto && netto !== null) {
+    if (netto !== null) {
       const isNeg = netto < 0;
-      const pct = Math.min(50, (Math.abs(netto) / 4) * 50); // max 50% each side
-      const fillColor = isNeg ? '#C0266A' : h.color;
-      trackHtml = `
-        <div class="netto-track-wrap">
-          <div class="netto-bg"></div>
-          <div class="netto-zero"></div>
-          <div class="netto-fill ${isNeg ? 'neg' : 'pos'}"
-               data-pct="${pct}"
-               style="background:${fillColor}">
-          </div>
-        </div>`;
+      const pct = Math.min(50, (Math.abs(netto) / 4) * 50);
       const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
+      trackHtml = `<div class="netto-track-wrap">
+        <div class="netto-bg"></div>
+        <div class="netto-zero"></div>
+        <div class="netto-fill ${isNeg ? 'neg' : 'pos'}" data-pct="${pct}" style="${!isNeg ? 'background:'+h.color : ''}"></div>
+      </div>`;
       scoreHtml = `<div class="bar-score ${isNeg ? 'neg' : ''}" style="${!isNeg ? 'color:'+h.color : ''}">${display}</div>`;
     } else {
-      const pct = (score / 5) * 100;
-      trackHtml = `
-        <div class="netto-track-wrap">
-          <div class="netto-bg"></div>
-          <div class="netto-fill pos" data-pct="${pct / 2}" style="background:${h.color}; left:0; border-radius:50px;"></div>
-        </div>`;
-      scoreHtml = `<div class="bar-score" style="color:${h.color}">${score.toFixed(1)}</div>`;
+      const pct = (scores[h.key] / 5) * 50;
+      trackHtml = `<div class="netto-track-wrap">
+        <div class="netto-bg"></div>
+        <div class="netto-zero"></div>
+        <div class="netto-fill pos" data-pct="${pct}" style="background:${h.color}"></div>
+      </div>`;
+      scoreHtml = `<div class="bar-score" style="color:${h.color}">${scores[h.key].toFixed(1)}</div>`;
     }
 
-    html += `
-      <div class="bar-row" style="--hero-color:${h.color}; transition-delay:${i * 0.08}s">
-        <div class="bar-label">
-          ${h.label}
-          ${badge ? `<span class="role-badge">${badge}</span>` : ''}
-        </div>
-        ${trackHtml}
-        ${scoreHtml}
-      </div>`;
+    html += `<div class="bar-row" style="--hero-color:${h.color}; transition-delay:${i * 0.08}s">
+      <div class="bar-label">${h.label}${badge ? `<span class="role-badge">${badge}</span>` : ''}</div>
+      ${trackHtml}${scoreHtml}
+    </div>`;
   });
 
   html += `</div>`;
 
-  /* LEGEND */
-  if (useNetto) {
-    html += `<div class="netto-legend">
-      <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#1F9D62"></div>Stark aufladend (+2 bis +4)</div>
-      <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#84cc16"></div>Leicht aufladend (+0.5 bis +2)</div>
-      <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#F2B705"></div>Ausgeglichen (±0.4)</div>
-      <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#F0672A"></div>Leicht zehrend (−0.5 bis −2)</div>
-      <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#C0266A"></div>Stark zehrend (−2 bis −4)</div>
-    </div>`;
-  }
+  // Legend
+  html += `<div class="netto-legend">
+    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#86EFAC"></div>Stark aufladend (+2 bis +4)</div>
+    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#93C5FD"></div>Aufladend (+0.5 bis +2)</div>
+    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDE68A"></div>Ausgeglichen (±0.4)</div>
+    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDBA74"></div>Zehrend (−0.5 bis −2)</div>
+    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDA4AF"></div>Stark zehrend (−2 bis −4)</div>
+  </div>`;
 
-  /* INTERPRETATION */
+  // Interpretation
   const roles = [
     { key: 'basis',   name: basis,   label: 'Basisheld' },
     { key: 'zweit',   name: zweit,   label: 'Zweitheld' },
@@ -472,70 +444,93 @@ function render() {
     { key: 'stress2', name: stress2, label: 'Stressheld 2' },
   ].filter(r => r.name);
 
-  if (roles.length > 0) {
+  // Potential heroes: not in roles, netto >= 0.5
+  const potentialHeroes = HEROES.filter(h => {
+    const netto = nettos[h.key];
+    return netto !== null && netto >= 0.5 && !roleHeroes.includes(h.label.toLowerCase());
+  }).sort((a, b) => nettos[b.key] - nettos[a.key]);
+
+  if (roles.length > 0 || potentialHeroes.length > 0) {
     html += `<hr class="divider"><div class="interp-title">Deine persönliche Auswertung</div>`;
 
-    if (useNetto) {
-      const pattern = getPatternText(nettos);
-      if (pattern) html += `<div class="pattern-box" id="pattern-box">
-        <div class="pattern-title">${pattern.title}</div>
-        <div class="pattern-text">${pattern.text}</div>
-      </div>`;
-    }
+    const pattern = getPatternText(nettos);
+    if (pattern) html += `<div class="pattern-box" id="pattern-box">
+      <div class="pattern-title">${pattern.title}</div>
+      <div class="pattern-text">${pattern.text}</div>
+    </div>`;
 
     roles.forEach((r, i) => {
       const score = getHeroScore(scores, r.name);
       if (score === null) return;
       const netto = getHeroNetto(nettos, r.name);
-      const level = getLevel(score);
-      const nettoLevel = (useNetto && netto !== null) ? getNettoLevel(netto) : null;
+      if (netto === null) return;
       const heroColor = getHeroColor(r.name);
-      const interp = getInterpText(r.key, r.name, score);
-      const nettoBadge = (useNetto && netto !== null) ? getNettoBadge(netto) : '';
-      const nettoInsight = (useNetto && netto !== null) ? getNettoInsight(r.name, netto) : '';
-      const levelToShow = nettoLevel || level;
+      const nettoLvl = getNettoLevel(netto);
+      const interp = getInterpText(r.key, r.name, score, netto);
+      const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
 
-      html += `
-        <div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; --level-color:${levelToShow.color}; transition-delay:${0.1 + i * 0.1}s">
+      html += `<div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; transition-delay:${0.1 + i * 0.1}s">
+        <div class="interp-card-header">
+          <div>
+            <div class="interp-role">${r.label}</div>
+            <div class="interp-hero">${r.name}</div>
+          </div>
+          <div style="display:flex;align-items:center;margin-left:auto;gap:6px;">
+            <span class="netto-badge" ${getLevelStyle(netto)}>Netto ${display}</span>
+            <span class="interp-level" ${getLevelStyle(netto)}>${nettoLvl.label}</span>
+          </div>
+        </div>
+        <div class="interp-text">${interp.main}</div>
+        <div class="netto-insight">${interp.nettoInsight}</div>
+        <div class="interp-impulse"><strong>Coaching-Impuls</strong>${interp.impulse}</div>
+      </div>`;
+    });
+
+    // Potential section
+    if (potentialHeroes.length > 0) {
+      html += `<div class="potential-section-title">Dein ungenutztes Energiepotenzial</div>`;
+      potentialHeroes.forEach((h, i) => {
+        const netto = nettos[h.key];
+        const nettoLvl = getNettoLevel(netto);
+        const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
+        const potText = getPotentialText(h.label, netto, roleHeroes);
+        if (!potText) return;
+        html += `<div class="interp-card" id="pcrd-${i}" style="--role-color:${h.color}; transition-delay:${0.3 + i * 0.1}s">
           <div class="interp-card-header">
             <div>
-              <div class="interp-role">${r.label}</div>
-              <div class="interp-hero">${r.name}</div>
+              <div class="interp-role">Potenzial-Held</div>
+              <div class="interp-hero">${h.label}</div>
             </div>
-            <div style="display:flex;align-items:center;margin-left:auto;gap:4px;">
-              ${nettoBadge}
-              <div class="interp-level">${levelToShow.label}</div>
+            <div style="display:flex;align-items:center;margin-left:auto;gap:6px;">
+              <span class="netto-badge" ${getLevelStyle(netto)}>Netto ${display}</span>
+              <span class="interp-level" ${getLevelStyle(netto)}>${nettoLvl.label}</span>
             </div>
           </div>
-          <div class="interp-text">${interp.main}</div>
-          ${nettoInsight ? `<div class="netto-insight">${nettoInsight}</div>` : ''}
-          <div class="interp-impulse">
-            <strong>Coaching-Impuls</strong>
-            ${interp.impulse}
-          </div>
+          <div class="interp-text">${potText}</div>
+          <div class="interp-impulse"><strong>Aktivierungs-Impuls</strong>Überlege: In welchen konkreten Situationen dieser Woche könntest du bewusst in den ${h.label}-Modus wechseln? Welche Aufgaben, Gespräche oder Entscheidungen passen zu diesem Modus – und wann hast du die Freiheit, ihn zu wählen?</div>
         </div>`;
-    });
+      });
+    }
   }
 
   el.innerHTML = html;
 
-  /* ANIMATE */
   requestAnimationFrame(() => {
     document.querySelectorAll('.bar-row').forEach((row, i) => {
       setTimeout(() => {
         row.classList.add('visible');
-        row.querySelectorAll('.netto-fill').forEach(fill => {
-          setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 50);
+        row.querySelectorAll('.netto-fill').forEach(f => {
+          setTimeout(() => { f.style.width = f.dataset.pct + '%'; }, 50);
         });
       }, i * 80);
     });
     setTimeout(() => {
       const pb = document.getElementById('pattern-box');
       if (pb) pb.classList.add('visible');
-      roles.forEach((_, i) => {
+      [...roles, ...potentialHeroes].forEach((_, i) => {
         setTimeout(() => {
-          const card = document.getElementById(`icard-${i}`);
-          if (card) card.classList.add('visible');
+          const c = document.getElementById(`icard-${i}`) || document.getElementById(`pcrd-${i}`);
+          if (c) c.classList.add('visible');
         }, i * 120);
       });
     }, 700);
