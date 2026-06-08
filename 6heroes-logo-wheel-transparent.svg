@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  
+  <path d="M100,100 L100,8 A92,92 0 0,1 179.6,54 Z" fill="#F2B705"/>
+  <path d="M100,100 L179.6,54 A92,92 0 0,1 179.6,146 Z" fill="#0B63CE"/>
+  <path d="M100,100 L179.6,146 A92,92 0 0,1 100,192 Z" fill="#334155"/>
+  <path d="M100,100 L100,192 A92,92 0 0,1 20.4,146 Z" fill="#C0266A"/>
+  <path d="M100,100 L20.4,146 A92,92 0 0,1 20.4,54 Z" fill="#1F9D62"/>
+  <path d="M100,100 L20.4,54 A92,92 0 0,1 100,8 Z" fill="#F0672A"/>
+  <line x1="100" y1="100" x2="100" y2="8"     stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="179.6" y2="54"  stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="179.6" y2="146" stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="100" y2="192"   stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="20.4" y2="146"  stroke="#FFFFFF" stroke-width="1.5"/>
+  <line x1="100" y1="100" x2="20.4" y2="54"   stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="44" fill="#FFFFFF"/>
+  <text x="100" y="107" font-family="Georgia,'Times New Roman',serif" font-weight="bold" font-size="19" fill="#1B2333" text-anchor="middle">6Heroes</text>
+</svg>
