@@ -10,6 +10,7 @@ exports.handler = async function(event) {
   }
 
   const BASE_ID = 'appO19P3GW2gNHFWm';
+  const UPGRADE_URL = 'https://myablefy.com/s/6heroes/testprodukt-zapier-7ae4eae2/payment';
 
   try {
     // 1. Fetch HeroTypes table to build a recordID -> name map
@@ -28,7 +29,7 @@ exports.handler = async function(event) {
     });
 
     // 2. Fetch the Profile record
-    const fields = ['BaseHero_Type','SecondHero_Type','StressHero1_Type','StressHero2_Type','Paid_URL','Kombi_URL','S1_URL','S2_URL'];
+    const fields = ['BaseHero_Type','SecondHero_Type','StressHero1_Type','StressHero2_Type','Paid_URL','Kombi_URL','S1_URL','S2_URL','UserID_LU_Text'];
     const fieldParams = fields.map(f => `fields[]=${encodeURIComponent(f)}`).join('&');
     const filterFormula = encodeURIComponent(`{ProfileID}="${profileId}"`);
     const profileUrl = `https://api.airtable.com/v0/${BASE_ID}/Profiles?filterByFormula=${filterFormula}&${fieldParams}`;
@@ -58,18 +59,38 @@ exports.handler = async function(event) {
       return String(value);
     }
 
+    // 3. Fetch Is_Paid_Now from Users table via UserID_LU_Text
+    let isPaid = false;
+    const userEmail = f['UserID_LU_Text'];
+    if (userEmail) {
+      const userFilter = encodeURIComponent(`{UserID}='${userEmail}'`);
+      const usersUrl = `https://api.airtable.com/v0/${BASE_ID}/Users?filterByFormula=${userFilter}&fields[]=Is_Paid_Now`;
+      const usersRes = await fetch(usersUrl, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (usersRes.ok) {
+        const usersData = await usersRes.json();
+        if (usersData.records && usersData.records.length > 0) {
+          isPaid = !!usersData.records[0].fields['Is_Paid_Now'];
+        }
+      }
+      // If Users lookup fails, isPaid stays false (fail-safe: show locked tiles)
+    }
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({
-        base:      resolveHero(f['BaseHero_Type']),
-        second:    resolveHero(f['SecondHero_Type']),
-        s1:        resolveHero(f['StressHero1_Type']),
-        s2:        resolveHero(f['StressHero2_Type']),
-        paid_url:  f['Paid_URL']  || '#',
-        kombi_url: f['Kombi_URL'] || '#',
-        s1_url:    f['S1_URL']    || '#',
-        s2_url:    f['S2_URL']    || '#',
+        base:        resolveHero(f['BaseHero_Type']),
+        second:      resolveHero(f['SecondHero_Type']),
+        s1:          resolveHero(f['StressHero1_Type']),
+        s2:          resolveHero(f['StressHero2_Type']),
+        paid_url:    f['Paid_URL']  || '#',
+        kombi_url:   f['Kombi_URL'] || '#',
+        s1_url:      f['S1_URL']    || '#',
+        s2_url:      f['S2_URL']    || '#',
+        isPaid:      isPaid,
+        upgrade_url: UPGRADE_URL,
       })
     };
   } catch (err) {
