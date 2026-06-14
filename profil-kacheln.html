@@ -1,99 +1,226 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dein Heldenprofil</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #0f1117; --surface: #181c27;
-      --border: rgba(255,255,255,0.07);
-      --text-primary: #f0f2f7; --text-secondary: #8b93a7; --text-muted: #555e72;
-      --innovator: #F2B705; --commander: #0B63CE; --strategist-light: #8ca0be;
-      --sage: #C0266A; --guardian: #1F9D62; --explorer: #F0672A;
-    }
-    body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; min-height: 100vh; padding: 24px 16px 40px; }
-    .section-header { margin-bottom: 20px; }
-    .section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
-    .section-title { font-size: 18px; font-weight: 600; line-height: 1.3; }
-    .section-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
-    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; transition: transform 0.15s ease; }
-    .hero-card:hover { transform: translateY(-2px); }
-    .hero-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--hero-color); border-radius: 14px 14px 0 0; }
-    .hero-card::after { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, var(--hero-color) 0%, transparent 70%); opacity: 0.06; pointer-events: none; }
-    .card-role { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--hero-color); }
-    .card-hero-name { font-size: 20px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
-    .card-divider { height: 1px; background: var(--border); }
-    .card-desc { font-size: 11.5px; color: var(--text-secondary); line-height: 1.6; flex: 1; }
-    .card-btn { display: block; text-align: center; padding: 9px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; text-decoration: none; background: transparent; border: 1px solid var(--hero-color); color: var(--hero-color); transition: background 0.15s ease, color 0.15s ease; }
-    .card-btn:hover { background: var(--hero-color); color: #fff; }
-    .color-Innovator  { --hero-color: var(--innovator); }
-    .color-Commander  { --hero-color: var(--commander); }
-    .color-Strategist { --hero-color: var(--strategist-light); }
-    .color-Sage       { --hero-color: var(--sage); }
-    .color-Guardian   { --hero-color: var(--guardian); }
-    .color-Explorer   { --hero-color: var(--explorer); }
-    .status { display: flex; align-items: center; justify-content: center; min-height: 200px; color: var(--text-muted); font-size: 13px; grid-column: 1/-1; }
-    .error { color: #e05252; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Heldenprofil – 6Heroes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --accent: #F2B705;
+
+    --c-innovator: #F2B705;
+    --c-commander: #2563eb;
+    --c-strategist: #1e3a8a;
+    --c-sage: #db2777;
+    --c-guardian: #16a34a;
+    --c-explorer: #ea580c;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-main);
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .tile {
+    position: relative;
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  .tile-top {
+    height: 5px;
+  }
+
+  .tile-body {
+    padding: 18px 16px 20px;
+  }
+
+  .tile-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+
+  .tile-role {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .tile-hero {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* Locked state */
+  .tile.locked .tile-body {
+    filter: blur(5px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 2;
+  }
+
+  .lock-icon {
+    font-size: 22px;
+  }
+
+  .lock-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+    text-align: center;
+    padding: 0 8px;
+  }
+
+  .loading, .error {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px 16px;
+    font-size: 14px;
+  }
+
+  .error {
+    color: #f87171;
+  }
+</style>
 </head>
 <body>
-  <div class="section-header">
-    <div class="section-label">Dein Heldenprofil</div>
-    <div class="section-title">Deine vier Helden</div>
-    <div class="section-subtitle">Wie du dich bewegst – im Alltag, in der Zusammenarbeit, unter Druck.</div>
-  </div>
-  <div class="cards-grid" id="cardsGrid">
-    <div class="status">Lade Profil…</div>
-  </div>
+
+  <div id="content" class="loading">Lade dein Heldenprofil …</div>
+
   <script>
-    const cardContent = {
-      base:   { role: 'Basisheld',    desc: 'Der Basisheld ist dein dominantes Energiemuster – die Art, wie du von Natur aus denkst, entscheidest und wirkst. Er zeigt, welche Situationen dir leicht fallen und wo du am stärksten bist.', btn: 'Zum Basisheld' },
-      second: { role: 'Zweitheld',    desc: 'Der Zweitheld ergänzt deinen Basishelden. Er tritt auf, wenn dein primäres Muster nicht greift – und erklärt, warum du in manchen Situationen überraschend anders reagierst als andere es von dir erwarten.', btn: 'Zum Zweitheld' },
-      s1:     { role: 'Stressheld 1', desc: 'Unter Druck wechselst du in einen anderen Modus. Dieser erste Stressheld zeigt, wie du reagierst wenn die Energie knapp wird – welche Verhaltensweisen automatisch übernehmen.', btn: 'Zum Stressheld 1' },
-      s2:     { role: 'Stressheld 2', desc: 'Bei anhaltendem Druck kann ein zweites Muster auftauchen. Dieser Stressheld ist weniger vertraut – und daher oft schwerer zu erkennen. Ihn zu kennen hilft dir, früher gegenzusteuern.', btn: 'Zum Stressheld 2' },
+    const HERO_COLORS = {
+      'Innovator':  'var(--c-innovator)',
+      'Commander':  'var(--c-commander)',
+      'Strategist': 'var(--c-strategist)',
+      'Sage':       'var(--c-sage)',
+      'Guardian':   'var(--c-guardian)',
+      'Explorer':   'var(--c-explorer)',
     };
 
-    function buildCard(heroName, content, url) {
-      return `<div class="hero-card color-${heroName}">
-        <div class="card-role">${content.role}</div>
-        <div class="card-hero-name">${heroName}</div>
-        <div class="card-divider"></div>
-        <div class="card-desc">${content.desc}</div>
-        <a class="card-btn" href="${url}" target="_blank">${content.btn} →</a>
-      </div>`;
+    const HERO_ICONS = {
+      'Innovator':  '💡',
+      'Commander':  '🎯',
+      'Strategist': '🧭',
+      'Sage':       '🔥',
+      'Guardian':   '🛡️',
+      'Explorer':   '🧩',
+    };
+
+    function tileHTML({ role, hero, url, locked, upgradeUrl }) {
+      const color = HERO_COLORS[hero] || '#475569';
+      const icon = HERO_ICONS[hero] || '⭐';
+      const href = locked ? upgradeUrl : url;
+      const lockOverlay = locked
+        ? `<div class="lock-overlay">
+             <span class="lock-icon">🔒</span>
+             <span class="lock-label">Jetzt freischalten</span>
+           </div>`
+        : '';
+
+      return `
+        <a class="tile ${locked ? 'locked' : ''}" href="${href}" target="_top">
+          ${lockOverlay}
+          <div class="tile-top" style="background:${color}"></div>
+          <div class="tile-body">
+            <div class="tile-icon" style="background:${color}33; color:${color}">${icon}</div>
+            <div class="tile-role">${role}</div>
+            <div class="tile-hero">${hero}</div>
+          </div>
+        </a>
+      `;
     }
 
-    async function loadProfile() {
-      const grid = document.getElementById('cardsGrid');
+    async function init() {
       const params = new URLSearchParams(window.location.search);
-      const profileId = params.get('id');
+      const id = params.get('id');
+      const content = document.getElementById('content');
 
-      if (!profileId) {
-        grid.innerHTML = '<div class="status error">Kein Profil gefunden.</div>';
+      if (!id) {
+        content.className = 'error';
+        content.textContent = 'Kein Profil angegeben.';
         return;
       }
 
       try {
-        const res = await fetch(`/.netlify/functions/profile?id=${encodeURIComponent(profileId)}`);
-        if (!res.ok) throw new Error('Status ' + res.status);
-        const p = await res.json();
-        if (p.error) throw new Error(p.error);
+        const res = await fetch(`/.netlify/functions/profile?id=${encodeURIComponent(id)}`);
+        if (!res.ok) throw new Error('Profil konnte nicht geladen werden');
+        const data = await res.json();
 
-        grid.innerHTML =
-          buildCard(p.base,   cardContent.base,   p.paid_url)  +
-          buildCard(p.second, cardContent.second, p.kombi_url) +
-          buildCard(p.s1,     cardContent.s1,     p.s1_url)    +
-          buildCard(p.s2,     cardContent.s2,     p.s2_url);
+        const isPaid = !!data.isPaid;
+        const upgradeUrl = data.upgrade_url || '#';
+
+        const tiles = [
+          { role: 'Basisheld',   hero: data.base,   url: data.paid_url,  locked: false },
+          { role: 'Zweitheld',   hero: data.second, url: data.kombi_url, locked: !isPaid },
+          { role: 'Stressheld 1', hero: data.s1,    url: data.s1_url,    locked: !isPaid },
+          { role: 'Stressheld 2', hero: data.s2,    url: data.s2_url,    locked: !isPaid },
+        ];
+
+        const html = `<div class="grid">
+          ${tiles.map(t => tileHTML({ ...t, upgradeUrl })).join('')}
+        </div>`;
+
+        content.outerHTML = html;
       } catch (err) {
-        grid.innerHTML = `<div class="status error">Fehler: ${err.message}</div>`;
+        content.className = 'error';
+        content.textContent = 'Profil konnte nicht geladen werden.';
       }
     }
 
-    loadProfile();
+    init();
   </script>
 </body>
 </html>
