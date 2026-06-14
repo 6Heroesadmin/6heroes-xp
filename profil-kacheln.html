@@ -9,25 +9,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #0f172a;
+    --bg: transparent;
     --card-bg: #1e293b;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --accent: #F2B705;
-
-    --c-innovator: #F2B705;
-    --c-commander: #0B63CE;
-    --c-strategist: #334155;
-    --c-sage: #C0266A;
-    --c-guardian: #1F9D62;
-    --c-explorer: #F0672A;
   }
 
-  .tile-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-top: 6px;
-    line-height: 1.4;
+  html, body {
+    min-height: 100vh;
   }
 
   body {
@@ -101,6 +91,13 @@
     letter-spacing: -0.01em;
   }
 
+  .tile-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
   /* Locked state */
   .tile.locked .tile-body {
     filter: blur(5px);
@@ -132,23 +129,22 @@
     padding: 0 8px;
   }
 
-  .loading, .error {
+  .error {
     text-align: center;
-    color: var(--text-muted);
+    color: #f87171;
     padding: 40px 16px;
     font-size: 14px;
-  }
-
-  .error {
-    color: #f87171;
   }
 </style>
 </head>
 <body>
 
-  <div id="content" class="loading">Lade dein Heldenprofil …</div>
+  <div id="content"></div>
 
   <script>
+    const BASE_SITE = 'https://regal-mooncake-d3a250.netlify.app';
+    const UPGRADE_URL = 'https://myablefy.com/s/6heroes/testprodukt-zapier-7ae4eae2/payment';
+
     const HERO_COLORS = {
       'Innovator':  '#F2B705',
       'Commander':  '#0B63CE',
@@ -167,13 +163,6 @@
       'Explorer':   'rgba(240,103,42,0.2)',
     };
 
-    const ROLE_DESCRIPTIONS = {
-      'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
-      'Zweitheld':    'Deine zweite Seite – verstärkt deinen Basishelden.',
-      'Stressheld 1': 'Deine erste Reaktion unter Druck.',
-      'Stressheld 2': 'Deine zweite Reaktion unter Druck.',
-    };
-
     const HERO_ICONS = {
       'Innovator':  '💡',
       'Commander':  '🎯',
@@ -183,12 +172,30 @@
       'Explorer':   '🧩',
     };
 
-    function tileHTML({ role, hero, url, locked, upgradeUrl }) {
-      const color = HERO_COLORS[hero] || '#475569';
-      const tint = HERO_TINT[hero] || 'rgba(71,85,105,0.2)';
-      const icon = HERO_ICONS[hero] || '⭐';
+    const ROLE_DESCRIPTIONS = {
+      'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
+      'Zweitheld':    'Deine zweite Seite – verstärkt deinen Basishelden.',
+      'Stressheld 1': 'Deine erste Reaktion unter Druck.',
+      'Stressheld 2': 'Deine zweite Reaktion unter Druck.',
+    };
+
+    // Normalize: capitalize first letter, lowercase rest (e.g. "commander" -> "Commander")
+    function normalizeHero(name) {
+      if (!name) return '';
+      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    }
+
+    function lc(name) {
+      return (name || '').toLowerCase();
+    }
+
+    function tileHTML({ role, hero, url, locked }) {
+      const heroNorm = normalizeHero(hero);
+      const color = HERO_COLORS[heroNorm] || '#475569';
+      const tint = HERO_TINT[heroNorm] || 'rgba(71,85,105,0.2)';
+      const icon = HERO_ICONS[heroNorm] || '⭐';
       const desc = ROLE_DESCRIPTIONS[role] || '';
-      const href = locked ? upgradeUrl : url;
+      const href = locked ? UPGRADE_URL : url;
       const lockOverlay = locked
         ? `<div class="lock-overlay">
              <span class="lock-icon">🔒</span>
@@ -203,48 +210,57 @@
           <div class="tile-body">
             <div class="tile-icon" style="background:${tint}; color:${color}">${icon}</div>
             <div class="tile-role">${role}</div>
-            <div class="tile-hero" style="color:${color}">${hero}</div>
+            <div class="tile-hero" style="color:${color}">${heroNorm}</div>
             <div class="tile-desc">${desc}</div>
           </div>
         </a>
       `;
     }
 
-    async function init() {
+    function init() {
       const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
+      const base = params.get('b');
+      const second = params.get('z');
+      const s1 = params.get('s1');
+      const s2 = params.get('s2');
+      const isPaid = params.get('paid') === '1';
+
       const content = document.getElementById('content');
 
-      if (!id) {
+      if (!base || !second || !s1 || !s2) {
         content.className = 'error';
-        content.textContent = 'Kein Profil angegeben.';
+        content.textContent = 'Profil konnte nicht geladen werden.';
         return;
       }
 
-      try {
-        const res = await fetch(`/.netlify/functions/profile?id=${encodeURIComponent(id)}`);
-        if (!res.ok) throw new Error('Profil konnte nicht geladen werden');
-        const data = await res.json();
+      const tiles = [
+        {
+          role: 'Basisheld',
+          hero: base,
+          url: `${BASE_SITE}/paid_${lc(base)}.html`,
+          locked: false,
+        },
+        {
+          role: 'Zweitheld',
+          hero: second,
+          url: `${BASE_SITE}/kombi_${lc(base)}_${lc(second)}.html`,
+          locked: !isPaid,
+        },
+        {
+          role: 'Stressheld 1',
+          hero: s1,
+          url: `${BASE_SITE}/stress_${lc(s1)}_s1.html`,
+          locked: !isPaid,
+        },
+        {
+          role: 'Stressheld 2',
+          hero: s2,
+          url: `${BASE_SITE}/stress_${lc(s2)}_s2.html`,
+          locked: !isPaid,
+        },
+      ];
 
-        const isPaid = !!data.isPaid;
-        const upgradeUrl = data.upgrade_url || '#';
-
-        const tiles = [
-          { role: 'Basisheld',   hero: data.base,   url: data.paid_url,  locked: false },
-          { role: 'Zweitheld',   hero: data.second, url: data.kombi_url, locked: !isPaid },
-          { role: 'Stressheld 1', hero: data.s1,    url: data.s1_url,    locked: !isPaid },
-          { role: 'Stressheld 2', hero: data.s2,    url: data.s2_url,    locked: !isPaid },
-        ];
-
-        const html = `<div class="grid">
-          ${tiles.map(t => tileHTML({ ...t, upgradeUrl })).join('')}
-        </div>`;
-
-        content.outerHTML = html;
-      } catch (err) {
-        content.className = 'error';
-        content.textContent = 'Profil konnte nicht geladen werden.';
-      }
+      content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}</div>`;
     }
 
     init();
