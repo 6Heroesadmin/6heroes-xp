@@ -219,10 +219,10 @@
 
     function init() {
       const params = new URLSearchParams(window.location.search);
-      const base = params.get('b');
-      const second = params.get('z');
-      const s1 = params.get('s1');
-      const s2 = params.get('s2');
+      const base = params.get('basis');
+      const second = params.get('zweit');
+      const s1 = params.get('stress1');
+      const s2 = params.get('stress2');
       const isPaid = params.get('paid') === '1';
 
       const content = document.getElementById('content');
