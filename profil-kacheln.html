@@ -16,11 +16,11 @@
     --accent: #F2B705;
 
     --c-innovator: #F2B705;
-    --c-commander: #2563eb;
-    --c-strategist: #1e3a8a;
-    --c-sage: #db2777;
-    --c-guardian: #16a34a;
-    --c-explorer: #ea580c;
+    --c-commander: #0B63CE;
+    --c-strategist: #334155;
+    --c-sage: #C0266A;
+    --c-guardian: #1F9D62;
+    --c-explorer: #F0672A;
   }
 
   .tile-desc {
@@ -59,6 +59,7 @@
     display: block;
     border: 1.5px solid rgba(255,255,255,0.06);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
+    color: inherit;
   }
 
   .tile:hover {
@@ -150,20 +151,20 @@
   <script>
     const HERO_COLORS = {
       'Innovator':  '#F2B705',
-      'Commander':  '#2563eb',
-      'Strategist': '#1e3a8a',
-      'Sage':       '#db2777',
-      'Guardian':   '#16a34a',
-      'Explorer':   '#ea580c',
+      'Commander':  '#0B63CE',
+      'Strategist': '#334155',
+      'Sage':       '#C0266A',
+      'Guardian':   '#1F9D62',
+      'Explorer':   '#F0672A',
     };
 
     const HERO_TINT = {
       'Innovator':  'rgba(242,183,5,0.2)',
-      'Commander':  'rgba(37,99,235,0.2)',
-      'Strategist': 'rgba(30,58,138,0.2)',
-      'Sage':       'rgba(219,39,119,0.2)',
-      'Guardian':   'rgba(22,163,74,0.2)',
-      'Explorer':   'rgba(234,88,12,0.2)',
+      'Commander':  'rgba(11,99,206,0.2)',
+      'Strategist': 'rgba(51,65,85,0.25)',
+      'Sage':       'rgba(192,38,106,0.2)',
+      'Guardian':   'rgba(31,157,98,0.2)',
+      'Explorer':   'rgba(240,103,42,0.2)',
     };
 
     const ROLE_DESCRIPTIONS = {
@@ -202,7 +203,7 @@
           <div class="tile-body">
             <div class="tile-icon" style="background:${tint}; color:${color}">${icon}</div>
             <div class="tile-role">${role}</div>
-            <div class="tile-hero">${hero}</div>
+            <div class="tile-hero" style="color:${color}">${hero}</div>
             <div class="tile-desc">${desc}</div>
           </div>
         </a>
