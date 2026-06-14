@@ -23,6 +23,13 @@
     --c-explorer: #ea580c;
   }
 
+  .tile-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
   body {
     background: var(--bg);
     font-family: 'DM Sans', sans-serif;
@@ -142,12 +149,28 @@
 
   <script>
     const HERO_COLORS = {
-      'Innovator':  'var(--c-innovator)',
-      'Commander':  'var(--c-commander)',
-      'Strategist': 'var(--c-strategist)',
-      'Sage':       'var(--c-sage)',
-      'Guardian':   'var(--c-guardian)',
-      'Explorer':   'var(--c-explorer)',
+      'Innovator':  '#F2B705',
+      'Commander':  '#2563eb',
+      'Strategist': '#1e3a8a',
+      'Sage':       '#db2777',
+      'Guardian':   '#16a34a',
+      'Explorer':   '#ea580c',
+    };
+
+    const HERO_TINT = {
+      'Innovator':  'rgba(242,183,5,0.2)',
+      'Commander':  'rgba(37,99,235,0.2)',
+      'Strategist': 'rgba(30,58,138,0.2)',
+      'Sage':       'rgba(219,39,119,0.2)',
+      'Guardian':   'rgba(22,163,74,0.2)',
+      'Explorer':   'rgba(234,88,12,0.2)',
+    };
+
+    const ROLE_DESCRIPTIONS = {
+      'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
+      'Zweitheld':    'Deine zweite Seite – verstärkt deinen Basishelden.',
+      'Stressheld 1': 'Deine erste Reaktion unter Druck.',
+      'Stressheld 2': 'Deine zweite Reaktion unter Druck.',
     };
 
     const HERO_ICONS = {
@@ -161,7 +184,9 @@
 
     function tileHTML({ role, hero, url, locked, upgradeUrl }) {
       const color = HERO_COLORS[hero] || '#475569';
+      const tint = HERO_TINT[hero] || 'rgba(71,85,105,0.2)';
       const icon = HERO_ICONS[hero] || '⭐';
+      const desc = ROLE_DESCRIPTIONS[role] || '';
       const href = locked ? upgradeUrl : url;
       const lockOverlay = locked
         ? `<div class="lock-overlay">
@@ -175,9 +200,10 @@
           ${lockOverlay}
           <div class="tile-top" style="background:${color}"></div>
           <div class="tile-body">
-            <div class="tile-icon" style="background:${color}33; color:${color}">${icon}</div>
+            <div class="tile-icon" style="background:${tint}; color:${color}">${icon}</div>
             <div class="tile-role">${role}</div>
             <div class="tile-hero">${hero}</div>
+            <div class="tile-desc">${desc}</div>
           </div>
         </a>
       `;
