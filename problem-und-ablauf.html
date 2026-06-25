@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6Heroes – Entdecke deine inneren Helden</title>
-  <meta name="description" content="6Heroes ist das gamifizierte Persönlichkeits- und Coaching-Modell mit 6 Archetypen. Entdecke dein Heldenprofil, erkenne deine Stressmuster und wachse gezielt." />
+  <title>Wie es funktioniert – 6Heroes</title>
+  <meta name="description" content="Warum klassische Persönlichkeitstests zu kurz greifen – und wie 6Heroes in drei Schritten vom Assessment zum Wachstum führt." />
   <meta name="robots" content="noindex, nofollow" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1190,216 +1190,89 @@
   <ul class="nav-links">
     <li><a href="/helden.html">Die Helden</a></li>
     <li><a href="/heldenkonferenz.html">Heldenkonferenz</a></li>
-    <li><a href="/problem-und-ablauf.html">Wie es funktioniert</a></li>
+    <li><a href="/problem-und-ablauf.html" class="active">Wie es funktioniert</a></li>
     <li><a href="/preise.html">Preise</a></li>
     <li><a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a></li>
   </ul>
   <a href="https://app.6heroes.de" class="btn-nav-mobile" target="_top">Login →</a>
 </nav>
 
-<!-- ── HERO ───────────────────────────────────────────────────────────────── -->
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="container hero-grid">
+<section id="problem">
+  <div class="container problem-grid">
     <div>
-      <div class="hero-tag">Persönlichkeits-Coaching · Beta</div>
-      <h1 class="hero-headline">
-        Du bist kein&nbsp;Typ.<br>
-        Du bist ein <em>Team.</em><br>
-        Lern, es zu führen.
-      </h1>
-      <p class="hero-sub">
-        Entdecke deine sechs inneren Helden – und verstehe endlich, warum du
-        in manchen Situationen aufblühst, in anderen gegen dich selbst arbeitest.
-        Mit 6Heroes wächst du, ohne dich zu verbiegen.
+      <div class="section-tag">Das Problem</div>
+      <h2 class="section-headline">Persönlichkeit ist kein starres Etikett</h2>
+      <p class="section-sub">
+        Die meisten Tests geben dir ein Label – und lassen dich damit allein.
+        Was passiert, wenn du unter Druck gerätst? Warum reagierst du manchmal
+        völlig anders als erwartet?
       </p>
-      <div class="hero-ctas">
-        <a href="#" class="btn-primary" onclick="openAssessmentModal(); return false;">
-          Heldenprofil entdecken
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-          </svg>
-        </a>
-        <a href="#how" class="btn-ghost">
-          Wie es funktioniert ↓
-        </a>
-      </div>
-      <div class="hero-trust">
-        <a href="#" onclick="openAssessmentModal(); return false;" style="color:inherit;text-decoration:none;">Kostenlos starten</a>
-        <div class="trust-divider"></div>
-        <span>10-Minuten-Assessment</span>
-        <div class="trust-divider"></div>
-        <span>Kein Schubladen-Label</span>
-      </div>
+
+      <ul class="problem-list">
+        <li class="problem-item fade-up">
+          <div class="problem-icon">🏷</div>
+          <div>
+            <h4>„Du bist halt so ein Typ"</h4>
+            <p>Klassische Typologien stecken dich in eine Schublade. Du wirst komplexer als INTJ, Typ 4 oder DISC-D.</p>
+          </div>
+        </li>
+        <li class="problem-item fade-up" style="transition-delay:0.1s">
+          <div class="problem-icon">😤</div>
+          <div>
+            <h4>Stress-Verhalten bleibt unerklärlich</h4>
+            <p>Warum reagierst du unter Druck auf einmal ganz anders? Kein Modell erklärt das systematisch.</p>
+          </div>
+        </li>
+        <li class="problem-item fade-up" style="transition-delay:0.2s">
+          <div class="problem-icon">📋</div>
+          <div>
+            <h4>Kein konkreter Entwicklungspfad</h4>
+            <p>Nach dem Test kommt... nichts. Kein nächster Schritt, kein Coaching, keine Praxis.</p>
+          </div>
+        </li>
+      </ul>
     </div>
 
-    <div class="hero-visual">
-      <div class="hero-wheel">
-        <div class="wheel-ring"></div>
-        <div class="wheel-ring"></div>
-        <div class="orbit-container"><div class="orbit-dot"></div></div>
-
-        <div class="wheel-hero wh-commander">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="9"/></svg>Commander
-        </div>
-        <div class="wheel-hero wh-guardian">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="17" cy="7" r="3"/><path d="M21 21v-2a4 4 0 0 0-2-3.5"/></svg>Guardian
-        </div>
-        <div class="wheel-hero wh-explorer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><circle cx="7" cy="15" r="4"/><circle cx="17" cy="15" r="4"/><path d="M7 11V6l2.5-2.5M17 11V6l-2.5-2.5M10 3.5h4M11 15h2"/></svg>Explorer
-        </div>
-        <div class="wheel-hero wh-innovator" style="color:#1a1a1a;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><path d="M9 18h6M10 22h4M12 3a6 6 0 0 1 6 6c0 2.22-1.21 4.16-3 5.2V17H9v-2.8C7.21 13.16 6 11.22 6 9a6 6 0 0 1 6-6z"/></svg>Innovator
-        </div>
-        <div class="wheel-hero wh-strategist">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><rect x="9" y="2" width="6" height="4" rx="1"/><rect x="2" y="16" width="6" height="4" rx="1"/><rect x="16" y="16" width="6" height="4" rx="1"/><path d="M12 6v4M12 10H5v6M12 10h7v6"/></svg>Strategist
-        </div>
-        <div class="wheel-hero wh-sage" style="display:flex;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:36px;height:36px;"><path d="M6 21h12M10 21v-5M14 21v-5M10 13a4 4 0 1 0 4-4M10 13H4M16 7l-2-2M17.5 5.5l-2.5 2.5-2-2 2.5-2.5z"/></svg>Sage
-        </div>
-
-        <div class="wheel-center">Dein inneres Team</div>
-      </div>
+    <div class="problem-answer fade-up">
+      <p class="answer-quote">
+        „Stell dir vor, deine Persönlichkeit wäre kein starres Etikett –
+        sondern ein Team aus <em>sechs inneren Helden.</em>"
+      </p>
+      <p class="answer-body">
+        Das 6Heroes-Modell trennt klar zwischen deinem Kernprofil und deinen
+        Stressreaktionen. Du lernst, wer du in deinem besten Zustand bist –
+        und was dich davon wegbringt. Dann trainierst du genau das, was zählt.
+        Mit täglichen Quests, KI-Coaching und einem Gamification-System, das
+        Wachstum spürbar macht.
+      </p>
     </div>
   </div>
 </section>
 
-<!-- ── FEATURES ───────────────────────────────────────────────────────────── -->
-<section id="features">
+<!-- ── HOW IT WORKS ───────────────────────────────────────────────────────── -->
+<section id="how">
   <div class="container">
-    <div class="features-header fade-up">
-      <div class="section-tag">Was du bekommst</div>
-      <h2 class="section-headline">Mehr als ein Persönlichkeitstest</h2>
-      <p class="section-sub">6Heroes ist ein vollständiges Entwicklungs-System – kein einmaliger Test mit PDF-Report.</p>
+    <div class="how-header fade-up">
+      <div class="section-tag">So funktioniert's</div>
+      <h2 class="section-headline">Vom Assessment zum Wachstum – in drei Schritten</h2>
     </div>
 
-    <!-- ── Nutzen-Blöcke mit Screenshots (Zickzack) ──────────────────────── -->
-    <div class="benefit-blocks">
-
-      <!-- Block 1 — Analyse (Bild rechts) — Commander-Blau -->
-      <div class="benefit-block fade-up">
-        <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--commander)">Deine Analyse</p>
-          <h3 class="benefit-title">Erkenne in wenigen Minuten, welcher Held in dir steckt</h3>
-          <p class="benefit-body">Ein fundiertes Assessment zeigt deine Stärken über alle sechs Archetypen – visuell auf einen Blick im Heldenrad, mit Basis-Held, Zweit-Held und deinen Stressmustern.</p>
-        </div>
-        <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--commander)">
-            <!-- SCREENSHOT HIER EINSETZEN: <img src="DEINE-URL/heldenrad.png" alt="Heldenrad-Ergebnis"> -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
-              <span>Screenshot: Heldenrad-Ergebnis</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
-          </div>
-        </div>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <h3>Assessment starten</h3>
+        <p>10 Minuten. 68 Fragen. Keine richtigen oder falschen Antworten – nur deine. Du erhältst sofort dein persönliches Heldenprofil mit Basis-Held, Zweit-Held und Stressmustern.</p>
       </div>
-
-      <!-- Block 2 — Energie (Bild links) — Guardian-Grün -->
-      <div class="benefit-block benefit-rev fade-up">
-        <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--guardian)">Deine Energie</p>
-          <h3 class="benefit-title">Behalte im Blick, was dir Kraft gibt – und was sie raubt</h3>
-          <p class="benefit-body">Erfasse deine Energiequellen und -fresser. Dein Netto-Energiewert zeigt dir schwarz auf weiß, wohin die Reise geht – und wann du gegensteuern solltest.</p>
-        </div>
-        <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--guardian)">
-            <!-- SCREENSHOT HIER EINSETZEN: energie.html / Energie-Visualisierung -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
-              <span>Screenshot: Energie-Bilanz</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
-          </div>
-        </div>
+      <div class="step fade-up" style="transition-delay:0.15s">
+        <div class="step-num">2</div>
+        <h3>Profil verstehen</h3>
+        <p>Dein Profil zeigt dir, wie du tickst, wie du unter Druck reagierst und wo dein größtes Wachstumspotenzial liegt. Klar, konkret, keine Psychologie-Prosa.</p>
       </div>
-
-      <!-- Block 3 — Stressmuster (Bild links) — Explorer-Orange -->
-      <div class="benefit-block benefit-rev fade-up">
-        <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--explorer)">Dein Stressmuster</p>
-          <h3 class="benefit-title">Erkenne, wer du unter Druck wirst – bevor es dich steuert</h3>
-          <p class="benefit-body">6Heroes trennt klar zwischen deinem Kernprofil und deinen automatischen Stressreaktionen. Du lernst deine zwei Stresshelden kennen und erkennst sie früher – bevor sie Entscheidungen, Beziehungen oder deine Gesundheit belasten.</p>
-        </div>
-        <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--explorer)">
-            <!-- SCREENSHOT HIER EINSETZEN: Stresshelden-Ansicht -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <span>Screenshot: Stresshelden-Ansicht</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
-          </div>
-        </div>
+      <div class="step fade-up" style="transition-delay:0.3s">
+        <div class="step-num">3</div>
+        <h3>Täglich wachsen</h3>
+        <p>Quests, KI-Coaching und Gamification – XP, Levels, Streaks und Badges – halten dich in Bewegung. Nicht einmalig, sondern als tägliche Praxis.</p>
       </div>
-
-      <!-- Block 4 — KI-Coaching (Bild rechts) — Sage-Magenta -->
-      <div class="benefit-block fade-up">
-        <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--sage)">Dein KI-Coach</p>
-          <h3 class="benefit-title">Ein Coach, der deine Ergebnisse kennt – jeden Tag</h3>
-          <p class="benefit-body">Deine Reflexionen werden mit vollem Kontext deines Heldenprofils analysiert und kommentiert. Kein generischer Ratgeber, sondern Impulse, die auf dich zugeschnitten sind.</p>
-        </div>
-        <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--sage)">
-            <!-- SCREENSHOT HIER EINSETZEN: Coaching-Chat -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z"/></svg>
-              <span>Screenshot: KI-Coaching-Chat</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Block 5 — Blog (Bild links) — Coming soon -->
-      <div class="benefit-block benefit-rev fade-up">
-        <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--explorer)">Wissen &amp; Impulse</p>
-          <h3 class="benefit-title">Fundierte Artikel, die dich weiterbringen<span class="benefit-soon">Coming soon</span></h3>
-          <p class="benefit-body">Regelmäßige Beiträge zu Persönlichkeit, Energie und Wachstum – kuratiert statt beliebig. Der Blog startet in Kürze.</p>
-        </div>
-        <div class="benefit-media">
-          <div class="benefit-shot benefit-shot-soon">
-            <!-- MOCKUP HIER EINSETZEN, sobald Blog steht -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
-              <span>Vorschau: Blog</span>
-              <small>bald verfügbar</small>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ── FINAL CTA ───────────────────────────────────────────────────────────── -->
-<section id="cta">
-  <div class="container">
-    <div class="cta-box fade-up">
-      <div class="cta-hero-strip">
-        <div class="cta-hero-dot" style="background:var(--commander)"></div>
-        <div class="cta-hero-dot" style="background:var(--guardian)"></div>
-        <div class="cta-hero-dot" style="background:var(--innovator)"></div>
-        <div class="cta-hero-dot" style="background:var(--strategist)"></div>
-        <div class="cta-hero-dot" style="background:var(--explorer)"></div>
-        <div class="cta-hero-dot" style="background:var(--sage)"></div>
-      </div>
-      <h2 class="cta-headline">
-        Bereit, deine <em>innere Crew</em><br>kennenzulernen?
-      </h2>
-      <p class="cta-sub">
-        10 Minuten Assessment. Sofortiges Ergebnis.<br>
-        Kein Schubladen-Label – ein echtes Profil.
-      </p>
-      <a href="#" onclick="openAssessmentModal(); return false;" class="btn-primary" style="font-size:1.1rem; padding:18px 40px;">
-        Jetzt kostenlos starten
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
-        </svg>
-      </a>
     </div>
   </div>
 </section>
