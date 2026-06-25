@@ -1165,6 +1165,7 @@
       .pricing-grid { grid-template-columns: 1fr; }
       .nav-links { display: none; }
       .btn-nav-mobile { display: flex; }
+      .nav-burger { display: flex !important; }
       .footer-inner { flex-direction: column; text-align: center; }
       #konferenz .container > div { grid-template-columns: 1fr !important; }
     }
@@ -1172,6 +1173,74 @@
     @media (max-width: 520px) {
       .heroes-grid { grid-template-columns: 1fr; }
     }
+  
+    /* ── BURGER / MOBILE-MENÜ ─────────────────────────────────────── */
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      margin-left: 4px;
+    }
+    .nav-burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+    .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; right: 0;
+      width: min(80vw, 320px);
+      height: 100vh;
+      background: var(--navy-mid);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      box-shadow: -16px 0 48px rgba(0,0,0,0.4);
+      z-index: 1200;
+      padding: 88px 28px 28px;
+      flex-direction: column;
+      gap: 6px;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    .mobile-menu.open { display: flex; transform: translateX(0); }
+    .mobile-menu a {
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 14px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu a.menu-login {
+      margin-top: 16px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      text-align: center;
+      border-radius: 999px;
+      border-bottom: none;
+      padding: 14px;
+    }
+    .mobile-menu-backdrop {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1150;
+    }
+    .mobile-menu-backdrop.open { display: block; }
+
   </style>
 </head>
 <body>
@@ -1195,6 +1264,19 @@
     <li><a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a></li>
   </ul>
   <a href="https://app.6heroes.de" class="btn-nav-mobile" target="_top">Login →</a>
+  <button class="nav-burger" id="navBurger" aria-label="Menü öffnen" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile-Menü -->
+<div class="mobile-menu-backdrop" id="menuBackdrop"></div>
+<nav class="mobile-menu" id="mobileMenu" aria-label="Mobile Navigation">
+  <a href="/helden.html">Die Helden</a>
+  <a href="/heldenkonferenz.html">Heldenkonferenz</a>
+  <a href="/problem-und-ablauf.html">Wie es funktioniert</a>
+  <a href="/preise.html">Preise</a>
+  <a href="https://app.6heroes.de" class="menu-login" target="_top">Login →</a>
 </nav>
 
 <section id="pricing">
@@ -1422,6 +1504,33 @@
         el.classList.remove('pre-animate');
       });
     }, 1200);
+  })();
+</script>
+
+<script>
+  // Burger-Menü Toggle
+  (function () {
+    var burger = document.getElementById('navBurger');
+    var menu = document.getElementById('mobileMenu');
+    var backdrop = document.getElementById('menuBackdrop');
+    if (!burger || !menu || !backdrop) return;
+    function toggle(open) {
+      burger.classList.toggle('open', open);
+      menu.classList.toggle('open', open);
+      backdrop.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+    burger.addEventListener('click', function () {
+      toggle(!menu.classList.contains('open'));
+    });
+    backdrop.addEventListener('click', function () { toggle(false); });
+    menu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () { toggle(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') toggle(false);
+    });
   })();
 </script>
 </body>
