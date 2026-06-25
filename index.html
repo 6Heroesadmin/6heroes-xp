@@ -1164,13 +1164,20 @@
     .btn-nav-mobile:hover { background: var(--gold-dark); }
 
     @media (max-width: 768px) {
-      .hero-grid, .problem-grid, .stress-banner { grid-template-columns: 1fr; }
-      .hero-visual {
-        display: flex !important;
-        justify-content: center;
-        margin-top: 24px;
+      .hero-grid {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
       }
-      .hero-heldenrad { max-width: 300px; }
+      .problem-grid, .stress-banner { grid-template-columns: 1fr; }
+      .hero-text { display: contents; }
+      .hero-tag      { order: 1; }
+      .hero-headline { order: 2; }
+      .hero-visual   { order: 3; display: flex !important; justify-content: center; margin: 28px 0; }
+      .hero-sub      { order: 4; }
+      .hero-ctas     { order: 5; }
+      .hero-trust    { order: 6; }
+      .hero-heldenrad { max-width: 260px; }
       .heroes-grid { grid-template-columns: 1fr 1fr; }
       .steps { grid-template-columns: 1fr; gap: 0; }
       .steps::before { display: none; }
@@ -1296,7 +1303,7 @@
 <section id="hero">
   <div class="hero-bg"></div>
   <div class="container hero-grid">
-    <div>
+    <div class="hero-text">
       <div class="hero-tag">Persönlichkeits-Coaching · Beta</div>
       <h1 class="hero-headline">
         Du bist kein&nbsp;Typ.<br>
