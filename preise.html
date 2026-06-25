@@ -1348,6 +1348,63 @@
 
 
 <script>
+  // ── PRICING SELECTOR ───────────────────────────────────────────────────────
+  let currentPlan = 'monthly';
+
+  const plans = {
+    monthly: {
+      price:   '19,99 <span>€</span>',
+      period:  'pro Monat · jederzeit kündbar',
+      total:   null,
+      cta:     'Jetzt Hero werden'
+    },
+    '6months': {
+      price:   '14,99 <span>€</span>',
+      period:  '€89,94 einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit',
+      total:   null,
+      cta:     'Jetzt 6-Monate-Hero werden'
+    },
+    yearly: {
+      price:   '9,99 <span>€</span>',
+      period:  '€119,88 einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit',
+      total:   null,
+      cta:     'Jetzt Jahres-Hero werden'
+    }
+  };
+
+  function switchPlan(plan) {
+    currentPlan = plan;
+    const price  = document.getElementById('price-display');
+    const period = document.getElementById('period-display');
+    const cta    = document.getElementById('cta-pricing');
+    const badge  = document.getElementById('hero-badge');
+    if (!price || !period || !cta || !badge) return;
+
+    ['monthly', '6months', 'yearly'].forEach(p => {
+      const el = document.getElementById('plan-' + p);
+      if (el) el.classList.toggle('active', p === plan);
+    });
+
+    price.innerHTML     = plans[plan].price;
+    period.textContent  = plans[plan].period;
+    cta.textContent     = plans[plan].cta;
+
+    badge.classList.remove('badge-beliebt', 'badge-empfohlen');
+    if (plan === 'yearly') {
+      badge.textContent = 'Empfohlen';
+      badge.classList.add('badge-empfohlen');
+      badge.style.display = 'block';
+    } else if (plan === '6months') {
+      badge.textContent = 'Beliebt';
+      badge.classList.add('badge-beliebt');
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+</script>
+
+<script>
   // Sanfte Einblende-Animation – aber NIE Voraussetzung für Sichtbarkeit.
   (function () {
     var els = document.querySelectorAll('.fade-up');
