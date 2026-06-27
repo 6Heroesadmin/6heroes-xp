@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dein Basisheld – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
+    --ink:#F4F1E9; --ink-dim:#AEB6C6; --ink-faint:#717C92;
+    --line:rgba(255,255,255,0.07);
+    --accent:#1F9D62; --accent-soft:rgba(31,157,98,0.10); --accent-line:rgba(31,157,98,0.45);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
+  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
+
+  .jump { position:sticky; top:0; z-index:20; display:flex; gap:22px; overflow-x:auto; padding:16px 0 14px; margin-bottom:8px;
+    background:linear-gradient(to bottom,var(--navy) 72%,rgba(32,41,58,0)); -ms-overflow-style:none; scrollbar-width:none; }
+  .jump::-webkit-scrollbar { display:none; }
+  .jump a { flex:0 0 auto; font-size:13px; font-weight:500; color:var(--ink-faint); text-decoration:none; padding-bottom:4px; white-space:nowrap; border-bottom:2px solid transparent; transition:color .18s,border-color .18s; }
+  .jump a:hover { color:var(--ink-dim); }
+  .jump a.is-active { color:var(--ink); border-color:var(--accent); }
+
+  .hero { text-align:center; padding:40px 0 4px; }
+  .hero-img-wrap { width:190px; height:190px; margin:0 auto 30px; border-radius:50%; background:var(--accent-soft); border:1px solid var(--accent-line); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .hero-img-wrap img { width:100%; height:100%; object-fit:cover; }
+  .hero-img-placeholder { font-family:'DM Serif Display',serif; font-size:64px; color:var(--accent); }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; }
+  .hero h1 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(44px,11vw,72px); line-height:1.0; letter-spacing:-.015em; margin-bottom:16px; }
+  .hero h1 .accent { color:var(--accent); font-style:italic; }
+  .hero .tagline { font-size:17px; color:var(--ink-dim); }
+
+  .hook { margin:52px 0 0; text-align:center; }
+  .hook p { font-family:'DM Serif Display',serif; font-size:clamp(24px,5.5vw,33px); line-height:1.34; color:var(--ink); letter-spacing:-.01em; }
+  .hook .accent { color:var(--accent); font-style:italic; }
+
+  section { padding-top:64px; scroll-margin-top:70px; }
+  .block { padding-left:22px; border-left:2px solid var(--line); }
+  .block.is-accent { border-left-color:var(--accent); }
+  .block .label { font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:12px; }
+  .block.is-accent .label { color:var(--accent); }
+  .block p { font-size:18px; line-height:1.7; color:var(--ink-dim); }
+
+  h2 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(28px,7vw,40px); line-height:1.1; letter-spacing:-.01em; margin-bottom:28px; text-align:center; }
+  .life-item { padding:22px 0; border-bottom:1px solid var(--line); }
+  .life-item:last-child { border-bottom:none; }
+  .life-item h4 { font-size:17px; font-weight:600; margin-bottom:6px; display:flex; gap:12px; align-items:baseline; }
+  .life-item h4 .n { font-family:'DM Serif Display',serif; color:var(--accent); font-size:18px; }
+  .life-item p { font-size:16px; color:var(--ink-dim); padding-left:30px; }
+  .placeholder-note { font-size:14px; color:var(--ink-faint); font-style:italic; padding:18px 20px; border:1px dashed var(--line); border-radius:14px; text-align:center; }
+
+  .action { margin-top:16px; padding:34px 30px; border-radius:22px; background:var(--accent-soft); border:1px solid var(--accent-line); }
+  .action h3 { font-family:'DM Serif Display',serif; font-size:22px; line-height:1.3; margin-bottom:22px; color:var(--ink); }
+  .step { display:flex; gap:14px; margin-bottom:16px; align-items:flex-start; }
+  .step .dot { flex:0 0 auto; width:24px; height:24px; border-radius:50%; background:var(--accent); color:var(--navy); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+  .step p { font-size:16px; color:var(--ink); }
+  .exercise { margin-top:24px; padding:22px; border-radius:16px; background:rgba(0,0,0,0.18); }
+  .exercise .x-title { font-weight:600; font-size:13px; letter-spacing:.04em; color:var(--accent); margin-bottom:10px; text-transform:uppercase; }
+  .exercise p { font-size:16px; color:var(--ink-dim); line-height:1.7; }
+
+  .cta-quests { display:inline-flex; align-items:center; gap:8px; margin-top:28px; font-size:16px; font-weight:600; color:var(--navy); background:var(--gold); text-decoration:none; padding:15px 28px; border-radius:999px; transition:transform .15s,filter .15s; }
+  .cta-quests:hover { transform:translateY(-1px); filter:brightness(1.05); }
+
+  .bridge { display:block; text-align:center; margin-top:44px; font-size:13px; color:var(--ink-faint); text-decoration:none; }
+  .bridge:hover { color:var(--ink-dim); }
+  .bridge span { color:var(--accent); }
+
+  @media (max-width:480px){ .hero-img-wrap{width:150px;height:150px;} .action{padding:26px 22px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="jump" id="jump">
+    <a href="#identitaet" data-target="identitaet">Wer du bist</a>
+    <a href="#staerke" data-target="staerke">Deine Kraft</a>
+    <a href="#muster" data-target="muster">Im Stress</a>
+    <a href="#wachstum" data-target="wachstum">Wachstum</a>
+    <a href="#leben" data-target="leben">Im Alltag</a>
+    <a href="#aktion" data-target="aktion">Dein Schritt</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-img-wrap">
+      <!-- BILD HIER EINSETZEN: <img src="..." alt="Guardian"> ersetzt den Platzhalter -->
+      <div class="hero-img-placeholder" id="heroInitial">G</div>
+    </div>
+    <div class="eyebrow">Dein Basisheld</div>
+    <h1 id="heroName">Der <span class="accent">Guardian</span></h1>
+    <p class="tagline" id="heroTagline">Dein Kern. Dein Fundament.</p>
+  </header>
+
+  <div class="hook"><p id="heroHook">…</p></div>
+
+  <section id="identitaet"><div class="block">
+    <div class="label">Das bist du im Kern</div><p id="txtIdentity">…</p>
+  </div></section>
+
+  <section id="staerke"><div class="block is-accent">
+    <div class="label">Wenn du in deiner Kraft bist</div><p id="txtStrength">…</p>
+  </div></section>
+
+  <section id="muster"><div class="block">
+    <div class="label">Wenn es herausfordernd wird</div><p id="txtPattern">…</p>
+  </div></section>
+
+  <section id="wachstum"><div class="block">
+    <div class="label">Dein Wachstumsfeld</div><p id="txtGrowth">…</p>
+  </div></section>
+
+  <section id="leben">
+    <h2>So zeigt sich das im Alltag</h2>
+    <div id="lifeList"></div>
+  </section>
+
+  <section id="aktion">
+    <h2>Was du jetzt damit machst</h2>
+    <div class="action">
+      <h3 id="actionLead">…</h3>
+      <div id="stepList"></div>
+      <div class="exercise">
+        <div class="x-title" id="exTitle">Übung</div>
+        <p id="exText">…</p>
+      </div>
+      <a class="cta-quests" id="ctaQuests" href="#">Passende Quests öffnen →</a>
+    </div>
+    <a class="bridge" id="bridge" href="#" target="_blank" rel="noopener">
+      Willst du das ganze Modell verstehen? <span>Mehr dazu auf 6heroes.de →</span>
+    </a>
+  </section>
+</div>
+
+<script>
+const HERO_DATA = {
+  guardian: {
+    accent:"#1F9D62", initial:"G", name:'Der <span class="accent">Guardian</span>', tagline:"Dein Kern. Dein Fundament.",
+    hook:'Du definierst dich über <span class="accent">Verbindung</span> – über das lebendige Miteinander zwischen Menschen. Dein innerer Motor ist Fürsorge.',
+    identity:"Nicht über Ergebnisse, nicht über Systeme – du fühlst dich am stärksten, wenn es den Menschen um dich herum gut geht und du weißt, dass deine Anwesenheit dazu beigetragen hat.",
+    strength:"Du bildest das stabile Fundament, auf dem andere ihr Bestes geben können. Du erkennst Spannungen früh, bevor sie eskalieren. Du führst über Vertrauen, nicht über Druck.",
+    pattern:"In Momenten, wo deine Fürsorge nicht erwidert wird, entsteht ein Muster: Du gibst weiter, auch wenn du selbst leer bist. Du vermeidest notwendige Konflikte, um Harmonie zu schützen – und trägst den Preis allein.",
+    growth:"Selbstfürsorge nicht als Egoismus erleben, sondern als die Voraussetzung für eine gesunde Fürsorge für andere.",
+    life:[],
+    actionLead:"Dein Guardian wird stark, wenn du lernst, zuerst für dich zu sorgen. Diese Woche:",
+    steps:["Bemerke einmal täglich, wann du gibst, obwohl du leer bist – nur bemerken, nicht ändern.","Formuliere in einer Situation eine kleine Bitte oder Grenze, die dein eigenes Bedürfnis schützt.","Beobachte, ob du danach mehr oder weniger geben kannst."],
+    exTitle:"Übung · Die Bedürfnis-Balance",
+    exText:"Notiere eine Situation, in der du dich gerade für jemand anderen aufopferst. Beantworte dann ehrlich: Was brauche ich gerade in diesem Moment, um mich sicher und wertgeschätzt zu fühlen? Formuliere eine Bitte oder eine Grenze, die dein eigenes Bedürfnis schützt. Du wirst merken, dass du anderen am meisten gibst, wenn du zuerst für dich gesorgt hast.",
+    questCategory:"stress", bridge:"https://6heroes.de/helden.html"
+  },
+  commander:{accent:"#0B63CE",initial:"C",name:'Der <span class="accent">Commander</span>',tagline:"Dein Kern. Dein Fundament.",hook:"…",identity:"…",strength:"…",pattern:"…",growth:"…",life:[],actionLead:"…",steps:[],exTitle:"Übung",exText:"…",questCategory:"wachsen",bridge:"https://6heroes.de/helden.html"},
+  innovator:{accent:"#F2B705",initial:"I",name:'Der <span class="accent">Innovator</span>',tagline:"Dein Kern. Dein Fundament.",hook:"…",identity:"…",strength:"…",pattern:"…",growth:"…",life:[],actionLead:"…",steps:[],exTitle:"Übung",exText:"…",questCategory:"wachsen",bridge:"https://6heroes.de/helden.html"},
+  strategist:{accent:"#94A3B8",initial:"S",name:'Der <span class="accent">Strategist</span>',tagline:"Dein Kern. Dein Fundament.",hook:"…",identity:"…",strength:"…",pattern:"…",growth:"…",life:[],actionLead:"…",steps:[],exTitle:"Übung",exText:"…",questCategory:"wachsen",bridge:"https://6heroes.de/helden.html"},
+  explorer:{accent:"#F0672A",initial:"E",name:'Der <span class="accent">Explorer</span>',tagline:"Dein Kern. Dein Fundament.",hook:"…",identity:"…",strength:"…",pattern:"…",growth:"…",life:[],actionLead:"…",steps:[],exTitle:"Übung",exText:"…",questCategory:"energie",bridge:"https://6heroes.de/helden.html"},
+  sage:{accent:"#C0266A",initial:"S",name:'Der <span class="accent">Sage</span>',tagline:"Dein Kern. Dein Fundament.",hook:"…",identity:"…",strength:"…",pattern:"…",growth:"…",life:[],actionLead:"…",steps:[],exTitle:"Übung",exText:"…",questCategory:"wachsen",bridge:"https://6heroes.de/helden.html"}
+};
+const QUEST_LINKS={wachsen:"https://app.6heroes.de/meine-quests?kategorie=wachsen",stress:"https://app.6heroes.de/meine-quests?kategorie=stress",energie:"https://app.6heroes.de/meine-quests?kategorie=energie"};
+function hexToRgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+function render(){
+  const key=(new URLSearchParams(location.search).get("hero")||"guardian").toLowerCase();
+  const d=HERO_DATA[key]||HERO_DATA.guardian;
+  const r=document.documentElement.style;
+  r.setProperty("--accent",d.accent);r.setProperty("--accent-soft",hexToRgba(d.accent,0.10));r.setProperty("--accent-line",hexToRgba(d.accent,0.45));
+  document.getElementById("heroInitial").textContent=d.initial;
+  document.getElementById("heroName").innerHTML=d.name;
+  document.getElementById("heroTagline").textContent=d.tagline;
+  document.getElementById("heroHook").innerHTML=d.hook;
+  document.getElementById("txtIdentity").textContent=d.identity;
+  document.getElementById("txtStrength").textContent=d.strength;
+  document.getElementById("txtPattern").textContent=d.pattern;
+  document.getElementById("txtGrowth").textContent=d.growth;
+  document.getElementById("actionLead").textContent=d.actionLead;
+  document.getElementById("exTitle").textContent=d.exTitle;
+  document.getElementById("exText").textContent=d.exText;
+  const lifeList=document.getElementById("lifeList");
+  if(d.life&&d.life.length){lifeList.innerHTML=d.life.map((it,i)=>`<div class="life-item"><h4><span class="n">${String(i+1).padStart(2,"0")}</span> ${it.title}</h4><p>${it.text}</p></div>`).join("");}
+  else{lifeList.innerHTML=`<div class="placeholder-note">Lebenssituationen für „${key}" folgen – hier kommen 3–4 konkrete Alltags- und Arbeitsszenen hin, in denen sich dieser Held zeigt.</div>`;}
+  document.getElementById("stepList").innerHTML=(d.steps||[]).map((s,i)=>`<div class="step"><div class="dot">${i+1}</div><p>${s}</p></div>`).join("");
+  document.getElementById("ctaQuests").href=QUEST_LINKS[d.questCategory]||"#";
+  document.getElementById("bridge").href=d.bridge||"#";
+}
+function initScrollSpy(){
+  const links=[...document.querySelectorAll('.jump a')];
+  const map=new Map(links.map(a=>[a.dataset.target,a]));
+  const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('is-active'));map.get(e.target.id)?.classList.add('is-active');}});},{rootMargin:"-45% 0px -50% 0px",threshold:0});
+  document.querySelectorAll('section').forEach(s=>obs.observe(s));
+  links.forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault();document.getElementById(a.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});}));
+}
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
+window.addEventListener("load",()=>{render();initScrollSpy();postHeight();});
+window.addEventListener("resize",postHeight);
+if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+</script>
+</body>
+</html>
