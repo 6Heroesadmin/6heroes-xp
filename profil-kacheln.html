@@ -209,17 +209,26 @@
       postHeight();
     }
 
-    /* === 6HEROES iframe Auto-Höhe: Sender === */
+    /* === 6HEROES iframe Auto-Höhe: Sender (misst Inhalt, nicht Body) === */
     function postHeight(){
-      var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,
-        document.documentElement.scrollHeight,document.documentElement.offsetHeight);
+      // Höhe des tatsächlichen Inhalts messen (.grid), nicht des gestreckten Body
+      var grid = document.querySelector('.grid') || document.getElementById('content');
+      var h;
+      if(grid){
+        var rect = grid.getBoundingClientRect();
+        h = Math.ceil(rect.bottom + window.scrollY) + 8; // +8 für unteren Rand
+      } else {
+        h = document.documentElement.scrollHeight;
+      }
       parent.postMessage({type:"6heroes:setHeight",height:h},"*");
     }
     window.addEventListener("load",postHeight);
     window.addEventListener("resize",postHeight);
+    if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+    [50,200,500,1000].forEach(function(t){ setTimeout(postHeight,t); });
 
     init();
-    if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
   </script>
 </body>
 </html>

@@ -117,7 +117,7 @@
   .interp-card {
     background: var(--card); border: 1px solid var(--border);
     border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
-    border-left: 3px solid var(--role-color);
+    border-left: 2px solid var(--role-color);
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
@@ -127,8 +127,8 @@
     display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
   }
   .interp-role {
-    font-size: 10px; font-weight: 800; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--role-color);
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--role-color); margin-bottom: 2px;
   }
   .interp-hero { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--role-color); }
 
@@ -145,14 +145,14 @@
   }
 
   .interp-text {
-    font-size: 13px; font-weight: 600;
-    color: var(--text); line-height: 1.7; margin-bottom: 10px;
+    font-size: 15px; font-weight: 400;
+    color: var(--text); line-height: 1.75; margin-bottom: 14px;
   }
   .netto-insight {
-    font-size: 13px; font-weight: 600; color: var(--text);
-    background: rgba(255,255,255,0.06);
-    border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
-    border-left: 3px solid var(--role-color); line-height: 1.65;
+    font-size: 14px; font-weight: 400; color: var(--text-muted);
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 12px;
+    border-left: 2px solid var(--role-color); line-height: 1.7;
   }
   .potential-box {
     font-size: 13px; font-weight: 600; color: var(--text);
@@ -166,13 +166,13 @@
     letter-spacing: 0.07em; color: rgba(255,255,255,0.5);
   }
   .interp-impulse {
-    font-size: 13px; font-weight: 600; color: var(--text);
-    background: rgba(255,255,255,0.08);
-    border-radius: 8px; padding: 12px 14px; line-height: 1.65;
+    font-size: 14px; font-weight: 400; color: var(--text);
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px; padding: 14px 16px; line-height: 1.7;
   }
   .interp-impulse strong {
-    color: var(--role-color); display: block; margin-bottom: 5px;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: var(--role-color); display: block; margin-bottom: 6px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
   }
 
   .pattern-box {
@@ -183,10 +183,10 @@
   }
   .pattern-box.visible { opacity: 1; transform: none; }
   .pattern-title {
-    font-size: 12px; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px;
   }
-  .pattern-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.7; }
+  .pattern-text { font-size: 15px; font-weight: 400; color: var(--text); line-height: 1.75; }
 
   .potential-section { margin-top: 6px; }
   .potential-section-title {
@@ -486,16 +486,16 @@ function render() {
       </div>`;
     });
 
-    // Potential section
+    // Potential section – Überschrift nur, wenn es gefüllte Karten gibt
     if (potentialHeroes.length > 0) {
-      html += `<div class="potential-section-title">Dein ungenutztes Energiepotenzial</div>`;
+      let potCards = '';
       potentialHeroes.forEach((h, i) => {
         const netto = nettos[h.key];
         const nettoLvl = getNettoLevel(netto);
         const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
         const potText = getPotentialText(h.label, netto, roleHeroes);
         if (!potText) return;
-        html += `<div class="interp-card" id="pcrd-${i}" style="--role-color:${h.color}; transition-delay:${0.3 + i * 0.1}s">
+        potCards += `<div class="interp-card" id="pcrd-${i}" style="--role-color:${h.color}; transition-delay:${0.3 + i * 0.1}s">
           <div class="interp-card-header">
             <div>
               <div class="interp-role">Potenzial-Held</div>
@@ -510,6 +510,9 @@ function render() {
           <div class="interp-impulse"><strong>Aktivierungs-Impuls</strong>Überlege: In welchen konkreten Situationen dieser Woche könntest du bewusst in den ${h.label}-Modus wechseln? Welche Aufgaben, Gespräche oder Entscheidungen passen zu diesem Modus – und wann hast du die Freiheit, ihn zu wählen?</div>
         </div>`;
       });
+      if (potCards) {
+        html += `<div class="potential-section-title">Dein ungenutztes Energiepotenzial</div>` + potCards;
+      }
     }
   }
 
@@ -539,7 +542,7 @@ function render() {
 
 render();
 
-/* === 6HEROES iframe Auto-Höhe: Sender === */
+/* === 6HEROES iframe Auto-Höhe: Sender (robust) === */
 function postHeight(){
   var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,
     document.documentElement.scrollHeight,document.documentElement.offsetHeight);
@@ -548,6 +551,8 @@ function postHeight(){
 window.addEventListener("load",postHeight);
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(function(t){ setTimeout(postHeight,t); });
 </script>
 </body>
 </html>
