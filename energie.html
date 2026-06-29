@@ -5,26 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meine Energiebilanz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --text: #F0EFE8;
-    --text-muted: #7A9BBE;
+    --text: #F4F1E9;
+    --text-muted: #AEB6C6;
     --border: rgba(255,255,255,0.09);
     --card: rgba(255,255,255,0.05);
     --neg-color: #C0266A;
   }
   html, body {
     background: transparent;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     color: var(--text);
     padding: 20px 16px 32px;
   }
 
   .header { text-align: center; margin-bottom: 22px; }
-  .header h1 { font-size: 18px; font-weight: 900; margin-bottom: 3px; }
-  .header p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .header h1 { font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: 400; letter-spacing:-0.01em; margin-bottom: 6px; }
+  .header p { font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
   .scale-row {
     display: grid;
@@ -112,7 +112,7 @@
     margin: 24px 0 20px;
   }
 
-  .interp-title { font-size: 14px; font-weight: 900; margin-bottom: 14px; }
+  .interp-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; letter-spacing:-0.01em; margin-bottom: 18px; }
 
   .interp-card {
     background: var(--card); border: 1px solid var(--border);
@@ -130,7 +130,7 @@
     font-size: 10px; font-weight: 800; text-transform: uppercase;
     letter-spacing: 0.1em; color: var(--role-color);
   }
-  .interp-hero { font-size: 15px; font-weight: 900; color: var(--role-color); }
+  .interp-hero { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--role-color); }
 
   /* Level badge – semantische Farben */
   .interp-level {
@@ -190,7 +190,7 @@
 
   .potential-section { margin-top: 6px; }
   .potential-section-title {
-    font-size: 12px; font-weight: 900; text-transform: uppercase;
+    font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; text-transform: none;
     letter-spacing: 0.08em; color: var(--text-muted);
     margin-bottom: 8px; margin-top: 20px;
   }

@@ -63,16 +63,6 @@
 
   .tile-body { padding: 22px 20px 24px; }
 
-  .tile-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-  }
-  .tile-icon svg { width: 26px; height: 26px; display: block; }
 
   .tile-role {
     font-size: 11px;
@@ -151,33 +141,8 @@
       'Explorer':   '#F0672A',
     };
 
-    const HERO_TINT = {
-      'Innovator':  'rgba(242,183,5,0.16)',
-      'Commander':  'rgba(11,99,206,0.16)',
-      'Strategist': 'rgba(148,163,184,0.18)',
-      'Sage':       'rgba(192,38,106,0.16)',
-      'Guardian':   'rgba(31,157,98,0.16)',
-      'Explorer':   'rgba(240,103,42,0.16)',
-    };
 
-    /* Seriöse, einheitliche Linien-Icons pro Held – keine Emojis.
-       Alle im selben stroke-Stil, Farbe via currentColor. */
-    const HERO_ICONS = {
-      // Innovator – aufsteigende Idee/Funke (Stern/Spark)
-      'Innovator':  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>',
-      // Commander – Richtung/Pfeil (Führung)
-      'Commander':  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12M13 6l6 6-6 6"/><path d="M5 5v14"/></svg>',
-      // Strategist – Schachzug/Knotenpunkte (Plan)
-      'Strategist': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.5 7.5l3 8M16.5 7.5l-3 8M8 6h8"/></svg>',
-      // Sage – ruhiger Kreis/Auge (Weisheit)
-      'Sage':       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>',
-      // Guardian – Schild (Schutz), als sauberes Linien-Icon
-      'Guardian':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5C8 21.3 5 17.4 5 13V6l7-3z"/></svg>',
-      // Explorer – Kompass-Nadel als klares Linien-Icon
-      'Explorer':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/></svg>',
-    };
 
-    const FALLBACK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>';
 
     const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
@@ -197,8 +162,6 @@
     function tileHTML({ role, hero, url, locked }) {
       const heroNorm = normalizeHero(hero);
       const color = HERO_COLORS[heroNorm] || '#64748B';
-      const tint = HERO_TINT[heroNorm] || 'rgba(100,116,139,0.18)';
-      const icon = HERO_ICONS[heroNorm] || FALLBACK_ICON;
       const desc = ROLE_DESCRIPTIONS[role] || '';
       const href = locked ? UPGRADE_URL : url;
       const lockOverlay = locked
@@ -210,7 +173,6 @@
           ${lockOverlay}
           <div class="tile-top" style="background:${color}"></div>
           <div class="tile-body">
-            <div class="tile-icon" style="background:${tint}; color:${color}">${icon}</div>
             <div class="tile-role">${role}</div>
             <div class="tile-hero" style="color:${color}">${heroNorm}</div>
             <div class="tile-desc">${desc}</div>
