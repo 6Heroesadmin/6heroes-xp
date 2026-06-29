@@ -65,9 +65,9 @@ function draw(){
     const rgb=hexRgb(gray?'#707070':hero.color);
     const fR=innerR+rW*(hero.score/100);
     ctx.beginPath();ctx.moveTo(cx+Math.cos(sa)*innerR,cy+Math.sin(sa)*innerR);ctx.arc(cx,cy,outerR,sa,ea);ctx.arc(cx,cy,innerR,ea,sa,true);ctx.closePath();
-    ctx.fillStyle=`rgba(${rgb},${gray?0.11:0.18})`;ctx.fill();
+    ctx.fillStyle=`rgba(${rgb},${gray?0.16:0.30})`;ctx.fill();
     ctx.beginPath();ctx.moveTo(cx+Math.cos(sa)*innerR,cy+Math.sin(sa)*innerR);ctx.arc(cx,cy,fR,sa,ea);ctx.arc(cx,cy,innerR,ea,sa,true);ctx.closePath();
-    ctx.fillStyle=gray?`rgba(${rgb},0.38)`:hero.color;ctx.fill();
+    ctx.fillStyle=gray?`rgba(${rgb},0.48)`:hero.color;ctx.fill();
     ctx.beginPath();ctx.moveTo(cx+Math.cos(sa)*innerR,cy+Math.sin(sa)*innerR);ctx.lineTo(cx+Math.cos(sa)*outerR,cy+Math.sin(sa)*outerR);
     ctx.strokeStyle='rgba(0,0,0,0.25)';ctx.lineWidth=2;ctx.stroke();
     const lr=(LABEL_R_OVERRIDE[hero.name]!==undefined?LABEL_R_OVERRIDE[hero.name]:0.52);
