@@ -4,28 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mein Heldenprofil – 6Heroes</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
     --bg: transparent;
-    --card-bg: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
+    --card-bg: #20293A;        /* warmes Landingpage-Navy */
+    --text-main: #F4F1E9;      /* warmes Off-White */
+    --text-muted: #AEB6C6;
+    --line: rgba(255,255,255,0.07);
     --accent: #F2B705;
   }
 
-  html, body {
-    min-height: 100vh;
-  }
+  html, body { min-height: 100vh; }
 
   body {
     background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     color: var(--text-main);
-    padding: 16px;
-    min-height: 100vh;
+    padding: 4px;
+    -webkit-font-smoothing: antialiased;
   }
 
   .grid {
@@ -43,59 +44,58 @@
   .tile {
     position: relative;
     background: var(--card-bg);
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
     text-decoration: none;
     display: block;
-    border: 1.5px solid rgba(255,255,255,0.06);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1px solid var(--line);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     color: inherit;
   }
 
   .tile:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+    border-color: rgba(255,255,255,0.14);
   }
 
-  .tile-top {
-    height: 5px;
-  }
+  .tile-top { height: 4px; }
 
-  .tile-body {
-    padding: 18px 16px 20px;
-  }
+  .tile-body { padding: 22px 20px 24px; }
 
   .tile-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 12px;
-    font-size: 22px;
+    margin-bottom: 16px;
   }
+  .tile-icon svg { width: 26px; height: 26px; display: block; }
 
   .tile-role {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
 
   .tile-hero {
-    font-size: 19px;
-    font-weight: 700;
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
     letter-spacing: -0.01em;
+    line-height: 1.1;
   }
 
   .tile-desc {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
-    margin-top: 6px;
-    line-height: 1.4;
+    margin-top: 8px;
+    line-height: 1.5;
   }
 
   /* Locked state */
@@ -112,17 +112,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    background: rgba(15, 23, 42, 0.45);
+    gap: 10px;
+    background: rgba(15, 20, 33, 0.55);
     z-index: 2;
   }
-
-  .lock-icon {
-    font-size: 22px;
-  }
+  .lock-overlay svg { width: 26px; height: 26px; color: var(--text-main); }
 
   .lock-label {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-main);
     text-align: center;
@@ -155,22 +152,34 @@
     };
 
     const HERO_TINT = {
-      'Innovator':  'rgba(242,183,5,0.2)',
-      'Commander':  'rgba(11,99,206,0.2)',
-      'Strategist': 'rgba(51,65,85,0.4)',
-      'Sage':       'rgba(192,38,106,0.2)',
-      'Guardian':   'rgba(31,157,98,0.2)',
-      'Explorer':   'rgba(240,103,42,0.2)',
+      'Innovator':  'rgba(242,183,5,0.16)',
+      'Commander':  'rgba(11,99,206,0.16)',
+      'Strategist': 'rgba(148,163,184,0.18)',
+      'Sage':       'rgba(192,38,106,0.16)',
+      'Guardian':   'rgba(31,157,98,0.16)',
+      'Explorer':   'rgba(240,103,42,0.16)',
     };
 
+    /* Seriöse, einheitliche Linien-Icons pro Held – keine Emojis.
+       Alle im selben stroke-Stil, Farbe via currentColor. */
     const HERO_ICONS = {
-      'Innovator':  '💡',
-      'Commander':  '🎯',
-      'Strategist': '🧭',
-      'Sage':       '🔥',
-      'Guardian':   '🛡️',
-      'Explorer':   '🧩',
+      // Innovator – aufsteigende Idee/Funke (Stern/Spark)
+      'Innovator':  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>',
+      // Commander – Richtung/Pfeil (Führung)
+      'Commander':  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h12M13 6l6 6-6 6"/><path d="M5 5v14"/></svg>',
+      // Strategist – Schachzug/Knotenpunkte (Plan)
+      'Strategist': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.5 7.5l3 8M16.5 7.5l-3 8M8 6h8"/></svg>',
+      // Sage – ruhiger Kreis/Auge (Weisheit)
+      'Sage':       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>',
+      // Guardian – Schild (Schutz), als sauberes Linien-Icon
+      'Guardian':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.4-3 8.3-7 9.5C8 21.3 5 17.4 5 13V6l7-3z"/></svg>',
+      // Explorer – Kompass-Nadel als klares Linien-Icon
+      'Explorer':   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/></svg>',
     };
+
+    const FALLBACK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>';
+
+    const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
     const ROLE_DESCRIPTIONS = {
       'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
@@ -179,28 +188,21 @@
       'Stressheld 2': 'Deine zweite Reaktion unter Druck.',
     };
 
-    // Normalize: capitalize first letter, lowercase rest (e.g. "commander" -> "Commander")
     function normalizeHero(name) {
       if (!name) return '';
       return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     }
-
-    function lc(name) {
-      return (name || '').toLowerCase();
-    }
+    function lc(name) { return (name || '').toLowerCase(); }
 
     function tileHTML({ role, hero, url, locked }) {
       const heroNorm = normalizeHero(hero);
-      const color = HERO_COLORS[heroNorm] || '#475569';
-      const tint = HERO_TINT[heroNorm] || 'rgba(71,85,105,0.2)';
-      const icon = HERO_ICONS[heroNorm] || '⭐';
+      const color = HERO_COLORS[heroNorm] || '#64748B';
+      const tint = HERO_TINT[heroNorm] || 'rgba(100,116,139,0.18)';
+      const icon = HERO_ICONS[heroNorm] || FALLBACK_ICON;
       const desc = ROLE_DESCRIPTIONS[role] || '';
       const href = locked ? UPGRADE_URL : url;
       const lockOverlay = locked
-        ? `<div class="lock-overlay">
-             <span class="lock-icon">🔒</span>
-             <span class="lock-label">Jetzt freischalten</span>
-           </div>`
+        ? `<div class="lock-overlay">${LOCK_ICON}<span class="lock-label">Jetzt freischalten</span></div>`
         : '';
 
       return `
@@ -230,40 +232,32 @@
       if (!base || !second || !s1 || !s2) {
         content.className = 'error';
         content.textContent = 'Profil konnte nicht geladen werden.';
+        postHeight();
         return;
       }
 
       const tiles = [
-        {
-          role: 'Basisheld',
-          hero: base,
-          url: `${BASE_SITE}/paid_${lc(base)}.html`,
-          locked: false,
-        },
-        {
-          role: 'Zweitheld',
-          hero: second,
-          url: `${BASE_SITE}/kombi_${lc(base)}_${lc(second)}.html`,
-          locked: !isPaid,
-        },
-        {
-          role: 'Stressheld 1',
-          hero: s1,
-          url: `${BASE_SITE}/stress_${lc(s1)}_s1.html`,
-          locked: !isPaid,
-        },
-        {
-          role: 'Stressheld 2',
-          hero: s2,
-          url: `${BASE_SITE}/stress_${lc(s2)}_s2.html`,
-          locked: !isPaid,
-        },
+        { role: 'Basisheld',    hero: base,   url: `${BASE_SITE}/paid_${lc(base)}.html`,              locked: false },
+        { role: 'Zweitheld',    hero: second, url: `${BASE_SITE}/kombi_${lc(base)}_${lc(second)}.html`, locked: !isPaid },
+        { role: 'Stressheld 1', hero: s1,     url: `${BASE_SITE}/stress_${lc(s1)}_s1.html`,            locked: !isPaid },
+        { role: 'Stressheld 2', hero: s2,     url: `${BASE_SITE}/stress_${lc(s2)}_s2.html`,            locked: !isPaid },
       ];
 
       content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}</div>`;
+      postHeight();
     }
 
+    /* === 6HEROES iframe Auto-Höhe: Sender === */
+    function postHeight(){
+      var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,
+        document.documentElement.scrollHeight,document.documentElement.offsetHeight);
+      parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+    }
+    window.addEventListener("load",postHeight);
+    window.addEventListener("resize",postHeight);
+
     init();
+    if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
   </script>
 </body>
 </html>
