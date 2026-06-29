@@ -18,12 +18,6 @@
   html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
   .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
 
-  .jump { position:sticky; top:0; z-index:20; display:flex; gap:22px; overflow-x:auto; padding:16px 0 14px; margin-bottom:8px;
-    background:linear-gradient(to bottom,var(--navy) 72%,rgba(32,41,58,0)); -ms-overflow-style:none; scrollbar-width:none; }
-  .jump::-webkit-scrollbar { display:none; }
-  .jump a { flex:0 0 auto; font-size:13px; font-weight:500; color:var(--ink-faint); text-decoration:none; padding-bottom:4px; white-space:nowrap; border-bottom:2px solid transparent; transition:color .18s,border-color .18s; }
-  .jump a:hover { color:var(--ink-dim); }
-  .jump a.is-active { color:var(--ink); border-color:var(--accent); }
 
   .hero { text-align:center; padding:40px 0 4px; }
   .hero-img-wrap { width:190px; height:190px; margin:0 auto 30px; border-radius:50%; background:var(--accent-soft); border:1px solid var(--accent-line); display:flex; align-items:center; justify-content:center; overflow:hidden; }
@@ -74,15 +68,6 @@
 </head>
 <body>
 <div class="wrap">
-  <nav class="jump" id="jump">
-    <a href="#identitaet" data-target="identitaet">Wer du bist</a>
-    <a href="#staerke" data-target="staerke">Deine Kraft</a>
-    <a href="#muster" data-target="muster">Im Stress</a>
-    <a href="#wachstum" data-target="wachstum">Wachstum</a>
-    <a href="#leben" data-target="leben">Im Alltag</a>
-    <a href="#aktion" data-target="aktion">Dein Schritt</a>
-  </nav>
-
   <header class="hero">
     <div class="hero-img-wrap">
       <!-- BILD HIER EINSETZEN: <img src="..." alt="Guardian"> ersetzt den Platzhalter -->
@@ -180,15 +165,8 @@ function render(){
   document.getElementById("ctaQuests").href=QUEST_LINKS[d.questCategory]||"#";
   document.getElementById("bridge").href=d.bridge||"#";
 }
-function initScrollSpy(){
-  const links=[...document.querySelectorAll('.jump a')];
-  const map=new Map(links.map(a=>[a.dataset.target,a]));
-  const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove('is-active'));map.get(e.target.id)?.classList.add('is-active');}});},{rootMargin:"-45% 0px -50% 0px",threshold:0});
-  document.querySelectorAll('section').forEach(s=>obs.observe(s));
-  links.forEach(a=>a.addEventListener('click',ev=>{ev.preventDefault();document.getElementById(a.dataset.target)?.scrollIntoView({behavior:'smooth',block:'start'});}));
-}
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
-window.addEventListener("load",()=>{render();initScrollSpy();postHeight();});
+window.addEventListener("load",()=>{render();postHeight();});
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
 </script>
