@@ -23,11 +23,10 @@
     background: var(--navy);
     font-family: 'Inter', system-ui, sans-serif;
     color: var(--text);
-    padding: 22px 16px 36px;
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
   }
-  .wrap { max-width: 640px; margin: 0 auto; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
 
   .header { margin-bottom: 18px; }
   .header h1 {
@@ -387,9 +386,13 @@ function bindEvents(){
   });
 }
 
+let lastH = 0;
 function postHeight(){
   const wrap=document.getElementById('wrap');
-  const h=wrap?Math.ceil(wrap.getBoundingClientRect().bottom+8):document.body.scrollHeight;
+  const rectH = wrap ? Math.ceil(wrap.getBoundingClientRect().bottom + 8) : 0;
+  const h = Math.max(rectH, document.body.scrollHeight, document.documentElement.scrollHeight);
+  if (h === lastH) return;
+  lastH = h;
   parent.postMessage({type:"6heroes:setHeight",height:h},"*");
 }
 window.addEventListener("load",render);
