@@ -219,15 +219,35 @@ const DUMMY_QUESTS = [
   {QuestID:'q04',Hero:'innovator',Type:'Perform',  Title:'Schnelle Rohversion', Instruction:'Baue eine grobe, unfertige Version von etwas: eine Skizze, eine Notiz, ein Entwurf. Fertig wird später.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['arbeit','fokus']},
   {QuestID:'q05',Hero:'innovator',Type:'Perform',  Title:'Zwei Welten verbinden', Instruction:'Verknüpfe zwei Dinge aus ganz verschiedenen Bereichen zu einem neuen Ansatz.',DurationMin:8, XP_Base:20,MinLevel:2,LifeAreas:['entscheidungen']},
   {QuestID:'q06',Hero:'innovator',Type:'StopLimit',Title:'Genug gesammelt', Instruction:'Setze bewusst einen Schlusspunkt: Wähle eine Idee aus und lass die anderen für heute los.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['entscheidungen','fokus']},
+  {QuestID:'q07',Hero:'innovator',Type:'Discover', Title:'Innovator ausprobieren', Instruction:'Spiel heute bewusst mit einer verrückten Idee, nur zum Ausprobieren.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','selbstvertrauen']},
+
   {QuestID:'q10',Hero:'guardian',Type:'Activate', Title:'Rücken freihalten', Instruction:'Sorge für eine Sache, die jemandem heute den Rücken freihält.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['beziehungen']},
   {QuestID:'q11',Hero:'guardian',Type:'Perform',  Title:'Verlässlich liefern', Instruction:'Halte heute eine Zusage ganz genau ein und mach es für die andere Person sichtbar.',DurationMin:10,XP_Base:25,MinLevel:1,LifeAreas:['beziehungen','arbeit']},
+  {QuestID:'q13',Hero:'guardian',Type:'Perform',  Title:'Schutzraum schaffen', Instruction:'Nimm dir Zeit, einer Person heute aktiv zuzuhören, ohne gleich Lösungen anzubieten.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['beziehungen']},
   {QuestID:'q12',Hero:'guardian',Type:'StopLimit',Title:'Nicht alles tragen', Instruction:'Gib eine Aufgabe ab, die nicht deine ist. Bewusst und freundlich.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['stress','selbstvertrauen']},
+  {QuestID:'q14',Hero:'guardian',Type:'Discover', Title:'Guardian ausprobieren', Instruction:'Übernimm heute bewusst Verantwortung für eine Kleinigkeit im Team und beobachte, wie sich das anfühlt.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['beziehungen','arbeit']},
+
+  {QuestID:'q22',Hero:'commander',Type:'Activate', Title:'Klare Ansage', Instruction:'Triff heute eine kleine Entscheidung sofort und kommuniziere sie klar.',DurationMin:3, XP_Base:10,MinLevel:1,LifeAreas:['entscheidungen','arbeit']},
+  {QuestID:'q23',Hero:'commander',Type:'Perform',  Title:'Vorangehen', Instruction:'Übernimm heute bei einer Sache die Führung und bring sie ins Rollen.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['arbeit']},
   {QuestID:'q20',Hero:'commander',Type:'StopLimit',Title:'Druck bewusst stoppen', Instruction:'Erkenne den Moment, in dem du in Kontrolle kippst. Atme einmal tief durch, dann entscheide neu.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['stress']},
   {QuestID:'q21',Hero:'commander',Type:'StopLimit',Title:'Eine Stufe leiser', Instruction:'Formuliere heute eine Anweisung bewusst als Frage statt als Ansage.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['beziehungen','stress']},
+  {QuestID:'q24',Hero:'commander',Type:'Discover', Title:'Commander ausprobieren', Instruction:'Sag heute bei einer Sache bewusst klar, was du willst, statt abzuwarten.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['selbstvertrauen','entscheidungen']},
+
+  {QuestID:'q32',Hero:'sage',Type:'Activate', Title:'Innehalten', Instruction:'Nimm dir fünf Minuten, um über eine offene Frage in Ruhe nachzudenken, bevor du handelst.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','entscheidungen']},
+  {QuestID:'q33',Hero:'sage',Type:'Perform',  Title:'Klarheit teilen', Instruction:'Bring heute einen komplexen Sachverhalt für jemanden in einfache Worte.',DurationMin:10,XP_Base:25,MinLevel:1,LifeAreas:['beziehungen','arbeit']},
   {QuestID:'q30',Hero:'sage',Type:'StopLimit',Title:'Grübeln beenden', Instruction:'Beende eine Gedankenschleife: Schreib die offene Frage auf und leg sie für heute bewusst weg.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['stress','fokus']},
   {QuestID:'q31',Hero:'sage',Type:'StopLimit',Title:'Gut genug erlauben', Instruction:'Erkläre eine Sache bewusst für gut genug, statt sie weiter zu verfeinern.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['selbstvertrauen','stress']},
+  {QuestID:'q34',Hero:'sage',Type:'Discover', Title:'Sage ausprobieren', Instruction:'Stell dir heute bei einem Thema bewusst die Frage nach dem Warum, bevor du weitermachst.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','entscheidungen']},
+
+  {QuestID:'q42',Hero:'strategist',Type:'Activate', Title:'Erst sortieren', Instruction:'Bevor du heute startest, ordne deine drei wichtigsten Aufgaben in eine klare Reihenfolge.',DurationMin:4, XP_Base:10,MinLevel:1,LifeAreas:['arbeit','fokus']},
+  {QuestID:'q43',Hero:'strategist',Type:'Perform',  Title:'Plan durchziehen', Instruction:'Verfolge heute einen kleinen Plan konsequent vom Anfang bis zum Ende.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['arbeit','entscheidungen']},
+  {QuestID:'q44',Hero:'strategist',Type:'StopLimit',Title:'Überplanen stoppen', Instruction:'Hör bewusst auf zu planen und fang mit dem ersten Schritt an.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['stress','fokus']},
   {QuestID:'q40',Hero:'strategist',Type:'Discover',Title:'Strategist ausprobieren', Instruction:'Verbringe zehn Minuten bewusst im Strategist-Modus: Bring ein Thema in eine einfache Struktur. Beobachte, wie sich das anfühlt.',DurationMin:10,XP_Base:15,MinLevel:1,LifeAreas:['entscheidungen','arbeit']},
   {QuestID:'q41',Hero:'strategist',Type:'Discover',Title:'Einen Zug weiter denken', Instruction:'Denke bei einer heutigen Entscheidung bewusst einen Schritt weiter als sonst.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['entscheidungen']},
+
+  {QuestID:'q51',Hero:'explorer',Type:'Activate', Title:'Neugier wecken', Instruction:'Probier heute bewusst eine kleine Sache aus, die du noch nie gemacht hast.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','selbstvertrauen']},
+  {QuestID:'q52',Hero:'explorer',Type:'Perform',  Title:'Neuland betreten', Instruction:'Geh heute ein Thema an, bei dem du noch keine Erfahrung hast, und mach den ersten Schritt.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['arbeit','selbstvertrauen']},
+  {QuestID:'q53',Hero:'explorer',Type:'StopLimit',Title:'Nicht verzetteln', Instruction:'Beende bewusst eine angefangene Sache, bevor du etwas Neues beginnst.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['fokus','stress']},
   {QuestID:'q50',Hero:'explorer',Type:'Discover',Title:'Explorer ausprobieren', Instruction:'Brich heute bewusst eine Routine und nimm einen ungewohnten Weg. Beobachte, was das mit dir macht.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','selbstvertrauen']},
 ];
 const DUMMY_DONE_TODAY = ['q03','q20'];
