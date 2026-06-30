@@ -20,20 +20,13 @@
     --done: #1F9D62;
   }
   html, body {
-    height: 100%;
-    overflow: hidden;
     background: var(--navy);
     font-family: 'Inter', system-ui, sans-serif;
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
   }
-  .scroll {
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: var(--navy);
-  }
+  .scroll { background: var(--navy); }
   .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
 
   .header { margin-bottom: 18px; }
@@ -398,15 +391,19 @@ function bindEvents(){
 
 let lastH = 0;
 function postHeight(){
-  const wrap=document.getElementById('wrap');
-  const h = wrap ? Math.ceil(wrap.scrollHeight + 8) : document.documentElement.scrollHeight;
+  const h = Math.max(
+    document.body.scrollHeight,
+    document.documentElement.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.offsetHeight
+  );
   if (h === lastH) return;
   lastH = h;
   parent.postMessage({type:"6heroes:setHeight",height:h},"*");
 }
 window.addEventListener("load",render);
 window.addEventListener("resize",postHeight);
-if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.getElementById('wrap')||document.body); }
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
 if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
 [50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
 </script>
