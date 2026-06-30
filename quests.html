@@ -20,11 +20,19 @@
     --done: #1F9D62;
   }
   html, body {
+    height: 100%;
+    overflow: hidden;
     background: var(--navy);
     font-family: 'Inter', system-ui, sans-serif;
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
+  }
+  .scroll {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--navy);
   }
   .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
 
@@ -129,6 +137,7 @@
 </style>
 </head>
 <body>
+<div class="scroll">
 <div class="wrap" id="wrap">
   <div class="header">
     <h1>Meine Quests</h1>
@@ -136,6 +145,7 @@
   </div>
   <div id="focusbar"></div>
   <div id="content"></div>
+</div>
 </div>
 
 <script>
@@ -389,15 +399,14 @@ function bindEvents(){
 let lastH = 0;
 function postHeight(){
   const wrap=document.getElementById('wrap');
-  const rectH = wrap ? Math.ceil(wrap.getBoundingClientRect().bottom + 8) : 0;
-  const h = Math.max(rectH, document.body.scrollHeight, document.documentElement.scrollHeight);
+  const h = wrap ? Math.ceil(wrap.scrollHeight + 8) : document.documentElement.scrollHeight;
   if (h === lastH) return;
   lastH = h;
   parent.postMessage({type:"6heroes:setHeight",height:h},"*");
 }
 window.addEventListener("load",render);
 window.addEventListener("resize",postHeight);
-if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.getElementById('wrap')||document.body); }
 if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
 [50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
 </script>
