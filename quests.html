@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meine Quests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --gold: #F2B705;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    padding: 22px 16px 36px;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+
+  .header { margin-bottom: 18px; }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+  .header p { font-size: 14.5px; color: var(--text-muted); }
+
+  .focus-bar {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 14px; margin-bottom: 30px;
+  }
+  .focus-label {
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-right: 2px;
+  }
+  .focus-chip {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    background: rgba(242,183,5,0.12); border: 1px solid rgba(242,183,5,0.28);
+    padding: 4px 11px; border-radius: 999px;
+  }
+  .focus-none { font-size: 13px; color: var(--text-muted); }
+  .focus-edit {
+    margin-left: auto; font-size: 13px; font-weight: 600; color: var(--gold);
+    background: none; border: none; cursor: pointer; padding: 4px 2px; text-decoration: none;
+  }
+  .focus-edit:hover { text-decoration: underline; }
+
+  .block { margin-bottom: 34px; }
+  .block:last-child { margin-bottom: 0; }
+  .block-head { margin-bottom: 4px; }
+  .block-role {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--text-muted); margin-bottom: 3px;
+  }
+  .block-hero {
+    font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400;
+    color: var(--text); line-height: 1.15;
+  }
+  .block-sub {
+    font-size: 14px; color: var(--text-soft); line-height: 1.6;
+    margin: 8px 0 18px; max-width: 52ch;
+  }
+  .block-energy { font-size: 13px; color: var(--text-muted); margin: 6px 0 18px; }
+  .block-energy strong { color: var(--text-soft); font-weight: 600; }
+
+  .typegroup { margin-bottom: 22px; }
+  .typegroup:last-child { margin-bottom: 0; }
+  .type-head { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 11px; }
+  .type-head span { font-weight: 400; color: var(--text-muted); }
+
+  .quest {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 10px;
+    transition: background 0.18s ease, border-color 0.18s ease; cursor: pointer;
+  }
+  .quest:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.16); }
+  .quest:last-child { margin-bottom: 0; }
+  .quest:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .quest-top { display: flex; align-items: flex-start; gap: 14px; }
+  .quest-main { flex: 1; min-width: 0; }
+  .quest-title {
+    font-size: 16.5px; font-weight: 600; color: var(--text);
+    margin-bottom: 5px; line-height: 1.3;
+  }
+  .quest-instr { font-size: 14px; color: var(--text-soft); line-height: 1.6; }
+  .quest-foot {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 12px; font-size: 12.5px; color: var(--text-muted);
+  }
+  .quest-foot .xp { color: var(--gold); font-weight: 600; }
+  .quest-foot .streak { color: var(--text-soft); font-weight: 500; }
+  .quest-foot .match {
+    color: var(--gold); font-weight: 500;
+    border-left: 1px solid var(--border); padding-left: 16px;
+  }
+
+  .status {
+    flex-shrink: 0; font-size: 12px; font-weight: 600;
+    padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+    border: 1px solid var(--border); color: var(--text-soft);
+  }
+  .status.done {
+    color: #BBF7D0; background: rgba(31,157,98,0.16); border-color: rgba(31,157,98,0.38);
+  }
+
+  .quest.optional { opacity: 0.5; cursor: default; }
+  .quest.optional:hover { background: var(--card); border-color: var(--border); }
+  .opt-note { font-size: 12px; color: var(--text-muted); margin-bottom: 7px; font-style: italic; }
+
+  .brach-intro {
+    font-size: 14px; color: var(--text-soft); line-height: 1.6;
+    margin: 8px 0 18px; max-width: 52ch;
+  }
+  .empty { color: var(--text-soft); font-size: 15px; line-height: 1.7; padding: 32px 0; }
+
+  @media (prefers-reduced-motion: reduce) { .quest { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="header">
+    <h1>Meine Quests</h1>
+    <p>Kleine Übungen, passend zu deinen Helden und deiner Energie.</p>
+  </div>
+  <div id="focusbar"></div>
+  <div id="content"></div>
+</div>
+
+<script>
+/* 6HEROES quests.html
+   Achsen: 1) Rolle -> Typen  2) Energie -> Menge  3) Fokus -> Reihenfolge (erweiterbar)
+   Datenquelle final: Make-Webhook. Vorerst DUMMY + URL-Params. */
+
+const HEROES = [
+  { key:'innovator',  label:'Innovator',  nettoKey:'ni',  color:'#F2B705' },
+  { key:'commander',  label:'Commander',  nettoKey:'nc',  color:'#0B63CE' },
+  { key:'strategist', label:'Strategist', nettoKey:'nst', color:'#94A3B8' },
+  { key:'sage',       label:'Sage',       nettoKey:'ns',  color:'#C0266A' },
+  { key:'guardian',   label:'Guardian',   nettoKey:'ng',  color:'#1F9D62' },
+  { key:'explorer',   label:'Explorer',   nettoKey:'ne',  color:'#F0672A' },
+];
+function heroColor(key){ const h=HEROES.find(x=>x.key===key); return h?h.color:'#F4F1E9'; }
+
+const TYPES = {
+  Activate:  { label:'Einschalten',     desc:'Modus aktivieren'  },
+  Perform:   { label:'Wirksam werden',  desc:'wirksam einsetzen' },
+  StopLimit: { label:'Bewusst bremsen', desc:'regulieren'        },
+  Discover:  { label:'Ausprobieren',    desc:'entdecken'         },
+};
+
+const LIFE_AREAS = {
+  arbeit:'Arbeit & Leistung', beziehungen:'Beziehungen & Nähe', stress:'Stress & Erholung',
+  entscheidungen:'Entscheidungen & Klarheit', selbstvertrauen:'Selbstvertrauen', fokus:'Fokus & Dranbleiben',
+};
+
+const ROLE_TYPES = {
+  basis:['Perform','StopLimit','Activate'], zweit:['Activate','Perform','StopLimit'],
+  stress1:['StopLimit'], stress2:['StopLimit'], brach:['Discover'],
+};
+const ROLE_META = {
+  basis:{label:'Basisheld',sub:'Dein häufigster Modus. Hier geht es ums Verfeinern und kluge Dosieren.'},
+  zweit:{label:'Zweitheld',sub:'Dein Ergänzungsmodus. Aktivieren und bewusst einbauen.'},
+  stress1:{label:'Stressheld 1',sub:'Springt bei frühem Druck an. Erkennen, stoppen, umlenken.'},
+  stress2:{label:'Stressheld 2',sub:'Greift bei tiefer Erschöpfung. Regulieren steht im Vordergrund.'},
+  brach:{label:'Brachliegende Stärke',sub:''},
+};
+
+function windowFor(netto){
+  const n = (netto==null)?0:netto;
+  if (n>= 2.0) return {Activate:2,Perform:3,StopLimit:1,longPerform:'show'};
+  if (n>= 0.5) return {Activate:2,Perform:2,StopLimit:1,longPerform:'show'};
+  if (n>=-0.4) return {Activate:1,Perform:2,StopLimit:1,longPerform:'short'};
+  if (n>=-1.9) return {Activate:1,Perform:1,StopLimit:2,longPerform:'option'};
+  return            {Activate:1,Perform:0,StopLimit:2,longPerform:'option'};
+}
+const LONG_PERFORM_MIN = 10;
+
+function energyLine(n){
+  if (n==null) return '';
+  let label;
+  if (n>=2.0) label='lädt dich stark auf';
+  else if (n>=0.5) label='lädt dich auf';
+  else if (n>=-0.4) label='ist ausgeglichen';
+  else if (n>=-1.9) label='zehrt gerade';
+  else label='zehrt stark';
+  const hint = (n<-0.4) ? ' Darum hier weniger und kürzere Quests.'
+             : (n>=2.0 ? ' Du kannst hier großzügig üben.' : '');
+  return `Energie: <strong>${label}</strong>.${hint}`;
+}
+
+/* Kontext-Gewichtung (Achse 3) — erweiterbarer Kern.
+   Heute: Lebensbereiche (Tap). Später: KI liefert dieselbe Score-Map. */
+function getContextScores(quest, focusAreas){
+  if (!focusAreas || !focusAreas.length) return 0;
+  const qa = quest.LifeAreas || [];
+  let s = 0; qa.forEach(a => { if (focusAreas.includes(a)) s++; });
+  return s;
+}
+
+const DUMMY_QUESTS = [
+  {QuestID:'q01',Hero:'innovator',Type:'Activate', Title:'Erster Funke', Instruction:'Notiere in drei Minuten eine ungewöhnliche Idee zu etwas, das dich gerade beschäftigt. Ohne sie zu bewerten.',DurationMin:3, XP_Base:10,MinLevel:1,LifeAreas:['fokus']},
+  {QuestID:'q02',Hero:'innovator',Type:'Activate', Title:'Was wäre, wenn', Instruction:'Nimm eine deiner Routinen und frage dich: Was wäre, wenn das ganz anders ginge? Schreib eine Antwort auf.',DurationMin:4, XP_Base:10,MinLevel:1,LifeAreas:['arbeit','entscheidungen']},
+  {QuestID:'q03',Hero:'innovator',Type:'Perform',  Title:'Idee testen', Instruction:'Bring eine deiner Ideen heute in einem konkreten kleinen Schritt in die Wirklichkeit.',DurationMin:15,XP_Base:25,MinLevel:1,LifeAreas:['arbeit']},
+  {QuestID:'q04',Hero:'innovator',Type:'Perform',  Title:'Schnelle Rohversion', Instruction:'Baue eine grobe, unfertige Version von etwas: eine Skizze, eine Notiz, ein Entwurf. Fertig wird später.',DurationMin:12,XP_Base:25,MinLevel:1,LifeAreas:['arbeit','fokus']},
+  {QuestID:'q05',Hero:'innovator',Type:'Perform',  Title:'Zwei Welten verbinden', Instruction:'Verknüpfe zwei Dinge aus ganz verschiedenen Bereichen zu einem neuen Ansatz.',DurationMin:8, XP_Base:20,MinLevel:2,LifeAreas:['entscheidungen']},
+  {QuestID:'q06',Hero:'innovator',Type:'StopLimit',Title:'Genug gesammelt', Instruction:'Setze bewusst einen Schlusspunkt: Wähle eine Idee aus und lass die anderen für heute los.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['entscheidungen','fokus']},
+  {QuestID:'q10',Hero:'guardian',Type:'Activate', Title:'Rücken freihalten', Instruction:'Sorge für eine Sache, die jemandem heute den Rücken freihält.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['beziehungen']},
+  {QuestID:'q11',Hero:'guardian',Type:'Perform',  Title:'Verlässlich liefern', Instruction:'Halte heute eine Zusage ganz genau ein und mach es für die andere Person sichtbar.',DurationMin:10,XP_Base:25,MinLevel:1,LifeAreas:['beziehungen','arbeit']},
+  {QuestID:'q12',Hero:'guardian',Type:'StopLimit',Title:'Nicht alles tragen', Instruction:'Gib eine Aufgabe ab, die nicht deine ist. Bewusst und freundlich.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['stress','selbstvertrauen']},
+  {QuestID:'q20',Hero:'commander',Type:'StopLimit',Title:'Druck bewusst stoppen', Instruction:'Erkenne den Moment, in dem du in Kontrolle kippst. Atme einmal tief durch, dann entscheide neu.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['stress']},
+  {QuestID:'q21',Hero:'commander',Type:'StopLimit',Title:'Eine Stufe leiser', Instruction:'Formuliere heute eine Anweisung bewusst als Frage statt als Ansage.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['beziehungen','stress']},
+  {QuestID:'q30',Hero:'sage',Type:'StopLimit',Title:'Grübeln beenden', Instruction:'Beende eine Gedankenschleife: Schreib die offene Frage auf und leg sie für heute bewusst weg.',DurationMin:3, XP_Base:15,MinLevel:1,LifeAreas:['stress','fokus']},
+  {QuestID:'q31',Hero:'sage',Type:'StopLimit',Title:'Gut genug erlauben', Instruction:'Erkläre eine Sache bewusst für gut genug, statt sie weiter zu verfeinern.',DurationMin:2, XP_Base:10,MinLevel:1,LifeAreas:['selbstvertrauen','stress']},
+  {QuestID:'q40',Hero:'strategist',Type:'Discover',Title:'Strategist ausprobieren', Instruction:'Verbringe zehn Minuten bewusst im Strategist-Modus: Bring ein Thema in eine einfache Struktur. Beobachte, wie sich das anfühlt.',DurationMin:10,XP_Base:15,MinLevel:1,LifeAreas:['entscheidungen','arbeit']},
+  {QuestID:'q41',Hero:'strategist',Type:'Discover',Title:'Einen Zug weiter denken', Instruction:'Denke bei einer heutigen Entscheidung bewusst einen Schritt weiter als sonst.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['entscheidungen']},
+  {QuestID:'q50',Hero:'explorer',Type:'Discover',Title:'Explorer ausprobieren', Instruction:'Brich heute bewusst eine Routine und nimm einen ungewohnten Weg. Beobachte, was das mit dir macht.',DurationMin:5, XP_Base:10,MinLevel:1,LifeAreas:['fokus','selbstvertrauen']},
+];
+const DUMMY_DONE_TODAY = ['q03','q20'];
+const DUMMY_STREAK = { q01:3, q11:5, q20:2 };
+
+function getParams(){
+  const p = new URLSearchParams(window.location.search);
+  const nettos = {};
+  HEROES.forEach(h => { const n=parseFloat(p.get(h.nettoKey)); nettos[h.key]=isNaN(n)?null:n; });
+  const fr = (p.get('focus')||'').toLowerCase();
+  const focus = fr ? fr.split(',').map(s=>s.trim()).filter(Boolean).slice(0,3) : [];
+  return {
+    nettos, focus,
+    basis:(p.get('basis')||'').toLowerCase(), zweit:(p.get('zweit')||'').toLowerCase(),
+    stress1:(p.get('stress1')||'').toLowerCase(), stress2:(p.get('stress2')||'').toLowerCase(),
+    level: parseInt(p.get('level'))||1,
+  };
+}
+function withDemoFallback(P){
+  if (!P.basis && !P.zweit && !P.stress1 && !P.stress2){
+    P.basis='innovator'; P.zweit='guardian'; P.stress1='commander'; P.stress2='sage';
+    P.nettos={innovator:2.1,guardian:0.8,commander:-1.2,sage:-2.4,strategist:1.4,explorer:0.6};
+    P.level=2;
+    if (!P.focus.length) P.focus=['arbeit','stress'];
+  }
+  return P;
+}
+
+function sortByContext(pool, focus){
+  return pool.map((q,i)=>({q,i,s:getContextScores(q,focus)}))
+             .sort((a,b)=>(b.s-a.s)||(a.i-b.i)).map(x=>x.q);
+}
+function pickForRole(heroKey, roleKey, netto, level, focus){
+  const all = DUMMY_QUESTS.filter(q=>q.Hero===heroKey && q.MinLevel<=level);
+  const order = ROLE_TYPES[roleKey]; const win = windowFor(netto); const groups=[];
+  order.forEach(type => {
+    let pool = all.filter(q=>q.Type===type);
+    let limit = roleKey.startsWith('stress') ? win.StopLimit : win[type];
+    let optional=[];
+    if (type==='Perform'){
+      const short=pool.filter(q=>q.DurationMin<=LONG_PERFORM_MIN);
+      const long =pool.filter(q=>q.DurationMin> LONG_PERFORM_MIN);
+      if (win.longPerform==='short'){ pool=short; }
+      else if (win.longPerform==='option'){ pool=short; optional=sortByContext(long,focus).slice(0,1); }
+    }
+    pool = sortByContext(pool, focus);
+    const chosen = pool.slice(0, Math.max(0,limit));
+    if (chosen.length===0 && optional.length===0) return;
+    groups.push({type, quests:chosen, optional});
+  });
+  return groups;
+}
+function pickForBrach(heroKey, level, focus){
+  let pool = DUMMY_QUESTS.filter(q=>q.Hero===heroKey && q.Type==='Discover' && q.MinLevel<=level);
+  if (!pool.length) return null;
+  pool = sortByContext(pool, focus);
+  return [{type:'Discover', quests:pool.slice(0,2), optional:[]}];
+}
+
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function focusBar(focus){
+  const edit = `<a class="focus-edit" id="focusEdit" href="#">ändern</a>`;
+  if (!focus.length){
+    return `<div class="focus-bar"><span class="focus-label">Dein Fokus</span>
+      <span class="focus-none">noch nicht gesetzt – wähle bis zu drei Bereiche</span>${edit}</div>`;
+  }
+  const chips = focus.map(f=>`<span class="focus-chip">${esc(LIFE_AREAS[f]||f)}</span>`).join('');
+  return `<div class="focus-bar"><span class="focus-label">Dein Fokus</span>${chips}${edit}</div>`;
+}
+
+function questCard(q, doneSet, optional, focus){
+  const done = doneSet.has(q.QuestID);
+  const streak = DUMMY_STREAK[q.QuestID]||0;
+  const cls = 'quest'+(optional?' optional':'');
+  const status = optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt':'Offen'}</span>`;
+  const optNote = optional ? `<div class="opt-note">Optional – nur, wenn du heute Kapazität hast.</div>` : '';
+  const streakHtml = streak>0 ? `<span class="streak">${streak} Tage in Folge</span>` : '';
+  const match = (!optional && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
+  const tab = optional ? '' : 'tabindex="0" role="button"';
+  return `<div class="${cls}" ${tab} data-quest="${q.QuestID}">
+    <div class="quest-top"><div class="quest-main">${optNote}
+      <div class="quest-title">${esc(q.Title)}</div>
+      <div class="quest-instr">${esc(q.Instruction)}</div>
+      <div class="quest-foot"><span>${q.DurationMin} Min</span>
+        <span class="xp">+${q.XP_Base} XP</span>${streakHtml}${match}</div>
+    </div>${status}</div></div>`;
+}
+
+function typeGroup(g, doneSet, focus){
+  const t = TYPES[g.type];
+  const cards = g.quests.map(q=>questCard(q,doneSet,false,focus)).join('')
+              + g.optional.map(q=>questCard(q,doneSet,true,focus)).join('');
+  return `<div class="typegroup"><div class="type-head">${t.label} <span>· ${t.desc}</span></div>${cards}</div>`;
+}
+
+function block(roleKey, heroKey, netto, groups, doneSet, focus){
+  const meta = ROLE_META[roleKey];
+  const heroLabel = (HEROES.find(h=>h.key===heroKey)||{}).label || heroKey;
+  let lead;
+  if (roleKey==='brach'){
+    lead = `<div class="brach-intro">${esc(heroLabel)} gibt dir Energie, gehört aber nicht zu deinen Hauptmodi. Ein paar Quests zum Reinschnuppern – ganz unverbindlich.</div>`;
+  } else {
+    lead = `<div class="block-sub">${meta.sub}</div><div class="block-energy">${energyLine(netto)}</div>`;
+  }
+  return `<div class="block"><div class="block-head">
+    <div class="block-role">${meta.label}</div>
+    <div class="block-hero" style="color:${heroColor(heroKey)}">${esc(heroLabel)}</div></div>
+    ${lead}${groups.map(g=>typeGroup(g,doneSet,focus)).join('')}</div>`;
+}
+
+let doneSet;
+function render(){
+  const P = withDemoFallback(getParams());
+  doneSet = new Set(DUMMY_DONE_TODAY);
+  document.getElementById('focusbar').innerHTML = focusBar(P.focus);
+  const el = document.getElementById('content');
+  const roleAssign = [
+    {roleKey:'basis',hero:P.basis},{roleKey:'zweit',hero:P.zweit},
+    {roleKey:'stress1',hero:P.stress1},{roleKey:'stress2',hero:P.stress2},
+  ].filter(r=>r.hero);
+
+  if (!roleAssign.length){
+    el.innerHTML = `<div class="empty">Hier erscheinen deine Quests, sobald du den Fragebogen abgeschlossen hast.</div>`;
+    bindEvents(); postHeight(); return;
+  }
+  const used = new Set(roleAssign.map(r=>r.hero));
+  let html='';
+  roleAssign.forEach(r=>{
+    const netto=P.nettos[r.hero];
+    const groups=pickForRole(r.hero,r.roleKey,netto,P.level,P.focus);
+    if (groups.length) html+=block(r.roleKey,r.hero,netto,groups,doneSet,P.focus);
+  });
+  const brach = HEROES.map(h=>h.key)
+    .filter(k=>!used.has(k) && P.nettos[k]!=null && P.nettos[k]>=0.5)
+    .sort((a,b)=>P.nettos[b]-P.nettos[a]);
+  brach.forEach(k=>{
+    const groups=pickForBrach(k,P.level,P.focus);
+    if (groups) html+=block('brach',k,P.nettos[k],groups,doneSet,P.focus);
+  });
+  el.innerHTML = html;
+  bindEvents(); postHeight();
+}
+
+function bindEvents(){
+  document.querySelectorAll('.quest[data-quest]:not(.optional)').forEach(card=>{
+    const open=()=>{
+      const id=card.getAttribute('data-quest');
+      // TODO Make: window.parent.location.href='https://app.6heroes.de/quest?qid='+id;
+      card.style.outline='2px solid var(--gold)'; card.style.outlineOffset='2px';
+      setTimeout(()=>{card.style.outline='';},600);
+    };
+    card.addEventListener('click',open);
+    card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+  });
+  const edit=document.getElementById('focusEdit');
+  if (edit) edit.addEventListener('click',e=>{ e.preventDefault();
+    // TODO: window.parent.location.href='https://app.6heroes.de/mein-fokus';
+  });
+}
+
+function postHeight(){
+  const wrap=document.getElementById('wrap');
+  const h=wrap?Math.ceil(wrap.getBoundingClientRect().bottom+8):document.body.scrollHeight;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+window.addEventListener("load",render);
+window.addEventListener("resize",postHeight);
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
