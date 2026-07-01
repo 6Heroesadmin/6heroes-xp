@@ -203,7 +203,7 @@ async function save(){
     const res = await fetch(WRITE_WEBHOOK_URL, {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ email: email, focus: selected.join(',') })
+      body: JSON.stringify({ email: email, focus: selected })
     });
     if (!res.ok) throw new Error('HTTP '+res.status);
     setStatus('Gespeichert.', 'ok');
