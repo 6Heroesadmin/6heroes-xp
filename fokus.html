@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Fokus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --gold: #F2B705;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .scroll { background: var(--navy); }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
+
+  .header { margin-bottom: 8px; }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+  .header p { font-size: 14.5px; color: var(--text-muted); }
+
+  .hint {
+    font-size: 13px; color: var(--text-muted); margin: 14px 0 20px;
+  }
+  .hint strong { color: var(--text-soft); font-weight: 600; }
+
+  .grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 26px;
+  }
+  @media (max-width: 460px){ .grid { grid-template-columns: 1fr; } }
+
+  .area {
+    text-align: left; cursor: pointer; user-select: none;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 16px 15px;
+    transition: background .12s, border-color .12s, transform .06s;
+    position: relative;
+  }
+  .area:hover { background: var(--card-hover); }
+  .area:active { transform: scale(0.995); }
+  .area.selected {
+    background: rgba(242,183,5,0.10);
+    border-color: rgba(242,183,5,0.55);
+  }
+  .area.disabled { opacity: 0.42; cursor: not-allowed; }
+  .area.disabled:hover { background: var(--card); }
+
+  .area-title {
+    font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 3px;
+  }
+  .area-sub { font-size: 12.5px; color: var(--text-muted); }
+
+  .check {
+    position: absolute; top: 14px; right: 14px;
+    width: 20px; height: 20px; border-radius: 999px;
+    border: 1.5px solid var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .12s, border-color .12s;
+  }
+  .area.selected .check { background: var(--gold); border-color: var(--gold); }
+  .check svg { width: 12px; height: 12px; opacity: 0; transition: opacity .12s; }
+  .area.selected .check svg { opacity: 1; }
+
+  .footer {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    border-top: 1px solid var(--border); padding-top: 20px;
+  }
+  .count { font-size: 13px; color: var(--text-muted); }
+  .count strong { color: var(--text-soft); font-weight: 600; }
+  .actions { margin-left: auto; display: flex; gap: 10px; }
+
+  .btn {
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+    padding: 10px 20px; border-radius: 999px; cursor: pointer; border: 1px solid var(--border);
+    background: transparent; color: var(--text-soft); transition: background .12s, opacity .12s;
+  }
+  .btn:hover { background: var(--card-hover); }
+  .btn-primary {
+    background: var(--gold); color: #1a1a1a; border-color: var(--gold);
+  }
+  .btn-primary:hover { opacity: 0.9; background: var(--gold); }
+  .btn[disabled] { opacity: 0.5; cursor: default; }
+
+  .status { font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .status.ok { color: var(--done); }
+  .status.err { color: #E06A5A; }
+</style>
+</head>
+<body>
+<div class="scroll">
+<div class="wrap" id="wrap">
+  <div class="header">
+    <h1>Mein Fokus</h1>
+    <p>Wähle bis zu drei Bereiche, in denen du gerade Unterstützung suchst. Passende Quests rücken dann nach vorne.</p>
+  </div>
+  <div class="hint">Ausgewählt: <strong id="hintCount">0 von 3</strong></div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="footer">
+    <div class="count"><strong id="count">0</strong> von 3 gewählt</div>
+    <div class="actions">
+      <button class="btn" id="cancelBtn">Abbrechen</button>
+      <button class="btn btn-primary" id="saveBtn">Speichern</button>
+    </div>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+</div>
+
+<script>
+/* 6HEROES fokus.html
+   Sechs Lebensbereiche, max. 3 wählbar. Speichern -> POST an Schreib-Webhook -> zurück zu Meine Quests.
+   URL-Params: email (Pflicht zum Speichern), focus (aktuell gesetzt, kommagetrennt). */
+
+const WRITE_WEBHOOK_URL = 'REPLACE_WITH_WRITE_WEBHOOK_URL';   // Fokus-Schreib-Webhook (B3, wird gleich gebaut)
+const BACK_URL = 'https://app.6heroes.de/meine-quests';
+const MAX = 3;
+
+const AREAS = [
+  { key:'arbeit',         title:'Arbeit & Leistung',       sub:'Aufgaben, Projekte, Produktivität' },
+  { key:'beziehungen',    title:'Beziehungen & Nähe',      sub:'Team, Familie, Freunde' },
+  { key:'stress',         title:'Stress & Erholung',       sub:'Druck rausnehmen, auftanken' },
+  { key:'entscheidungen', title:'Entscheidungen & Klarheit', sub:'Richtung finden, festlegen' },
+  { key:'selbstvertrauen',title:'Selbstvertrauen',         sub:'Sichtbar werden, zu dir stehen' },
+  { key:'fokus',          title:'Fokus & Dranbleiben',     sub:'Anfangen, durchhalten, abschließen' },
+];
+
+const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function getParams(){
+  const p = new URLSearchParams(window.location.search);
+  const fr = (p.get('focus')||'').toLowerCase();
+  const focus = fr ? fr.split(',').map(s=>s.trim()).filter(Boolean).slice(0,MAX) : [];
+  return { email:(p.get('email')||'').trim(), focus };
+}
+
+let selected = [];   // array of keys, in Reihenfolge der Auswahl
+
+function render(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = AREAS.map(a => {
+    const isSel = selected.includes(a.key);
+    const atMax = selected.length>=MAX && !isSel;
+    const cls = 'area'+(isSel?' selected':'')+(atMax?' disabled':'');
+    return `<div class="${cls}" data-key="${a.key}" ${atMax?'aria-disabled="true"':'role="button" tabindex="0"'}>
+      <div class="check">${CHECK_SVG}</div>
+      <div class="area-title">${a.title}</div>
+      <div class="area-sub">${a.sub}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('count').textContent = selected.length;
+  document.getElementById('hintCount').textContent = selected.length + ' von ' + MAX;
+  bindAreas();
+  postHeight();
+}
+
+function toggle(key){
+  const i = selected.indexOf(key);
+  if (i>=0){ selected.splice(i,1); }
+  else { if (selected.length>=MAX) return; selected.push(key); }
+  render();
+}
+
+function bindAreas(){
+  document.querySelectorAll('.area[data-key]:not(.disabled)').forEach(el=>{
+    const key = el.getAttribute('data-key');
+    el.addEventListener('click',()=>toggle(key));
+    el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(key);} });
+  });
+}
+
+function setStatus(msg, kind){
+  const s = document.getElementById('status');
+  s.textContent = msg || '';
+  s.className = 'status' + (kind?(' '+kind):'');
+}
+
+async function save(){
+  const { email } = getParams();
+  const saveBtn = document.getElementById('saveBtn');
+  if (!email){ setStatus('Kein Benutzer erkannt – Speichern nicht möglich.', 'err'); return; }
+  saveBtn.disabled = true;
+  setStatus('Wird gespeichert …');
+  try {
+    const res = await fetch(WRITE_WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ email: email, focus: selected.join(',') })
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    setStatus('Gespeichert.', 'ok');
+    // kurz Bestätigung zeigen, dann zurück zu Meine Quests
+    setTimeout(()=>{ window.parent.location.href = BACK_URL; }, 500);
+  } catch(e){
+    console.error(e);
+    setStatus('Konnte nicht gespeichert werden. Bitte erneut versuchen.', 'err');
+    saveBtn.disabled = false;
+  }
+}
+
+function bindButtons(){
+  document.getElementById('saveBtn').addEventListener('click', save);
+  document.getElementById('cancelBtn').addEventListener('click', ()=>{
+    window.parent.location.href = BACK_URL;
+  });
+}
+
+function init(){
+  selected = getParams().focus.slice(0,MAX);
+  render();
+  bindButtons();
+}
+
+let lastH = 0;
+function postHeight(){
+  const h = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight
+  );
+  if (h === lastH) return;
+  lastH = h;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+window.addEventListener("load",init);
+window.addEventListener("resize",postHeight);
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
