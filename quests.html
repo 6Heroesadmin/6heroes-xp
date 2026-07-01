@@ -253,6 +253,41 @@ const DUMMY_QUESTS = [
 const DUMMY_DONE_TODAY = ['q03','q20'];
 const DUMMY_STREAK = { q01:3, q11:5, q20:2 };
 
+/* ---- Live-Daten (B2) ----
+   Werden per Webhook befüllt; fallen auf Dummy zurück, wenn kein Fetch möglich. */
+const WEBHOOK_URL = 'https://hook.eu1.make.com/smmkpjh8x1tgqmsx5mp4ossl86tqp2eg';
+let QUESTS     = DUMMY_QUESTS;
+let DONE_TODAY = DUMMY_DONE_TODAY;
+let STREAK     = DUMMY_STREAK;
+
+/* Normalisiert eine Webhook-Quest auf das interne Format.
+   Wichtig: Hero kommt aus Airtable groß ("Innovator") -> lowercase. */
+function normalizeQuest(q){
+  return {
+    QuestID:     q.QuestID,
+    Hero:        (q.Hero||'').toLowerCase(),
+    Type:        q.Type,
+    Title:       q.Title,
+    Instruction: q.Instruction,
+    DurationMin: Number(q.DurationMin)||0,
+    XP_Base:     Number(q.XP_Base)||0,
+    MinLevel:    Number(q.MinLevel)||1,
+    LifeAreas:   Array.isArray(q.LifeAreas) ? q.LifeAreas : [],
+  };
+}
+
+async function loadData(email){
+  if (!email) return false;               // kein User -> Dummy/Demo behalten
+  const url = WEBHOOK_URL + '?email=' + encodeURIComponent(email);
+  const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+  if (!res.ok) throw new Error('Webhook '+res.status);
+  const data = await res.json();
+  QUESTS     = (data.quests||[]).map(normalizeQuest);
+  DONE_TODAY = Array.isArray(data.doneToday) ? data.doneToday : [];
+  STREAK     = (data.streaks && typeof data.streaks==='object') ? data.streaks : {};
+  return true;
+}
+
 function getParams(){
   const p = new URLSearchParams(window.location.search);
   const nettos = {};
@@ -264,6 +299,7 @@ function getParams(){
     basis:(p.get('basis')||'').toLowerCase(), zweit:(p.get('zweit')||'').toLowerCase(),
     stress1:(p.get('stress1')||'').toLowerCase(), stress2:(p.get('stress2')||'').toLowerCase(),
     level: parseInt(p.get('level'))||1,
+    email:(p.get('email')||'').trim(),
   };
 }
 function withDemoFallback(P){
@@ -281,7 +317,7 @@ function sortByContext(pool, focus){
              .sort((a,b)=>(b.s-a.s)||(a.i-b.i)).map(x=>x.q);
 }
 function pickForRole(heroKey, roleKey, netto, level, focus){
-  const all = DUMMY_QUESTS.filter(q=>q.Hero===heroKey && q.MinLevel<=level);
+  const all = QUESTS.filter(q=>q.Hero===heroKey && q.MinLevel<=level);
   const order = ROLE_TYPES[roleKey]; const win = windowFor(netto); const groups=[];
   order.forEach(type => {
     let pool = all.filter(q=>q.Type===type);
@@ -301,7 +337,7 @@ function pickForRole(heroKey, roleKey, netto, level, focus){
   return groups;
 }
 function pickForBrach(heroKey, level, focus){
-  let pool = DUMMY_QUESTS.filter(q=>q.Hero===heroKey && q.Type==='Discover' && q.MinLevel<=level);
+  let pool = QUESTS.filter(q=>q.Hero===heroKey && q.Type==='Discover' && q.MinLevel<=level);
   if (!pool.length) return null;
   pool = sortByContext(pool, focus);
   return [{type:'Discover', quests:pool.slice(0,2), optional:[]}];
@@ -320,8 +356,8 @@ function focusBar(focus){
 }
 
 function questCard(q, doneSet, optional, focus){
-  const done = doneSet.has(q.QuestID);
-  const streak = DUMMY_STREAK[q.QuestID]||0;
+  const done = doneSet.has(q.Title);
+  const streak = STREAK[q.QuestID]||0;
   const cls = 'quest'+(optional?' optional':'');
   const status = optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt':'Offen'}</span>`;
   const optNote = optional ? `<div class="opt-note">Optional – nur, wenn du heute Kapazität hast.</div>` : '';
@@ -362,7 +398,7 @@ function block(roleKey, heroKey, netto, groups, doneSet, focus){
 let doneSet;
 function render(){
   const P = withDemoFallback(getParams());
-  doneSet = new Set(DUMMY_DONE_TODAY);
+  doneSet = new Set(DONE_TODAY);
   document.getElementById('focusbar').innerHTML = focusBar(P.focus);
   const el = document.getElementById('content');
   const roleAssign = [
@@ -421,7 +457,18 @@ function postHeight(){
   lastH = h;
   parent.postMessage({type:"6heroes:setHeight",height:h},"*");
 }
-window.addEventListener("load",render);
+async function init(){
+  const email = getParams().email;
+  try {
+    await loadData(email);              // füllt QUESTS/DONE_TODAY/STREAK bei Erfolg
+  } catch(e){
+    // Netzwerk-/Webhook-Fehler: auf Dummy zurückfallen, damit die Seite nie leer bleibt
+    console.warn('Quest-Daten konnten nicht geladen werden, nutze Fallback:', e);
+    QUESTS = DUMMY_QUESTS; DONE_TODAY = DUMMY_DONE_TODAY; STREAK = DUMMY_STREAK;
+  }
+  render();
+}
+window.addEventListener("load",init);
 window.addEventListener("resize",postHeight);
 if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
 if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
