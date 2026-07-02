@@ -276,15 +276,55 @@ function normalizeQuest(q){
   };
 }
 
+/* Toleranter Parser: nimmt den Roh-Text der Webhook-Antwort und versucht,
+   ihn in ein Objekt zu verwandeln — auch wenn Make kleine JSON-Macken liefert
+   (leere Felder wie "doneToday": , oder ein einzelnes Objekt statt Array).
+   Gibt bei Erfolg das Objekt zurück, sonst null. */
+function parseWebhookPayload(text){
+  if (!text || !text.trim()) return null;
+  // 1) Normalversuch
+  try { return JSON.parse(text); } catch(_) {}
+  // 2) Häufige Make-Macke reparieren: leerer Wert nach Doppelpunkt
+  //    z.B.  "doneToday": ,   ->   "doneToday": [],
+  //    und   "doneToday":  }  ->   "doneToday": [] }
+  let repaired = text
+    .replace(/:\s*,/g, ': [],')      // leerer Wert vor Komma
+    .replace(/:\s*}/g, ': [] }')     // leerer Wert vor schließender Klammer
+    .replace(/,\s*}/g, ' }')         // trailing comma vor }
+    .replace(/,\s*]/g, ' ]');        // trailing comma vor ]
+  try { return JSON.parse(repaired); } catch(e){
+    console.warn('Payload auch nach Reparatur nicht parsebar:', e);
+    return null;
+  }
+}
+
+/* Macht aus quests IMMER ein Array — egal ob Make ein Array, ein einzelnes
+   Objekt (bei nur 1 Record) oder nichts liefert. */
+function asQuestArray(v){
+  if (Array.isArray(v)) return v;
+  if (v && typeof v === 'object') return [v];   // einzelnes Objekt -> 1-Element-Array
+  return [];
+}
+
 async function loadData(email){
   if (!email) return false;               // kein User -> Dummy/Demo behalten
   const url = WEBHOOK_URL + '?email=' + encodeURIComponent(email);
   const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
   if (!res.ok) throw new Error('Webhook '+res.status);
-  const data = await res.json();
-  QUESTS     = (data.quests||[]).map(normalizeQuest);
+
+  // Roh-Text lesen (nie blind res.json()) und tolerant parsen
+  const raw  = await res.text();
+  const data = parseWebhookPayload(raw);
+  if (!data || typeof data !== 'object'){
+    throw new Error('Webhook-Antwort nicht verwertbar');
+  }
+
+  // Jedes Feld defensiv behandeln — ein kaputtes Feld darf nicht alles killen
+  const quests = asQuestArray(data.quests).map(normalizeQuest).filter(q => q.QuestID);
+  if (quests.length) QUESTS = quests;     // nur ersetzen, wenn echt was kam; sonst Dummy behalten
   DONE_TODAY = Array.isArray(data.doneToday) ? data.doneToday : [];
-  STREAK     = (data.streaks && typeof data.streaks==='object') ? data.streaks : {};
+  STREAK     = (data.streaks && typeof data.streaks === 'object' && !Array.isArray(data.streaks))
+                 ? data.streaks : {};
   return true;
 }
 
