@@ -256,6 +256,10 @@ const DUMMY_STREAK = { q01:3, q11:5, q20:2 };
 /* ---- Live-Daten (B2) ----
    Werden per Webhook befüllt; fallen auf Dummy zurück, wenn kein Fetch möglich. */
 const WEBHOOK_URL = 'https://hook.eu1.make.com/smmkpjh8x1tgqmsx5mp4ossl86tqp2eg';
+/* Noloco-Seite, die den fokus.html-iframe hostet.
+   Slug = echter Noloco-Seiten-Slug der (versteckten) "Mein Fokus"-Seite.
+   Die Seite entstand als Klon von "Meine Quests", daher der -clone-Slug. */
+const FOCUS_PAGE_URL = 'https://app.6heroes.de/meine-quests-clone';
 let QUESTS     = DUMMY_QUESTS;
 let DONE_TODAY = DUMMY_DONE_TODAY;
 let STREAK     = DUMMY_STREAK;
@@ -481,7 +485,14 @@ function bindEvents(){
   });
   const edit=document.getElementById('focusEdit');
   if (edit) edit.addEventListener('click',e=>{ e.preventDefault();
-    // TODO: window.parent.location.href='https://app.6heroes.de/mein-fokus';
+    const P = getParams();
+    const q = new URLSearchParams();
+    if (P.email) q.set('email', P.email);
+    if (P.focus && P.focus.length) q.set('focus', P.focus.join(','));
+    const url = FOCUS_PAGE_URL + (q.toString() ? ('?'+q.toString()) : '');
+    // Parent (Noloco) navigieren, nicht den iframe selbst
+    try { window.parent.location.href = url; }
+    catch(_) { window.location.href = url; }   // Fallback falls kein Parent
   });
 }
 
