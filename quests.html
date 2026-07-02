@@ -260,6 +260,9 @@ const WEBHOOK_URL = 'https://hook.eu1.make.com/smmkpjh8x1tgqmsx5mp4ossl86tqp2eg'
    Slug = echter Noloco-Seiten-Slug der (versteckten) "Mein Fokus"-Seite.
    Die Seite entstand als Klon von "Meine Quests", daher der -clone-Slug. */
 const FOCUS_PAGE_URL = 'https://app.6heroes.de/meine-quests-clone';
+/* Noloco-Seite (versteckt), die den submit.html-iframe hostet.
+   Slug an die echte Noloco Quest-Abschluss-Seite anpassen, sobald angelegt. */
+const SUBMIT_PAGE_URL = 'https://app.6heroes.de/quest-abschliessen';
 let QUESTS     = DUMMY_QUESTS;
 let DONE_TODAY = DUMMY_DONE_TODAY;
 let STREAK     = DUMMY_STREAK;
@@ -476,9 +479,21 @@ function bindEvents(){
   document.querySelectorAll('.quest[data-quest]:not(.optional)').forEach(card=>{
     const open=()=>{
       const id=card.getAttribute('data-quest');
-      // TODO Make: window.parent.location.href='https://app.6heroes.de/quest?qid='+id;
-      card.style.outline='2px solid var(--gold)'; card.style.outlineOffset='2px';
-      setTimeout(()=>{card.style.outline='';},600);
+      const q = QUESTS.find(x=>x.QuestID===id);
+      if (!q) return;
+      const P = getParams();
+      const params = new URLSearchParams();
+      if (P.email) params.set('email', P.email);
+      params.set('qid', q.QuestID);
+      if (q.Title)       params.set('title', q.Title);
+      if (q.Instruction) params.set('instruction', q.Instruction);
+      if (q.Hero)        params.set('hero', q.Hero);
+      if (q.Type)        params.set('type', q.Type);
+      if (q.DurationMin) params.set('min', q.DurationMin);
+      if (q.XP_Base)     params.set('xp', q.XP_Base);
+      const url = SUBMIT_PAGE_URL + '?' + params.toString();
+      try { window.parent.location.href = url; }
+      catch(_) { window.location.href = url; }
     };
     card.addEventListener('click',open);
     card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});

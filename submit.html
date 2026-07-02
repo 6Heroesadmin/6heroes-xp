@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quest abschließen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --gold: #F2B705;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .scroll { background: var(--navy); }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 10px;
+  }
+  .instruction {
+    font-size: 15px; color: var(--text-soft);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 8px;
+  }
+  .meta {
+    font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .meta strong { color: var(--gold); font-weight: 600; }
+
+  .field-label {
+    font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: block;
+  }
+  .field-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+  textarea {
+    width: 100%; min-height: 150px; resize: vertical;
+    font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; color: var(--text);
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; transition: border-color .12s, background .12s;
+  }
+  textarea::placeholder { color: var(--text-muted); }
+  textarea:focus {
+    outline: none; border-color: rgba(242,183,5,0.55); background: var(--card-hover);
+  }
+
+  .footer {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    border-top: 1px solid var(--border); padding-top: 20px; margin-top: 24px;
+  }
+  .actions { margin-left: auto; display: flex; gap: 10px; }
+
+  .btn {
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+    padding: 10px 20px; border-radius: 999px; cursor: pointer; border: 1px solid var(--border);
+    background: transparent; color: var(--text-soft); transition: background .12s, opacity .12s;
+  }
+  .btn:hover { background: var(--card-hover); }
+  .btn-primary {
+    background: var(--gold); color: #1a1a1a; border-color: var(--gold);
+  }
+  .btn-primary:hover { opacity: 0.9; background: var(--gold); }
+  .btn[disabled] { opacity: 0.5; cursor: default; }
+
+  .status { font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .status.ok { color: var(--done); }
+  .status.err { color: #E06A5A; }
+</style>
+</head>
+<body>
+<div class="scroll">
+<div class="wrap" id="wrap">
+  <div class="eyebrow" id="eyebrow">Quest</div>
+  <div class="header">
+    <h1 id="questTitle">Quest abschließen</h1>
+  </div>
+  <div class="instruction" id="instruction">…</div>
+  <div class="meta" id="meta"></div>
+
+  <label class="field-label" for="freetext">Deine Reflexion</label>
+  <div class="field-hint">Was hast du getan, erlebt oder bemerkt? Ein paar Sätze genügen.</div>
+  <textarea id="freetext" placeholder="Schreib hier, wie es gelaufen ist …"></textarea>
+
+  <div class="footer">
+    <div class="actions">
+      <button class="btn" id="cancelBtn">Abbrechen</button>
+      <button class="btn btn-primary" id="doneBtn">Erledigt</button>
+    </div>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+</div>
+
+<script>
+/* 6HEROES submit.html
+   Quest-Abschluss mit Freitext-Reflexion.
+   Legt (via Make "Quest Submit Write") einen ExerciseEntries-Record an und
+   triggert die bestehende Coaching-/XP-Kette. Danach zurück zu Meine Quests.
+
+   URL-Params (alle von quests.html gesetzt):
+     email       Pflicht – Login-Email (User-Zuordnung)
+     qid         Pflicht – QuestID, z.B. Q_STR_ACT_001 (stabiler Match, nicht Titel)
+     title       Anzeige – Quest-Titel
+     instruction Anzeige – Quest-Anweisung
+     hero,type   Anzeige/Meta
+     min         Dauer in Minuten (Anzeige)
+     xp          XP_Base (Anzeige)
+*/
+
+const WRITE_WEBHOOK_URL = 'PLATZHALTER_QUEST_SUBMIT_WEBHOOK';  // TODO: URL des neuen "Quest Submit Write"-Webhooks eintragen
+const BACK_URL = 'https://app.6heroes.de/meine-quests';
+
+function getParams(){
+  const p = new URLSearchParams(window.location.search);
+  return {
+    email:       (p.get('email')||'').trim(),
+    qid:         (p.get('qid')||'').trim(),
+    title:       (p.get('title')||'').trim(),
+    instruction: (p.get('instruction')||'').trim(),
+    hero:        (p.get('hero')||'').trim(),
+    type:        (p.get('type')||'').trim(),
+    min:         (p.get('min')||'').trim(),
+    xp:          (p.get('xp')||'').trim(),
+  };
+}
+
+function setStatus(msg, kind){
+  const s = document.getElementById('status');
+  s.textContent = msg || '';
+  s.className = 'status' + (kind?(' '+kind):'');
+}
+
+function renderInfo(P){
+  document.getElementById('questTitle').textContent = P.title || 'Quest abschließen';
+  document.getElementById('instruction').textContent = P.instruction || '';
+  document.getElementById('eyebrow').textContent = P.hero ? (P.hero.charAt(0).toUpperCase()+P.hero.slice(1)) : 'Quest';
+  const bits = [];
+  if (P.min) bits.push(P.min + ' Min');
+  if (P.xp)  bits.push('<strong>+' + P.xp + ' XP</strong>');
+  document.getElementById('meta').innerHTML = bits.join('<span style="opacity:.4">·</span>');
+}
+
+async function submit(){
+  const P = getParams();
+  const doneBtn = document.getElementById('doneBtn');
+  const freetext = document.getElementById('freetext').value.trim();
+
+  if (!P.email || !P.qid){
+    setStatus('Quest oder Benutzer nicht erkannt – Abschluss nicht möglich.', 'err');
+    return;
+  }
+  doneBtn.disabled = true;
+  setStatus('Wird gespeichert …');
+  try {
+    const res = await fetch(WRITE_WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        email:    P.email,
+        questId:  P.qid,
+        title:    P.title,
+        freetext: freetext,
+        hero:     P.hero,
+        type:     P.type,
+        durationMin: P.min,
+        xpBase:   P.xp
+      })
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    setStatus('Erledigt – gut gemacht.', 'ok');
+    setTimeout(()=>{ window.parent.location.href = BACK_URL; }, 700);
+  } catch(e){
+    console.error(e);
+    setStatus('Konnte nicht gespeichert werden. Bitte erneut versuchen.', 'err');
+    doneBtn.disabled = false;
+  }
+}
+
+function bindButtons(){
+  document.getElementById('doneBtn').addEventListener('click', submit);
+  document.getElementById('cancelBtn').addEventListener('click', ()=>{
+    window.parent.location.href = BACK_URL;
+  });
+}
+
+function init(){
+  renderInfo(getParams());
+  bindButtons();
+  postHeight();
+}
+
+let lastH = 0;
+function postHeight(){
+  const h = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight
+  );
+  if (h === lastH) return;
+  lastH = h;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+window.addEventListener("load",init);
+window.addEventListener("resize",postHeight);
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
