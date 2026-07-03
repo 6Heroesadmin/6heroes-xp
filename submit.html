@@ -114,33 +114,29 @@
 <script>
 /* 6HEROES submit.html
    Quest-Abschluss mit Freitext-Reflexion.
-   Legt (via Make "Quest Submit Write") einen ExerciseEntries-Record an und
-   triggert die bestehende Coaching-/XP-Kette. Danach zurück zu Meine Quests.
+   Wird via Noloco Record Page (ExerciseEntries, Feld Submit_URL) eingebettet.
+   Der ExerciseEntries-Record existiert zu diesem Zeitpunkt bereits (angelegt
+   durch "Quest Session Create" beim Quest-Klick in quests.html).
 
-   URL-Params (alle von quests.html gesetzt):
-     email       Pflicht – Login-Email (User-Zuordnung)
-     qid         Pflicht – QuestID, z.B. Q_STR_ACT_001 (stabiler Match, nicht Titel)
-     title       Anzeige – Quest-Titel
-     instruction Anzeige – Quest-Anweisung
-     hero,type   Anzeige/Meta
-     min         Dauer in Minuten (Anzeige)
-     xp          XP_Base (Anzeige)
-*/
+   URL-Params (kommen aus dem Submit_URL-Formelfeld in Airtable):
+     email     Pflicht – Login-Email
+     qid       Pflicht – QuestID, z.B. Q_STR_ACT_001
+     entryId   Pflicht – Airtable Record-ID des ExerciseEntries-Eintrags
 
-const WRITE_WEBHOOK_URL = 'PLATZHALTER_QUEST_SUBMIT_WEBHOOK';  // TODO: URL des neuen "Quest Submit Write"-Webhooks eintragen
+   Titel/Instruction/Hero/Type/Min/XP werden NICHT per URL übergeben (anders
+   als ursprünglich geplant), sondern selbst per Quests-Read-Webhook geladen
+   und per qid rausgefiltert – analog zu quests.html. */
+
+const QUESTS_WEBHOOK_URL = 'https://hook.eu1.make.com/smmkpjh8x1tgqmsx5mp4ossl86tqp2eg';
+const WRITE_WEBHOOK_URL  = 'PLATZHALTER_QUEST_SUBMIT_WEBHOOK';  // TODO: URL des "Quest Submit Write"-Webhooks (Schritt 7) eintragen
 const BACK_URL = 'https://app.6heroes.de/meine-quests';
 
 function getParams(){
   const p = new URLSearchParams(window.location.search);
   return {
-    email:       (p.get('email')||'').trim(),
-    qid:         (p.get('qid')||'').trim(),
-    title:       (p.get('title')||'').trim(),
-    instruction: (p.get('instruction')||'').trim(),
-    hero:        (p.get('hero')||'').trim(),
-    type:        (p.get('type')||'').trim(),
-    min:         (p.get('min')||'').trim(),
-    xp:          (p.get('xp')||'').trim(),
+    email:   (p.get('email')||'').trim(),
+    qid:     (p.get('qid')||'').trim(),
+    entryId: (p.get('entryId')||'').trim(),
   };
 }
 
@@ -150,14 +146,50 @@ function setStatus(msg, kind){
   s.className = 'status' + (kind?(' '+kind):'');
 }
 
-function renderInfo(P){
-  document.getElementById('questTitle').textContent = P.title || 'Quest abschließen';
-  document.getElementById('instruction').textContent = P.instruction || '';
-  document.getElementById('eyebrow').textContent = P.hero ? (P.hero.charAt(0).toUpperCase()+P.hero.slice(1)) : 'Quest';
+function renderInfo(q){
+  if (!q){
+    document.getElementById('questTitle').textContent = 'Quest abschließen';
+    document.getElementById('instruction').textContent = '';
+    document.getElementById('eyebrow').textContent = 'Quest';
+    document.getElementById('meta').innerHTML = '';
+    return;
+  }
+  document.getElementById('questTitle').textContent = q.Title || 'Quest abschließen';
+  document.getElementById('instruction').textContent = q.Instruction || '';
+  document.getElementById('eyebrow').textContent = q.Hero ? (q.Hero.charAt(0).toUpperCase()+q.Hero.slice(1)) : 'Quest';
   const bits = [];
-  if (P.min) bits.push(P.min + ' Min');
-  if (P.xp)  bits.push('<strong>+' + P.xp + ' XP</strong>');
+  if (q.DurationMin) bits.push(q.DurationMin + ' Min');
+  if (q.XP_Base)      bits.push('<strong>+' + q.XP_Base + ' XP</strong>');
   document.getElementById('meta').innerHTML = bits.join('<span style="opacity:.4">·</span>');
+}
+
+/* Toleranter Parser, analog zu quests.html – falls der Webhook doch mal
+   eine leicht kaputte JSON-Antwort liefert, bricht das Laden nicht komplett ab. */
+function parseWebhookPayload(text){
+  if (!text || !text.trim()) return null;
+  try { return JSON.parse(text); } catch(_) {}
+  let repaired = text
+    .replace(/:\s*,/g, ': [],')
+    .replace(/:\s*}/g, ': [] }')
+    .replace(/,\s*}/g, ' }')
+    .replace(/,\s*]/g, ' ]');
+  try { return JSON.parse(repaired); } catch(e){
+    console.warn('Quest-Payload auch nach Reparatur nicht parsebar:', e);
+    return null;
+  }
+}
+
+async function loadQuest(email, qid){
+  if (!email || !qid) return null;
+  const url = QUESTS_WEBHOOK_URL + '?email=' + encodeURIComponent(email);
+  const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+  if (!res.ok) throw new Error('Quests-Webhook '+res.status);
+  const raw = await res.text();
+  const data = parseWebhookPayload(raw);
+  const quests = Array.isArray(data && data.quests) ? data.quests
+               : (data && data.quests && typeof data.quests === 'object') ? [data.quests]
+               : [];
+  return quests.find(q => q.QuestID === qid) || null;
 }
 
 async function submit(){
@@ -165,8 +197,8 @@ async function submit(){
   const doneBtn = document.getElementById('doneBtn');
   const freetext = document.getElementById('freetext').value.trim();
 
-  if (!P.email || !P.qid){
-    setStatus('Quest oder Benutzer nicht erkannt – Abschluss nicht möglich.', 'err');
+  if (!P.entryId){
+    setStatus('Eintrag nicht erkannt – Abschluss nicht möglich.', 'err');
     return;
   }
   doneBtn.disabled = true;
@@ -176,14 +208,8 @@ async function submit(){
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({
-        email:    P.email,
-        questId:  P.qid,
-        title:    P.title,
-        freetext: freetext,
-        hero:     P.hero,
-        type:     P.type,
-        durationMin: P.min,
-        xpBase:   P.xp
+        entryId:  P.entryId,
+        freetext: freetext
       })
     });
     if (!res.ok) throw new Error('HTTP '+res.status);
@@ -203,9 +229,28 @@ function bindButtons(){
   });
 }
 
-function init(){
-  renderInfo(getParams());
+async function init(){
+  const P = getParams();
   bindButtons();
+
+  if (!P.email || !P.qid || !P.entryId){
+    renderInfo(null);
+    setStatus('Quest-Daten unvollständig – bitte über "Meine Quests" erneut öffnen.', 'err');
+    document.getElementById('doneBtn').disabled = true;
+    postHeight();
+    return;
+  }
+
+  try {
+    const q = await loadQuest(P.email, P.qid);
+    renderInfo(q);
+    if (!q){
+      setStatus('Quest-Details konnten nicht geladen werden, Abschluss ist trotzdem möglich.', '');
+    }
+  } catch(e){
+    console.warn('Quest-Details konnten nicht geladen werden:', e);
+    renderInfo(null);
+  }
   postHeight();
 }
 
