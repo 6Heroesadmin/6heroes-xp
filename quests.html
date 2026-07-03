@@ -260,9 +260,13 @@ const WEBHOOK_URL = 'https://hook.eu1.make.com/smmkpjh8x1tgqmsx5mp4ossl86tqp2eg'
    Slug = echter Noloco-Seiten-Slug der (versteckten) "Mein Fokus"-Seite.
    Die Seite entstand als Klon von "Meine Quests", daher der -clone-Slug. */
 const FOCUS_PAGE_URL = 'https://app.6heroes.de/meine-quests-clone';
-/* Noloco-Seite (versteckt), die den submit.html-iframe hostet.
-   Slug an die echte Noloco Quest-Abschluss-Seite anpassen, sobald angelegt. */
-const SUBMIT_PAGE_URL = 'https://app.6heroes.de/quest-abschliessen';
+/* Noloco Record Page (automatisch generiert von "Meine Quest-Einträge"),
+   die den submit.html-iframe via Submit_URL-Formelfeld hostet.
+   Vollständige Ziel-URL = SUBMIT_PAGE_URL + '/' + entryId */
+const SUBMIT_PAGE_URL = 'https://app.6heroes.de/exercise-entries/view';
+/* Make-Webhook "Quest Session Create": legt einen ExerciseEntries-Record an
+   (email + questId) und gibt { entryId } zurück. */
+const QUEST_SESSION_WEBHOOK_URL = 'https://hook.eu1.make.com/6bcm1uggdn0jmvf3wxsvs1k76eiw4j0m';
 let QUESTS     = DUMMY_QUESTS;
 let DONE_TODAY = DUMMY_DONE_TODAY;
 let STREAK     = DUMMY_STREAK;
@@ -477,23 +481,36 @@ function render(){
 
 function bindEvents(){
   document.querySelectorAll('.quest[data-quest]:not(.optional)').forEach(card=>{
-    const open=()=>{
+    const open=async ()=>{
+      if (card.dataset.loading === '1') return;   // Doppelklick verhindern
       const id=card.getAttribute('data-quest');
       const q = QUESTS.find(x=>x.QuestID===id);
       if (!q) return;
       const P = getParams();
-      const params = new URLSearchParams();
-      if (P.email) params.set('email', P.email);
-      params.set('qid', q.QuestID);
-      if (q.Title)       params.set('title', q.Title);
-      if (q.Instruction) params.set('instruction', q.Instruction);
-      if (q.Hero)        params.set('hero', q.Hero);
-      if (q.Type)        params.set('type', q.Type);
-      if (q.DurationMin) params.set('min', q.DurationMin);
-      if (q.XP_Base)     params.set('xp', q.XP_Base);
-      const url = SUBMIT_PAGE_URL + '?' + params.toString();
-      try { window.parent.location.href = url; }
-      catch(_) { window.location.href = url; }
+      if (!P.email) return;   // ohne Email kein Session-Record möglich
+
+      card.dataset.loading = '1';
+      const prevCursor = card.style.cursor;
+      card.style.cursor = 'wait';
+      try {
+        const res = await fetch(QUEST_SESSION_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: P.email, questId: q.QuestID })
+        });
+        if (!res.ok) throw new Error('Quest Session Create '+res.status);
+        const raw = await res.text();
+        const data = parseWebhookPayload(raw);
+        if (!data || !data.entryId) throw new Error('Keine entryId in Antwort');
+
+        const url = SUBMIT_PAGE_URL + '/' + encodeURIComponent(data.entryId);
+        try { window.parent.location.href = url; }
+        catch(_) { window.location.href = url; }
+      } catch(e){
+        console.warn('Quest-Session konnte nicht erstellt werden:', e);
+        card.dataset.loading = '0';
+        card.style.cursor = prevCursor;
+      }
     };
     card.addEventListener('click',open);
     card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
