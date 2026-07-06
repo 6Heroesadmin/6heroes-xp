@@ -332,7 +332,11 @@ async function loadData(email){
 
   // Jedes Feld defensiv behandeln — ein kaputtes Feld darf nicht alles killen
   const quests = asQuestArray(data.quests).map(normalizeQuest).filter(q => q.QuestID);
-  if (quests.length) QUESTS = quests;     // nur ersetzen, wenn echt was kam; sonst Dummy behalten
+  if (quests.length) {
+    QUESTS = quests;
+  } else {
+    console.warn('Webhook lieferte leeres quests-Array, behalte vorherigen Stand:', data);
+  }
   DONE_TODAY = Array.isArray(data.doneToday) ? data.doneToday : [];
   STREAK     = (data.streaks && typeof data.streaks === 'object' && !Array.isArray(data.streaks))
                  ? data.streaks : {};
