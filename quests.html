@@ -267,9 +267,14 @@ const SUBMIT_PAGE_URL = 'https://app.6heroes.de/exercise-entries/view';
 /* Make-Webhook "Quest Session Create": legt einen ExerciseEntries-Record an
    (email + questId) und gibt { entryId } zurück. */
 const QUEST_SESSION_WEBHOOK_URL = 'https://hook.eu1.make.com/6bcm1uggdn0jmvf3wxsvs1k76eiw4j0m';
-let QUESTS     = DUMMY_QUESTS;
-let DONE_TODAY = DUMMY_DONE_TODAY;
-let STREAK     = DUMMY_STREAK;
+/* WICHTIG: Kein automatischer Dummy-Fallback mehr (siehe Bug-3-Nachwirkung V91→V92).
+   DUMMY_QUESTS bleibt nur als Referenz-/Testdaten-Konstante im Code, wird aber
+   nirgends mehr automatisch als aktiver Zustand gesetzt. Ohne erfolgreichen
+   Live-Load ist die Quest-Liste bewusst leer, bis loadFailed() den Fehlerzustand zeigt. */
+let QUESTS     = [];
+let DONE_TODAY = [];
+let STREAK     = {};
+let LOAD_FAILED = false;
 
 /* Normalisiert eine Webhook-Quest auf das interne Format.
    Wichtig: Hero kommt aus Airtable groß ("Innovator") -> lowercase. */
@@ -332,11 +337,11 @@ async function loadData(email){
 
   // Jedes Feld defensiv behandeln — ein kaputtes Feld darf nicht alles killen
   const quests = asQuestArray(data.quests).map(normalizeQuest).filter(q => q.QuestID);
-  if (quests.length) {
-    QUESTS = quests;
-  } else {
-    console.warn('Webhook lieferte leeres quests-Array, behalte vorherigen Stand:', data);
+  if (!quests.length) {
+    // Leeres Array ist ein Fehlerzustand, kein "alles ok, nichts Neues" — siehe Bug 3.
+    throw new Error('Webhook lieferte leeres quests-Array');
   }
+  QUESTS = quests;
   DONE_TODAY = Array.isArray(data.doneToday) ? data.doneToday : [];
   STREAK     = (data.streaks && typeof data.streaks === 'object' && !Array.isArray(data.streaks))
                  ? data.streaks : {};
@@ -456,6 +461,21 @@ function render(){
   doneSet = new Set(DONE_TODAY);
   document.getElementById('focusbar').innerHTML = focusBar(P.focus);
   const el = document.getElementById('content');
+
+  if (LOAD_FAILED){
+    el.innerHTML = `<div class="empty">
+      Deine Quests konnten gerade nicht geladen werden.<br>
+      Bitte lade die Seite neu — falls es weiterhin nicht klappt, melde dich kurz beim Support.
+      <div style="margin-top:12px">
+        <button type="button" id="reloadQuests" style="cursor:pointer">Erneut versuchen</button>
+      </div>
+    </div>`;
+    const btn = document.getElementById('reloadQuests');
+    if (btn) btn.addEventListener('click', ()=>{ location.reload(); });
+    postHeight();
+    return;
+  }
+
   const roleAssign = [
     {roleKey:'basis',hero:P.basis},{roleKey:'zweit',hero:P.zweit},
     {roleKey:'stress1',hero:P.stress1},{roleKey:'stress2',hero:P.stress2},
@@ -546,12 +566,26 @@ function postHeight(){
 }
 async function init(){
   const email = getParams().email;
-  try {
-    await loadData(email);              // füllt QUESTS/DONE_TODAY/STREAK bei Erfolg
-  } catch(e){
-    // Netzwerk-/Webhook-Fehler: auf Dummy zurückfallen, damit die Seite nie leer bleibt
-    console.warn('Quest-Daten konnten nicht geladen werden, nutze Fallback:', e);
+  if (!email){
+    // Kein eingeloggter User -> reine Vorschau/Demo-Ansicht (z.B. Marketing-Preview).
+    // Hier sind Beispiel-Quests bewusst und unkritisch, da nichts anklickbar echte
+    // Sessions gegen Airtable/Make erzeugen soll (kein User = kein Session-Create möglich).
     QUESTS = DUMMY_QUESTS; DONE_TODAY = DUMMY_DONE_TODAY; STREAK = DUMMY_STREAK;
+    LOAD_FAILED = false;
+    render();
+    return;
+  }
+  try {
+    await loadData(email);
+    LOAD_FAILED = false;
+  } catch(e){
+    // Echter Lade-/Parse-/Server-Fehler bei eingeloggtem User: sichtbar machen statt
+    // still auf Dummy-Daten auszuweichen. Stille Fallbacks haben in der Vergangenheit
+    // dazu geführt, dass nicht existierende Dummy-QuestIDs an "Quest Session Create"
+    // gesendet wurden (siehe V91/V92-Vorfall).
+    console.warn('Quest-Daten konnten nicht geladen werden:', e);
+    QUESTS = []; DONE_TODAY = []; STREAK = {};
+    LOAD_FAILED = true;
   }
   render();
 }
