@@ -118,6 +118,10 @@
 
   .quest.optional { opacity: 0.5; cursor: default; }
   .quest.optional:hover { background: var(--card); border-color: var(--border); }
+
+  .quest.done-card { cursor: default; border-color: rgba(31,157,98,0.28); }
+  .quest.done-card:hover { background: var(--card); border-color: rgba(31,157,98,0.28); }
+  .quest.done-card .quest-title { color: var(--text-soft); }
   .opt-note { font-size: 12px; color: var(--text-muted); margin-bottom: 7px; font-style: italic; }
 
   .brach-intro {
@@ -416,14 +420,17 @@ function focusBar(focus){
 }
 
 function questCard(q, doneSet, optional, focus){
-  const done = doneSet.has(q.Title);
+  const done = doneSet.has(q.QuestID);
   const streak = STREAK[q.QuestID]||0;
-  const cls = 'quest'+(optional?' optional':'');
-  const status = optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt':'Offen'}</span>`;
+  // Erledigte Karten bleiben sichtbar (Habit-Modell), sind aber nicht mehr klickbar:
+  // kein erneutes Session-Create für eine heute schon abgeschlossene Quest.
+  const inert = optional || done;
+  const cls = 'quest'+(optional?' optional':'')+(done?' done-card':'');
+  const status = optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt ✓':'Offen'}</span>`;
   const optNote = optional ? `<div class="opt-note">Optional – nur, wenn du heute Kapazität hast.</div>` : '';
   const streakHtml = streak>0 ? `<span class="streak">${streak} Tage in Folge</span>` : '';
-  const match = (!optional && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
-  const tab = optional ? '' : 'tabindex="0" role="button"';
+  const match = (!optional && !done && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
+  const tab = inert ? '' : 'tabindex="0" role="button"';
   return `<div class="${cls}" ${tab} data-quest="${q.QuestID}">
     <div class="quest-top"><div class="quest-main">${optNote}
       <div class="quest-title">${esc(q.Title)}</div>
@@ -504,7 +511,7 @@ function render(){
 }
 
 function bindEvents(){
-  document.querySelectorAll('.quest[data-quest]:not(.optional)').forEach(card=>{
+  document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card)').forEach(card=>{
     const open=async ()=>{
       if (card.dataset.loading === '1') return;   // Doppelklick verhindern
       const id=card.getAttribute('data-quest');
