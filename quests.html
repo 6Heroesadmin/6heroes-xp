@@ -268,6 +268,11 @@ const FOCUS_PAGE_URL = 'https://app.6heroes.de/meine-quests-clone';
    die den submit.html-iframe via Submit_URL-Formelfeld hostet.
    Vollständige Ziel-URL = SUBMIT_PAGE_URL + '/' + entryId */
 const SUBMIT_PAGE_URL = 'https://app.6heroes.de/exercise-entries/view';
+/* Direkte Netlify-URL der Reflexions-Seite. Sie zieht alle Daten aus
+   URL-Params + eigenem Webhook und braucht Noloco NICHT. Direkt hierhin
+   zu navigieren umgeht den Noloco-Sync-Verzug ("This ExerciseEntries
+   could not be found") vollständig. */
+const SUBMIT_NETLIFY_URL = 'https://regal-mooncake-d3a250.netlify.app/submit.html';
 /* Make-Webhook "Quest Session Create": legt einen ExerciseEntries-Record an
    (email + questId) und gibt { entryId } zurück. */
 const QUEST_SESSION_WEBHOOK_URL = 'https://hook.eu1.make.com/6bcm1uggdn0jmvf3wxsvs1k76eiw4j0m';
@@ -571,14 +576,16 @@ function bindEvents(){
           throw new Error('Unerwartete entryId: ' + data.entryId);
         }
 
-        /* Noloco synchronisiert neue Airtable-Records nicht sofort. Ohne
-           Wartezeit landet die Weiterleitung auf einem Record, den Noloco
-           noch nicht kennt → "This ExerciseEntries could not be found".
-           Gemessener Verzug: ca. 2-3 Sekunden. */
-        showLoadingOverlay('Quest wird vorbereitet …');
-        await new Promise(r => setTimeout(r, 3000));
-
-        const url = SUBMIT_PAGE_URL + '/' + encodeURIComponent(cleanId);
+        /* Direkt auf die Netlify-Seite navigieren — NICHT auf die Noloco-
+           Record-Page. submit.html lädt Titel/Instruction selbst per Webhook
+           und braucht nur die drei URL-Params. So entfällt der Noloco-Sync
+           komplett und der "not found"-Fehler kann nicht mehr auftreten. */
+        const params = new URLSearchParams({
+          email:   P.email,
+          qid:     q.QuestID,
+          entryId: cleanId
+        });
+        const url = SUBMIT_NETLIFY_URL + '?' + params.toString();
         try { window.parent.location.href = url; }
         catch(_) { window.location.href = url; }
       } catch(e){
