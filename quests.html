@@ -510,6 +510,31 @@ function render(){
   bindEvents(); postHeight();
 }
 
+/* Ladeanzeige für die Wartezeit vor der Weiterleitung. Ohne sie wirkt
+   die Verzögerung wie ein Hänger — der Nutzer klickt sonst mehrfach. */
+function showLoadingOverlay(msg){
+  if (document.getElementById('questLoadingOverlay')) return;
+  const ov = document.createElement('div');
+  ov.id = 'questLoadingOverlay';
+  ov.style.cssText =
+    'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;' +
+    'justify-content:center;flex-direction:column;gap:16px;' +
+    'background:rgba(32,41,58,0.92);backdrop-filter:blur(2px);' +
+    "font-family:'Inter',system-ui,sans-serif;color:#F4F1E9;font-size:15px;";
+  ov.innerHTML =
+    '<div style="width:34px;height:34px;border:3px solid rgba(244,241,233,0.2);' +
+    'border-top-color:#F2B705;border-radius:50%;' +
+    'animation:questSpin .8s linear infinite"></div>' +
+    '<div>' + (msg || 'Einen Moment …') + '</div>' +
+    '<style>@keyframes questSpin{to{transform:rotate(360deg)}}</style>';
+  document.body.appendChild(ov);
+}
+
+function hideLoadingOverlay(){
+  const ov = document.getElementById('questLoadingOverlay');
+  if (ov) ov.remove();
+}
+
 function bindEvents(){
   document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card)').forEach(card=>{
     const open=async (ev)=>{
@@ -538,20 +563,27 @@ function bindEvents(){
         const data = parseWebhookPayload(raw);
         if (!data || !data.entryId) throw new Error('Keine entryId in Antwort');
 
-        /* Modul 5 des Make-Szenarios liefert die ID mit E_-Präfix
-           (E_recXXXX), weil die nackte Chip-Referenz {{4.ID}} still leer
-           bleibt. Noloco erwartet in der URL die nackte Airtable-Record-ID
-           ohne Präfix — deshalb hier abschneiden. */
+        /* Modul 8 (Webhook Response) liefert die nackte Airtable-Record-ID.
+           Das E_-Präfix wird trotzdem toleriert, falls die Response später
+           wieder auf die Präfix-Variante umgestellt wird. */
         const cleanId = String(data.entryId).replace(/^E_/, '').trim();
         if (!/^rec[A-Za-z0-9]{14}$/.test(cleanId)){
           throw new Error('Unerwartete entryId: ' + data.entryId);
         }
+
+        /* Noloco synchronisiert neue Airtable-Records nicht sofort. Ohne
+           Wartezeit landet die Weiterleitung auf einem Record, den Noloco
+           noch nicht kennt → "This ExerciseEntries could not be found".
+           Gemessener Verzug: ca. 2-3 Sekunden. */
+        showLoadingOverlay('Quest wird vorbereitet …');
+        await new Promise(r => setTimeout(r, 3000));
 
         const url = SUBMIT_PAGE_URL + '/' + encodeURIComponent(cleanId);
         try { window.parent.location.href = url; }
         catch(_) { window.location.href = url; }
       } catch(e){
         console.warn('Quest-Session konnte nicht erstellt werden:', e);
+        hideLoadingOverlay();
         card.dataset.loading = '0';
         card.style.cursor = prevCursor;
       }
