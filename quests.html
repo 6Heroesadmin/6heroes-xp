@@ -512,7 +512,11 @@ function render(){
 
 function bindEvents(){
   document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card)').forEach(card=>{
-    const open=async ()=>{
+    const open=async (ev)=>{
+      /* Verhindert, dass ein evtl. vorhandener Noloco-Handler parallel
+         navigiert — der landet sonst auf einem Record, den Noloco noch
+         nicht synchronisiert hat ("This ExerciseEntries could not be found"). */
+      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
       if (card.dataset.loading === '1') return;   // Doppelklick verhindern
       const id=card.getAttribute('data-quest');
       const q = QUESTS.find(x=>x.QuestID===id);
@@ -534,7 +538,16 @@ function bindEvents(){
         const data = parseWebhookPayload(raw);
         if (!data || !data.entryId) throw new Error('Keine entryId in Antwort');
 
-        const url = SUBMIT_PAGE_URL + '/' + encodeURIComponent(data.entryId);
+        /* Modul 5 des Make-Szenarios liefert die ID mit E_-Präfix
+           (E_recXXXX), weil die nackte Chip-Referenz {{4.ID}} still leer
+           bleibt. Noloco erwartet in der URL die nackte Airtable-Record-ID
+           ohne Präfix — deshalb hier abschneiden. */
+        const cleanId = String(data.entryId).replace(/^E_/, '').trim();
+        if (!/^rec[A-Za-z0-9]{14}$/.test(cleanId)){
+          throw new Error('Unerwartete entryId: ' + data.entryId);
+        }
+
+        const url = SUBMIT_PAGE_URL + '/' + encodeURIComponent(cleanId);
         try { window.parent.location.href = url; }
         catch(_) { window.location.href = url; }
       } catch(e){
@@ -544,7 +557,7 @@ function bindEvents(){
       }
     };
     card.addEventListener('click',open);
-    card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+    card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();open(e);}});
   });
   const edit=document.getElementById('focusEdit');
   if (edit) edit.addEventListener('click',e=>{ e.preventDefault();
