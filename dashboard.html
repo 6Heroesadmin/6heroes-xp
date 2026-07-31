@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --navy-2: #1A2230;
+    --gold: #F2B705;
+    --gold-soft: #FFD24A;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+
+    /* Held-Akzente */
+    --commander: #E0764F;
+    --strategist:#4F9DDE;
+    --innovator: #F2B705;
+    --sage:      #B98BD9;
+    --guardian:  #4FBE9F;
+    --explorer:  #6FB1E0;
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  /* ---------- Kopf ---------- */
+  .greeting { margin-bottom: 4px; }
+  .greeting .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .greeting h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; font-weight: 400; letter-spacing: -0.01em;
+  }
+  .greeting h1 .name { color: var(--gold); }
+
+  /* ---------- Dein Stand (Rückblick-Block, nach dem Schaufenster) ---------- */
+  .standboard {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 20px; display: grid; gap: 18px;
+  }
+  .stand-level { }
+  .sl-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .sl-num {
+    flex: 0 0 auto; width: 48px; height: 48px; border-radius: 13px;
+    background: linear-gradient(150deg, rgba(242,183,5,0.22), rgba(242,183,5,0.08));
+    border: 1px solid rgba(242,183,5,0.3);
+    display: grid; place-items: center;
+    font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--gold);
+  }
+  .sl-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .sl-label span { color: var(--gold); }
+  .sl-xp { font-size: 12.5px; color: var(--text-muted); }
+  .sl-xp b { color: var(--text-soft); font-weight: 600; }
+  .sl-bar {
+    height: 8px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden;
+  }
+  .sl-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+    width: 0%; transition: width 1s cubic-bezier(.2,.8,.2,1);
+  }
+  .stand-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+    border-top: 1px solid var(--border); padding-top: 16px;
+  }
+  .stand-cell { text-align: center; }
+  .sc-num {
+    font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text);
+    margin-bottom: 3px; line-height: 1.1;
+  }
+  .sc-lbl { font-size: 12px; color: var(--text-muted); }
+
+  /* Wochen-Zelle: 7 Tagespunkte, 5er-Schwelle markiert */
+  .stand-week { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+  .week-dots { display: flex; gap: 4px; align-items: center; margin-top: 3px; }
+  .week-dots .wd {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); position: relative;
+  }
+  .week-dots .wd.active { background: var(--gold); }
+  .week-dots .wd.perfect { background: var(--gold); }
+  /* Trennstrich nach dem 5. Punkt = "Woche geschafft"-Schwelle */
+  .week-dots .wd.threshold::after {
+    content: ''; position: absolute; right: -4px; top: -3px; bottom: -3px;
+    width: 1px; background: rgba(255,255,255,0.25);
+  }
+  .week-caption { font-size: 12px; color: var(--text-muted); text-align: center; line-height: 1.3; }
+  .week-caption b { color: var(--gold); font-weight: 600; }
+  .week-caption.done b { color: var(--done); }
+  @media (max-width: 440px){
+    .sc-num { font-size: 18px; }
+    .week-dots .wd { width: 9px; height: 9px; }
+  }
+
+  /* ---------- Coach-Hero-Karte ---------- */
+  .coach {
+    position: relative; overflow: hidden;
+    border-radius: 22px; padding: 26px 24px 24px; margin-bottom: 26px;
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(242,183,5,0.14), transparent 60%),
+      linear-gradient(180deg, rgba(242,183,5,0.06), rgba(242,183,5,0.015));
+    border: 1px solid rgba(242,183,5,0.28);
+  }
+  .coach .kicker {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .coach .kicker .pulse {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 0 rgba(242,183,5,0.6); animation: pulse 2.4s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(242,183,5,0.5); }
+    70%{ box-shadow: 0 0 0 8px rgba(242,183,5,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(242,183,5,0); }
+  }
+  .coach h2 {
+    font-family: 'DM Serif Display', serif; font-size: 25px; font-weight: 400;
+    line-height: 1.2; margin-bottom: 10px; letter-spacing: -0.01em;
+  }
+  .coach .lead {
+    font-size: 14.5px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; max-width: 52ch;
+  }
+  .coach .lead b { color: var(--gold); font-weight: 600; }
+
+  /* Kriterien-Reihe im Coach — konkrete Zahlen, ehrlich sichtbar */
+  .crit-list { display: grid; gap: 15px; margin-bottom: 20px; }
+  .crit-line {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    margin-bottom: 7px;
+  }
+  .crit-label { font-size: 13.5px; color: var(--text-soft); font-weight: 500; }
+  .crit-hint { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+  .crit-count {
+    flex: 0 0 auto; font-size: 13.5px; font-weight: 700; color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .crit.met .crit-count { color: var(--done); }
+  .crit-check { color: var(--done); }
+  .crit-bar {
+    height: 7px; border-radius: 999px; background: rgba(0,0,0,0.2); overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .crit-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+    width: 0%; transition: width .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .crit.met .crit-fill { background: linear-gradient(90deg, var(--done), #37B87A); }
+
+  /* Coach-CTA (nach Freischaltung) */
+  .coach-cta {
+    display: inline-flex; align-items: center; gap: 9px; margin-top: 4px;
+    background: var(--gold); color: #1a1a1a; font-weight: 700; font-size: 15px;
+    padding: 13px 22px; border-radius: 999px; border: none; cursor: pointer;
+    transition: opacity .12s, transform .08s; text-decoration: none;
+  }
+  .coach-cta:hover { opacity: .92; }
+  .coach-cta:active { transform: translateY(1px); }
+  .coach-cta .arrow { font-size: 16px; }
+
+  .coach-sub-actions {
+    display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .textlink {
+    font-size: 13px; font-weight: 600; color: var(--text-soft);
+    text-decoration: none; border-bottom: 1px solid transparent; transition: border-color .12s, color .12s;
+    cursor: pointer;
+  }
+  .textlink:hover { color: var(--gold); border-color: rgba(242,183,5,0.5); }
+
+  /* ---------- Schaufenster-Kacheln ---------- */
+  .shelf-label {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); margin: 0 2px 12px;
+  }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 520px){ .tiles { grid-template-columns: 1fr; } }
+
+  .tile {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 20px 20px 18px; transition: background .14s, border-color .14s, transform .1s;
+    position: relative; overflow: hidden;
+  }
+  .tile:hover { background: var(--card-hover); border-color: var(--border-strong); transform: translateY(-2px); }
+  .tile .tile-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 14px;
+  }
+  .tile h3 {
+    font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 21px;
+    margin-bottom: 6px; letter-spacing: -0.01em;
+  }
+  .tile .tile-value { font-size: 13.5px; color: var(--text-soft); margin-bottom: 18px; min-height: 20px; }
+  .tile .tile-value .accent { color: var(--tile-accent, var(--gold)); font-weight: 600; }
+  .tile .tile-open {
+    font-size: 13px; font-weight: 600; color: var(--text-soft);
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .tile:hover .tile-open { color: var(--gold); }
+  .tile .tile-open .arrow { transition: transform .14s; }
+  .tile:hover .tile-open .arrow { transform: translateX(3px); }
+  .tile .glow {
+    position: absolute; right: -30px; top: -30px; width: 120px; height: 120px;
+    background: radial-gradient(circle, var(--tile-accent, var(--gold)), transparent 70%);
+    opacity: 0.08; pointer-events: none;
+  }
+
+  /* Profil-Kachel: 2x2 Helden-Quad */
+  .hero-quad {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px;
+  }
+  .hero-slot {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 9px;
+  }
+  .hero-slot .hs-dot {
+    flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--hs-color, var(--gold));
+  }
+  .hero-slot .hs-body { min-width: 0; }
+  .hero-slot .hs-role {
+    font-size: 9.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-muted); line-height: 1.2;
+  }
+  .hero-slot .hs-name {
+    font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.25;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ---------- Badges-Ebene (unter Dein Stand) ---------- */
+  .badges-row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 18px; padding: 16px 18px; margin-top: 14px;
+    text-decoration: none; color: inherit; transition: background .14s, border-color .14s;
+  }
+  .badges-row:hover { background: var(--card-hover); border-color: var(--border-strong); }
+  .badges-head { flex: 0 0 auto; }
+  .badges-head .bh-count {
+    font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--gold); line-height: 1;
+  }
+  .badges-head .bh-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .badges-slots {
+    flex: 1 1 auto; margin-left: 14px;
+    display: grid; gap: 9px;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    justify-content: end;
+  }
+  .badge-slot {
+    aspect-ratio: 1 / 1; border-radius: 12px; width: 100%;
+    display: grid; place-items: center; position: relative; overflow: hidden;
+  }
+  .badge-slot.filled {
+    background: radial-gradient(circle at 50% 35%, rgba(242,183,5,0.22), rgba(242,183,5,0.06));
+    border: 1px solid rgba(242,183,5,0.4);
+  }
+  .badge-slot.empty {
+    background: rgba(255,255,255,0.02);
+    border: 1px dashed var(--border-strong);
+  }
+  .badge-slot .bs-img {
+    width: 100%; height: 100%; object-fit: contain; padding: 6px; display: block;
+  }
+  .badge-slot .bs-fallback {
+    display: none; place-items: center; width: 100%; height: 100%;
+    font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--gold);
+  }
+  .badges-open {
+    flex: 0 0 auto; margin-left: 4px; font-size: 18px; color: var(--text-muted);
+    transition: color .14s, transform .14s;
+  }
+  .badges-row:hover .badges-open { color: var(--gold); transform: translateX(3px); }
+  @media (max-width: 440px){
+    .badges-slots { grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
+  }
+
+  /* Quests-Kachel: kleine offene-Quests-Punkte */
+  .quest-dots { display: flex; gap: 5px; margin-bottom: 18px; }
+  .quest-dots .qd {
+    width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.14);
+  }
+  .quest-dots .qd.open { background: var(--gold); }
+
+  .footer-note {
+    margin-top: 30px; text-align: center; font-size: 12px; color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Kopf -->
+  <div class="greeting">
+    <div class="eyebrow">Mein Dashboard</div>
+    <h1>Willkommen zurück, <span class="name" id="userName">Stefan</span></h1>
+  </div>
+
+  <div style="height:22px"></div>
+
+  <!-- ================= COACH — der Held der Seite ================= -->
+  <div class="coach" id="coach"><!-- per JS gefüllt (zwei Zustände) --></div>
+
+  <!-- ================= Schaufenster ================= -->
+  <div class="shelf-label">Deine Bereiche</div>
+  <div class="tiles">
+
+    <a class="tile" id="tileProfile" style="--tile-accent: var(--commander)" href="#">
+      <span class="glow"></span>
+      <div class="tile-eyebrow">Mein Profil</div>
+      <h3>Deine vier Modi</h3>
+      <div class="hero-quad" id="heroQuad"><!-- per JS --></div>
+      <span class="tile-open">Profil öffnen <span class="arrow">&rarr;</span></span>
+    </a>
+
+    <a class="tile" id="tileQuests" style="--tile-accent: var(--gold)" href="#">
+      <span class="glow"></span>
+      <div class="tile-eyebrow">Meine Quests</div>
+      <h3>Was heute dran ist</h3>
+      <div class="quest-dots" id="questDots"></div>
+      <div class="tile-value"><span class="accent" id="questOpen">3 Quests</span> warten auf dich</div>
+      <span class="tile-open">Quests öffnen <span class="arrow">&rarr;</span></span>
+    </a>
+
+  </div>
+
+  <!-- ================= Dein Stand (Rückblick, kein Antrieb) ================= -->
+  <div class="shelf-label" style="margin-top:28px">Dein Stand</div>
+  <div class="standboard">
+    <div class="stand-level">
+      <div class="sl-top">
+        <div class="sl-num" id="slLevel">3</div>
+        <div class="sl-meta">
+          <div class="sl-label">Level <span id="slLevelName">Wegbereiter</span></div>
+          <div class="sl-xp"><b id="slXpNow">640</b> / <span id="slXpNext">900</span> XP zum nächsten Level</div>
+        </div>
+      </div>
+      <div class="sl-bar"><div class="sl-fill" id="slFill"></div></div>
+    </div>
+    <div class="stand-grid">
+      <div class="stand-cell stand-week">
+        <div class="week-dots" id="weekDots"></div>
+        <div class="week-caption" id="weekCaption"></div>
+      </div>
+      <div class="stand-cell">
+        <div class="sc-num" id="scWeeks">3</div>
+        <div class="sc-lbl">Wochen am Stück</div>
+      </div>
+      <div class="stand-cell">
+        <div class="sc-num" id="scEntries">12</div>
+        <div class="sc-lbl">Quests abgeschlossen</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badges-Ebene: letzte 3-4 bzw. Leerfelder, Absprung zu Meine Badges -->
+  <a class="badges-row" id="badgesRow" href="#">
+    <div class="badges-head">
+      <div class="bh-count" id="bhCount">7</div>
+      <div class="bh-label">Abzeichen</div>
+    </div>
+    <div class="badges-slots" id="badgesSlots"><!-- per JS --></div>
+    <span class="badges-open">&rarr;</span>
+  </a>
+
+  <div class="footer-note" id="footerNote"></div>
+
+</div>
+
+<script>
+/* ============================================================
+   6HEROES — dashboard.html  (Mein Dashboard)
+   Schaufenster + zentraler Coach-Einstieg. Eigenständige Seite,
+   als iframe in Noloco eingebettet (wie die übrigen Seiten).
+
+   Der Coach ist die Hero-Karte: vor Freischaltung Fortschritt,
+   nach Freischaltung der Einstieg in die freie Beratung.
+
+   Zustände zum Ansehen:  ?state=locked  /  ?state=unlocked
+   ============================================================ */
+
+const P = new URLSearchParams(location.search);
+const STATE = P.get('state') || 'locked';   // 'locked' | 'unlocked'
+
+/* Zielseiten (Noloco-Routen) – anpassen an echte Slugs */
+const ROUTES = {
+  quests:   'https://app.6heroes.de/meine-quests',
+  profile:  'https://app.6heroes.de/mein-profil',
+  entries:  'https://app.6heroes.de/meine-eintraege',  // Historie + Feedback
+  advice:   'https://app.6heroes.de/beratung',         // freie Beratung
+  badges:   'https://app.6heroes.de/meine-badges',
+};
+
+/* Badge-Bilder: Netlify-Ordner, Dateiname = Slug(Name).
+   Endung hier zentral einstellbar (.svg oder .png). */
+const BADGE_IMG_BASE = 'https://app.6heroes.de/badges/';   // Netlify-Ordner
+const BADGE_IMG_EXT  = '.png';
+
+/* Slug aus Badge-Name: lowercase, Umlaute ausgeschrieben,
+   Leerzeichen/Slash -> Bindestrich, Rest entfernt. */
+function badgeSlug(name){
+  return (name||'').toString().trim().toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/[\s/]+/g,'-')
+    .replace(/[^a-z0-9-]/g,'')
+    .replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+function badgeImgUrl(name){ return BADGE_IMG_BASE + badgeSlug(name) + BADGE_IMG_EXT; }
+
+/* Demo-Fortschritt (kommt später aus Coaching Entries Read) */
+const DEMO = {
+  name: 'Stefan',
+  withFeedback: 5, minWithFeedback: 8,
+  clear: 3,        minClear: 5,
+  types: 2,        minTypes: 2,
+  openQuests: 3,   totalQuestSlots: 5,
+  // Dein Stand
+  level: 3, levelName: 'Wegbereiter',
+  xpNow: 640, xpNext: 900,
+  // Wochen-Streak: aktive Tage der laufenden Woche + geschaffte Wochen am Stück
+  weekDaysActive: 4,   // aktive Tage diese Woche (0-7)
+  weekGoal: 5,         // 5/7 = Woche geschafft
+  weekPerfect: 7,      // 7/7 = perfekte Woche
+  weeksStreak: 3,      // Wochen am Stück (>=5/7)
+  entries: 12, hero: 'Commander',
+  // Vier Helden (Basis / Zweit / Stress 1 / Stress 2)
+  heroes: [
+    { role: 'Basisheld',   name: 'Commander',  color: 'var(--commander)' },
+    { role: 'Zweitheld',   name: 'Strategist', color: 'var(--strategist)' },
+    { role: 'Stressheld 1',name: 'Guardian',   color: 'var(--guardian)' },
+    { role: 'Stressheld 2',name: 'Explorer',   color: 'var(--explorer)' },
+  ],
+  // Badges: Anzahl gesamt + Namen der jüngsten (chronologisch, neueste zuerst).
+  // Bild-URL wird aus dem Namen abgeleitet (Netlify-Slug).
+  badgesCount: 15,
+  recentBadges: ['Ankerkraft', 'Mastermind', 'Wegarchitekt', 'Musterseher', 'Entscheidungsblitz', 'Planfokus'],
+  minBadgeSlots: 3,   // mindestens so viele Slots, Rest füllt die Zeilenbreite
+};
+
+function pct(){
+  const p1 = Math.min(DEMO.withFeedback / DEMO.minWithFeedback, 1);
+  const p2 = Math.min(DEMO.clear        / DEMO.minClear, 1);
+  const p3 = Math.min(DEMO.types        / DEMO.minTypes, 1);
+  return Math.round((p1*0.4 + p2*0.4 + p3*0.2) * 100);
+}
+
+function renderCoachLocked(){
+  const crits = [
+    { got: DEMO.withFeedback, need: DEMO.minWithFeedback, label: 'Einträge mit Rückmeldung' },
+    { got: DEMO.clear,        need: DEMO.minClear,        label: 'davon klar bewertet',
+      hint: '„Hat geholfen" oder „Ging daneben"' },
+    { got: DEMO.types,        need: DEMO.minTypes,        label: 'verschiedene Quest-Arten' },
+  ];
+  const critRows = crits.map(c => {
+    const met = c.got >= c.need;
+    const w = Math.min(c.got / c.need * 100, 100);
+    return `
+      <div class="crit ${met?'met':''}">
+        <div class="crit-line">
+          <span class="crit-label">${c.label}${c.hint?` <span class="crit-hint">${c.hint}</span>`:''}</span>
+          <span class="crit-count">${c.got} / ${c.need}${met?' <span class="crit-check">&checkmark;</span>':''}</span>
+        </div>
+        <div class="crit-bar"><div class="crit-fill" style="width:${w}%"></div></div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('coach').innerHTML = `
+    <div class="kicker"><span class="pulse"></span>Dein Coach</div>
+    <h2>6Heroes lernt dich gerade kennen</h2>
+    <p class="lead">Dein Coach öffnet dann ein freies Textfeld, in das du eigene Situationen und Fragen einträgst — „So bereite ich mein nächstes Gespräch vor." Sobald er dich gut genug versteht, geht es los. Daran arbeitet ihr gerade:</p>
+    <div class="crit-list">${critRows}</div>
+    <div class="coach-sub-actions">
+      <a class="textlink" href="${ROUTES.entries}">Coaching-Einträge bewerten</a>
+      <a class="textlink" href="${ROUTES.quests}">Neue Quest starten</a>
+    </div>`;
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('#coach .crit-fill').forEach(f => {
+      const target = f.style.width; f.style.width = '0%';
+      requestAnimationFrame(()=>{ f.style.width = target; });
+    });
+  });
+}
+
+function renderCoachUnlocked(){
+  document.getElementById('coach').innerHTML = `
+    <div class="kicker"><span class="pulse"></span>Dein Coach — offen</div>
+    <h2>Was steht bei dir an?</h2>
+    <p class="lead">Dein Coach kennt dich jetzt gut genug. Trag unten eine Situation ein, die vor dir liegt — ein Gespräch, eine Entscheidung, etwas Unklares. Ins freie Textfeld, ganz in deinen Worten. Ihr denkt sie gemeinsam durch.</p>
+    <a class="coach-cta" href="${ROUTES.advice}">Situation einbringen <span class="arrow">&rarr;</span></a>
+    <div class="coach-sub-actions">
+      <a class="textlink" href="${ROUTES.entries}">Frühere Gespräche ansehen</a>
+      <a class="textlink" href="${ROUTES.quests}">Neue Quest starten</a>
+    </div>`;
+}
+
+function renderWeek(){
+  const active = DEMO.weekDaysActive, goal = DEMO.weekGoal, perfect = DEMO.weekPerfect;
+  const wrap = document.getElementById('weekDots');
+  let html = '';
+  for (let i=1;i<=7;i++){
+    const cls = ['wd'];
+    if (i <= active) cls.push(active >= perfect ? 'perfect' : 'active');
+    if (i === goal) cls.push('threshold');   // Strich nach dem 5. Punkt
+    html += `<span class="${cls.join(' ')}"></span>`;
+  }
+  wrap.innerHTML = html;
+
+  const cap = document.getElementById('weekCaption');
+  if (active >= perfect){
+    cap.className = 'week-caption done';
+    cap.innerHTML = 'Perfekte Woche <b>7/7</b>';
+  } else if (active >= goal){
+    cap.className = 'week-caption done';
+    cap.innerHTML = `Woche geschafft <b>${active}/7</b>`;
+  } else {
+    cap.className = 'week-caption';
+    const left = goal - active;
+    cap.innerHTML = `Diese Woche <b>${active}/7</b> · noch ${left} bis geschafft`;
+  }
+}
+
+function renderTiles(){
+  // Helden-Quad (vier Modi)
+  document.getElementById('heroQuad').innerHTML = DEMO.heroes.map(h => `
+    <div class="hero-slot" style="--hs-color:${h.color}">
+      <span class="hs-dot"></span>
+      <div class="hs-body">
+        <div class="hs-role">${h.role}</div>
+        <div class="hs-name">${h.name}</div>
+      </div>
+    </div>`).join('');
+
+  // Quests-Punkte
+  const dots = document.getElementById('questDots');
+  let h = '';
+  for (let i=0;i<DEMO.totalQuestSlots;i++){
+    h += `<span class="qd ${i<DEMO.openQuests?'open':''}"></span>`;
+  }
+  dots.innerHTML = h;
+  document.getElementById('questOpen').textContent =
+    DEMO.openQuests + (DEMO.openQuests===1?' Quest':' Quests');
+
+  document.getElementById('tileProfile').setAttribute('href', ROUTES.profile);
+  document.getElementById('tileQuests').setAttribute('href', ROUTES.quests);
+}
+
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function renderBadges(){
+  document.getElementById('bhCount').textContent = DEMO.badgesCount;
+  const wrap = document.getElementById('badgesSlots');
+
+  // Wie viele Slots passen in die aktuelle Breite? -> CSS Grid auto-fill macht
+  // die Spalten; wir liefern genug Slots, damit die Zeile immer voll ist.
+  // Anzahl gelieferter Slots = max(minBadgeSlots, was in die Breite passt).
+  const slotSize = 44 + 9;                       // Slotbreite + gap (siehe CSS)
+  const avail = wrap.clientWidth || 320;
+  const fit = Math.max(DEMO.minBadgeSlots, Math.floor((avail + 9) / slotSize));
+
+  let html = '';
+  for (let i=0;i<fit;i++){
+    const name = DEMO.recentBadges[i];
+    if (name){
+      const url = badgeImgUrl(name);
+      const letter = escapeHtml(name.charAt(0).toUpperCase());
+      html += `
+        <div class="badge-slot filled" title="${escapeHtml(name)}">
+          <img class="bs-img" src="${url}" alt="${escapeHtml(name)}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+          <span class="bs-fallback">${letter}</span>
+        </div>`;
+    } else {
+      html += `<div class="badge-slot empty"></div>`;
+    }
+  }
+  wrap.innerHTML = html;
+  document.getElementById('badgesRow').setAttribute('href', ROUTES.badges);
+}
+
+function init(){
+  document.getElementById('userName').textContent = DEMO.name;
+  if (STATE === 'unlocked') renderCoachUnlocked(); else renderCoachLocked();
+  renderTiles();
+
+  // Dein Stand
+  document.getElementById('slLevel').textContent    = DEMO.level;
+  document.getElementById('slLevelName').textContent= DEMO.levelName;
+  document.getElementById('slXpNow').textContent    = DEMO.xpNow;
+  document.getElementById('slXpNext').textContent   = DEMO.xpNext;
+  renderWeek();
+  document.getElementById('scWeeks').textContent    = DEMO.weeksStreak;
+  document.getElementById('scEntries').textContent  = DEMO.entries;
+  renderBadges();
+  requestAnimationFrame(()=>{
+    const w = Math.min(DEMO.xpNow / DEMO.xpNext * 100, 100);
+    document.getElementById('slFill').style.width = w + '%';
+  });
+
+  document.getElementById('footerNote').textContent =
+    STATE === 'unlocked' ? 'Vorschau: freigeschalteter Zustand' : 'Vorschau: vor Freischaltung';
+  postHeight();
+}
+
+/* iframe-Höhe (wie die übrigen Seiten) */
+let lastH = 0;
+function postHeight(){
+  const el = document.documentElement, bd = document.body;
+  const h = Math.max(bd.scrollHeight, el.scrollHeight, bd.offsetHeight, el.offsetHeight);
+  if (h === lastH) return; lastH = h;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+window.addEventListener('load', init);
+window.addEventListener('resize', ()=>{ postHeight(); renderBadges(); });
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
