@@ -400,7 +400,17 @@
    ============================================================ */
 
 const P = new URLSearchParams(location.search);
-const STATE = P.get('state') || 'locked';   // 'locked' | 'unlocked'
+let   STATE = P.get('state') || 'locked';   // 'locked' | 'unlocked' — kann von Live-Daten überschrieben werden
+const EMAIL = (P.get('email')||'').trim();
+
+/* Coaching-Entries-Read-Webhook: liefert {"entries":[...]}.
+   Daraus leiten wir Freischalt-Fortschritt, Wochen-Streak und
+   Einträge-Zahl rein clientseitig ab (kein Backend nötig). */
+const READ_WEBHOOK_URL = 'https://hook.eu1.make.com/np1n3s26oesoijxzeo97s9tf1gf2yrvc';
+
+/* Freischalt-Schwellen (identisch zur Einträge-Seite) */
+const UNLOCK = { minWithFeedback: 8, minClear: 5, minTypes: 2 };
+const CLEAR_TAPS = ['helped','missed'];   // 'partly' zählt nicht als klar
 
 /* Zielseiten (Noloco-Routen) – anpassen an echte Slugs */
 const ROUTES = {
@@ -457,19 +467,164 @@ const DEMO = {
   minBadgeSlots: 3,   // mindestens so viele Slots, Rest füllt die Zeilenbreite
 };
 
+/* ============================================================
+   LIVE-DATENSCHICHT
+   D startet als Kopie von DEMO. Was wir echt aus dem
+   Coaching-Read berechnen können (Freischalt-Fortschritt,
+   Wochen-Streak, Einträge-Zahl), überschreiben wir in D.
+   Users-/Badges-Felder bleiben Demo, bis ihre Webhooks stehen.
+   Alle Render-Funktionen lesen aus D, nie mehr direkt aus DEMO.
+   ============================================================ */
+const D = Object.assign({}, DEMO);
+
+function stripPrefix(id){
+  const s = (id||'').toString().trim();
+  return s.startsWith('E_') ? s.slice(2) : s;
+}
+
+/* Roh-Eintrag -> normalisiert (gleiche Feldnamen wie eintraege.html) */
+function mapEntry(r){
+  const pick = (...keys) => {
+    for (const k of keys){
+      if (r[k] !== undefined && r[k] !== null && r[k] !== '') return r[k];
+    }
+    return '';
+  };
+  return {
+    entryId: stripPrefix(pick('EntryID','entryId')),
+    type:    pick('Quest_Type_LU','QuestType_Frozen','type'),
+    date:    pick('debug_date','date'),
+    fbTap:   (pick('Feedback_Tap','tap') || '').toString().toLowerCase(),
+  };
+}
+
+function parseWebhookPayload(text){
+  if (!text || !text.trim()) return null;
+  try { return JSON.parse(text); } catch(_) {}
+  let repaired = text
+    .replace(/\\{2,}"/g, '\\"')
+    .replace(/:\s*,/g, ': [],').replace(/:\s*}/g, ': [] }')
+    .replace(/,\s*}/g, ' }').replace(/,\s*]/g, ' ]');
+  try { return JSON.parse(repaired); } catch(e){ return null; }
+}
+
+/* ISO-Woche (Mo–So). Gibt einen vergleichbaren Schlüssel "YYYY-Www". */
+function isoWeekKey(isoDate){
+  const d = new Date(isoDate + 'T00:00:00');
+  if (isNaN(d)) return null;
+  // ISO: Donnerstag der Woche bestimmt das Jahr
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = (t.getUTCDay() + 6) % 7;            // Mo=0 … So=6
+  t.setUTCDate(t.getUTCDate() - day + 3);         // auf Donnerstag
+  const firstThu = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+  const week = 1 + Math.round(((t - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
+  return t.getUTCFullYear() + '-W' + String(week).padStart(2,'0');
+}
+
+/* Aktueller ISO-Wochenschlüssel (heute). */
+function currentWeekKey(){
+  const now = new Date();
+  return isoWeekKey(now.toISOString().slice(0,10));
+}
+
+/* Aus den Einträgen die echten Kennzahlen ableiten. */
+function deriveFromEntries(entries){
+  // --- Freischalt-Fortschritt (Feedback-basiert) ---
+  const withFb = entries.filter(e => e.fbTap);
+  const clear  = withFb.filter(e => CLEAR_TAPS.includes(e.fbTap));
+  const types  = new Set(withFb.map(e => (e.type||'').toLowerCase()).filter(Boolean));
+  D.withFeedback = withFb.length;
+  D.clear        = clear.length;
+  D.types        = types.size;
+  D.entries      = entries.length;             // "Quests abgeschlossen" (gesamt)
+
+  const met = D.withFeedback >= UNLOCK.minWithFeedback
+           && D.clear        >= UNLOCK.minClear
+           && D.types        >= UNLOCK.minTypes;
+  // State aus Live-Daten ableiten (URL-Param bleibt Override für Vorschau).
+  if (!P.get('state')) STATE = met ? 'unlocked' : 'locked';
+
+  // --- Wochen-Streak (aktiver Tag = Tag mit >=1 Quest, egal welcher Typ) ---
+  // Aktive Tage pro ISO-Woche sammeln.
+  const weekDays = new Map();   // weekKey -> Set(YYYY-MM-DD)
+  for (const e of entries){
+    if (!e.date) continue;
+    const wk = isoWeekKey(e.date);
+    if (!wk) continue;
+    if (!weekDays.has(wk)) weekDays.set(wk, new Set());
+    weekDays.get(wk).add(e.date);
+  }
+
+  // Laufende Woche: aktive Tage zählen.
+  const curKey = currentWeekKey();
+  D.weekDaysActive = weekDays.has(curKey) ? weekDays.get(curKey).size : 0;
+
+  // Wochen am Stück (>=5/7), rückwärts ab der aktuellen Woche.
+  // Die laufende Woche zählt nur mit, wenn sie die Schwelle schon erreicht.
+  D.weeksStreak = countWeekStreak(weekDays, curKey);
+}
+
+/* Zusammenhängende ISO-Wochen mit >= weekGoal aktiven Tagen,
+   rückwärts ab startKey. Lücken (Woche ganz ohne Aktivität) brechen ab. */
+function countWeekStreak(weekDays, startKey){
+  const goal = DEMO.weekGoal;   // 5
+  let count = 0;
+  let [y, w] = startKey.split('-W').map(Number);
+  // Falls die laufende Woche die Schwelle noch nicht hat, zählt sie nicht,
+  // bricht aber die Kette auch nicht ab -> wir starten bei der Vorwoche.
+  const curActive = weekDays.has(startKey) ? weekDays.get(startKey).size : 0;
+  if (curActive >= goal) count++;
+  // rückwärts weiterlaufen
+  for (let i=0; i<520; i++){   // Sicherheitslimit ~10 Jahre
+    // eine Woche zurück
+    w--; if (w < 1){ y--; w = isoWeeksInYear(y); }
+    const key = y + '-W' + String(w).padStart(2,'0');
+    const active = weekDays.has(key) ? weekDays.get(key).size : 0;
+    if (active >= goal) count++;
+    else break;   // erste Woche unter Schwelle beendet die Kette
+  }
+  return count;
+}
+
+/* Anzahl ISO-Wochen in einem Jahr (52 oder 53). */
+function isoWeeksInYear(year){
+  const d = new Date(Date.UTC(year, 11, 31));
+  const day = (d.getUTCDay() + 6) % 7;
+  d.setUTCDate(d.getUTCDate() - day + 3);
+  const firstThu = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+  return 1 + Math.round(((d - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
+}
+
+async function loadLive(){
+  if (!EMAIL) return;   // ohne E-Mail bleibt alles Demo
+  try {
+    const url = READ_WEBHOOK_URL + '?email=' + encodeURIComponent(EMAIL);
+    const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+    if (!res.ok) throw new Error('Read '+res.status);
+    const data = parseWebhookPayload(await res.text());
+    const rows = (data && (data.entries || data.records)) || [];
+    if (Array.isArray(rows) && rows.length){
+      deriveFromEntries(rows.map(mapEntry));
+    }
+  } catch(e){
+    // Netzwerk-/Parse-Fehler: Demo-Werte behalten, Seite bleibt nutzbar.
+    console.warn('Live-Daten nicht geladen, nutze Demo:', e.message);
+  }
+}
+
 function pct(){
-  const p1 = Math.min(DEMO.withFeedback / DEMO.minWithFeedback, 1);
-  const p2 = Math.min(DEMO.clear        / DEMO.minClear, 1);
-  const p3 = Math.min(DEMO.types        / DEMO.minTypes, 1);
+  const p1 = Math.min(D.withFeedback / D.minWithFeedback, 1);
+  const p2 = Math.min(D.clear        / D.minClear, 1);
+  const p3 = Math.min(D.types        / D.minTypes, 1);
   return Math.round((p1*0.4 + p2*0.4 + p3*0.2) * 100);
 }
 
 function renderCoachLocked(){
   const crits = [
-    { got: DEMO.withFeedback, need: DEMO.minWithFeedback, label: 'Einträge mit Rückmeldung' },
-    { got: DEMO.clear,        need: DEMO.minClear,        label: 'davon klar bewertet',
+    { got: D.withFeedback, need: D.minWithFeedback, label: 'Einträge mit Rückmeldung' },
+    { got: D.clear,        need: D.minClear,        label: 'davon klar bewertet',
       hint: '„Hat geholfen" oder „Ging daneben"' },
-    { got: DEMO.types,        need: DEMO.minTypes,        label: 'verschiedene Quest-Arten' },
+    { got: D.types,        need: D.minTypes,        label: 'verschiedene Quest-Arten' },
   ];
   const critRows = crits.map(c => {
     const met = c.got >= c.need;
@@ -514,7 +669,7 @@ function renderCoachUnlocked(){
 }
 
 function renderWeek(){
-  const active = DEMO.weekDaysActive, goal = DEMO.weekGoal, perfect = DEMO.weekPerfect;
+  const active = D.weekDaysActive, goal = DEMO.weekGoal, perfect = DEMO.weekPerfect;
   const wrap = document.getElementById('weekDots');
   let html = '';
   for (let i=1;i<=7;i++){
@@ -541,7 +696,7 @@ function renderWeek(){
 
 function renderTiles(){
   // Helden-Quad (vier Modi)
-  document.getElementById('heroQuad').innerHTML = DEMO.heroes.map(h => `
+  document.getElementById('heroQuad').innerHTML = D.heroes.map(h => `
     <div class="hero-slot" style="--hs-color:${h.color}">
       <span class="hs-dot"></span>
       <div class="hs-body">
@@ -553,12 +708,12 @@ function renderTiles(){
   // Quests-Punkte
   const dots = document.getElementById('questDots');
   let h = '';
-  for (let i=0;i<DEMO.totalQuestSlots;i++){
-    h += `<span class="qd ${i<DEMO.openQuests?'open':''}"></span>`;
+  for (let i=0;i<D.totalQuestSlots;i++){
+    h += `<span class="qd ${i<D.openQuests?'open':''}"></span>`;
   }
   dots.innerHTML = h;
   document.getElementById('questOpen').textContent =
-    DEMO.openQuests + (DEMO.openQuests===1?' Quest':' Quests');
+    D.openQuests + (D.openQuests===1?' Quest':' Quests');
 
   document.getElementById('tileProfile').setAttribute('href', ROUTES.profile);
   document.getElementById('tileQuests').setAttribute('href', ROUTES.quests);
@@ -567,7 +722,7 @@ function renderTiles(){
 function escapeHtml(s){ return (s||'').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 function renderBadges(){
-  document.getElementById('bhCount').textContent = DEMO.badgesCount;
+  document.getElementById('bhCount').textContent = D.badgesCount;
   const wrap = document.getElementById('badgesSlots');
 
   // Wie viele Slots passen in die aktuelle Breite? -> CSS Grid auto-fill macht
@@ -579,7 +734,7 @@ function renderBadges(){
 
   let html = '';
   for (let i=0;i<fit;i++){
-    const name = DEMO.recentBadges[i];
+    const name = D.recentBadges[i];
     if (name){
       const url = badgeImgUrl(name);
       const letter = escapeHtml(name.charAt(0).toUpperCase());
@@ -597,22 +752,23 @@ function renderBadges(){
   document.getElementById('badgesRow').setAttribute('href', ROUTES.badges);
 }
 
-function init(){
-  document.getElementById('userName').textContent = DEMO.name;
+async function init(){
+  await loadLive();   // echte Werte aus dem Coaching-Read holen (Fallback: Demo)
+  document.getElementById('userName').textContent = D.name;
   if (STATE === 'unlocked') renderCoachUnlocked(); else renderCoachLocked();
   renderTiles();
 
   // Dein Stand
-  document.getElementById('slLevel').textContent    = DEMO.level;
-  document.getElementById('slLevelName').textContent= DEMO.levelName;
-  document.getElementById('slXpNow').textContent    = DEMO.xpNow;
-  document.getElementById('slXpNext').textContent   = DEMO.xpNext;
+  document.getElementById('slLevel').textContent    = D.level;
+  document.getElementById('slLevelName').textContent= D.levelName;
+  document.getElementById('slXpNow').textContent    = D.xpNow;
+  document.getElementById('slXpNext').textContent   = D.xpNext;
   renderWeek();
-  document.getElementById('scWeeks').textContent    = DEMO.weeksStreak;
-  document.getElementById('scEntries').textContent  = DEMO.entries;
+  document.getElementById('scWeeks').textContent    = D.weeksStreak;
+  document.getElementById('scEntries').textContent  = D.entries;
   renderBadges();
   requestAnimationFrame(()=>{
-    const w = Math.min(DEMO.xpNow / DEMO.xpNext * 100, 100);
+    const w = Math.min(D.xpNow / D.xpNext * 100, 100);
     document.getElementById('slFill').style.width = w + '%';
   });
 
