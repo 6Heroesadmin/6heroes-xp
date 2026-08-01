@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meine Coaching-Einträge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --navy-2: #1A2230;
+    --gold: #F2B705;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+    --miss: #E06A5A;
+    --partly: #D9962B;
+
+    /* Quest-Typ-Akzente (Kapitel-5-Wirkungslogik) */
+    --t-activate: #F2B705;  /* Aktivieren  */
+    --t-perform:  #4F9DDE;  /* Umsetzen    */
+    --t-stoplimit:#B98BD9;  /* Begrenzen   – bewusst KEINE Streak-Sprache */
+    --t-discover: #4FBE9F;  /* Entdecken   */
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 22px 16px 44px; }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 8px;
+  }
+  h1.page {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+  .page-sub { font-size: 14px; color: var(--text-soft); margin-bottom: 22px; max-width: 52ch; }
+
+  /* ---------- Zone 1: Freischalt-Fortschritt ---------- */
+  .unlock {
+    background: linear-gradient(180deg, rgba(242,183,5,0.07), rgba(242,183,5,0.02));
+    border: 1px solid rgba(242,183,5,0.22);
+    border-radius: 18px; padding: 20px 20px 18px; margin-bottom: 12px;
+  }
+  .unlock-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .unlock-title {
+    font-family: 'DM Serif Display', serif; font-size: 19px; font-weight: 400; color: var(--text);
+  }
+  .unlock-note { font-size: 13px; color: var(--text-soft); margin-bottom: 16px; max-width: 54ch; }
+  .unlock-note strong { color: var(--gold); font-weight: 600; }
+
+  .bar-track {
+    height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07);
+    overflow: hidden; margin-bottom: 14px; position: relative;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--gold), #FFD24A);
+    width: 0%; transition: width .8s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .criteria { display: grid; gap: 9px; }
+  .crit { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-soft); }
+  .crit .tick {
+    flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%;
+    border: 1.5px solid var(--border-strong); display: grid; place-items: center;
+    font-size: 11px; color: var(--text-muted); margin-top: 1px;
+  }
+  .crit.met .tick { background: var(--done); border-color: var(--done); color: #fff; }
+  .crit .crit-label b { color: var(--text); font-weight: 600; }
+  .crit .crit-count { color: var(--text-muted); }
+  .crit.met .crit-count { color: var(--done); }
+
+  .unlock-hint {
+    margin-top: 14px; padding-top: 13px; border-top: 1px dashed var(--border);
+    font-size: 12.5px; color: var(--text-muted); line-height: 1.55;
+  }
+
+  /* ---------- Freier Eingang (gesperrt, Vorschau) ---------- */
+  .peek {
+    margin: 12px 0 26px; border: 1px dashed var(--border-strong); border-radius: 16px;
+    padding: 16px 18px; background: rgba(255,255,255,0.015);
+    display: flex; align-items: center; gap: 14px; opacity: .82;
+  }
+  .peek .lock {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--text-muted); flex: 0 0 auto; opacity: .8;
+    border: 1px solid var(--border-strong); border-radius: 999px; padding: 4px 10px;
+  }
+  .peek-body h3 { font-size: 14.5px; font-weight: 600; margin-bottom: 3px; color: var(--text-soft); }
+  .peek-body p { font-size: 12.5px; color: var(--text-muted); }
+
+  /* ---------- Zone 3: Eintrags-Liste ---------- */
+  .section-head { display: flex; align-items: baseline; gap: 10px; margin: 4px 2px 14px; }
+  .section-head h2 {
+    font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400;
+  }
+  .section-head .count { font-size: 13px; color: var(--text-muted); }
+
+  .entry {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 0; margin-bottom: 14px; overflow: hidden;
+    border-left: 3px solid var(--type-accent, var(--border-strong));
+  }
+  .entry-head { padding: 15px 18px 0; }
+  .entry-type {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--type-accent, var(--text-muted)); margin-bottom: 6px;
+  }
+  .entry-type .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .entry-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .entry-date { font-size: 12px; color: var(--text-muted); }
+
+  .entry-body { padding: 14px 18px 4px; }
+  .block-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 5px;
+  }
+  .reflection {
+    font-size: 14px; color: var(--text-soft); background: rgba(255,255,255,0.025);
+    border-radius: 10px; padding: 11px 13px; margin-bottom: 14px; white-space: pre-wrap;
+  }
+  .coaching {
+    font-size: 14.5px; color: var(--text); line-height: 1.62; margin-bottom: 4px;
+  }
+  .coaching.pending { color: var(--text-muted); font-style: italic; }
+  .coaching b, .coaching strong { color: var(--gold); font-weight: 600; }
+
+  /* ---------- Feedback ---------- */
+  .fb {
+    border-top: 1px solid var(--border); margin-top: 14px;
+    padding: 13px 18px 16px;
+  }
+  .fb-q { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; }
+  .fb-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .fb-btn {
+    font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+    padding: 8px 15px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--border-strong); background: transparent; color: var(--text-soft);
+    transition: background .12s, border-color .12s, color .12s, transform .08s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .fb-btn:hover { background: var(--card-hover); border-color: rgba(255,255,255,0.28); }
+  .fb-btn:active { transform: translateY(1px); }
+  .fb-btn .ic { font-size: 14px; line-height: 1; }
+  .fb-btn[data-tap="helped"]:hover { border-color: var(--done); color: #6FD79E; }
+  .fb-btn[data-tap="missed"]:hover { border-color: var(--miss); color: #F0938A; }
+  .fb-btn[data-tap="partly"]:hover { border-color: var(--partly); color: #E6B65C; }
+
+  /* gewählter Ruhezustand */
+  .fb.done .fb-btns { display: none; }
+  .fb-result { display: none; align-items: center; gap: 9px; font-size: 13px; }
+  .fb.done .fb-result { display: flex; }
+  .fb-result .chip {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 600;
+    padding: 5px 12px; border-radius: 999px; font-size: 12.5px;
+  }
+  .fb-result.helped .chip { background: rgba(31,157,98,0.16); color: #6FD79E; }
+  .fb-result.missed .chip { background: rgba(224,106,90,0.16); color: #F0938A; }
+  .fb-result.partly .chip { background: rgba(217,150,43,0.16); color: #E6B65C; }
+  .fb-result .aftertext { color: var(--text-muted); font-size: 12px; }
+
+  .fb-detail-wrap { margin-top: 11px; display: none; }
+  .fb-detail-wrap.show { display: block; }
+  .fb-detail {
+    width: 100%; min-height: 60px; resize: vertical;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; line-height: 1.5; color: var(--text);
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .fb-detail:focus { outline: none; border-color: rgba(242,183,5,0.5); }
+  .fb-detail::placeholder { color: var(--text-muted); }
+  .fb-detail-actions { display: flex; gap: 8px; margin-top: 8px; }
+  .mini-btn {
+    font-size: 12px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+    cursor: pointer; border: 1px solid var(--border-strong); background: transparent;
+    color: var(--text-soft);
+  }
+  .mini-btn.primary { background: var(--gold); color: #1a1a1a; border-color: var(--gold); }
+  .fb-inline-status { font-size: 12px; margin-top: 8px; min-height: 15px; color: var(--text-muted); }
+  .fb-inline-status.err { color: var(--miss); }
+
+  .empty {
+    text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px;
+    border: 1px dashed var(--border); border-radius: 16px;
+  }
+  .empty strong { color: var(--text-soft); display: block; margin-bottom: 6px; font-size: 15px; }
+
+  .load { text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <div class="eyebrow">Dein Weg</div>
+  <h1 class="page">Meine Coaching-Einträge</h1>
+  <p class="page-sub">Hier sammelt sich, was du reflektiert hast — und wie dein Coach darauf reagiert. Sag bei jedem Eintrag kurz, ob die Rückmeldung dir geholfen hat. Genau daraus lernt 6Heroes dich kennen.</p>
+
+  <!-- ZONE 1: Freischalt-Fortschritt -->
+  <div class="unlock" id="unlock">
+    <div class="unlock-top">
+      <div class="unlock-title" id="unlockTitle">6Heroes lernt dich gerade kennen</div>
+    </div>
+    <div class="unlock-note" id="unlockNote">
+      Wenn 6Heroes ein <strong>Muster</strong> in deinem Erleben erkennt, öffnet sich die freie Beratung: Dann kannst du eigene Situationen einbringen — „So bereite ich mein nächstes Gespräch vor." Dein Feedback bringt uns dahin.
+    </div>
+
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+
+    <div class="criteria" id="criteria"><!-- gefüllt per JS --></div>
+
+    <div class="unlock-hint">
+      Klares Feedback — <b style="color:var(--text-soft)">„Hat geholfen"</b> oder <b style="color:var(--text-soft)">„Ging daneben"</b> — bringt uns am weitesten. „Teilweise" zählt mit, sagt uns aber weniger.
+    </div>
+  </div>
+
+  <!-- Freischalt-Wegweiser: erscheint gesperrt als Ausblick,
+       nach Freischaltung 7 Tage lang als Verweis aufs Dashboard,
+       danach automatisch ausgeblendet (siehe renderProgress). -->
+  <div class="peek" id="peek">
+    <div class="lock">Gesperrt</div>
+    <div class="peek-body">
+      <h3>Was steht bei dir an?</h3>
+      <p>Bald hier: eigene Situationen einbringen und vorausschauend durchdenken. Noch gesperrt.</p>
+    </div>
+  </div>
+
+  <!-- ZONE 3: Eintrags-Liste -->
+  <div class="section-head">
+    <h2>Deine Einträge</h2>
+    <span class="count" id="entryCount"></span>
+  </div>
+
+  <div id="list"><div class="load">Einträge werden geladen …</div></div>
+
+</div>
+
+<script>
+/* ============================================================
+   6HEROES — eintraege.html  (Meine Coaching-Einträge)
+   Eigenständige Netlify-Seite, als iframe in Noloco eingebettet
+   (wie submit.html / quests.html). Läuft über URL-Params + eigene
+   Webhooks, braucht Noloco NICHT für Daten.
+
+   URL-Params:
+     email   Pflicht – Login-Email (Filter serverseitig in Quests Read)
+
+   Datenquelle:  Coaching-Entries-Read-Webhook (liefert {"entries":[...]})
+   Schreibpfad:  Feedback-Write-Webhook  (Block 1, live seit 30.7.)
+
+   >>> WICHTIG: Der Feld-Mapping-Teil (mapEntry) ist bewusst isoliert.
+       Sobald echte Webhook-Daten vorliegen, NUR dort anpassen. <<<
+   ============================================================ */
+
+/* ---- Konfiguration ---------------------------------------- */
+const READ_WEBHOOK_URL     = 'https://hook.eu1.make.com/np1n3s26oesoijxzeo97s9tf1gf2yrvc';
+const FEEDBACK_WEBHOOK_URL  = 'https://hook.eu1.make.com/809p6f2216yqo2ysucyc77ofen93u12j';
+
+/* Freischalt-Kriterien (V104 — FINAL, alle drei müssen erfüllt sein) */
+const UNLOCK = {
+  minWithFeedback: 8,   // Einträge mit gesetztem Feedback
+  minClear:        5,   // davon mit klarem Feedback (helped/missed)
+  minTypes:        2,   // über mind. so viele Quest-Typen verteilt
+};
+
+/* Quest-Typ → Anzeige (Kapitel-5-Wirkungslogik).
+   StopLimit trägt bewusst KEINE Streak-/Frequenz-Sprache. */
+const TYPE_META = {
+  activate:  { label: 'Aktivieren', color: 'var(--t-activate)' },
+  perform:   { label: 'Umsetzen',   color: 'var(--t-perform)'  },
+  stoplimit: { label: 'Begrenzen',  color: 'var(--t-stoplimit)'},
+  discover:  { label: 'Entdecken',  color: 'var(--t-discover)' },
+};
+function typeMeta(raw){
+  const k = (raw||'').toString().trim().toLowerCase();
+  return TYPE_META[k] || { label: (raw||'Quest'), color: 'var(--border-strong)' };
+}
+
+const CLEAR_TAPS = ['helped','missed'];   // partly zählt NICHT als klar
+
+/* ---- Params ------------------------------------------------ */
+function getParams(){
+  const p = new URLSearchParams(window.location.search);
+  return { email: (p.get('email')||'').trim() };
+}
+
+/* ---- E_-Präfix strippen (Fallstrick V104) ------------------
+   Frontend hält IDs als E_rec…, Airtable will rec…            */
+function stripPrefix(id){
+  const s = (id||'').toString().trim();
+  return s.startsWith('E_') ? s.slice(2) : s;
+}
+
+/* ============================================================
+   DATEN-ADAPTER  —  HIER anpassen, wenn echte Webhook-Felder da
+   Erwartet ein Roh-Objekt pro Eintrag, gibt normalisiert zurück.
+   Feldnamen unten sind VERMUTUNGEN (an ExerciseEntries angelehnt)
+   und mit Fallbacks abgesichert. Sobald du echtes JSON zeigst,
+   ersetzen wir die Kandidaten durch die echten Keys.
+   ============================================================ */
+function mapEntry(r){
+  const pick = (...keys) => {
+    for (const k of keys){
+      if (r[k] !== undefined && r[k] !== null && r[k] !== '') return r[k];
+    }
+    return '';
+  };
+  // Echte ExerciseEntries-Feldnamen (per CSV bestätigt 30.7.2026).
+  // AI_CoachingResponse_Display liefert bereits den "wird vorbereitet"-
+  // Platzhalter, falls die Antwort noch fehlt -> kein eigener Pending-Zweig nötig.
+  return {
+    entryId:   stripPrefix(pick('EntryID','entryId')),
+    title:     pick('Quest_Title_LU','title') || 'Quest',
+    type:      pick('Quest_Type_LU','QuestType_Frozen','type'),  // LU zuerst, Frozen als Fallback
+    date:      pick('debug_date','date'),
+    reflection:pick('FreeText','reflection') || '',
+    coaching:  pick('AI_CoachingResponse_Display','coaching') || '',
+    fbTap:     (pick('Feedback_Tap','tap') || '').toString().toLowerCase(),
+    fbDetail:  pick('Feedback_Detail','detail') || '',
+  };
+}
+
+/* ---- Fortschritt berechnen -------------------------------- */
+function computeProgress(entries){
+  const withFb  = entries.filter(e => e.fbTap);
+  const clear   = withFb.filter(e => CLEAR_TAPS.includes(e.fbTap));
+  const types   = new Set(withFb.map(e => (e.type||'').toString().toLowerCase()).filter(Boolean));
+  const c1 = withFb.length, c2 = clear.length, c3 = types.size;
+
+  // gewichteter Gesamtbalken: klares Feedback zieht sichtbar mehr
+  const p1 = Math.min(c1 / UNLOCK.minWithFeedback, 1);
+  const p2 = Math.min(c2 / UNLOCK.minClear, 1);
+  const p3 = Math.min(c3 / UNLOCK.minTypes, 1);
+  const overall = Math.round(((p1*0.4 + p2*0.4 + p3*0.2)) * 100);
+
+  const met = c1>=UNLOCK.minWithFeedback && c2>=UNLOCK.minClear && c3>=UNLOCK.minTypes;
+
+  // Freischalt-Datum ableiten (rein clientseitig, kein Backend):
+  // Wir gehen die Einträge chronologisch (alt -> neu) durch und finden den
+  // frühesten Zeitpunkt, ab dem alle drei Kriterien erfüllt waren. Dessen
+  // debug_date ist der Freischalt-Tag. Nur relevant, wenn met === true.
+  let unlockDate = null;
+  if (met){
+    const chron = entries
+      .filter(e => e.fbTap && e.date)
+      .slice()
+      .sort((a,b) => String(a.date).localeCompare(String(b.date)));
+    let a1 = 0; const seenClear = new Set(), seenTypes = new Set();
+    for (const e of chron){
+      a1++;
+      if (CLEAR_TAPS.includes(e.fbTap)) seenClear.add(e.entryId);
+      const t = (e.type||'').toString().toLowerCase();
+      if (t) seenTypes.add(t);
+      if (a1>=UNLOCK.minWithFeedback && seenClear.size>=UNLOCK.minClear && seenTypes.size>=UNLOCK.minTypes){
+        unlockDate = e.date; break;
+      }
+    }
+  }
+
+  return {
+    overall, met, unlockDate,
+    crits: [
+      { met: c1>=UNLOCK.minWithFeedback, label:'Einträge mit Rückmeldung', count:`${c1} / ${UNLOCK.minWithFeedback}` },
+      { met: c2>=UNLOCK.minClear,        label:'davon klar bewertet',       count:`${c2} / ${UNLOCK.minClear}` },
+      { met: c3>=UNLOCK.minTypes,        label:'verschiedene Quest-Arten',  count:`${c3} / ${UNLOCK.minTypes}` },
+    ]
+  };
+}
+
+/* Tage seit einem ISO-Datum (YYYY-MM-DD). Null-sicher. */
+function daysSince(isoDate){
+  if (!isoDate) return Infinity;
+  const then = new Date(isoDate + 'T00:00:00');
+  if (isNaN(then)) return Infinity;
+  return Math.floor((Date.now() - then.getTime()) / 86400000);
+}
+
+// Wie lange der Freischalt-Wegweiser nach Freischaltung sichtbar bleibt.
+const HINT_VISIBLE_DAYS = 7;
+
+function renderProgress(entries){
+  const pr = computeProgress(entries);
+  document.getElementById('barFill').style.width = pr.overall + '%';
+
+  const cw = document.getElementById('criteria');
+  cw.innerHTML = pr.crits.map(c => `
+    <div class="crit ${c.met?'met':''}">
+      <span class="tick">${c.met?'✓':''}</span>
+      <span class="crit-label"><b>${c.label}</b> <span class="crit-count">· ${c.count}</span></span>
+    </div>`).join('');
+
+  const peek = document.getElementById('peek');
+
+  if (pr.met){
+    document.getElementById('unlockTitle').textContent = 'Die freie Beratung ist offen';
+    document.getElementById('unlockNote').innerHTML = 'Du hast genug Muster gezeigt — die freie Beratung wartet auf deinem Dashboard.';
+
+    // Wegweiser aufs Dashboard nur in den ersten HINT_VISIBLE_DAYS Tagen
+    // nach Freischaltung zeigen, danach ausblenden (kein Dauer-Hinweis).
+    if (daysSince(pr.unlockDate) < HINT_VISIBLE_DAYS){
+      peek.style.opacity = '1'; peek.style.borderStyle = 'solid';
+      peek.querySelector('.lock').textContent = 'Offen';
+      peek.querySelector('.peek-body h3').textContent = 'Die freie Beratung ist freigeschaltet';
+      peek.querySelector('.peek-body p').textContent = 'Du findest sie auf deinem Dashboard — dort kannst du eigene Situationen einbringen.';
+    } else {
+      peek.style.display = 'none';
+    }
+  } else {
+    // Noch gesperrt: Vorschau-Zustand belassen (aus dem HTML), sichtbar.
+    peek.style.display = '';
+  }
+}
+
+/* ---- Eintrags-Karten -------------------------------------- */
+function entryCard(e){
+  const tm = typeMeta(e.type);
+  const dateTxt = fmtDate(e.date);
+  const el = document.createElement('div');
+  el.className = 'entry';
+  el.style.setProperty('--type-accent', tm.color);
+
+  // AI_CoachingResponse_Display trägt den "wird vorbereitet"-Platzhalter selbst.
+  // Ist der Text ein solcher Platzhalter, ruhiger darstellen (kursiv, gedämpft).
+  const isPending = /wird gerade vorbereitet|noch nicht viel/i.test(e.coaching || '');
+  const coachingHtml = e.coaching
+    ? `<div class="coaching${isPending?' pending':''}">${renderCoaching(e.coaching)}</div>`
+    : `<div class="coaching pending">Deine Rückmeldung wird gerade vom Coach gelesen … schau gleich nochmal vorbei.</div>`;
+
+  el.innerHTML = `
+    <div class="entry-head">
+      <div class="entry-type"><span class="dot"></span>${tm.label}</div>
+      <div class="entry-title">${escapeHtml(e.title)}</div>
+      ${dateTxt ? `<div class="entry-date">${dateTxt}</div>` : ''}
+    </div>
+    <div class="entry-body">
+      ${e.reflection ? `
+        <div class="block-label">Deine Reflexion</div>
+        <div class="reflection">${escapeHtml(e.reflection)}</div>` : ''}
+      <div class="block-label">Dein Coach</div>
+      ${coachingHtml}
+    </div>
+    <div class="fb" data-entry="${escapeAttr(e.entryId)}">
+      <div class="fb-q">Hat dir diese Rückmeldung geholfen?</div>
+      <div class="fb-btns">
+        <button class="fb-btn" data-tap="helped">Hat geholfen</button>
+        <button class="fb-btn" data-tap="partly">Teilweise</button>
+        <button class="fb-btn" data-tap="missed">Ging daneben</button>
+      </div>
+      <div class="fb-result">
+        <span class="chip"></span>
+        <span class="aftertext"></span>
+      </div>
+      <div class="fb-detail-wrap">
+        <textarea class="fb-detail" placeholder="Magst du kurz sagen, warum? (optional)"></textarea>
+        <div class="fb-detail-actions">
+          <button class="mini-btn primary" data-act="save-detail">Speichern</button>
+          <button class="mini-btn" data-act="skip-detail">Überspringen</button>
+        </div>
+      </div>
+      <div class="fb-inline-status"></div>
+    </div>`;
+
+  // ist der Eintrag schon bewertet? -> Ruhezustand
+  if (e.fbTap){ applyChosen(el.querySelector('.fb'), e.fbTap, false); }
+
+  wireFeedback(el.querySelector('.fb'));
+  return el;
+}
+
+/* ---- Feedback-Interaktion --------------------------------- */
+const TAP_TEXT = {
+  helped: { word:'Hat geholfen', after:'Schön — das bringt uns weiter.' },
+  partly: { word:'Teilweise',    after:'Danke, notiert.' },
+  missed: { word:'Ging daneben', after:'Danke für die Ehrlichkeit — genau das hilft.' },
+};
+
+function applyChosen(fb, tap, showDetail){
+  fb.classList.add('done');
+  const res = fb.querySelector('.fb-result');
+  res.className = 'fb-result ' + tap;
+  res.querySelector('.chip').textContent = (TAP_TEXT[tap]||{}).word || tap;
+  res.querySelector('.aftertext').textContent = (TAP_TEXT[tap]||{}).after || '';
+  if (showDetail) fb.querySelector('.fb-detail-wrap').classList.add('show');
+}
+
+function wireFeedback(fb){
+  const entryId = fb.getAttribute('data-entry');
+  const status  = fb.querySelector('.fb-inline-status');
+
+  fb.querySelectorAll('.fb-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const tap = btn.getAttribute('data-tap');
+      applyChosen(fb, tap, true);           // sofort Ruhezustand + Detailfeld
+      status.textContent = ''; status.className = 'fb-inline-status';
+      const ok = await sendFeedback(entryId, tap, '');
+      if (!ok){ status.textContent = 'Konnte nicht gespeichert werden — beim nächsten Öffnen erneut versuchen.'; status.className='fb-inline-status err'; }
+      postHeight();
+    });
+  });
+
+  fb.querySelector('[data-act="save-detail"]').addEventListener('click', async () => {
+    const tap = fb.querySelector('.fb-result').classList[1];
+    const detail = fb.querySelector('.fb-detail').value.trim();
+    status.textContent = 'Wird gespeichert …'; status.className='fb-inline-status';
+    const ok = await sendFeedback(entryId, tap, detail);
+    status.textContent = ok ? 'Gespeichert.' : 'Konnte nicht gespeichert werden.';
+    status.className = 'fb-inline-status' + (ok?'':' err');
+    if (ok) fb.querySelector('.fb-detail-wrap').classList.remove('show');
+    postHeight();
+  });
+  fb.querySelector('[data-act="skip-detail"]').addEventListener('click', () => {
+    fb.querySelector('.fb-detail-wrap').classList.remove('show');
+    status.textContent = ''; postHeight();
+  });
+}
+
+async function sendFeedback(entryId, tap, detail){
+  try {
+    const res = await fetch(FEEDBACK_WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ entryId: stripPrefix(entryId), tap, detail })
+    });
+    return res.ok;   // Make liefert "Accepted"
+  } catch(e){ console.error('Feedback fehlgeschlagen', e); return false; }
+}
+
+/* ---- Laden ------------------------------------------------ */
+function parseWebhookPayload(text){
+  if (!text || !text.trim()) return null;
+  try { return JSON.parse(text); } catch(_) {}
+  // Reparaturversuch. Häufigster Fall: der Make-Aggregator escaped bereits
+  // maskierte Anführungszeichen aus Airtable ein zweites Mal -> \\" statt \".
+  // Ein literaler Backslash direkt vor einem Anführungszeichen ist in JSON
+  // ungültig; wir reduzieren \\" (und längere Backslash-Ketten) auf \".
+  let repaired = text
+    .replace(/\\{2,}"/g, '\\"')
+    .replace(/:\s*,/g, ': [],').replace(/:\s*}/g, ': [] }')
+    .replace(/,\s*}/g, ' }').replace(/,\s*]/g, ' ]');
+  try { return JSON.parse(repaired); } catch(e){ return null; }
+}
+
+async function loadEntries(email){
+  const url = READ_WEBHOOK_URL + '?email=' + encodeURIComponent(email);
+  const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+  if (!res.ok) throw new Error('Read-Webhook '+res.status);
+  const data = parseWebhookPayload(await res.text());
+  // Kandidaten für das Array-Feld – anpassen sobald echtes JSON bekannt
+  const rows = (data && (data.entries || data.coaching || data.eintraege || data.records)) || [];
+  return Array.isArray(rows) ? rows.map(mapEntry) : [];
+}
+
+function renderList(entries){
+  const list = document.getElementById('list');
+  document.getElementById('entryCount').textContent = entries.length ? `${entries.length} Einträge` : '';
+  list.innerHTML = '';
+  if (!entries.length){
+    list.innerHTML = `<div class="empty"><strong>Noch keine Einträge</strong>Sobald du eine Quest abschließt, erscheint sie hier — mit der Rückmeldung deines Coachs.</div>`;
+    return;
+  }
+  entries.forEach(e => list.appendChild(entryCard(e)));
+}
+
+/* ---- Helpers ---------------------------------------------- */
+function escapeHtml(s){ return (s||'').toString().replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+/* Coaching-Text: führende Emojis (z.B. aus dem Airtable-Platzhalter) entfernen,
+   dann escapen (XSS-sicher), dann **fett** -> <b>. Nur Fett wird interpretiert. */
+function stripEmoji(s){
+  return (s||'').toString()
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\uFE0F]/gu, '')
+    .replace(/^\s+/, '');
+}
+function renderCoaching(s){
+  // Coaching-Text kann durch das Make-JSON-Escaping verirrte Backslashes
+  // vor Anführungszeichen enthalten (\" -> "). Vor der Ausgabe entfernen.
+  const cleaned = (s || '').replace(/\\+"/g, '"');
+  return escapeHtml(stripEmoji(cleaned)).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+}
+function escapeAttr(s){ return (s||'').toString().replace(/"/g,'&quot;'); }
+function fmtDate(raw){
+  if (!raw) return '';
+  const d = new Date(raw);
+  if (isNaN(d)) return (raw||'').toString();
+  return d.toLocaleDateString('de-DE', { day:'2-digit', month:'long', year:'numeric' });
+}
+
+/* ---- iframe-Höhe (wie submit.html) ------------------------ */
+let lastH = 0;
+function postHeight(){
+  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight,
+                     document.body.offsetHeight, document.documentElement.offsetHeight);
+  if (h === lastH) return; lastH = h;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+
+/* ---- Init ------------------------------------------------- */
+const DEMO_MODE = new URLSearchParams(location.search).has('demo');
+
+async function init(){
+  const P = getParams();
+
+  if (DEMO_MODE || !P.email){
+    const demo = DEMO_ENTRIES.map(mapEntry);
+    renderProgress(demo);
+    renderList(demo);
+    postHeight();
+    return;
+  }
+
+  try {
+    const entries = await loadEntries(P.email);
+    renderProgress(entries);
+    renderList(entries);
+  } catch(e){
+    console.error(e);
+    document.getElementById('list').innerHTML =
+      `<div class="empty"><strong>Einträge konnten nicht geladen werden</strong>Bitte über „Meine Quests" erneut öffnen.</div>`;
+  }
+  postHeight();
+}
+
+/* ---- Demo-Daten (nur ?demo oder ohne email) --------------- */
+const DEMO_ENTRIES = [
+  { EntryID:'E_recDEMO1', Quest_Title_LU:'Entscheidung treffen', Quest_Type_LU:'Activate',
+    debug_date:'2026-07-28', FreeText:'Ich habe das Feedbackgespräch mit Lena selbst angestoßen statt es aufzuschieben. War unangenehm, aber ich habe es durchgezogen.',
+    AI_CoachingResponse_Display:'Dass du das Gespräch **selbst eröffnet** hast, ist der eigentliche Schritt — nicht wie glatt es lief. Du hast Kontrolle über den Zeitpunkt genommen, statt zu reagieren. Genau darin zeigt sich dein Commander-Antrieb.',
+    Feedback_Tap:'helped' },
+  { EntryID:'E_recDEMO2', Quest_Title_LU:'Plan ableiten', Quest_Type_LU:'Perform',
+    debug_date:'2026-07-27', FreeText:'Den Quartalsbericht fertig gemacht, auch die langweiligen letzten 20%.',
+    AI_CoachingResponse_Display:'Substanz entsteht im letzten Fünftel — dort, wo die meisten abbrechen. Du hast **drangeblieben**.',
+    Feedback_Tap:'partly' },
+  { EntryID:'E_recDEMO3', Quest_Title_LU:'Retten stoppen', Quest_Type_LU:'StopLimit',
+    debug_date:'2026-07-25', FreeText:'Nein gesagt zu einem Zusatzprojekt. Ohne lange Erklärung.',
+    AI_CoachingResponse_Display:'Ein **klares Nein ohne Rechtfertigung** ist schwerer als es klingt. Achte darauf, wie oft dir das künftig leichter fällt — das ist hier das Zeichen, nicht eine Zahl.',
+    Feedback_Tap:'' },
+  { EntryID:'E_recDEMO4', Quest_Title_LU:'Etwas zum ersten Mal', Quest_Type_LU:'Discover',
+    debug_date:'2026-07-24', FreeText:'Zum ersten Mal ein Team-Retro moderiert.',
+    AI_CoachingResponse_Display:'Deine Coaching-Antwort wird gerade vorbereitet — schau in ein paar Minuten nochmal rein.',
+    Feedback_Tap:'' },
+];
+
+window.addEventListener('load', init);
+window.addEventListener('resize', postHeight);
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
