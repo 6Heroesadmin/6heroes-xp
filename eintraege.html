@@ -542,15 +542,35 @@ async function sendFeedback(entryId, tap, detail){
 function parseWebhookPayload(text){
   if (!text || !text.trim()) return null;
   try { return JSON.parse(text); } catch(_) {}
-  // Reparaturversuch. Häufigster Fall: der Make-Aggregator escaped bereits
-  // maskierte Anführungszeichen aus Airtable ein zweites Mal -> \\" statt \".
-  // Ein literaler Backslash direkt vor einem Anführungszeichen ist in JSON
-  // ungültig; wir reduzieren \\" (und längere Backslash-Ketten) auf \".
-  let repaired = text
+  // Reparatur. Häufigste Ursachen für ungültiges JSON aus dem Aggregator:
+  // (1) rohe Zeilenumbrüche/Tabs INNERHALB eines Coaching-Textes (Bad control
+  //     character), (2) doppelt-escapte Anführungszeichen \\" aus Airtable.
+  // repairControlChars() escaped rohe Steuerzeichen nur innerhalb von Strings.
+  let repaired = repairControlChars(text)
     .replace(/\\{2,}"/g, '\\"')
     .replace(/:\s*,/g, ': [],').replace(/:\s*}/g, ': [] }')
     .replace(/,\s*}/g, ' }').replace(/,\s*]/g, ' ]');
   try { return JSON.parse(repaired); } catch(e){ return null; }
+}
+
+/* Escaped rohe Steuerzeichen (\n \r \t) nur INNERHALB von String-Literalen,
+   damit JSON.parse nicht an unescapten Umbrüchen im Coaching-Text scheitert.
+   Zeichenweise mit einfachem String-/Escape-Tracking. */
+function repairControlChars(text){
+  let out = '', inStr = false, esc = false;
+  for (let i=0; i<text.length; i++){
+    const c = text[i];
+    if (esc){ out += c; esc = false; continue; }
+    if (c === '\\'){ out += c; esc = true; continue; }
+    if (c === '"'){ inStr = !inStr; out += c; continue; }
+    if (inStr){
+      if (c === '\n'){ out += '\\n'; continue; }
+      if (c === '\r'){ out += '\\r'; continue; }
+      if (c === '\t'){ out += '\\t'; continue; }
+    }
+    out += c;
+  }
+  return out;
 }
 
 async function loadEntries(email){

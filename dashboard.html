@@ -501,11 +501,29 @@ function mapEntry(r){
 function parseWebhookPayload(text){
   if (!text || !text.trim()) return null;
   try { return JSON.parse(text); } catch(_) {}
-  let repaired = text
+  let repaired = repairControlChars(text)
     .replace(/\\{2,}"/g, '\\"')
     .replace(/:\s*,/g, ': [],').replace(/:\s*}/g, ': [] }')
     .replace(/,\s*}/g, ' }').replace(/,\s*]/g, ' ]');
   try { return JSON.parse(repaired); } catch(e){ return null; }
+}
+
+/* Escaped rohe Steuerzeichen nur innerhalb von String-Literalen. */
+function repairControlChars(text){
+  let out = '', inStr = false, esc = false;
+  for (let i=0; i<text.length; i++){
+    const c = text[i];
+    if (esc){ out += c; esc = false; continue; }
+    if (c === '\\'){ out += c; esc = true; continue; }
+    if (c === '"'){ inStr = !inStr; out += c; continue; }
+    if (inStr){
+      if (c === '\n'){ out += '\\n'; continue; }
+      if (c === '\r'){ out += '\\r'; continue; }
+      if (c === '\t'){ out += '\\t'; continue; }
+    }
+    out += c;
+  }
+  return out;
 }
 
 /* ISO-Woche (Mo–So). Gibt einen vergleichbaren Schlüssel "YYYY-Www". */
