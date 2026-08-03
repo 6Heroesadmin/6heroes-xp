@@ -13,7 +13,12 @@
     --text-muted: #AEB6C6;
     --border: rgba(255,255,255,0.09);
     --card: rgba(255,255,255,0.05);
-    --neg-color: #C0266A;
+    --accent: #F2B705;
+
+    /* Batterie-Zustandsfarben (semantisch, nicht Heldenfarben) */
+    --charge:  #3FB27F;   /* lädt auf  – grün  */
+    --neutral: #E8B93B;   /* neutral   – gold  */
+    --drain:   #D2607A;   /* kostet    – berry */
   }
   html, body {
     background: #20293A;
@@ -22,157 +27,118 @@
     padding: 20px 16px 32px;
   }
 
-  .header { text-align: center; margin-bottom: 22px; }
+  .header { text-align: center; margin-bottom: 20px; }
   .header h1 { font-family: 'DM Serif Display', serif; font-size: 30px; font-weight: 400; letter-spacing:-0.01em; margin-bottom: 6px; }
   .header p { font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
-  .scale-row {
-    display: grid;
-    grid-template-columns: 110px 1fr 52px;
-    gap: 10px; margin-bottom: 4px; align-items: center;
+  /* === NETTO-KLARTEXT-ZEILE (der Aha) === */
+  .net-summary {
+    max-width: 620px; margin: 0 auto 22px;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 14px; padding: 16px 20px;
+    font-size: 15px; line-height: 1.7; color: var(--text);
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .scale-track {
-    display: flex; justify-content: space-between;
-    padding: 0 2px; position: relative;
-  }
-  .scale-track span { font-size: 9px; font-weight: 700; color: var(--text-muted); }
-  .scale-zero-line {
-    position: absolute; left: 50%; top: -4px; bottom: -4px;
-    width: 1px; background: rgba(255,255,255,0.2);
-  }
+  .net-summary.visible { opacity: 1; transform: none; }
+  .net-summary strong { color: var(--accent); font-weight: 700; }
 
-  .bars { display: flex; flex-direction: column; gap: 11px; }
-  .bar-row {
+  /* === BATTERIE-LISTE === */
+  .batteries { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+  .batt-row {
     display: grid;
-    grid-template-columns: 110px 1fr 52px;
-    align-items: center; gap: 10px;
+    grid-template-columns: 128px 1fr;
+    align-items: center; gap: 16px;
     opacity: 0; transform: translateX(-10px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .bar-row.visible { opacity: 1; transform: none; }
+  .batt-row.visible { opacity: 1; transform: none; }
 
-  .bar-label {
-    font-size: 13px; font-weight: 800;
-    color: var(--hero-color);
-    text-align: right; white-space: nowrap;
+  .batt-label { text-align: right; white-space: nowrap; }
+  .batt-hero {
+    font-size: 15px; font-weight: 800; color: var(--hero-color);
+    line-height: 1.15;
   }
-  .bar-label .role-badge {
+  .batt-role {
     display: block; font-size: 9px; font-weight: 700;
     color: var(--text-muted); text-transform: uppercase;
-    letter-spacing: 0.06em; margin-top: 1px;
+    letter-spacing: 0.06em; margin-top: 2px;
   }
 
-  .netto-track-wrap { position: relative; height: 22px; }
-  .netto-bg {
-    position: absolute; inset: 0;
-    background: rgba(255,255,255,0.06); border-radius: 50px;
-  }
-  .netto-zero {
-    position: absolute; left: 50%; top: 0; bottom: 0;
-    width: 2px; background: rgba(255,255,255,0.25);
-    transform: translateX(-50%); border-radius: 1px;
-  }
-  .netto-fill {
-    position: absolute; top: 0; bottom: 0;
-    border-radius: 50px;
-    transition: width 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-    width: 0%;
-  }
-  .netto-fill::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent 40%, rgba(255,255,255,0.15));
-    border-radius: 50px;
-  }
-  .netto-fill.pos { left: 50%; }
-  .netto-fill.neg {
-    right: 50%; background: #9B1239 !important;
-  }
-  .netto-fill.neg::after {
-    background: linear-gradient(270deg, transparent 40%, rgba(255,255,255,0.1));
-  }
+  .batt-right { display: flex; align-items: center; gap: 12px; }
 
-  .bar-score { font-size: 13px; font-weight: 900; text-align: left; }
-  .bar-score.neg { color: #F9A8C9; }
-
-  /* LEGEND – semantische Farben, keine Heldenfarben */
-  .netto-legend {
-    display: flex; gap: 12px; flex-wrap: wrap;
-    margin-top: 12px; padding: 8px 10px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 8px; border: 1px solid var(--border);
+  /* Batterie-Grafik */
+  .battery {
+    position: relative; flex-shrink: 0;
+    width: 58px; height: 26px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-radius: 6px; padding: 3px;
   }
-  .netto-legend-item {
-    display: flex; align-items: center; gap: 5px;
-    font-size: 9px; font-weight: 700; color: var(--text-muted);
+  .battery::after {
+    content: ''; position: absolute;
+    right: -6px; top: 50%; transform: translateY(-50%);
+    width: 4px; height: 10px;
+    background: rgba(255,255,255,0.35); border-radius: 0 2px 2px 0;
   }
-  .netto-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-  .divider {
-    border: none; border-top: 1px solid var(--border);
-    margin: 24px 0 20px;
+  .battery-fill {
+    height: 100%; border-radius: 2px; width: 0%;
+    transition: width 0.85s cubic-bezier(0.16,1,0.3,1);
   }
+  .battery.state-charge  .battery-fill { background: var(--charge); }
+  .battery.state-neutral .battery-fill { background: var(--neutral); }
+  .battery.state-drain   .battery-fill { background: var(--drain); }
 
+  .batt-state {
+    font-size: 13px; font-weight: 700; white-space: nowrap;
+  }
+  .batt-row.state-charge  .batt-state { color: var(--charge); }
+  .batt-row.state-neutral .batt-state { color: var(--neutral); }
+  .batt-row.state-drain   .batt-state { color: var(--drain); }
+
+  /* Teaser: gesperrte Batterien */
+  .batt-row.locked .battery { opacity: 0.4; }
+  .batt-row.locked .batt-hero { color: var(--text-muted) !important; }
+  .batt-row.locked .batt-state { color: var(--text-muted); display: inline-flex; align-items: center; gap: 5px; }
+  .batt-row.locked .batt-state svg { width: 13px; height: 13px; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 26px auto 20px; max-width: 620px; }
+
+  /* === AUSWERTUNG (unverändert reich, aus Original übernommen) === */
+  .interp-wrap { max-width: 620px; margin: 0 auto; }
   .interp-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; letter-spacing:-0.01em; margin-bottom: 18px; }
 
   .interp-card {
     background: var(--card); border: 1px solid var(--border);
-    border-radius: 18px; padding: 24px 24px; margin-bottom: 10px;
+    border-radius: 18px; padding: 24px; margin-bottom: 10px;
     border-left: 2px solid var(--role-color);
     opacity: 0; transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
   .interp-card.visible { opacity: 1; transform: none; }
-
-  .interp-card-header {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  }
-  .interp-role {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.12em; color: var(--role-color); margin-bottom: 2px;
-  }
+  .interp-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .interp-role { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--role-color); margin-bottom: 2px; }
   .interp-hero { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--role-color); }
+  .state-pill {
+    font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: auto;
+    color: #10151F;
+  }
+  .state-pill.state-charge  { background: var(--charge); }
+  .state-pill.state-neutral { background: var(--neutral); }
+  .state-pill.state-drain   { background: var(--drain); color: #fff; }
 
-  /* Level badge – semantische Farben */
-  .interp-level {
-    font-size: 11px; font-weight: 700;
-    padding: 3px 9px; border-radius: 20px; margin-left: auto;
-    color: var(--sem-text); background: var(--sem-bg);
-  }
-  .netto-badge {
-    font-size: 10px; font-weight: 800;
-    padding: 3px 9px; border-radius: 20px; margin-left: 6px;
-    color: var(--sem-text); background: var(--sem-bg);
-  }
-
-  .interp-text {
-    font-size: 15px; font-weight: 400;
-    color: var(--text); line-height: 1.75; margin-bottom: 14px;
-  }
+  .interp-text { font-size: 15px; color: var(--text); line-height: 1.75; margin-bottom: 14px; }
   .netto-insight {
-    font-size: 14px; font-weight: 400; color: var(--text-muted);
+    font-size: 14px; color: var(--text-muted);
     padding: 2px 0 2px 16px; margin-bottom: 16px;
     border-left: 2px solid var(--role-color); line-height: 1.7;
   }
-  .potential-box {
-    font-size: 13px; font-weight: 600; color: var(--text);
-    background: rgba(255,255,255,0.06);
-    border-radius: 8px; padding: 10px 14px; margin-bottom: 10px;
-    border-left: 3px solid rgba(255,255,255,0.25); line-height: 1.65;
-  }
-  .potential-box strong {
-    display: block; margin-bottom: 4px;
-    font-size: 11px; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 0.07em; color: rgba(255,255,255,0.5);
-  }
   .interp-impulse {
-    font-size: 14px; font-weight: 400; color: var(--text);
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px; padding: 16px 18px; line-height: 1.7;
+    font-size: 14px; color: var(--text);
+    background: rgba(255,255,255,0.03); border-radius: 12px; padding: 16px 18px; line-height: 1.7;
   }
-  .interp-impulse strong {
-    color: var(--role-color); display: block; margin-bottom: 6px;
-    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
-  }
+  .interp-impulse strong { color: var(--role-color); display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
 
   .pattern-box {
     background: var(--card); border: 1px solid var(--border);
@@ -181,30 +147,41 @@
     transition: opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s;
   }
   .pattern-box.visible { opacity: 1; transform: none; }
-  .pattern-title {
-    font-size: 11px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px;
-  }
-  .pattern-text { font-size: 15px; font-weight: 400; color: var(--text); line-height: 1.75; }
+  .pattern-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 10px; }
+  .pattern-text { font-size: 15px; color: var(--text); line-height: 1.75; }
 
-  .potential-section { margin-top: 6px; }
   .potential-section-title {
-    font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400; text-transform: none;
-    letter-spacing: 0.08em; color: var(--text-muted);
-    margin-bottom: 8px; margin-top: 20px;
+    font-family: 'DM Serif Display', serif; font-size: 24px; font-weight: 400;
+    letter-spacing: 0.02em; color: var(--text-muted); margin: 22px 0 8px;
   }
 
-  .no-data {
-    text-align: center; padding: 40px 20px;
-    color: var(--text-muted); font-size: 14px; font-weight: 600;
+  /* === TEASER-PAYWALL-KARTE === */
+  .paywall-card {
+    max-width: 620px; margin: 20px auto 0;
+    background: linear-gradient(135deg, rgba(242,183,5,0.10), rgba(242,183,5,0.02));
+    border: 1px solid rgba(242,183,5,0.35);
+    border-radius: 18px; padding: 26px 24px; text-align: center;
   }
+  .paywall-card .pw-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 8px; }
+  .paywall-card .pw-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; }
+  .paywall-card .pw-text { font-size: 14px; color: var(--text-muted); line-height: 1.65; margin-bottom: 18px; }
+  .paywall-card .pw-btn {
+    display: inline-block; text-decoration: none;
+    background: var(--accent); color: #20293A;
+    font-weight: 700; font-size: 15px;
+    padding: 13px 28px; border-radius: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .paywall-card .pw-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,183,5,0.3); }
+
+  .no-data { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; font-weight: 600; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>Meine Energiebilanz</h1>
-  <p>Netto-Energie: Was bleibt nach Quellen minus Kosten?</p>
+  <p>Welche deiner Modi dich tragen – und welche dich Kraft kosten.</p>
 </div>
 
 <div id="content"></div>
@@ -219,49 +196,25 @@ const HEROES = [
   { key: 'explorer',   label: 'Explorer',   color: '#F0672A', nettoKey: 'ne' },
 ];
 
-// Semantische Farben – keine Überschneidung mit Heldenfarben
-const NETTO_LEVELS = [
-  { min:  2.0, max:  4.0, label: 'Stark aufladend',  semBg: 'rgba(20,83,45,0.35)',   semText: '#86EFAC' },
-  { min:  0.5, max:  1.9, label: 'Aufladend',        semBg: 'rgba(30,58,138,0.3)',   semText: '#93C5FD' },
-  { min: -0.4, max:  0.4, label: 'Ausgeglichen',     semBg: 'rgba(120,53,15,0.35)',  semText: '#FDE68A' },
-  { min: -1.9, max: -0.5, label: 'Zehrend',          semBg: 'rgba(124,45,18,0.35)',  semText: '#FDBA74' },
-  { min: -4.0, max: -2.0, label: 'Stark zehrend',    semBg: 'rgba(136,19,55,0.35)',  semText: '#FDA4AF' },
-];
+const UPGRADE_URL = 'https://6heroes.de/preise'; // TODO: zentrale Preisseite mit 3 Paketen
 
-const LEVELS = [
-  { min: 4.0, max: 5.0, label: 'Sehr energievoll', color: '#1F9D62' },
-  { min: 3.1, max: 3.9, label: 'Gibt eher Energie', color: '#84cc16' },
-  { min: 2.6, max: 3.0, label: 'Teils-teils',       color: '#F2B705' },
-  { min: 2.1, max: 2.5, label: 'Eher anstrengend',  color: '#F0672A' },
-  { min: 0.0, max: 2.0, label: 'Kostet Energie',    color: '#C0266A' },
-];
-
-function getNettoLevel(n) {
-  return NETTO_LEVELS.find(l => n >= l.min && n <= l.max) || NETTO_LEVELS[4];
-}
-function getLevel(s) {
-  return LEVELS.find(l => s >= l.min && s <= l.max) || LEVELS[4];
-}
-function getHeroByName(name) {
-  return HEROES.find(h => h.label.toLowerCase() === name.toLowerCase());
-}
-function getHeroColor(name) {
-  const h = getHeroByName(name); return h ? h.color : '#7A9BBE';
-}
-function getHeroScore(scores, name) {
-  const h = getHeroByName(name); return h ? scores[h.key] : null;
-}
-function getHeroNetto(nettos, name) {
-  const h = getHeroByName(name); return h ? nettos[h.key] : null;
+/* Drei Zustände statt fünf Farbkategorien.
+   Die dahinterliegende 5-stufige Intelligenz bleibt im Netto-Wert erhalten,
+   das Frontend bricht sie auf auflädt / neutral / kostet herunter. */
+function getState(netto) {
+  if (netto >= 0.5)  return { key: 'charge',  word: 'Lädt dich auf', fill: netto >= 2.0 ? 92 : 70 };
+  if (netto <= -0.5) return { key: 'drain',   word: 'Kostet dich Kraft', fill: netto <= -2.0 ? 18 : 34 };
+  return { key: 'neutral', word: 'Ausgeglichen', fill: 52 };
 }
 
-function getLevelStyle(netto) {
-  const l = getNettoLevel(netto);
-  return `style="--sem-bg:${l.semBg}; --sem-text:${l.semText}; background:var(--sem-bg); color:var(--sem-text);"`;
-}
+const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
-function getInterpText(role, heroName, score, netto) {
-  const nettoLvl = getNettoLevel(netto);
+function getHeroByName(name) { return HEROES.find(h => h.label.toLowerCase() === (name||'').toLowerCase()); }
+function getHeroColor(name) { const h = getHeroByName(name); return h ? h.color : '#7A9BBE'; }
+function getHeroNetto(nettos, name) { const h = getHeroByName(name); return h ? nettos[h.key] : null; }
+
+/* ---- Auswertungstexte: 1:1 aus dem Original übernommen (die Intelligenz) ---- */
+function getInterpText(role, heroName, netto) {
   const isNeg = netto < -0.4;
   const isHigh = netto >= 2.0;
   const isMid = netto >= 0.5 && netto < 2.0;
@@ -325,17 +278,31 @@ function getInterpText(role, heroName, score, netto) {
         : `Vertraue diesem Modus in extremen Stressphasen. Vergiss aber nicht, danach bewusst zu regenerieren – auch starke Ressourcen brauchen Erholung.`
     }
   };
-
   return { main: ROLE_TEXTS[role].main, nettoInsight, impulse: ROLE_TEXTS[role].impulse };
 }
 
-function getPotentialText(heroName, netto, roleHeroes) {
-  if (netto < 0.5) return null;
-  const isHigh = netto >= 2.0;
-  if (isHigh) {
-    return `Der ${heroName}-Modus lädt dich netto stark auf – auch wenn er nicht dein zugewiesener Basis- oder Zweitheld ist. Das bedeutet: Du hast hier eine brachliegende Ressource. In Situationen, die dem ${heroName}-Modus entgegenkommen, kannst du bewusst in diesen Modus wechseln – ohne dass es dich erschöpft. Frage dich: Wann im Alltag hast du die Möglichkeit, aus dem ${heroName}-Modus heraus zu handeln?`;
+/* Netto-Klartext-Zeile über den Batterien – der Aha-Moment.
+   Fasst das Gesamtsystem in einem Satz zusammen. */
+function getNetSummary(nettos, basis, zweit, stress1, stress2) {
+  const nb = getHeroNetto(nettos, basis);
+  const nz = getHeroNetto(nettos, zweit);
+  const ns1 = getHeroNetto(nettos, stress1);
+  const ns2 = getHeroNetto(nettos, stress2);
+
+  const mainCharge = (nb !== null && nb >= 0.5) || (nz !== null && nz >= 0.5);
+  const stressDrain = (ns1 !== null && ns1 <= -0.5) || (ns2 !== null && ns2 <= -0.5);
+  const mainDrain = (nb !== null && nb <= -0.5);
+
+  if (mainCharge && stressDrain) {
+    return `Deine Hauptmodi laden dich auf – aber unter Druck schaltest du in einen Modus, der dich <strong>auslaugt</strong>. Das erklärt, warum stressige Phasen dich besonders erschöpfen.`;
   }
-  return `Der ${heroName}-Modus gibt dir netto Energie, auch wenn er nicht dein Hauptheld ist. Er kann als situativer Verstärker dienen – zum Beispiel in Phasen, in denen dein Basisheld gerade viel Energie kostet.`;
+  if (mainDrain) {
+    return `Dein häufigster Modus <strong>kostet dich netto Kraft</strong>. Das erklärt, warum sich dauerhaftes Funktionieren anstrengend anfühlen kann – die Fähigkeit ist da, aber der Preis ist spürbar.`;
+  }
+  if (mainCharge && !stressDrain) {
+    return `Deine wichtigsten Modi <strong>tragen dich</strong> – auch unter Druck zahlst du keinen Extra-Preis. Eine stabile Ausgangslage, auf der du bewusst aufbauen kannst.`;
+  }
+  return `Deine Energiebilanz ist gemischt: Manche Modi laden dich auf, andere kosten Kraft. <strong>Das ist normal</strong> – und zeigt dir genau, wo du dosieren und wo du schöpfen kannst.`;
 }
 
 function getPatternText(nettos) {
@@ -350,22 +317,20 @@ function getPatternText(nettos) {
 
 function getParams() {
   const p = new URLSearchParams(window.location.search);
-  const scores = {}, nettos = {};
-  let hasData = false, hasNetto = false;
+  const nettos = {};
+  let hasNetto = false;
   HEROES.forEach(h => {
-    const v = parseFloat(p.get(h.key));
-    scores[h.key] = isNaN(v) ? 0 : Math.min(5, Math.max(0, v));
-    if (!isNaN(v) && v > 0) hasData = true;
     const n = parseFloat(p.get(h.nettoKey));
     nettos[h.key] = isNaN(n) ? null : n;
     if (!isNaN(n)) hasNetto = true;
   });
   return {
-    scores, nettos, hasData, hasNetto,
+    nettos, hasNetto,
     basis:   p.get('basis')   || '',
     zweit:   p.get('zweit')   || '',
     stress1: p.get('stress1') || '',
     stress2: p.get('stress2') || '',
+    isPaid:  p.get('paid') === '1',
   };
 }
 
@@ -379,63 +344,77 @@ function getRoleBadge(heroName, basis, zweit, stress1, stress2) {
 }
 
 function render() {
-  const { scores, nettos, hasData, hasNetto, basis, zweit, stress1, stress2 } = getParams();
+  const { nettos, hasNetto, basis, zweit, stress1, stress2, isPaid } = getParams();
   const el = document.getElementById('content');
-  if (!hasData && !hasNetto) {
+
+  if (!hasNetto) {
     el.innerHTML = `<div class="no-data">Keine Energie-Daten verfügbar.<br>Bitte schließe zuerst den Fragebogen ab.</div>`;
     return;
   }
 
-  const roleHeroes = [basis, zweit, stress1, stress2].map(s => s.toLowerCase()).filter(Boolean);
+  const basisLc = basis.toLowerCase();
+  let html = '';
 
-  let html = `<div class="scale-row"><div></div><div class="scale-track">
-    <span>−4</span><span>−2</span><span>0</span><span>+2</span><span>+4</span>
-    <div class="scale-zero-line"></div>
-  </div><div></div></div><div class="bars">`;
+  /* --- Netto-Klartext-Zeile (nur wenn paid; im Teaser ersetzt durch Cliffhanger) --- */
+  if (isPaid) {
+    html += `<div class="net-summary" id="net-summary">${getNetSummary(nettos, basis, zweit, stress1, stress2)}</div>`;
+  } else {
+    html += `<div class="net-summary" id="net-summary">Das hier ist erst dein <strong>Basisheld</strong>. Deine vollständige Energiebilanz zeigt, welche deiner sechs Modi dich tragen – und welche dich heimlich auslaugen.</div>`;
+  }
 
+  /* --- Batterie-Liste --- */
+  html += `<div class="batteries">`;
   HEROES.forEach((h, i) => {
     const netto = nettos[h.key];
     const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
-    let trackHtml = '', scoreHtml = '';
+    const isBasis = h.label.toLowerCase() === basisLc;
 
-    if (netto !== null) {
-      const isNeg = netto < 0;
-      const pct = Math.min(50, (Math.abs(netto) / 4) * 50);
-      const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
-      trackHtml = `<div class="netto-track-wrap">
-        <div class="netto-bg"></div>
-        <div class="netto-zero"></div>
-        <div class="netto-fill ${isNeg ? 'neg' : 'pos'}" data-pct="${pct}" style="${!isNeg ? 'background:'+h.color : ''}"></div>
+    // Im Teaser: nur der Basisheld ist sichtbar, der Rest gesperrt.
+    const locked = !isPaid && !isBasis;
+
+    if (locked) {
+      html += `<div class="batt-row locked" style="--hero-color:${h.color}; transition-delay:${i*0.06}s">
+        <div class="batt-label">
+          <div class="batt-hero">${h.label}</div>
+          ${badge ? `<span class="batt-role">${badge}</span>` : ''}
+        </div>
+        <div class="batt-right">
+          <div class="battery state-neutral"><div class="battery-fill" data-fill="50"></div></div>
+          <div class="batt-state">${LOCK_ICON}Gesperrt</div>
+        </div>
       </div>`;
-      scoreHtml = `<div class="bar-score ${isNeg ? 'neg' : ''}" style="${!isNeg ? 'color:'+h.color : ''}">${display}</div>`;
-    } else {
-      const pct = (scores[h.key] / 5) * 50;
-      trackHtml = `<div class="netto-track-wrap">
-        <div class="netto-bg"></div>
-        <div class="netto-zero"></div>
-        <div class="netto-fill pos" data-pct="${pct}" style="background:${h.color}"></div>
-      </div>`;
-      scoreHtml = `<div class="bar-score" style="color:${h.color}">${scores[h.key].toFixed(1)}</div>`;
+      return;
     }
 
-    html += `<div class="bar-row" style="--hero-color:${h.color}; transition-delay:${i * 0.08}s">
-      <div class="bar-label">${h.label}${badge ? `<span class="role-badge">${badge}</span>` : ''}</div>
-      ${trackHtml}${scoreHtml}
+    if (netto === null) return;
+    const st = getState(netto);
+    html += `<div class="batt-row state-${st.key}" style="--hero-color:${h.color}; transition-delay:${i*0.06}s">
+      <div class="batt-label">
+        <div class="batt-hero">${h.label}</div>
+        ${badge ? `<span class="batt-role">${badge}</span>` : ''}
+      </div>
+      <div class="batt-right">
+        <div class="battery state-${st.key}"><div class="battery-fill" data-fill="${st.fill}"></div></div>
+        <div class="batt-state">${st.word}</div>
+      </div>
     </div>`;
   });
-
   html += `</div>`;
 
-  // Legend
-  html += `<div class="netto-legend">
-    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#86EFAC"></div>Stark aufladend (+2 bis +4)</div>
-    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#93C5FD"></div>Aufladend (+0.5 bis +2)</div>
-    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDE68A"></div>Ausgeglichen (±0.4)</div>
-    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDBA74"></div>Zehrend (−0.5 bis −2)</div>
-    <div class="netto-legend-item"><div class="netto-legend-dot" style="background:#FDA4AF"></div>Stark zehrend (−2 bis −4)</div>
-  </div>`;
+  /* --- Ab hier: volle Auswertung nur für paid. Im Teaser: Paywall-Karte. --- */
+  if (!isPaid) {
+    html += `<div class="paywall-card">
+      <div class="pw-eyebrow">Deine vollständige Energiebilanz</div>
+      <div class="pw-title">Sieh, was dich trägt – und was dich auslaugt</div>
+      <div class="pw-text">Schalte 6Heroes frei und erhalte deine komplette Auswertung: alle sechs Modi, deine persönlichen Coaching-Impulse und dein ungenutztes Energiepotenzial.</div>
+      <a class="pw-btn" href="${UPGRADE_URL}" target="_top">6Heroes freischalten</a>
+    </div>`;
+    el.innerHTML = html;
+    animate(false);
+    return;
+  }
 
-  // Interpretation
+  /* === Volle Auswertung (paid) === */
   const roles = [
     { key: 'basis',   name: basis,   label: 'Basisheld' },
     { key: 'zweit',   name: zweit,   label: 'Zweitheld' },
@@ -443,99 +422,94 @@ function render() {
     { key: 'stress2', name: stress2, label: 'Stressheld 2' },
   ].filter(r => r.name);
 
-  // Potential heroes: not in roles, netto >= 0.5
+  const roleHeroes = roles.map(r => r.name.toLowerCase());
   const potentialHeroes = HEROES.filter(h => {
     const netto = nettos[h.key];
     return netto !== null && netto >= 0.5 && !roleHeroes.includes(h.label.toLowerCase());
   }).sort((a, b) => nettos[b.key] - nettos[a.key]);
 
-  if (roles.length > 0 || potentialHeroes.length > 0) {
-    html += `<hr class="divider"><div class="interp-title">Deine persönliche Auswertung</div>`;
+  html += `<hr class="divider"><div class="interp-wrap">`;
+  html += `<div class="interp-title">Deine persönliche Auswertung</div>`;
 
-    const pattern = getPatternText(nettos);
-    if (pattern) html += `<div class="pattern-box" id="pattern-box">
-      <div class="pattern-title">${pattern.title}</div>
-      <div class="pattern-text">${pattern.text}</div>
+  const pattern = getPatternText(nettos);
+  if (pattern) html += `<div class="pattern-box" id="pattern-box">
+    <div class="pattern-title">${pattern.title}</div>
+    <div class="pattern-text">${pattern.text}</div>
+  </div>`;
+
+  roles.forEach((r, i) => {
+    const netto = getHeroNetto(nettos, r.name);
+    if (netto === null) return;
+    const heroColor = getHeroColor(r.name);
+    const st = getState(netto);
+    const interp = getInterpText(r.key, r.name, netto);
+
+    html += `<div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; transition-delay:${0.1 + i*0.1}s">
+      <div class="interp-card-header">
+        <div>
+          <div class="interp-role">${r.label}</div>
+          <div class="interp-hero">${r.name}</div>
+        </div>
+        <span class="state-pill state-${st.key}">${st.word}</span>
+      </div>
+      <div class="interp-text">${interp.main}</div>
+      <div class="netto-insight">${interp.nettoInsight}</div>
+      <div class="interp-impulse"><strong>Coaching-Impuls</strong>${interp.impulse}</div>
     </div>`;
+  });
 
-    roles.forEach((r, i) => {
-      const score = getHeroScore(scores, r.name);
-      if (score === null) return;
-      const netto = getHeroNetto(nettos, r.name);
-      if (netto === null) return;
-      const heroColor = getHeroColor(r.name);
-      const nettoLvl = getNettoLevel(netto);
-      const interp = getInterpText(r.key, r.name, score, netto);
-      const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
+  if (potentialHeroes.length > 0) {
+    html += `<div class="potential-section-title">Dein ungenutztes Energiepotenzial</div>`;
+    potentialHeroes.forEach((h, i) => {
+      const netto = nettos[h.key];
+      const st = getState(netto);
+      const isHigh = netto >= 2.0;
+      const potText = isHigh
+        ? `Der ${h.label}-Modus lädt dich netto stark auf – auch wenn er nicht dein zugewiesener Basis- oder Zweitheld ist. Das bedeutet: Du hast hier eine brachliegende Ressource. In Situationen, die dem ${h.label}-Modus entgegenkommen, kannst du bewusst in diesen Modus wechseln – ohne dass es dich erschöpft.`
+        : `Der ${h.label}-Modus gibt dir netto Energie, auch wenn er nicht dein Hauptheld ist. Er kann als situativer Verstärker dienen – zum Beispiel in Phasen, in denen dein Basisheld gerade viel Energie kostet.`;
 
-      html += `<div class="interp-card" id="icard-${i}" style="--role-color:${heroColor}; transition-delay:${0.1 + i * 0.1}s">
+      html += `<div class="interp-card" id="pcrd-${i}" style="--role-color:${h.color}; transition-delay:${0.3 + i*0.1}s">
         <div class="interp-card-header">
           <div>
-            <div class="interp-role">${r.label}</div>
-            <div class="interp-hero">${r.name}</div>
+            <div class="interp-role">Potenzial-Held</div>
+            <div class="interp-hero">${h.label}</div>
           </div>
-          <div style="display:flex;align-items:center;margin-left:auto;gap:6px;">
-            <span class="netto-badge" ${getLevelStyle(netto)}>Netto ${display}</span>
-            <span class="interp-level" ${getLevelStyle(netto)}>${nettoLvl.label}</span>
-          </div>
+          <span class="state-pill state-${st.key}">${st.word}</span>
         </div>
-        <div class="interp-text">${interp.main}</div>
-        <div class="netto-insight">${interp.nettoInsight}</div>
-        <div class="interp-impulse"><strong>Coaching-Impuls</strong>${interp.impulse}</div>
+        <div class="interp-text">${potText}</div>
+        <div class="interp-impulse"><strong>Aktivierungs-Impuls</strong>Überlege: In welchen konkreten Situationen dieser Woche könntest du bewusst in den ${h.label}-Modus wechseln? Welche Aufgaben, Gespräche oder Entscheidungen passen zu diesem Modus – und wann hast du die Freiheit, ihn zu wählen?</div>
       </div>`;
     });
-
-    // Potential section – Überschrift nur, wenn es gefüllte Karten gibt
-    if (potentialHeroes.length > 0) {
-      let potCards = '';
-      potentialHeroes.forEach((h, i) => {
-        const netto = nettos[h.key];
-        const nettoLvl = getNettoLevel(netto);
-        const display = netto > 0 ? `+${netto.toFixed(1)}` : netto.toFixed(1);
-        const potText = getPotentialText(h.label, netto, roleHeroes);
-        if (!potText) return;
-        potCards += `<div class="interp-card" id="pcrd-${i}" style="--role-color:${h.color}; transition-delay:${0.3 + i * 0.1}s">
-          <div class="interp-card-header">
-            <div>
-              <div class="interp-role">Potenzial-Held</div>
-              <div class="interp-hero">${h.label}</div>
-            </div>
-            <div style="display:flex;align-items:center;margin-left:auto;gap:6px;">
-              <span class="netto-badge" ${getLevelStyle(netto)}>Netto ${display}</span>
-              <span class="interp-level" ${getLevelStyle(netto)}>${nettoLvl.label}</span>
-            </div>
-          </div>
-          <div class="interp-text">${potText}</div>
-          <div class="interp-impulse"><strong>Aktivierungs-Impuls</strong>Überlege: In welchen konkreten Situationen dieser Woche könntest du bewusst in den ${h.label}-Modus wechseln? Welche Aufgaben, Gespräche oder Entscheidungen passen zu diesem Modus – und wann hast du die Freiheit, ihn zu wählen?</div>
-        </div>`;
-      });
-      if (potCards) {
-        html += `<div class="potential-section-title">Dein ungenutztes Energiepotenzial</div>` + potCards;
-      }
-    }
   }
 
+  html += `</div>`; // interp-wrap
   el.innerHTML = html;
+  animate(true);
+}
 
+function animate(full) {
   requestAnimationFrame(() => {
-    document.querySelectorAll('.bar-row').forEach((row, i) => {
+    const ns = document.getElementById('net-summary');
+    if (ns) setTimeout(() => ns.classList.add('visible'), 60);
+
+    document.querySelectorAll('.batt-row').forEach((row, i) => {
       setTimeout(() => {
         row.classList.add('visible');
-        row.querySelectorAll('.netto-fill').forEach(f => {
-          setTimeout(() => { f.style.width = f.dataset.pct + '%'; }, 50);
+        row.querySelectorAll('.battery-fill').forEach(f => {
+          setTimeout(() => { f.style.width = f.dataset.fill + '%'; }, 60);
         });
-      }, i * 80);
+      }, 120 + i * 80);
     });
-    setTimeout(() => {
-      const pb = document.getElementById('pattern-box');
-      if (pb) pb.classList.add('visible');
-      [...roles, ...potentialHeroes].forEach((_, i) => {
-        setTimeout(() => {
-          const c = document.getElementById(`icard-${i}`) || document.getElementById(`pcrd-${i}`);
-          if (c) c.classList.add('visible');
-        }, i * 120);
-      });
-    }, 700);
+
+    if (full) {
+      setTimeout(() => {
+        const pb = document.getElementById('pattern-box');
+        if (pb) pb.classList.add('visible');
+        document.querySelectorAll('.interp-card').forEach((c, i) => {
+          setTimeout(() => c.classList.add('visible'), i * 120);
+        });
+      }, 700);
+    }
   });
 }
 
