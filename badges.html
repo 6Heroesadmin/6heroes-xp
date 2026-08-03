@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deine Meilensteine — 6Heroes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#20293A; --gold:#F2B705; --text:#F4F1E9; --text-soft:#C8CEDA; --text-muted:#8E96A8;
+    --border:rgba(255,255,255,0.08); --border-strong:rgba(255,255,255,0.16); --card:rgba(255,255,255,0.028);
+    --h-innovator:#F2B705; --h-commander:#0B63CE; --h-strategist:#64748B;
+    --h-sage:#C0266A; --h-guardian:#1F9D62; --h-explorer:#F0672A;
+    --c-einstieg:#6BA9C9; --c-konsistenz:#C9A24B; --c-xp:#7E9E4F;
+    --c-balance:#B085C7; --c-reflexion:#4FBE9F;
+    /* Bronze/Silber/Gold-Metalltöne */
+    --t-bronze:#C77B3C; --t-silber:#B8C0CC; --t-gold:#E8B93B;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--navy);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:28px 20px 60px}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+  h1{font-family:'DM Serif Display',serif;font-size:34px;font-weight:400;line-height:1.1;margin-bottom:12px}
+  .lead{font-size:15px;line-height:1.55;color:var(--text-soft);max-width:640px}
+  .summary{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline;margin:22px 0 4px;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .summary .stat{display:inline-flex;align-items:baseline}
+  .summary .num{font-family:'DM Serif Display',serif;font-size:26px;color:var(--gold)}
+  .summary .lbl{font-size:13px;color:var(--text-muted);margin-left:8px}
+  .cat{margin-top:26px;border:1px solid var(--border-strong);border-radius:16px;padding:22px;background:var(--card)}
+  .cat-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+  .cat-title{font-family:'DM Serif Display',serif;font-size:21px;font-weight:400}
+  .cat-count{font-size:12.5px;color:var(--text-muted)}
+  .cat-sub{font-size:13px;color:var(--text-soft);margin-bottom:18px}
+  .disc{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .disc svg{width:24px;height:24px}
+  .earned .disc{background:color-mix(in srgb,var(--pc) 20%,transparent);border:2px solid var(--pc);box-shadow:0 0 0 4px color-mix(in srgb,var(--pc) 8%,transparent)}
+  .earned .disc svg{color:var(--pc)}
+  .locked .disc{background:rgba(255,255,255,0.02);border:1.5px dashed var(--border-strong)}
+  .locked .disc svg{color:var(--text-muted);opacity:.5}
+  .sname{font-size:11px;font-weight:600;margin-top:6px;text-align:center;max-width:90px;line-height:1.2}
+  .locked .sname{color:var(--text-muted);font-weight:500}
+  .smeta{font-size:10px;margin-top:2px}
+  .earned .smeta{color:var(--text-muted)} .locked .smeta{color:var(--pc);opacity:.85}
+  /* Tier-Kürzel */
+  .tier{font-size:8.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    margin-top:2px;padding:1px 6px;border-radius:8px;line-height:1.4}
+  .tier.bronze{color:var(--t-bronze);background:color-mix(in srgb,var(--t-bronze) 16%,transparent)}
+  .tier.silber{color:var(--t-silber);background:color-mix(in srgb,var(--t-silber) 16%,transparent)}
+  .tier.gold{color:var(--t-gold);background:color-mix(in srgb,var(--t-gold) 16%,transparent)}
+  .locked .tier{opacity:.5}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:18px 12px}
+  .cell{display:flex;flex-direction:column;align-items:center}
+  .heroes{display:grid;gap:12px;grid-template-columns:repeat(6,1fr)}
+  @media (max-width:780px){ .heroes{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:460px){ .heroes{grid-template-columns:repeat(2,1fr)} }
+  .hcard{border:1px solid var(--pc);border-radius:12px;padding:14px 4px 12px;background:color-mix(in srgb,var(--pc) 6%,transparent)}
+  .hlabel{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--pc);text-align:center;margin-bottom:12px}
+  .col{display:flex;flex-direction:column-reverse;align-items:center}
+  .conn{width:2px;height:18px}
+  .conn.walked{background:var(--pc)} .conn.open{border-left:2px dashed color-mix(in srgb,var(--pc) 55%,transparent)}
+  .journey + .journey{margin-top:10px}
+  .journey svg{display:block;width:100%;height:auto;overflow:visible}
+  .jlabel{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:2px}
+  .subhead{font-size:12px;font-weight:600;color:var(--text-soft);margin:18px 0 10px}
+  @media (max-width:560px){ h1{font-size:27px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Deine Entwicklung</div>
+  <h1>Deine Meilensteine</h1>
+  <p class="lead">Manche Wege sind lang und geschwungen, andere kurz. Der helle Teil
+    ist schon gegangen — die stillen Stationen zeigen, was noch vor dir liegt.</p>
+  <div class="summary">
+    <div class="stat"><span class="num" id="sEarned">0</span><span class="lbl">von 68 erreicht</span></div>
+    <div class="stat"><span class="num" id="sFocus">—</span><span class="lbl" id="sFocusLbl">dein Schwerpunkt</span></div>
+  </div>
+  <div id="cats"></div>
+</div>
+
+<script>
+const BADGES = [{"id": "Badge_001", "name": "Erster Schritt", "cat": "Einstieg", "hero": "", "qt": "", "thr": "1", "rule": "quest_count_total", "tier": ""}, {"id": "Badge_002", "name": "Systemstart", "cat": "Einstieg", "hero": "", "qt": "", "thr": "3", "rule": "quest_count_total", "tier": ""}, {"id": "Badge_003", "name": "Zündung", "cat": "Einstieg", "hero": "", "qt": "Activate", "thr": "1", "rule": "quest_count_by_type", "tier": ""}, {"id": "Badge_004", "name": "Im Einsatz", "cat": "Einstieg", "hero": "", "qt": "Perform", "thr": "1", "rule": "quest_count_by_type", "tier": ""}, {"id": "Badge_005", "name": "Selbstbremse", "cat": "Einstieg", "hero": "", "qt": "StopLimit", "thr": "1", "rule": "quest_count_by_type", "tier": "Bronze"}, {"id": "Badge_006", "name": "Dreiklang", "cat": "Einstieg", "hero": "", "qt": "", "thr": "3", "rule": "type_variety_count", "tier": ""}, {"id": "Badge_007", "name": "Auf Kurs", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "3", "rule": "streak_days", "tier": ""}, {"id": "Badge_008", "name": "Dranbleiber", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "7", "rule": "streak_days", "tier": ""}, {"id": "Badge_009", "name": "Wochenwache", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "14", "rule": "streak_days", "tier": ""}, {"id": "Badge_010", "name": "Fokusläufer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "21", "rule": "streak_days", "tier": ""}, {"id": "Badge_011", "name": "Ritualmeister", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "30", "rule": "streak_days", "tier": ""}, {"id": "Badge_012", "name": "Konstanzkern", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "10", "rule": "active_days_total", "tier": "Bronze"}, {"id": "Badge_013", "name": "Gewohnheitskraft", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "25", "rule": "active_days_total", "tier": "Silber"}, {"id": "Badge_014", "name": "Unaufhaltsam", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "50", "rule": "active_days_total", "tier": "Gold"}, {"id": "Badge_015", "name": "XP-Sammler", "cat": "XP", "hero": "", "qt": "", "thr": "50", "rule": "total_xp", "tier": ""}, {"id": "Badge_016", "name": "Energiegeladen", "cat": "XP", "hero": "", "qt": "", "thr": "150", "rule": "total_xp", "tier": ""}, {"id": "Badge_017", "name": "Heldenmotor", "cat": "XP", "hero": "", "qt": "", "thr": "300", "rule": "total_xp", "tier": ""}, {"id": "Badge_018", "name": "Wirkungsverstärker", "cat": "XP", "hero": "", "qt": "", "thr": "600", "rule": "total_xp", "tier": ""}, {"id": "Badge_019", "name": "Aufstiegsenergie", "cat": "XP", "hero": "", "qt": "", "thr": "1200", "rule": "total_xp", "tier": ""}, {"id": "Badge_020", "name": "Kraftfeld", "cat": "XP", "hero": "", "qt": "", "thr": "2000", "rule": "total_xp", "tier": ""}, {"id": "Badge_021", "name": "Ideenfunke", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_022", "name": "Realitätsbieger", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_023", "name": "Zukunftsformer", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_024", "name": "Entscheidungsblitz", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_025", "name": "Einsatzleiter", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_026", "name": "Frontkommandant", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_027", "name": "Planfokus", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_028", "name": "Wegarchitekt", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_029", "name": "Mastermind", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_030", "name": "Erkenntnisfunke", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_031", "name": "Klarseher", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_032", "name": "Weisheitsquelle", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_033", "name": "Schutzsignal", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_034", "name": "Ankerkraft", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_035", "name": "Schildträger", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_036", "name": "Aufbruch", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_037", "name": "Grenzgänger", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_038", "name": "Horizontjäger", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_039", "name": "Heldenmix", "cat": "Balance", "hero": "", "qt": "", "thr": "3", "rule": "distinct_heroes_count", "tier": ""}, {"id": "Badge_040", "name": "Sechserkreis", "cat": "Balance", "hero": "", "qt": "", "thr": "6", "rule": "distinct_heroes_count", "tier": ""}, {"id": "Badge_041", "name": "Vielseitig", "cat": "Balance", "hero": "", "qt": "", "thr": "3", "rule": "heroes_with_min_quests", "tier": ""}, {"id": "Badge_042", "name": "Ganzheitlich", "cat": "Balance", "hero": "", "qt": "", "thr": "6", "rule": "heroes_with_min_quests", "tier": ""}, {"id": "Badge_043", "name": "Basiskraft", "cat": "Balance", "hero": "", "qt": "", "thr": "10", "rule": "quest_count_by_profile_hero", "tier": ""}, {"id": "Badge_044", "name": "Zweitmotor", "cat": "Balance", "hero": "", "qt": "", "thr": "10", "rule": "quest_count_by_profile_hero", "tier": ""}, {"id": "Badge_045", "name": "Reflexionsstarter", "cat": "Reflexion", "hero": "", "qt": "", "thr": "1", "rule": "reflection_count", "tier": "Bronze"}, {"id": "Badge_046", "name": "Musterseher", "cat": "Reflexion", "hero": "", "qt": "", "thr": "5", "rule": "reflection_count", "tier": "Silber"}, {"id": "Badge_047", "name": "Tiefentaucher", "cat": "Reflexion", "hero": "", "qt": "", "thr": "15", "rule": "reflection_count", "tier": "Gold"}, {"id": "Badge_048", "name": "Stop-Knopf", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "5", "rule": "quest_count_by_type", "tier": "Silber"}, {"id": "Badge_049", "name": "Grenzmeister", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "15", "rule": "quest_count_by_type", "tier": "Gold"}, {"id": "Badge_050", "name": "Stressnavigator", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "5", "rule": "quest_count_by_profile_hero_and_type", "tier": ""}, {"id": "Badge_051", "name": "Aushilfsheld", "cat": "XP", "hero": "", "qt": "", "thr": "100", "rule": "total_xp", "tier": ""}, {"id": "Badge_052", "name": "Pfadfinder", "cat": "XP", "hero": "", "qt": "", "thr": "250", "rule": "total_xp", "tier": ""}, {"id": "Badge_053", "name": "Vorreiter", "cat": "XP", "hero": "", "qt": "", "thr": "500", "rule": "total_xp", "tier": ""}, {"id": "Badge_054", "name": "Aufsteiger", "cat": "XP", "hero": "", "qt": "", "thr": "900", "rule": "total_xp", "tier": ""}, {"id": "Badge_055", "name": "Champion", "cat": "XP", "hero": "", "qt": "", "thr": "1500", "rule": "total_xp", "tier": ""}, {"id": "Badge_056", "name": "Mythos", "cat": "XP", "hero": "", "qt": "", "thr": "2500", "rule": "total_xp", "tier": ""}, {"id": "Badge_057", "name": "Mythenschmied", "cat": "XP", "hero": "", "qt": "", "thr": "3250", "rule": "total_xp", "tier": ""}, {"id": "Badge_058", "name": "Titan", "cat": "XP", "hero": "", "qt": "", "thr": "4000", "rule": "total_xp", "tier": ""}, {"id": "Badge_059", "name": "Titanenkraft", "cat": "XP", "hero": "", "qt": "", "thr": "5000", "rule": "total_xp", "tier": ""}, {"id": "Badge_060", "name": "Legende", "cat": "XP", "hero": "", "qt": "", "thr": "6000", "rule": "total_xp", "tier": ""}, {"id": "Badge_061", "name": "Legendenglut", "cat": "XP", "hero": "", "qt": "", "thr": "7500", "rule": "total_xp", "tier": ""}, {"id": "Badge_062", "name": "SuperHero", "cat": "XP", "hero": "", "qt": "", "thr": "9000", "rule": "total_xp", "tier": ""}, {"id": "Badge_063", "name": "Volltreffer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "1", "rule": "perfect_weeks", "tier": "Bronze"}, {"id": "Badge_064", "name": "Makellos", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "5", "rule": "perfect_weeks", "tier": "Silber"}, {"id": "Badge_065", "name": "Perfektionist", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "15", "rule": "perfect_weeks", "tier": "Gold"}, {"id": "Badge_066", "name": "Taktgeber", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "3", "rule": "streak_weeks", "tier": "Bronze"}, {"id": "Badge_067", "name": "Dauerläufer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "8", "rule": "streak_weeks", "tier": "Silber"}, {"id": "Badge_068", "name": "Fels", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "16", "rule": "streak_weeks", "tier": "Gold"}];
+const HERO_VAR={Innovator:'--h-innovator',Commander:'--h-commander',Strategist:'--h-strategist',Sage:'--h-sage',Guardian:'--h-guardian',Explorer:'--h-explorer'};
+const CAT_VAR={'Einstieg':'--c-einstieg','Konsistenz':'--c-konsistenz','XP':'--c-xp','Balance':'--c-balance','Reflexion':'--c-reflexion'};
+const TIER_VAR={'Bronze':'--t-bronze','Silber':'--t-silber','Gold':'--t-gold'};
+const CAT_ORDER=['Einstieg','Heldenmeisterschaft','Konsistenz','Reflexion','Balance','XP'];
+const HERO_ORDER=['Innovator','Commander','Strategist','Sage','Guardian','Explorer'];
+const CAT_SUB={
+  'Einstieg':'Deine ersten Schritte im System.',
+  'Heldenmeisterschaft':'Wie tief du jeden deiner Helden lebst — ein Weg pro Held.',
+  'Konsistenz':'Wie treu du dranbleibst.',
+  'Reflexion':'Wie ehrlich und tief du hinschaust.',
+  'Balance':'Wie vielseitig du deine Helden nutzt.',
+  'XP':'Deine Reise durch die gesammelte Energie.'
+};
+const JLABEL={'total_xp':'Energie','streak_days':'Tage am Stück','active_days_total':'Aktive Tage',
+  'reflection_count':'Reflexionstiefe','perfect_weeks':'Perfekte Wochen','streak_weeks':'Wochen in Folge'};
+
+const EARNED=new Set(['Badge_001','Badge_002','Badge_021','Badge_045','Badge_015']);
+function num(x){const n=parseInt(x);return isNaN(n)?0:n;}
+function pcVar(b){return (b.cat==='Heldenmeisterschaft'&&b.hero)?HERO_VAR[b.hero]:(CAT_VAR[b.cat]||'--gold');}
+function sv(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5 5.6.7-4 3.9 1 5.5L12 19l-5 2.6 1-5.5-4-3.9 5.6-.7z" fill="currentColor" fill-opacity="0.15"/></svg>';}
+function tierHtml(b){ const t=tierOf(b); if(!t) return ''; return '<span class="tier '+t.toLowerCase()+'">'+t+'</span>'; }
+
+function groups(items){
+  const m={}; items.forEach(b=>{const k=b.rule+'|'+(b.hero||'')+'|'+(b.qt||'');(m[k]=m[k]||[]).push(b);});
+  return Object.values(m).map(g=>g.sort((a,b)=>num(a.thr)-num(b.thr)));
+}
+
+// Tier clientseitig aus der Pfadposition ableiten: genau 3-stufige Pfade
+// bekommen Bronze/Silber/Gold. Unabhängig vom Airtable-Feld, damit die
+// Farbgebung immer greift. Wird einmal beim Start berechnet.
+const TIER_MAP = {};  // badgeId -> 'Bronze'|'Silber'|'Gold'
+(function deriveTiers(){
+  const byCat={}; BADGES.forEach(b=>(byCat[b.cat]=byCat[b.cat]||[]).push(b));
+  Object.values(byCat).forEach(items=>{
+    groups(items).forEach(g=>{
+      if(g.length===3){
+        ['Bronze','Silber','Gold'].forEach((t,i)=>{ TIER_MAP[g[i].id]=t; });
+      }
+    });
+  });
+})();
+function tierOf(b){ return TIER_MAP[b.id] || b.tier || ''; }
+function cellHtml(b){
+  const e=EARNED.has(b.id);
+  // Ringfarbe: bei Tier-Badges der Metallton, sonst Kategorie/Held
+  const pc = (e && tierOf(b)) ? TIER_VAR[tierOf(b)] : pcVar(b);
+  return '<div class="cell '+(e?'earned':'locked')+'" style="--pc:var('+pc+')">'+
+    '<div class="disc">'+sv()+'</div><div class="sname">'+b.name+'</div>'+
+    '<div class="smeta">'+(e?'erreicht':'ab '+b.thr)+'</div>'+tierHtml(b)+'</div>';
+}
+
+function journeySvg(g, containerW){
+  const v=pcVar(g[0]); const label=JLABEL[g[0].rule]||'';
+  const n=g.length;
+  const stationW=140;
+  let perRow=Math.max(2, Math.floor(containerW/stationW));
+  perRow=Math.min(perRow, n);
+  const rows=Math.ceil(n/perRow);
+  const W=Math.max(containerW, 320);
+  const padX=56, rowH=118, amp=16;
+  const H=rows*rowH+16;
+  const pos=[];
+  for(let i=0;i<n;i++){
+    const row=Math.floor(i/perRow), idxInRow=i%perRow;
+    const countThisRow=Math.min(perRow, n-row*perRow), ltr=(row%2===0);
+    const span=W-2*padX;
+    let frac=countThisRow>1 ? idxInRow/(countThisRow-1) : 0.5;
+    if(!ltr) frac=1-frac;
+    const x=padX+span*frac;
+    const y=row*rowH+rowH/2 + amp*Math.sin(idxInRow/Math.max(countThisRow-1,1)*Math.PI);
+    pos.push({x,y,row,ltr});
+  }
+  function seg(from,to){
+    let d='M '+pos[from].x+' '+pos[from].y;
+    for(let i=from+1;i<=to;i++){
+      const a=pos[i-1], b=pos[i];
+      if(a.row===b.row){ const cx=(a.x+b.x)/2; d+=' Q '+a.x+' '+a.y+' '+cx+' '+((a.y+b.y)/2)+' T '+b.x+' '+b.y; }
+      else { d+=' C '+(a.x+(a.ltr?46:-46))+' '+(a.y+44)+' '+(b.x+(b.ltr?46:-46))+' '+(b.y-44)+' '+b.x+' '+b.y; }
+    }
+    return d;
+  }
+  let lastE=-1; g.forEach((b,i)=>{if(EARNED.has(b.id))lastE=i;});
+  const walked=lastE>0?seg(0,lastE):'';
+  const open=seg(Math.max(lastE,0),n-1);
+  let nodes='';
+  g.forEach((b,i)=>{
+    const e=EARNED.has(b.id);
+    const pc = (e && tierOf(b)) ? TIER_VAR[tierOf(b)] : v;
+    const col='var('+pc+')';
+    const fill=e?'color-mix(in srgb, '+col+' 20%, transparent)':'rgba(255,255,255,0.02)';
+    const stroke=e?col:'rgba(255,255,255,0.16)';
+    const dash=e?'':'stroke-dasharray="3 3"';
+    nodes+='<circle cx="'+pos[i].x+'" cy="'+pos[i].y+'" r="23" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+(e?2:1.5)+'" '+dash+'/>';
+    nodes+='<g transform="translate('+(pos[i].x-11)+','+(pos[i].y-11)+')" fill="none" stroke="'+(e?col:'rgba(255,255,255,0.4)')+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 1.5l2.2 4.6 5.1.6-3.7 3.6.9 5L11 17.4l-4.6 2.4.9-5L3.6 6.7l5.1-.6z"/></g>';
+    const ly=pos[i].y+39;
+    nodes+='<text x="'+pos[i].x+'" y="'+ly+'" text-anchor="middle" font-family="Inter" font-size="12" font-weight="600" fill="'+(e?'#F4F1E9':'#8E96A8')+'">'+b.name+'</text>';
+    nodes+='<text x="'+pos[i].x+'" y="'+(ly+15)+'" text-anchor="middle" font-family="Inter" font-size="10.5" fill="'+(e?'#8E96A8':col)+'" opacity="'+(e?1:0.85)+'">'+(e?'erreicht':'ab '+b.thr)+'</text>';
+  });
+  return '<div class="journey" style="--pc:var('+v+')">'+
+    (label?'<div class="jlabel" style="color:var('+v+')">'+label+'</div>':'')+
+    '<svg viewBox="0 0 '+W+' '+H+'">'+
+    (walked?'<path d="'+walked+'" fill="none" stroke="var('+v+')" stroke-width="3"/>':'')+
+    '<path d="'+open+'" fill="none" stroke="color-mix(in srgb, var('+v+') 50%, transparent)" stroke-width="2.5" stroke-dasharray="6 7"/>'+
+    nodes+'</svg></div>';
+}
+
+let LONG_PATHS=[];
+function render(){
+  const root=document.getElementById('cats'); root.innerHTML=''; LONG_PATHS=[];
+  const byCat={}; BADGES.forEach(b=>(byCat[b.cat]=byCat[b.cat]||[]).push(b));
+  let earnedTotal=0; const heroEarned={};
+
+  CAT_ORDER.forEach(cat=>{
+    const items=byCat[cat]||[];
+    const earnedHere=items.filter(b=>EARNED.has(b.id)).length;
+    earnedTotal+=earnedHere;
+    items.forEach(b=>{if(EARNED.has(b.id)&&b.hero)heroEarned[b.hero]=(heroEarned[b.hero]||0)+1;});
+
+    const sec=document.createElement('div'); sec.className='cat';
+    sec.innerHTML='<div class="cat-head"><div class="cat-title">'+cat+'</div>'+
+      '<div class="cat-count">'+earnedHere+' / '+items.length+'</div></div>'+
+      '<div class="cat-sub">'+(CAT_SUB[cat]||'')+'</div>';
+
+    if(cat==='Heldenmeisterschaft'){
+      const wrap=document.createElement('div'); wrap.className='heroes';
+      HERO_ORDER.forEach(hero=>{
+        const hi=items.filter(b=>b.hero===hero).sort((a,b)=>num(a.thr)-num(b.thr));
+        if(!hi.length)return;
+        const v=HERO_VAR[hero]; let col='';
+        hi.forEach((b,i)=>{ if(i>0){const p=EARNED.has(hi[i-1].id);col+='<div class="conn '+(p?'walked':'open')+'"></div>';} col+=cellHtml(b); });
+        wrap.insertAdjacentHTML('beforeend','<div class="hcard" style="--pc:var('+v+')"><div class="hlabel">'+hero+'</div><div class="col">'+col+'</div></div>');
+      });
+      sec.appendChild(wrap);
+    } else {
+      const gs=groups(items);
+      const longs=gs.filter(g=>g.length>=3);
+      const rest=gs.filter(g=>g.length<3).flat();
+      longs.forEach(g=>{ const holder=document.createElement('div'); sec.appendChild(holder); LONG_PATHS.push({holder, group:g}); });
+      if(rest.length){
+        const grid=document.createElement('div'); grid.className='grid';
+        if(longs.length){ grid.style.marginTop='22px'; grid.style.paddingTop='20px'; grid.style.borderTop='1px dashed var(--border)'; }
+        grid.innerHTML=rest.map(cellHtml).join('');
+        sec.appendChild(grid);
+      }
+    }
+    root.appendChild(sec);
+  });
+  renderJourneys();
+  document.getElementById('sEarned').textContent=earnedTotal;
+  let focus='—',max=0; Object.entries(heroEarned).forEach(([h,n])=>{if(n>max){max=n;focus=h;}});
+  if(focus==='—'){document.getElementById('sFocus').textContent='—';document.getElementById('sFocusLbl').textContent='noch kein Schwerpunkt';}
+  else document.getElementById('sFocus').textContent=focus;
+  postHeight();
+}
+function renderJourneys(){
+  LONG_PATHS.forEach(({holder,group})=>{ const w=holder.clientWidth||holder.parentElement.clientWidth||600; holder.innerHTML=journeySvg(group,w); });
+}
+let rt;
+function onResize(){ clearTimeout(rt); rt=setTimeout(()=>{ renderJourneys(); postHeight(); }, 120); }
+function postHeight(){try{parent.postMessage({type:'6heroes:setHeight',height:document.body.scrollHeight},'*');}catch(e){}}
+function boot(){ render(); requestAnimationFrame(()=>{ renderJourneys(); postHeight(); }); setTimeout(()=>{ renderJourneys(); postHeight(); }, 250); }
+window.addEventListener('load', boot);
+window.addEventListener('resize', onResize);
+</script>
+</body>
+</html>
