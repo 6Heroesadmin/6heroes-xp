@@ -96,7 +96,24 @@ const CAT_SUB={
 const JLABEL={'total_xp':'Energie','streak_days':'Tage am Stück','active_days_total':'Aktive Tage',
   'reflection_count':'Reflexionstiefe','perfect_weeks':'Perfekte Wochen','streak_weeks':'Wochen in Folge'};
 
+// Live-Daten: Read-Webhook (badges-read). User-E-Mail kommt via ?email=… aus Noloco.
+const WEBHOOK_URL='https://hook.eu1.make.com/hcu1vka2e03gq5clei96g2q7lkdp7ar5';
+// Demo-Set: nur sichtbar, wenn die Seite ohne ?email geöffnet wird (Vorschau).
+// Bei echtem User wird EARNED beim Laden geleert und mit den verdienten Badges gefüllt.
 const EARNED=new Set(['Badge_001','Badge_002','Badge_021','Badge_045','Badge_015']);
+
+// Verdiente Badges vom Webhook holen. Robust: bricht nie, rendert immer.
+async function loadEarned(){
+  const email=new URLSearchParams(location.search).get('email');
+  if(!email) return false;               // keine E-Mail → Demo-Set behalten (Vorschau)
+  try{
+    const res=await fetch(WEBHOOK_URL+'?email='+encodeURIComponent(email),{cache:'no-store'});
+    const data=await res.json();
+    const ids=(data.earned||[]).map(e=>e&&e.BadgeID_Text).filter(Boolean); // null-IDs verwerfen
+    EARNED.clear(); ids.forEach(id=>EARNED.add(id));
+  }catch(e){ EARNED.clear(); }            // Fehler → nichts verdient anzeigen statt abstürzen
+  return true;
+}
 function num(x){const n=parseInt(x);return isNaN(n)?0:n;}
 function pcVar(b){return (b.cat==='Heldenmeisterschaft'&&b.hero)?HERO_VAR[b.hero]:(CAT_VAR[b.cat]||'--gold');}
 function sv(){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 5 5.6.7-4 3.9 1 5.5L12 19l-5 2.6 1-5.5-4-3.9 5.6-.7z" fill="currentColor" fill-opacity="0.15"/></svg>';}
@@ -240,7 +257,15 @@ function renderJourneys(){
 let rt;
 function onResize(){ clearTimeout(rt); rt=setTimeout(()=>{ renderJourneys(); postHeight(); }, 120); }
 function postHeight(){try{parent.postMessage({type:'6heroes:setHeight',height:document.body.scrollHeight},'*');}catch(e){}}
-function boot(){ render(); requestAnimationFrame(()=>{ renderJourneys(); postHeight(); }); setTimeout(()=>{ renderJourneys(); postHeight(); }, 250); }
+function boot(){
+  const hasEmail=!!new URLSearchParams(location.search).get('email');
+  if(hasEmail) EARNED.clear();  // echter User: kein Demo-Aufblitzen
+  render(); requestAnimationFrame(()=>{ renderJourneys(); postHeight(); });
+  if(hasEmail){
+    loadEarned().then(()=>{ render(); requestAnimationFrame(()=>{ renderJourneys(); postHeight(); }); });
+  }
+  setTimeout(()=>{ renderJourneys(); postHeight(); }, 250);
+}
 window.addEventListener('load', boot);
 window.addEventListener('resize', onResize);
 </script>
