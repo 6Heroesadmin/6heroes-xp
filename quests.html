@@ -297,7 +297,9 @@ function normalizeQuest(q){
     DurationMin: Number(q.DurationMin)||0,
     XP_Base:     Number(q.XP_Base)||0,
     MinLevel:    Number(q.MinLevel)||1,
-    LifeAreas:   Array.isArray(q.LifeAreas) ? q.LifeAreas : [],
+    // .trim() gegen führende Leerzeichen in Multi-Select-Optionen (Import-Artefakt),
+    // damit der Fokus-Abgleich " fokus" == "fokus" zuverlässig matcht:
+    LifeAreas:   Array.isArray(q.LifeAreas) ? q.LifeAreas.map(a=>String(a).trim()).filter(Boolean) : [],
   };
 }
 
