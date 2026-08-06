@@ -574,8 +574,11 @@ function repairControlChars(text){
 }
 
 async function loadEntries(email){
-  const url = READ_WEBHOOK_URL + '?email=' + encodeURIComponent(email);
-  const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
+  // Cache-Bust + no-store: verhindert, dass Safari eine veraltete Webhook-Antwort
+  // aus einer Ausfall-/Leerphase weiter ausliefert, obwohl der Webhook aktuelle
+  // Daten liefert (gleiche Absicherung wie badges.html/dashboard.html).
+  const url = READ_WEBHOOK_URL + '?email=' + encodeURIComponent(email) + '&_=' + Date.now();
+  const res = await fetch(url, { cache:'no-store', headers:{ 'Accept':'application/json' } });
   if (!res.ok) throw new Error('Read-Webhook '+res.status);
   const data = parseWebhookPayload(await res.text());
   // Kandidaten für das Array-Feld – anpassen sobald echtes JSON bekannt
