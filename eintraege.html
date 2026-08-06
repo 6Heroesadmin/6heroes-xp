@@ -528,6 +528,7 @@ function wireFeedback(fb){
 }
 
 async function sendFeedback(entryId, tap, detail){
+  if (!stripPrefix(entryId)) return false;   // Schutz: nie leere entryId an den Webhook
   try {
     const res = await fetch(FEEDBACK_WEBHOOK_URL, {
       method:'POST',
@@ -583,7 +584,9 @@ async function loadEntries(email){
   const data = parseWebhookPayload(await res.text());
   // Kandidaten für das Array-Feld – anpassen sobald echtes JSON bekannt
   const rows = (data && (data.entries || data.coaching || data.eintraege || data.records)) || [];
-  return Array.isArray(rows) ? rows.map(mapEntry) : [];
+  // Nur echte Einträge: leere Aggregator-Platzhalter (ohne entryId) rauswerfen,
+  // damit weder eine Geisterkarte erscheint noch ein leeres Feedback gesendet werden kann.
+  return Array.isArray(rows) ? rows.map(mapEntry).filter(e => e.entryId) : [];
 }
 
 function renderList(entries){
