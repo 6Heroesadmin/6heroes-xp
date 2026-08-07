@@ -1291,17 +1291,17 @@
       <div class="plan-selector">
         <div class="plan-btn active" id="plan-monthly" onclick="switchPlan('monthly')">
           <span class="plan-name">Monatlich</span>
-          <span class="plan-price-hint">€19,99 / Monat</span>
+          <span class="plan-price-hint">24,99 € / Monat</span>
         </div>
         <div class="plan-btn" id="plan-6months" onclick="switchPlan('6months')">
           <span class="plan-save-tag" style="background:#0B63CE;">Beliebt</span>
           <span class="plan-name">6 Monate</span>
-          <span class="plan-price-hint">€14,99 / Monat</span>
+          <span class="plan-price-hint">19,99 € / Monat</span>
         </div>
         <div class="plan-btn" id="plan-yearly" onclick="switchPlan('yearly')">
-          <span class="plan-save-tag">Empfohlen</span>
+          <span class="plan-save-tag">4 Monate gratis</span>
           <span class="plan-name">12 Monate</span>
-          <span class="plan-price-hint">€9,99 / Monat</span>
+          <span class="plan-price-hint">16,99 € / Monat</span>
         </div>
       </div>
     </div>
@@ -1326,7 +1326,7 @@
       <div class="pricing-card pc-paid fade-up" style="transition-delay:0.1s">
         <div class="pc-badge" id="hero-badge" style="display:none;"></div>
         <div class="pc-name">Hero</div>
-        <div class="pc-price" id="price-display">19,99 <span>€</span></div>
+        <div class="pc-price" id="price-display">24,99 <span>€</span></div>
         <div class="pc-period" id="period-display">pro Monat · jederzeit kündbar</div>
         <ul class="pc-features">
           <li>Alles aus Entdecker</li>
@@ -1337,7 +1337,7 @@
           <li>Streak-System & Fortschritts-Dashboard</li>
           <li>Alle zukünftigen Features inklusive</li>
         </ul>
-        <a href="https://myablefy.com/s/6heroes/testprodukt-zapier-7ae4eae2/payment" class="btn-price btn-price-primary" target="_top" id="cta-pricing">Jetzt Hero werden</a>
+        <a href="https://myablefy.com/s/6heroes/6heroes-monatlich-1d9fb98e/payment" class="btn-price btn-price-primary" target="_top" id="cta-pricing">Jetzt Hero werden</a>
       </div>
     </div>
     <p class="pricing-note fade-up">Alle Preise inkl. MwSt. · Zahlung via Ablefy · 6- und 12-Monats-Pakete werden einmalig im Voraus fällig und begründen eine Mindestlaufzeit · Nach Ablauf der Mindestlaufzeit verlängert sich das Abo automatisch monatlich und ist jederzeit kündbar · Keine Kreditkarte für kostenlosen Einstieg nötig</p>
@@ -1435,22 +1435,25 @@
 
   const plans = {
     monthly: {
-      price:   '19,99 <span>€</span>',
+      price:   '24,99 <span>€</span>',
       period:  'pro Monat · jederzeit kündbar',
       total:   null,
-      cta:     'Jetzt Hero werden'
+      cta:     'Jetzt Hero werden',
+      href:    'https://myablefy.com/s/6heroes/6heroes-monatlich-1d9fb98e/payment'
     },
     '6months': {
-      price:   '14,99 <span>€</span>',
-      period:  '€89,94 einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit',
+      price:   '19,99 <span>€</span>',
+      period:  '119,94 € einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit',
       total:   null,
-      cta:     'Jetzt 6-Monate-Hero werden'
+      cta:     'Jetzt 6-Monate-Hero werden',
+      href:    'https://myablefy.com/s/6heroes/6heroes-6-monate-bb1ee3a3/payment'
     },
     yearly: {
-      price:   '9,99 <span>€</span>',
-      period:  '€119,88 einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit',
+      price:   '16,99 <span>€</span>',
+      period:  '203,88 € einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit',
       total:   null,
-      cta:     'Jetzt Jahres-Hero werden'
+      cta:     'Jetzt Jahres-Hero werden',
+      href:    'https://myablefy.com/s/6heroes/6heroes-12-monate-07336304/payment'
     }
   };
 
@@ -1470,10 +1473,11 @@
     price.innerHTML     = plans[plan].price;
     period.textContent  = plans[plan].period;
     cta.textContent     = plans[plan].cta;
+    cta.href            = plans[plan].href;
 
     badge.classList.remove('badge-beliebt', 'badge-empfohlen');
     if (plan === 'yearly') {
-      badge.textContent = 'Empfohlen';
+      badge.textContent = '4 Monate gratis';
       badge.classList.add('badge-empfohlen');
       badge.style.display = 'block';
     } else if (plan === '6months') {
@@ -1484,6 +1488,18 @@
       badge.style.display = 'none';
     }
   }
+
+  // Deep-Link-Unterstützung: preise.html?plan=yearly|6months|monthly
+  // (genutzt von den App-Teasern / UPGRADE_URL, um direkt aufs Paket zu springen)
+  (function () {
+    try {
+      var p = new URLSearchParams(window.location.search).get('plan');
+      var map = { yearly: 'yearly', '12monate': 'yearly', '12': 'yearly',
+                  '6months': '6months', '6monate': '6months', '6': '6months',
+                  monthly: 'monthly', monatlich: 'monthly' };
+      if (p && map[p]) switchPlan(map[p]);
+    } catch (e) { /* Default-Ansicht bleibt bestehen */ }
+  })();
 </script>
 
 <script>
