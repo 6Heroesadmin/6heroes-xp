@@ -88,33 +88,47 @@
     line-height: 1.5;
   }
 
-  /* Locked state */
+  /* Locked state – Inhalt bleibt SCHARF lesbar (Name + Teaser sichtbar),
+     nur ein dezentes Sperr-Signal statt Blur. */
+  .tile.locked {
+    border-color: rgba(242, 183, 5, 0.28);
+  }
   .tile.locked .tile-body {
-    filter: blur(5px);
-    pointer-events: none;
-    user-select: none;
+    opacity: 0.82;
   }
 
-  .lock-overlay {
+  /* Schloss-Badge oben rechts */
+  .lock-badge {
     position: absolute;
-    inset: 0;
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(15, 20, 33, 0.72);
+    border: 1px solid rgba(242, 183, 5, 0.45);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    background: rgba(15, 20, 33, 0.55);
     z-index: 2;
   }
-  .lock-overlay svg { width: 26px; height: 26px; color: var(--text-main); }
+  .lock-badge svg { width: 15px; height: 15px; color: var(--accent); }
 
-  .lock-label {
-    font-size: 13px;
+  /* Gelbe Freischalten-Zeile am unteren Rand */
+  .unlock-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 12px;
+    background: rgba(242, 183, 5, 0.10);
+    border-top: 1px solid rgba(242, 183, 5, 0.22);
+    font-size: 12.5px;
     font-weight: 600;
-    color: var(--text-main);
-    text-align: center;
-    padding: 0 8px;
+    letter-spacing: 0.02em;
+    color: var(--accent);
   }
+  .unlock-bar svg { width: 13px; height: 13px; }
 
   .error {
     text-align: center;
@@ -148,9 +162,9 @@
 
     const ROLE_DESCRIPTIONS = {
       'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
-      'Zweitheld':    'Deine zweite Seite – verstärkt deinen Basishelden.',
-      'Stressheld 1': 'Deine erste Reaktion unter Druck.',
-      'Stressheld 2': 'Deine zweite Reaktion unter Druck.',
+      'Zweitheld':    'Deine zweite Kraft – sie verstärkt deinen Basishelden in entscheidenden Momenten.',
+      'Stressheld 1': 'Deine erste Reaktion unter Druck – erkenne das Muster, bevor es dich steuert.',
+      'Stressheld 2': 'Deine zweite Stressreaktion – dein Eskalationsmuster, wenn der Druck am größten ist.',
     };
 
     function normalizeHero(name) {
@@ -164,19 +178,23 @@
       const color = HERO_COLORS[heroNorm] || '#64748B';
       const desc = ROLE_DESCRIPTIONS[role] || '';
       const href = locked ? UPGRADE_URL : url;
-      const lockOverlay = locked
-        ? `<div class="lock-overlay">${LOCK_ICON}<span class="lock-label">Jetzt freischalten</span></div>`
+      const lockBadge = locked
+        ? `<div class="lock-badge">${LOCK_ICON}</div>`
+        : '';
+      const unlockBar = locked
+        ? `<div class="unlock-bar">${LOCK_ICON}<span>Jetzt freischalten</span></div>`
         : '';
 
       return `
         <a class="tile ${locked ? 'locked' : ''}" href="${href}" target="_top">
-          ${lockOverlay}
+          ${lockBadge}
           <div class="tile-top" style="background:${color}"></div>
           <div class="tile-body">
             <div class="tile-role">${role}</div>
             <div class="tile-hero" style="color:${color}">${heroNorm}</div>
             <div class="tile-desc">${desc}</div>
           </div>
+          ${unlockBar}
         </a>
       `;
     }
