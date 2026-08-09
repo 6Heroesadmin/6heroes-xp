@@ -370,7 +370,7 @@
   <div class="shelf-label">Deine Bereiche</div>
   <div class="tiles">
 
-    <a class="tile" id="tileProfile" style="--tile-accent: var(--commander)" href="#">
+    <a class="tile" id="tileProfile" style="--tile-accent: var(--commander)" href="#" target="_top">
       <span class="glow"></span>
       <div class="tile-eyebrow">Mein Profil</div>
       <h3>Deine vier Modi</h3>
@@ -378,7 +378,7 @@
       <span class="tile-open">Profil öffnen <span class="arrow">&rarr;</span></span>
     </a>
 
-    <a class="tile" id="tileQuests" style="--tile-accent: var(--gold)" href="#">
+    <a class="tile" id="tileQuests" style="--tile-accent: var(--gold)" href="#" target="_top">
       <span class="glow"></span>
       <div class="tile-eyebrow">Meine Quests</div>
       <h3>Was heute dran ist</h3>
@@ -419,7 +419,7 @@
   </div>
 
   <!-- Badges-Ebene: letzte 3-4 bzw. Leerfelder, Absprung zu Meine Badges -->
-  <a class="badges-row" id="badgesRow" href="#">
+  <a class="badges-row" id="badgesRow" href="#" target="_top">
     <div class="badges-head">
       <div class="bh-count" id="bhCount">7</div>
       <div class="bh-label">Abzeichen</div>
@@ -635,6 +635,40 @@ const DEMO = {
    ============================================================ */
 const D = Object.assign({}, DEMO);
 
+/* ============================================================
+   Echte Held-Konstellation aus URL-Parametern (wie profil-kacheln):
+   ?basis=…&zweit=…&stress1=…&stress2=…
+   Fehlt ein Parameter, bleibt der Demo-Wert stehen.
+   ============================================================ */
+(function applyHeroesFromUrl(){
+  const HERO_VAR = {
+    innovator:'--innovator', commander:'--commander', strategist:'--strategist',
+    sage:'--sage', guardian:'--guardian', explorer:'--explorer',
+  };
+  function normHero(name){
+    if(!name) return '';
+    const s = name.toString().trim();
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  }
+  function colorFor(name){
+    const v = HERO_VAR[(name||'').toLowerCase()];
+    return v ? `var(${v})` : 'var(--strategist)';
+  }
+  const map = [
+    { key:'basis',   role:'Basisheld'    },
+    { key:'zweit',   role:'Zweitheld'    },
+    { key:'stress1', role:'Stressheld 1' },
+    { key:'stress2', role:'Stressheld 2' },
+  ];
+  // Nur überschreiben, wenn mindestens der Basisheld geliefert wird.
+  if (!P.get('basis')) return;
+  D.heroes = map.map(m => {
+    const raw = P.get(m.key);
+    const name = normHero(raw) || D.heroes.find(h=>h.role===m.role)?.name || '';
+    return { role:m.role, name, color:colorFor(name) };
+  });
+})();
+
 function stripPrefix(id){
   const s = (id||'').toString().trim();
   return s.startsWith('E_') ? s.slice(2) : s;
@@ -804,7 +838,7 @@ function renderCoachTeaser(){
     <p class="lead">Dein persönlicher Coach denkt echte Situationen mit dir durch — Gespräche, Entscheidungen, alles, was vor dir liegt. Auf Basis deiner sechs Helden. Sobald du freigeschaltet hast, öffnet sich hier dein freies Textfeld.</p>
     <a class="coach-cta" href="${UPGRADE_URL}" target="_top">Jetzt freischalten <span class="arrow">&rarr;</span></a>
     <div class="coach-sub-actions">
-      <a class="textlink" href="${ROUTES.quests}">Ersten Quest kostenlos starten</a>
+      <a class="textlink" target="_top" href="${ROUTES.quests}">Ersten Quest kostenlos starten</a>
     </div>`;
 }
 
@@ -834,8 +868,8 @@ function renderCoachLocked(){
     <p class="lead">Dein Coach öffnet dann ein freies Textfeld, in das du eigene Situationen und Fragen einträgst — „So bereite ich mein nächstes Gespräch vor." Sobald er dich gut genug versteht, geht es los. Daran arbeitet ihr gerade:</p>
     <div class="crit-list">${critRows}</div>
     <div class="coach-sub-actions">
-      <a class="textlink" href="${ROUTES.entries}">Coaching-Einträge bewerten</a>
-      <a class="textlink" href="${ROUTES.quests}">Neue Quest starten</a>
+      <a class="textlink" target="_top" href="${ROUTES.entries}">Coaching-Einträge bewerten</a>
+      <a class="textlink" target="_top" href="${ROUTES.quests}">Neue Quest starten</a>
     </div>`;
   requestAnimationFrame(()=>{
     document.querySelectorAll('#coach .crit-fill').forEach(f => {
@@ -850,10 +884,10 @@ function renderCoachUnlocked(){
     <div class="kicker"><span class="pulse"></span>Dein Coach — offen</div>
     <h2>Was steht bei dir an?</h2>
     <p class="lead">Dein Coach kennt dich jetzt gut genug. Trag unten eine Situation ein, die vor dir liegt — ein Gespräch, eine Entscheidung, etwas Unklares. Ins freie Textfeld, ganz in deinen Worten. Ihr denkt sie gemeinsam durch.</p>
-    <a class="coach-cta" href="${ROUTES.advice}">Situation einbringen <span class="arrow">&rarr;</span></a>
+    <a class="coach-cta" target="_top" href="${ROUTES.advice}">Situation einbringen <span class="arrow">&rarr;</span></a>
     <div class="coach-sub-actions">
-      <a class="textlink" href="${ROUTES.entries}">Frühere Gespräche ansehen</a>
-      <a class="textlink" href="${ROUTES.quests}">Neue Quest starten</a>
+      <a class="textlink" target="_top" href="${ROUTES.entries}">Frühere Gespräche ansehen</a>
+      <a class="textlink" target="_top" href="${ROUTES.quests}">Neue Quest starten</a>
     </div>`;
 }
 
