@@ -275,6 +275,11 @@
     background: radial-gradient(circle at 50% 35%, rgba(242,183,5,0.22), rgba(242,183,5,0.06));
     border: 1px solid rgba(242,183,5,0.4);
   }
+  /* Coin-Variante: die SVG-Medaille ist selbst der Look -> kein Kachel-Rahmen */
+  .badge-slot.coin.filled {
+    background: none; border: none; overflow: visible;
+  }
+  .badge-slot.coin .medal { width: 100%; height: 100%; display: block; }
   .badge-slot.empty {
     background: rgba(255,255,255,0.02);
     border: 1px dashed var(--border-strong);
@@ -293,6 +298,46 @@
   .badges-row:hover .badges-open { color: var(--gold); transform: translateX(3px); }
   @media (max-width: 440px){
     .badges-slots { grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; }
+  }
+
+  /* ================= TEASER (paid=0, Nicht-Zahler) ================= */
+  /* Ein geblurrter Bereich mit lesbarer Erklärzeile darüber. */
+  .teaser-wrap { position: relative; }
+  .teaser-blur {
+    filter: blur(6px) saturate(0.6);
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+  }
+  .teaser-note {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px; text-align: center; padding: 0 18px;
+  }
+  .teaser-note .tn-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px; color: var(--text);
+  }
+  .teaser-note .tn-sub {
+    font-size: 12.5px; color: var(--text-soft); max-width: 340px; line-height: 1.45;
+  }
+  .teaser-note .tn-cta {
+    margin-top: 6px; font-size: 12.5px; font-weight: 700;
+    color: var(--navy); background: var(--gold);
+    padding: 8px 16px; border-radius: 999px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .teaser-lock { display: inline-flex; align-items: center; gap: 6px; }
+  .teaser-lock svg { width: 13px; height: 13px; }
+
+  /* Held-Quad im Teaser: Basisheld scharf, andere drei geblurrt */
+  .hero-slot.hs-blur { filter: blur(4px) saturate(0.6); opacity: 0.55; }
+
+  /* Coach-Cliffhanger (paid=0) */
+  .coach.teaser .lead { color: var(--text-soft); }
+  .coach.teaser .coach-cta {
+    background: var(--gold); color: var(--navy);
   }
 
   /* Quests-Kachel: kleine offene-Quests-Punkte */
@@ -403,6 +448,12 @@ const P = new URLSearchParams(location.search);
 let   STATE = P.get('state') || 'locked';   // 'locked' | 'unlocked' — kann von Live-Daten überschrieben werden
 const EMAIL = (P.get('email')||'').trim();
 
+/* Bezahl-Gate (getrennt vom Beratungs-Gate STATE).
+   paid=0 -> Teaser für Nicht-Zahler; paid=1 / fehlend -> Vollansicht.
+   Default bewusst 1: ein vergessener Noloco-Parameter zeigt lieber
+   die Vollansicht als fälschlich den Teaser. */
+const PAID = P.get('paid') !== '0';
+
 /* Coaching-Entries-Read-Webhook: liefert {"entries":[...]}.
    Daraus leiten wir Freischalt-Fortschritt, Wochen-Streak und
    Einträge-Zahl rein clientseitig ab (kein Backend nötig). */
@@ -421,10 +472,117 @@ const ROUTES = {
   badges:   'https://app.6heroes.de/meine-badges',
 };
 
+/* Ziel aller Teaser-CTAs (Nicht-Zahler) */
+const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
+
 /* Badge-Bilder: Netlify-Ordner, Dateiname = Slug(Name).
    Endung hier zentral einstellbar (.svg oder .png). */
 const BADGE_IMG_BASE = 'https://app.6heroes.de/badges/';   // Netlify-Ordner
 const BADGE_IMG_EXT  = '.png';
+
+
+/* ============================================================
+   BADGE-COIN-OPTIK (portiert aus badges.html, 1:1)
+   EARNED = Set verdienter Badge-IDs (im Dashboard gesetzt).
+   Genutzt für die echte Coin-Darstellung in der Badges-Zeile.
+   ============================================================ */
+const BADGES = [{"id": "Badge_001", "name": "Erster Schritt", "cat": "Einstieg", "hero": "", "qt": "", "thr": "1", "rule": "quest_count_total", "tier": ""}, {"id": "Badge_002", "name": "Systemstart", "cat": "Einstieg", "hero": "", "qt": "", "thr": "3", "rule": "quest_count_total", "tier": ""}, {"id": "Badge_003", "name": "Zündung", "cat": "Einstieg", "hero": "", "qt": "Activate", "thr": "1", "rule": "quest_count_by_type", "tier": ""}, {"id": "Badge_004", "name": "Im Einsatz", "cat": "Einstieg", "hero": "", "qt": "Perform", "thr": "1", "rule": "quest_count_by_type", "tier": ""}, {"id": "Badge_005", "name": "Selbstbremse", "cat": "Einstieg", "hero": "", "qt": "StopLimit", "thr": "1", "rule": "quest_count_by_type", "tier": "Bronze"}, {"id": "Badge_006", "name": "Dreiklang", "cat": "Einstieg", "hero": "", "qt": "", "thr": "3", "rule": "type_variety_count", "tier": ""}, {"id": "Badge_007", "name": "Auf Kurs", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "3", "rule": "streak_days", "tier": ""}, {"id": "Badge_008", "name": "Dranbleiber", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "7", "rule": "streak_days", "tier": ""}, {"id": "Badge_009", "name": "Wochenwache", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "14", "rule": "streak_days", "tier": ""}, {"id": "Badge_010", "name": "Fokusläufer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "21", "rule": "streak_days", "tier": ""}, {"id": "Badge_011", "name": "Ritualmeister", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "30", "rule": "streak_days", "tier": ""}, {"id": "Badge_012", "name": "Konstanzkern", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "10", "rule": "active_days_total", "tier": "Bronze"}, {"id": "Badge_013", "name": "Gewohnheitskraft", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "25", "rule": "active_days_total", "tier": "Silber"}, {"id": "Badge_014", "name": "Unaufhaltsam", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "50", "rule": "active_days_total", "tier": "Gold"}, {"id": "Badge_015", "name": "XP-Sammler", "cat": "XP", "hero": "", "qt": "", "thr": "50", "rule": "total_xp", "tier": ""}, {"id": "Badge_016", "name": "Energiegeladen", "cat": "XP", "hero": "", "qt": "", "thr": "150", "rule": "total_xp", "tier": ""}, {"id": "Badge_017", "name": "Heldenmotor", "cat": "XP", "hero": "", "qt": "", "thr": "300", "rule": "total_xp", "tier": ""}, {"id": "Badge_018", "name": "Wirkungsverstärker", "cat": "XP", "hero": "", "qt": "", "thr": "600", "rule": "total_xp", "tier": ""}, {"id": "Badge_019", "name": "Aufstiegsenergie", "cat": "XP", "hero": "", "qt": "", "thr": "1200", "rule": "total_xp", "tier": ""}, {"id": "Badge_020", "name": "Kraftfeld", "cat": "XP", "hero": "", "qt": "", "thr": "2000", "rule": "total_xp", "tier": ""}, {"id": "Badge_021", "name": "Ideenfunke", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_022", "name": "Realitätsbieger", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_023", "name": "Zukunftsformer", "cat": "Heldenmeisterschaft", "hero": "Innovator", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_024", "name": "Entscheidungsblitz", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_025", "name": "Einsatzleiter", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_026", "name": "Frontkommandant", "cat": "Heldenmeisterschaft", "hero": "Commander", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_027", "name": "Planfokus", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_028", "name": "Wegarchitekt", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_029", "name": "Mastermind", "cat": "Heldenmeisterschaft", "hero": "Strategist", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_030", "name": "Erkenntnisfunke", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_031", "name": "Klarseher", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_032", "name": "Weisheitsquelle", "cat": "Heldenmeisterschaft", "hero": "Sage", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_033", "name": "Schutzsignal", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_034", "name": "Ankerkraft", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_035", "name": "Schildträger", "cat": "Heldenmeisterschaft", "hero": "Guardian", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_036", "name": "Aufbruch", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "3", "rule": "quest_count_by_hero", "tier": "Bronze"}, {"id": "Badge_037", "name": "Grenzgänger", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "10", "rule": "quest_count_by_hero", "tier": "Silber"}, {"id": "Badge_038", "name": "Horizontjäger", "cat": "Heldenmeisterschaft", "hero": "Explorer", "qt": "", "thr": "25", "rule": "quest_count_by_hero", "tier": "Gold"}, {"id": "Badge_039", "name": "Heldenmix", "cat": "Balance", "hero": "", "qt": "", "thr": "3", "rule": "distinct_heroes_count", "tier": ""}, {"id": "Badge_040", "name": "Sechserkreis", "cat": "Balance", "hero": "", "qt": "", "thr": "6", "rule": "distinct_heroes_count", "tier": ""}, {"id": "Badge_041", "name": "Vielseitig", "cat": "Balance", "hero": "", "qt": "", "thr": "3", "rule": "heroes_with_min_quests", "tier": ""}, {"id": "Badge_042", "name": "Ganzheitlich", "cat": "Balance", "hero": "", "qt": "", "thr": "6", "rule": "heroes_with_min_quests", "tier": ""}, {"id": "Badge_043", "name": "Basiskraft", "cat": "Balance", "hero": "", "qt": "", "thr": "10", "rule": "quest_count_by_profile_hero", "tier": ""}, {"id": "Badge_044", "name": "Zweitmotor", "cat": "Balance", "hero": "", "qt": "", "thr": "10", "rule": "quest_count_by_profile_hero", "tier": ""}, {"id": "Badge_045", "name": "Reflexionsstarter", "cat": "Reflexion", "hero": "", "qt": "", "thr": "1", "rule": "reflection_count", "tier": "Bronze"}, {"id": "Badge_046", "name": "Musterseher", "cat": "Reflexion", "hero": "", "qt": "", "thr": "5", "rule": "reflection_count", "tier": "Silber"}, {"id": "Badge_047", "name": "Tiefentaucher", "cat": "Reflexion", "hero": "", "qt": "", "thr": "15", "rule": "reflection_count", "tier": "Gold"}, {"id": "Badge_048", "name": "Stop-Knopf", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "5", "rule": "quest_count_by_type", "tier": "Silber"}, {"id": "Badge_049", "name": "Grenzmeister", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "15", "rule": "quest_count_by_type", "tier": "Gold"}, {"id": "Badge_050", "name": "Stressnavigator", "cat": "Reflexion", "hero": "", "qt": "StopLimit", "thr": "10", "rule": "quest_count_by_type", "tier": ""}, {"id": "Badge_051", "name": "Aushilfsheld", "cat": "XP", "hero": "", "qt": "", "thr": "100", "rule": "total_xp", "tier": ""}, {"id": "Badge_052", "name": "Pfadfinder", "cat": "XP", "hero": "", "qt": "", "thr": "250", "rule": "total_xp", "tier": ""}, {"id": "Badge_053", "name": "Vorreiter", "cat": "XP", "hero": "", "qt": "", "thr": "500", "rule": "total_xp", "tier": ""}, {"id": "Badge_054", "name": "Aufsteiger", "cat": "XP", "hero": "", "qt": "", "thr": "900", "rule": "total_xp", "tier": ""}, {"id": "Badge_055", "name": "Champion", "cat": "XP", "hero": "", "qt": "", "thr": "1500", "rule": "total_xp", "tier": ""}, {"id": "Badge_056", "name": "Mythos", "cat": "XP", "hero": "", "qt": "", "thr": "2500", "rule": "total_xp", "tier": ""}, {"id": "Badge_057", "name": "Mythenschmied", "cat": "XP", "hero": "", "qt": "", "thr": "3250", "rule": "total_xp", "tier": ""}, {"id": "Badge_058", "name": "Titan", "cat": "XP", "hero": "", "qt": "", "thr": "4000", "rule": "total_xp", "tier": ""}, {"id": "Badge_059", "name": "Titanenkraft", "cat": "XP", "hero": "", "qt": "", "thr": "5000", "rule": "total_xp", "tier": ""}, {"id": "Badge_060", "name": "Legende", "cat": "XP", "hero": "", "qt": "", "thr": "6000", "rule": "total_xp", "tier": ""}, {"id": "Badge_061", "name": "Legendenglut", "cat": "XP", "hero": "", "qt": "", "thr": "7500", "rule": "total_xp", "tier": ""}, {"id": "Badge_062", "name": "SuperHero", "cat": "XP", "hero": "", "qt": "", "thr": "9000", "rule": "total_xp", "tier": ""}, {"id": "Badge_063", "name": "Volltreffer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "1", "rule": "perfect_weeks", "tier": "Bronze"}, {"id": "Badge_064", "name": "Makellos", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "5", "rule": "perfect_weeks", "tier": "Silber"}, {"id": "Badge_065", "name": "Perfektionist", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "15", "rule": "perfect_weeks", "tier": "Gold"}, {"id": "Badge_066", "name": "Taktgeber", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "3", "rule": "streak_weeks", "tier": "Bronze"}, {"id": "Badge_067", "name": "Dauerläufer", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "8", "rule": "streak_weeks", "tier": "Silber"}, {"id": "Badge_068", "name": "Fels", "cat": "Konsistenz", "hero": "", "qt": "", "thr": "16", "rule": "streak_weeks", "tier": "Gold"}];
+function num(x){const n=parseInt(x);return isNaN(n)?0:n;}
+
+/* ---- Medaillen-Farbsystem (freigegeben) ---- */
+const HERO={Innovator:'#F2B705',Commander:'#3B8BEB',Strategist:'#94A2B5',Sage:'#D93C7E',Guardian:'#2CB574',Explorer:'#F0672A'};
+const METAL={Bronze:{a:'#F0CB9C',b:'#C8823C',c:'#8A5220',glow:'#C8823C'},Silber:{a:'#FAFCFE',b:'#C4CEDC',c:'#8A97A8',glow:'#C4CEDC'},Gold:{a:'#FDE58C',b:'#F2B705',c:'#B07E0A',glow:'#F2B705'},Locked:{a:'#454E62',b:'#333B4D',c:'#232B3B',glow:'#000'}};
+const CAT={Einstieg:{a:'#8FCBF2',b:'#46A6E8',c:'#2A6D9E',glow:'#46A6E8'},Streak:{a:'#F9B48F',b:'#F2743A',c:'#B24A1E',glow:'#F2743A'},XP:{a:'#B7AEF8',b:'#7C6BF0',c:'#4E3FB0',glow:'#7C6BF0'},Balance:{a:'#7ADCE6',b:'#17B4C4',c:'#0E7A86',glow:'#17B4C4'}};
+function ringDef(k){return METAL[k]||CAT[k]||METAL.Gold}
+const GLYPH={
+  gear:'M50 50 m-14 0 a14 14 0 1 0 28 0 a14 14 0 1 0 -28 0 M50 50 m-5 0 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 M50 36 V30 M50 64 V70 M36 50 H30 M64 50 H70 M59.9 59.9 L64.1 64.1 M40.1 59.9 L35.9 64.1 M59.9 40.1 L64.1 35.9 M40.1 40.1 L35.9 35.9',
+  brain:'M50 35 c-5 -4 -13 -3 -15 4 c-5 0 -7 6 -3 9 c-3 4 0 10 5 10 c0 4 5 7 13 5 M50 35 c5 -4 13 -3 15 4 c5 0 7 6 3 9 c3 4 0 10 -5 10 c0 4 -5 7 -13 5 M50 35 V64 M42 45 q5 2 3 7 M58 45 q-5 2 -3 7',
+  bulb:'M50 30 a15 15 0 0 1 9 27 c-2 2-3 4-3 7 H44 c0-3-1-5-3-7 a15 15 0 0 1 9-27 Z M44 70 h12 M46 76 h8',
+  chevron:'M34 44 L50 34 L66 44 M34 58 L50 48 L66 58',
+  eye:'M28 52 c8-11 36-11 44 0 c-8 11-36 11-44 0 Z M50 52 m-6 0 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0',
+  shieldlet:'M50 30 l16 6 v14 c0 12-8 18-16 22 c-8-4-16-10-16-22 V36 Z M50 42 v20',
+  compass:'M50 50 m-20 0 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0 M50 32 L57 50 L50 68 L43 50 Z M50 50 m-1.5 0 a1.5 1.5 0 1 0 3 0 a1.5 1.5 0 1 0 -3 0',
+  footprints:'M42 54 m-5 0 a5 6 0 1 0 10 0 a5 6 0 1 0 -10 0 M44 65 m-3 0 a3 3.5 0 1 0 6 0 a3 3.5 0 1 0 -6 0 M58 44 m-5 0 a5 6 0 1 0 10 0 a5 6 0 1 0 -10 0 M56 55 m-3 0 a3 3.5 0 1 0 6 0 a3 3.5 0 1 0 -6 0',
+  spark:'M50 30 V44 M50 56 V70 M30 50 H44 M56 50 H70 M38 38 L44 44 M56 56 L62 62 M62 38 L56 44 M44 56 L38 62',
+  notes:'M38 63 m-4 3 a4 3 0 1 0 8 0 a4 3 0 1 0 -8 0 M50 66 m-4 3 a4 3 0 1 0 8 0 a4 3 0 1 0 -8 0 M62 61 m-4 3 a4 3 0 1 0 8 0 a4 3 0 1 0 -8 0 M42 63 V38 M54 66 V40 M66 61 V36 M42 38 L66 33 M42 44 L66 39',
+  triad:'M50 34 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M38 58 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0 M62 58 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0',
+  flame:'M50 28 c8 8 12 14 12 22 a12 12 0 0 1 -24 0 c0-5 2-8 5-11 c1 4 3 5 5 5 c-2-6 0-12 2-16 Z',
+  target:'M50 50 m-20 0 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0 M50 50 m-12 0 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0 M50 50 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0',
+  calendar:'M32 38 h36 v30 h-36 Z M32 46 h36 M40 34 v8 M60 34 v8 M40 54 h4 M52 54 h4 M40 62 h4 M52 62 h4',
+  hexring:'M50 30 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M67 40 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M67 60 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M50 70 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M33 60 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M33 40 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0',
+  ripple:'M50 40 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M50 40 m-11 0 a11 11 0 1 0 22 0 M50 40 m-18 0 a18 18 0 1 0 36 0',
+  power:'M43 37 a16 16 0 1 0 14 0 M50 30 V48',
+  bolt:'M54 28 L36 54 h12 L46 74 L66 46 H54 Z',
+  chain:'M43 50 m-11 0 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0 M57 50 m-11 0 a11 11 0 1 0 22 0 a11 11 0 1 0 -22 0',
+  bars:'M34 66 H66 M40 62 V52 M50 62 V42 M60 62 V34',
+  anchor:'M50 34 m-4 0 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M50 38 V70 M38 50 H62 M30 56 a20 20 0 0 0 40 0 M30 56 l-4 -5 M30 56 l6 -1 M70 56 l4 -5 M70 56 l-6 -1'
+};
+
+function groups(items){const m={};items.forEach(b=>{const k=b.rule+'|'+(b.hero||'')+'|'+(b.qt||'');(m[k]=m[k]||[]).push(b);});return Object.values(m).map(g=>g.sort((a,b)=>num(a.thr)-num(b.thr)));}
+const TIER_MAP={};
+(function(){const byCat={};BADGES.forEach(b=>(byCat[b.cat]=byCat[b.cat]||[]).push(b));Object.values(byCat).forEach(items=>{groups(items).forEach(g=>{if(g.length===3)['Bronze','Silber','Gold'].forEach((t,i)=>TIER_MAP[g[i].id]=t);});});})();
+function tierOf(b){return TIER_MAP[b.id]||b.tier||'';}
+function glyphFor(b){
+  const rt=b.rule,qt=b.qt,hero=b.hero,thr=num(b.thr),id=b.id;
+  if(id==='Badge_001')return 'footprints';
+  if(id==='Badge_002')return 'power';
+  if(rt==='quest_count_total')return 'footprints';
+  if(rt==='quest_count_by_type')return ({Activate:'spark',Perform:'bolt',StopLimit:'gear'})[qt]||'gear';
+  if(rt==='type_variety_count')return 'notes';
+  if(rt==='streak_days')return 'flame';
+  if(rt==='active_days_total')return 'calendar';
+  if(rt==='perfect_weeks')return 'target';
+  if(rt==='streak_weeks')return 'chain';
+  if(rt==='total_xp')return 'xp';
+  if(rt==='quest_count_by_hero')return ({Innovator:'bulb',Commander:'chevron',Strategist:'brain',Sage:'eye',Guardian:'shieldlet',Explorer:'compass'})[hero]||'target';
+  if(rt==='distinct_heroes_count')return thr<=3?'triad':'hexring';
+  if(rt==='heroes_with_min_quests')return 'bars';
+  if(rt==='quest_count_by_profile_hero')return 'anchor';
+  if(rt==='reflection_count')return 'ripple';
+  return 'target';
+}
+function ringKey(b){
+  const t=tierOf(b);
+  if(t)return t;
+  if(b.rule==='streak_days')return 'Streak';
+  if(b.cat==='Einstieg')return 'Einstieg';
+  if(b.cat==='XP')return 'XP';
+  if(b.cat==='Balance')return 'Balance';
+  return 'Einstieg';
+}
+const PROGRESS={};
+(function(){const grp={};BADGES.forEach(b=>{const rk=ringKey(b);if(rk==='Bronze'||rk==='Silber'||rk==='Gold')return;const k=b.rule+'|'+(b.hero||'')+'|'+(b.qt||'');(grp[k]=grp[k]||[]).push(b);});Object.values(grp).forEach(g=>{g.sort((a,b)=>num(a.thr)-num(b.thr)).forEach((b,i)=>PROGRESS[b.id]=i);});})();
+/* Pfadfarbe einer Journey-Serie = Medaillenfarbe der Serie */
+
+const RING_CAP=4; let uid=0;
+/* Medaille als Inneres (viewBox 0..100), fuer Einbettung in HTML und Journey-SVG */
+function badgeInner(b){
+  const e=EARNED.has(b.id), locked=!e;
+  const key=ringKey(b), m=ringDef(key), rd=locked?METAL.Locked:m, id='m'+(uid++);
+  const hero=(b.cat==='Heldenmeisterschaft'&&b.hero)?HERO[b.hero]:null;
+  const glyphId=glyphFor(b), gc=locked?'#565F73':m.a, go=locked?0.6:1;
+  const hr=hero&&!locked?'<circle cx="50" cy="50" r="33" fill="none" stroke="'+hero+'" stroke-width="2" opacity=".9"/>':'';
+  let prings='';const P=(glyphId==='xp')?0:Math.min(PROGRESS[b.id]||0,RING_CAP);
+  for(let i=0;i<P;i++){const r=36-i*3.4;prings+='<circle cx="50" cy="50" r="'+r+'" fill="none" stroke="'+(locked?'#3A4356':m.b)+'" stroke-width="1.4" opacity="'+(locked?.4:.82)+'"/>';}
+  const val=(b.rule==='total_xp')?b.thr:null;
+  const inner=(glyphId==='xp')
+    ?'<text x="50" y="43" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="800" font-size="23" letter-spacing="-1" fill="'+gc+'" opacity="'+go+'">XP</text>'+(val!=null?'<text x="50" y="63" text-anchor="middle" dominant-baseline="central" font-family="Inter,sans-serif" font-weight="700" font-size="15" fill="'+gc+'" opacity="'+(go*0.9)+'">'+val+'</text>':'')
+    :'<g transform="translate(50,50) scale(.9) translate(-50,-50)" fill="none" stroke="'+gc+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="'+go+'"><path d="'+(GLYPH[glyphId]||GLYPH.target)+'"/></g>';
+  return '<defs>'+
+    '<linearGradient id="'+id+'r" x1="20" y1="14" x2="80" y2="86" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="'+rd.a+'"/><stop offset=".5" stop-color="'+rd.b+'"/><stop offset="1" stop-color="'+rd.c+'"/></linearGradient>'+
+    '<radialGradient id="'+id+'d" cx="50" cy="40" r="42" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2C3852"/><stop offset="1" stop-color="#141A28"/></radialGradient>'+
+    '<radialGradient id="'+id+'g" cx="50" cy="50" r="50" gradientUnits="userSpaceOnUse"><stop offset=".72" stop-color="'+m.glow+'" stop-opacity="0"/><stop offset=".9" stop-color="'+m.glow+'" stop-opacity="'+(locked?0:.28)+'"/><stop offset="1" stop-color="'+m.glow+'" stop-opacity="0"/></radialGradient></defs>'+
+    '<circle cx="50" cy="50" r="49" fill="url(#'+id+'g)"/>'+
+    '<circle cx="50" cy="50" r="45" fill="none" stroke="url(#'+id+'r)" stroke-width="5"/>'+
+    '<circle cx="50" cy="50" r="41" fill="none" stroke="#fff" stroke-opacity="'+(locked?.05:.14)+'" stroke-width="1"/>'+
+    '<circle cx="50" cy="50" r="40.5" fill="url(#'+id+'d)"/>'+hr+prings+inner;
+}
+function medalSvg(b){return '<svg class="medal" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+badgeInner(b)+'</svg>';}
+
+/* Name -> Badge-Objekt (für Coin-Render aus recentBadges-Namen) */
+const BADGE_BY_NAME = {};
+BADGES.forEach(b => { BADGE_BY_NAME[(b.name||'').toLowerCase()] = b; });
+let EARNED = new Set();   // wird in renderBadges/Teaser gesetzt
 
 /* Slug aus Badge-Name: lowercase, Umlaute ausgeschrieben,
    Leerzeichen/Slash -> Bindestrich, Rest entfernt. */
@@ -637,6 +795,19 @@ function pct(){
   return Math.round((p1*0.4 + p2*0.4 + p3*0.2) * 100);
 }
 
+function renderCoachTeaser(){
+  const coach = document.getElementById('coach');
+  coach.classList.add('teaser');
+  coach.innerHTML = `
+    <div class="kicker"><span class="pulse"></span>Dein Coach</div>
+    <h2>Ab hier begleitet dich 6Heroes jeden Tag</h2>
+    <p class="lead">Dein persönlicher Coach denkt echte Situationen mit dir durch — Gespräche, Entscheidungen, alles, was vor dir liegt. Auf Basis deiner sechs Helden. Sobald du freigeschaltet hast, öffnet sich hier dein freies Textfeld.</p>
+    <a class="coach-cta" href="${UPGRADE_URL}" target="_top">Jetzt freischalten <span class="arrow">&rarr;</span></a>
+    <div class="coach-sub-actions">
+      <a class="textlink" href="${ROUTES.quests}">Ersten Quest kostenlos starten</a>
+    </div>`;
+}
+
 function renderCoachLocked(){
   const crits = [
     { got: D.withFeedback, need: D.minWithFeedback, label: 'Einträge mit Rückmeldung' },
@@ -713,15 +884,18 @@ function renderWeek(){
 }
 
 function renderTiles(){
-  // Helden-Quad (vier Modi)
-  document.getElementById('heroQuad').innerHTML = D.heroes.map(h => `
-    <div class="hero-slot" style="--hs-color:${h.color}">
+  // Helden-Quad (vier Modi). Im Teaser: erster (Basisheld) scharf, Rest geblurrt.
+  document.getElementById('heroQuad').innerHTML = D.heroes.map((h, i) => {
+    const blurCls = (!PAID && i > 0) ? ' hs-blur' : '';
+    return `
+    <div class="hero-slot${blurCls}" style="--hs-color:${h.color}">
       <span class="hs-dot"></span>
       <div class="hs-body">
         <div class="hs-role">${h.role}</div>
         <div class="hs-name">${h.name}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // Quests-Punkte
   const dots = document.getElementById('questDots');
@@ -733,7 +907,9 @@ function renderTiles(){
   document.getElementById('questOpen').textContent =
     D.openQuests + (D.openQuests===1?' Quest':' Quests');
 
-  document.getElementById('tileProfile').setAttribute('href', ROUTES.profile);
+  // Profil-Kachel im Teaser -> Preisseite (gesperrte Helden liegen dort/auf Profil);
+  // Quests-Kachel bleibt immer offen (erster Quest ist gratis).
+  document.getElementById('tileProfile').setAttribute('href', PAID ? ROUTES.profile : UPGRADE_URL);
   document.getElementById('tileQuests').setAttribute('href', ROUTES.quests);
 }
 
@@ -743,9 +919,14 @@ function renderBadges(){
   document.getElementById('bhCount').textContent = D.badgesCount;
   const wrap = document.getElementById('badgesSlots');
 
-  // Wie viele Slots passen in die aktuelle Breite? -> CSS Grid auto-fill macht
-  // die Spalten; wir liefern genug Slots, damit die Zeile immer voll ist.
-  // Anzahl gelieferter Slots = max(minBadgeSlots, was in die Breite passt).
+  // EARNED-Set aus den jüngsten Badges ableiten, damit die Coins
+  // im "earned"-Look (farbig) statt "locked" (grau) rendern.
+  EARNED = new Set();
+  (D.recentBadges||[]).forEach(nm => {
+    const b = BADGE_BY_NAME[(nm||'').toLowerCase()];
+    if (b) EARNED.add(b.id);
+  });
+
   const slotSize = 44 + 9;                       // Slotbreite + gap (siehe CSS)
   const avail = wrap.clientWidth || 320;
   const fit = Math.max(DEMO.minBadgeSlots, Math.floor((avail + 9) / slotSize));
@@ -753,14 +934,19 @@ function renderBadges(){
   let html = '';
   for (let i=0;i<fit;i++){
     const name = D.recentBadges[i];
-    if (name){
-      const url = badgeImgUrl(name);
+    const b = name ? BADGE_BY_NAME[(name||'').toLowerCase()] : null;
+    if (b){
+      // Echte Coin-Optik aus der Badge-Seite
+      html += `
+        <div class="badge-slot coin filled" title="${escapeHtml(name)}">
+          ${medalSvg(b)}
+        </div>`;
+    } else if (name){
+      // Verdient, aber Name nicht in Liste gefunden -> Buchstaben-Fallback
       const letter = escapeHtml(name.charAt(0).toUpperCase());
       html += `
         <div class="badge-slot filled" title="${escapeHtml(name)}">
-          <img class="bs-img" src="${url}" alt="${escapeHtml(name)}"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
-          <span class="bs-fallback">${letter}</span>
+          <span class="bs-fallback" style="display:grid">${letter}</span>
         </div>`;
     } else {
       html += `<div class="badge-slot empty"></div>`;
@@ -773,6 +959,19 @@ function renderBadges(){
 async function init(){
   await loadLive();   // echte Werte aus dem Coaching-Read holen (Fallback: Demo)
   document.getElementById('userName').textContent = D.name;
+
+  if (!PAID){
+    // ---- TEASER-ZUSTAND (Nicht-Zahler) ----
+    renderCoachTeaser();
+    renderTiles();               // Basisheld scharf, Rest geblurrt; Quests offen
+    applyStandTeaser();          // "Dein Stand": leere Struktur, geblurrt, Erklärzeile
+    applyBadgesTeaser();         // Badges-Zeile: leere Coins, geblurrt, Erklärzeile
+    document.getElementById('footerNote').textContent = '';
+    postHeight();
+    return;
+  }
+
+  // ---- VOLLANSICHT (Zahler) ----
   if (STATE === 'unlocked') renderCoachUnlocked(); else renderCoachLocked();
   renderTiles();
 
@@ -794,6 +993,77 @@ async function init(){
     STATE === 'unlocked' ? 'Vorschau: freigeschalteter Zustand' : 'Vorschau: vor Freischaltung';
   postHeight();
 }
+
+/* Teaser: "Dein Stand" als leere, geblurrte Struktur + Erklärzeile.
+   Zeigt die FORM (Level/XP/Woche/Streak) ohne echte oder Demo-Werte. */
+function applyStandTeaser(){
+  // Platzhalter statt Zahlen (— statt Demo)
+  document.getElementById('slLevel').textContent     = '—';
+  document.getElementById('slLevelName').textContent = '—';
+  document.getElementById('slXpNow').textContent     = '0';
+  document.getElementById('slXpNext').textContent    = '—';
+  document.getElementById('scWeeks').textContent     = '—';
+  document.getElementById('scEntries').textContent   = '0';
+  // leere Wochenpunkte (keine aktiven Tage)
+  const wrap = document.getElementById('weekDots');
+  let wd = ''; for (let i=1;i<=7;i++){ wd += `<span class="wd${i===DEMO.weekGoal?' threshold':''}"></span>`; }
+  wrap.innerHTML = wd;
+  const cap = document.getElementById('weekCaption');
+  cap.className = 'week-caption'; cap.textContent = '';
+  document.getElementById('slFill').style.width = '0%';
+
+  wrapAsTeaser('standboard',
+    'Hier wächst dein Fortschritt',
+    'Level, XP, Wochen-Streak und abgeschlossene Quests — sie füllen sich, sobald du loslegst.');
+}
+
+/* Teaser: Badges-Zeile — leere Coins (locked-Optik), geblurrt + Erklärzeile. */
+function applyBadgesTeaser(){
+  document.getElementById('bhCount').textContent = '0';
+  EARNED = new Set();   // nichts verdient -> Coins rendern im "locked"-Look
+  const wrap = document.getElementById('badgesSlots');
+  const slotSize = 44 + 9;
+  const avail = wrap.clientWidth || 320;
+  const fit = Math.max(DEMO.minBadgeSlots, Math.floor((avail + 9) / slotSize));
+  // Ein paar repräsentative leere Coins (locked) aus verschiedenen Kategorien
+  const sample = ['Erster Schritt','Auf Kurs','XP-Sammler','Ideenfunke','Heldenmix','Reflexionsstarter'];
+  let html = '';
+  for (let i=0;i<fit;i++){
+    const b = BADGE_BY_NAME[(sample[i]||'').toLowerCase()];
+    html += b ? `<div class="badge-slot coin filled">${medalSvg(b)}</div>`
+              : `<div class="badge-slot empty"></div>`;
+  }
+  wrap.innerHTML = html;
+  document.getElementById('badgesRow').setAttribute('href', UPGRADE_URL);
+
+  wrapAsTeaser('badges-row',
+    'Deine Abzeichen sammeln sich hier',
+    'Für jeden Schritt ein Zeichen — schalte frei und beginne zu sammeln.');
+}
+
+/* Legt einen Blur+Notiz-Layer über ein bestehendes Element (per Klassenname).
+   Das Element wird in einen .teaser-wrap gehüllt, Inhalt geblurrt,
+   darüber eine lesbare Notiz mit CTA zur Preisseite. */
+function wrapAsTeaser(className, title, sub){
+  const el = document.querySelector('.'+className);
+  if (!el || el.closest('.teaser-wrap')) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'teaser-wrap';
+  el.parentNode.insertBefore(wrap, el);
+  wrap.appendChild(el);
+  el.classList.add('teaser-blur');
+  const note = document.createElement('div');
+  note.className = 'teaser-note';
+  note.innerHTML = `
+    <div class="tn-title">${title}</div>
+    <div class="tn-sub">${sub}</div>
+    <a class="tn-cta" href="${UPGRADE_URL}" target="_top">
+      <span class="teaser-lock">${LOCK_ICON_SVG}Jetzt freischalten</span>
+    </a>`;
+  wrap.appendChild(note);
+}
+
+const LOCK_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
 /* iframe-Höhe (wie die übrigen Seiten) */
 let lastH = 0;
