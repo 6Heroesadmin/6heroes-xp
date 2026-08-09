@@ -636,38 +636,50 @@ const DEMO = {
 const D = Object.assign({}, DEMO);
 
 /* ============================================================
-   Echte Held-Konstellation aus URL-Parametern (wie profil-kacheln):
-   ?basis=…&zweit=…&stress1=…&stress2=…
-   Fehlt ein Parameter, bleibt der Demo-Wert stehen.
+   Held-Konstellation: bevorzugt aus dem Webhook (profile-Block),
+   sonst aus URL-Parametern (?basis=…), sonst Demo.
+   PAID ebenso: Webhook-profile.paid überschreibt den URL-Wert.
    ============================================================ */
-(function applyHeroesFromUrl(){
-  const HERO_VAR = {
-    innovator:'--innovator', commander:'--commander', strategist:'--strategist',
-    sage:'--sage', guardian:'--guardian', explorer:'--explorer',
-  };
-  function normHero(name){
-    if(!name) return '';
-    const s = name.toString().trim();
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-  }
-  function colorFor(name){
-    const v = HERO_VAR[(name||'').toLowerCase()];
-    return v ? `var(${v})` : 'var(--strategist)';
-  }
-  const map = [
-    { key:'basis',   role:'Basisheld'    },
-    { key:'zweit',   role:'Zweitheld'    },
-    { key:'stress1', role:'Stressheld 1' },
-    { key:'stress2', role:'Stressheld 2' },
-  ];
-  // Nur überschreiben, wenn mindestens der Basisheld geliefert wird.
-  if (!P.get('basis')) return;
-  D.heroes = map.map(m => {
-    const raw = P.get(m.key);
-    const name = normHero(raw) || D.heroes.find(h=>h.role===m.role)?.name || '';
-    return { role:m.role, name, color:colorFor(name) };
+const HERO_VAR = {
+  innovator:'--innovator', commander:'--commander', strategist:'--strategist',
+  sage:'--sage', guardian:'--guardian', explorer:'--explorer',
+};
+function normHero(name){
+  if(!name) return '';
+  const s = name.toString().trim();
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+function heroColor(name){
+  const v = HERO_VAR[(name||'').toLowerCase()];
+  return v ? `var(${v})` : 'var(--strategist)';
+}
+const HERO_ROLE_MAP = [
+  { key:'basis',   role:'Basisheld'    },
+  { key:'zweit',   role:'Zweitheld'    },
+  { key:'stress1', role:'Stressheld 1' },
+  { key:'stress2', role:'Stressheld 2' },
+];
+/* Setzt D.heroes aus einer {basis,zweit,stress1,stress2}-Quelle.
+   Leere Einzelwerte behalten den bisherigen Namen (Demo-Fallback). */
+function applyHeroes(src){
+  if (!src || !src.basis) return false;   // ohne Basisheld nichts überschreiben
+  D.heroes = HERO_ROLE_MAP.map(m => {
+    const name = normHero(src[m.key]) || D.heroes.find(h=>h.role===m.role)?.name || '';
+    return { role:m.role, name, color:heroColor(name) };
   });
-})();
+  return true;
+}
+
+// PAID ist jetzt veränderbar (Webhook kann ihn setzen); Default aus URL.
+let PAID_STATE = PAID;
+
+// Erst URL-Parameter anwenden (Fallback, greift sofort ohne Fetch).
+applyHeroes({
+  basis:   P.get('basis'),
+  zweit:   P.get('zweit'),
+  stress1: P.get('stress1'),
+  stress2: P.get('stress2'),
+});
 
 function stripPrefix(id){
   const s = (id||'').toString().trim();
@@ -812,13 +824,21 @@ async function loadLive(){
     const res = await fetch(url, { headers:{ 'Accept':'application/json' } });
     if (!res.ok) throw new Error('Read '+res.status);
     const data = parseWebhookPayload(await res.text());
+
+    // Held-Konstellation + paid aus dem profile-Block (überschreibt URL/Demo).
+    if (data && data.profile){
+      applyHeroes(data.profile);
+      const p = (data.profile.paid ?? '').toString().trim().toLowerCase();
+      if (p) PAID_STATE = (p === '1' || p === 'true' || p === 'yes');
+    }
+
     const rows = (data && (data.entries || data.records)) || [];
     if (Array.isArray(rows) && rows.length){
       deriveFromEntries(rows.map(mapEntry));
     }
   } catch(e){
-    // Netzwerk-/Parse-Fehler: Demo-Werte behalten, Seite bleibt nutzbar.
-    console.warn('Live-Daten nicht geladen, nutze Demo:', e.message);
+    // Netzwerk-/Parse-Fehler: Demo-/URL-Werte behalten, Seite bleibt nutzbar.
+    console.warn('Live-Daten nicht geladen, nutze Fallback:', e.message);
   }
 }
 
@@ -920,7 +940,7 @@ function renderWeek(){
 function renderTiles(){
   // Helden-Quad (vier Modi). Im Teaser: erster (Basisheld) scharf, Rest geblurrt.
   document.getElementById('heroQuad').innerHTML = D.heroes.map((h, i) => {
-    const blurCls = (!PAID && i > 0) ? ' hs-blur' : '';
+    const blurCls = (!PAID_STATE && i > 0) ? ' hs-blur' : '';
     return `
     <div class="hero-slot${blurCls}" style="--hs-color:${h.color}">
       <span class="hs-dot"></span>
@@ -943,7 +963,7 @@ function renderTiles(){
 
   // Profil-Kachel im Teaser -> Preisseite (gesperrte Helden liegen dort/auf Profil);
   // Quests-Kachel bleibt immer offen (erster Quest ist gratis).
-  document.getElementById('tileProfile').setAttribute('href', PAID ? ROUTES.profile : UPGRADE_URL);
+  document.getElementById('tileProfile').setAttribute('href', PAID_STATE ? ROUTES.profile : UPGRADE_URL);
   document.getElementById('tileQuests').setAttribute('href', ROUTES.quests);
 }
 
@@ -994,7 +1014,7 @@ async function init(){
   await loadLive();   // echte Werte aus dem Coaching-Read holen (Fallback: Demo)
   document.getElementById('userName').textContent = D.name;
 
-  if (!PAID){
+  if (!PAID_STATE){
     // ---- TEASER-ZUSTAND (Nicht-Zahler) ----
     renderCoachTeaser();
     renderTiles();               // Basisheld scharf, Rest geblurrt; Quests offen
