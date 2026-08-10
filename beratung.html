@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #20293A;
+    --gold: #F2B705;
+    --text: #F4F1E9;
+    --text-soft: #C8CEDA;
+    --text-muted: #8E96A8;
+    --border: rgba(255,255,255,0.08);
+    --card: rgba(255,255,255,0.035);
+    --card-hover: rgba(255,255,255,0.06);
+    --done: #1F9D62;
+    --err: #E06A5A;
+  }
+  html, body {
+    background: var(--navy);
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  .scroll { background: var(--navy); }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 16px 36px; }
+
+  .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 10px;
+  }
+  .intro {
+    font-size: 15px; color: var(--text-soft);
+    margin-bottom: 22px;
+  }
+
+  .field-label {
+    font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: block;
+  }
+  .field-hint { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+
+  textarea {
+    width: 100%; min-height: 160px; resize: vertical;
+    font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; color: var(--text);
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; transition: border-color .12s, background .12s;
+  }
+  textarea::placeholder { color: var(--text-muted); }
+  textarea:focus {
+    outline: none; border-color: rgba(242,183,5,0.55); background: var(--card-hover);
+  }
+
+  .footer {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding-top: 20px; margin-top: 20px;
+  }
+  .charcount { font-size: 12px; color: var(--text-muted); }
+  .actions { margin-left: auto; display: flex; gap: 10px; }
+
+  .btn {
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+    padding: 11px 22px; border-radius: 999px; cursor: pointer; border: 1px solid var(--border);
+    background: transparent; color: var(--text-soft); transition: background .12s, opacity .12s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { background: var(--card-hover); }
+  .btn-primary {
+    background: var(--gold); color: #1a1a1a; border-color: var(--gold);
+  }
+  .btn-primary:hover { opacity: 0.9; background: var(--gold); }
+  .btn[disabled] { opacity: 0.5; cursor: default; }
+
+  .status { font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .status.ok { color: var(--done); }
+  .status.err { color: var(--err); }
+
+  /* Ladezustand */
+  .thinking {
+    display: none; margin-top: 26px; padding: 20px 20px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    font-size: 14px; color: var(--text-soft); align-items: center; gap: 14px;
+  }
+  .thinking.show { display: flex; }
+  .spinner {
+    width: 18px; height: 18px; flex: none; border-radius: 50%;
+    border: 2px solid rgba(242,183,5,0.25); border-top-color: var(--gold);
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce){ .spinner { animation: none; } }
+
+  /* Antwort-Bereich */
+  .answer {
+    display: none; margin-top: 28px;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--gold); border-radius: 16px;
+    padding: 24px 24px;
+  }
+  .answer.show { display: block; }
+  .answer-eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 12px;
+  }
+  .answer-body {
+    font-size: 15.5px; line-height: 1.68; color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  /* Feedback nach der Antwort */
+  .feedback {
+    display: none; margin-top: 22px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .feedback.show { display: block; }
+  .feedback-q { font-size: 14px; color: var(--text-soft); margin-bottom: 12px; }
+  .fb-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .fb-btn {
+    font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 999px;
+    cursor: pointer; border: 1px solid var(--border); background: transparent;
+    color: var(--text-soft); transition: background .12s, border-color .12s, color .12s;
+  }
+  .fb-btn:hover { background: var(--card-hover); }
+  .fb-btn.sel { border-color: var(--gold); color: var(--gold); }
+  .fb-thanks { display: none; font-size: 13px; color: var(--done); margin-top: 12px; }
+  .fb-thanks.show { display: block; }
+
+  .again {
+    display: none; margin-top: 26px;
+  }
+  .again.show { display: block; }
+</style>
+</head>
+<body>
+<div class="scroll">
+<div class="wrap" id="wrap">
+
+  <div class="eyebrow"><span class="dot"></span>Dein Coach</div>
+  <div class="header">
+    <h1>Was steht bei dir an?</h1>
+  </div>
+  <div class="intro">
+    Trag eine Situation ein, die vor dir liegt — ein Gespräch, eine Entscheidung, etwas Unklares.
+    Ganz in deinen Worten. Ihr denkt sie gemeinsam durch.
+  </div>
+
+  <!-- Eingabe -->
+  <div id="inputBlock">
+    <label class="field-label" for="freetext">Deine Situation</label>
+    <div class="field-hint">Je konkreter, desto besser kann dein Coach ansetzen. Ein paar Sätze genügen.</div>
+    <textarea id="freetext" placeholder="Zum Beispiel: Morgen habe ich ein Gespräch mit … und ich bin unsicher, wie ich …"></textarea>
+
+    <div class="footer">
+      <span class="charcount" id="charcount"></span>
+      <div class="actions">
+        <button class="btn btn-primary" id="sendBtn">Situation einbringen</button>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <!-- Ladezustand -->
+  <div class="thinking" id="thinking">
+    <div class="spinner"></div>
+    <span>Dein Coach schaut sich deine Situation an — einen Moment.</span>
+  </div>
+
+  <!-- Antwort -->
+  <div class="answer" id="answer">
+    <div class="answer-eyebrow">Dein Coach</div>
+    <div class="answer-body" id="answerBody"></div>
+
+    <div class="feedback" id="feedback">
+      <div class="feedback-q">Hat dir das weitergeholfen?</div>
+      <div class="fb-row">
+        <button class="fb-btn" data-fb="helped">Hat geholfen</button>
+        <button class="fb-btn" data-fb="partly">Teilweise</button>
+        <button class="fb-btn" data-fb="missed">Ging daneben</button>
+      </div>
+      <div class="fb-thanks" id="fbThanks">Danke — das hilft deinem Coach, dich besser zu verstehen.</div>
+    </div>
+  </div>
+
+  <!-- Neue Situation -->
+  <div class="again" id="again">
+    <button class="btn" id="againBtn">Neue Situation einbringen</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* 6HEROES beratung.html
+   Freie Beratung (Coach) — Einmal-Antwort-MVP.
+   Wird via Noloco Custom Page (Menüpunkt "Mein Coach") als iframe eingebettet.
+
+   ANDERS ALS submit.html: Hier existiert NOCH KEIN ExerciseEntries-Record.
+   Das Beratungs-Szenario in Make legt den Record SELBST an (Source=Beratung),
+   ruft die Profil-Module 13->14 auf, erzeugt die Coaching-Antwort und gibt
+   sie synchron im Webhook-Response zurück.
+
+   URL-Params (aus dem Profiles-Formelfeld Beratung_URL, analog Quests_URL):
+     email   Pflicht – Login-Email
+
+   Erwartetes Response-JSON vom Beratungs-Webhook (synchron):
+     { "answer": "…Coaching-Antwort…", "entryId": "recXXduDesRecords" }
+   entryId wird fürs Feedback gebraucht (schreibt Feedback_Tap auf den Record). */
+
+const BERATUNG_WEBHOOK_URL = 'https://hook.eu1.make.com/ea9qqlfw926gu731yyhh54npude15lb8';
+const FEEDBACK_WEBHOOK_URL = 'https://hook.eu1.make.com/809p6f2216yqo2ysucyc77ofen93u12j';
+
+let currentEntryId = null;
+
+function getParams(){
+  const p = new URLSearchParams(window.location.search);
+  return { email: (p.get('email')||'').trim() };
+}
+
+function setStatus(msg, kind){
+  const s = document.getElementById('status');
+  s.textContent = msg || '';
+  s.className = 'status' + (kind?(' '+kind):'');
+}
+
+function parseWebhookPayload(text){
+  if (!text || !text.trim()) return null;
+  try { return JSON.parse(text); } catch(_) {}
+  let repaired = text
+    .replace(/:\s*,/g, ': [],')
+    .replace(/:\s*}/g, ': [] }')
+    .replace(/,\s*}/g, ' }')
+    .replace(/,\s*]/g, ' ]');
+  try { return JSON.parse(repaired); } catch(e){
+    console.warn('Beratungs-Payload auch nach Reparatur nicht parsebar:', e);
+    return null;
+  }
+}
+
+function updateCharcount(){
+  const n = document.getElementById('freetext').value.trim().length;
+  document.getElementById('charcount').textContent = n > 0 ? (n + ' Zeichen') : '';
+}
+
+async function send(){
+  const P = getParams();
+  const sendBtn = document.getElementById('sendBtn');
+  const freetext = document.getElementById('freetext').value.trim();
+
+  if (!P.email){
+    setStatus('Nutzer nicht erkannt – bitte die Seite über das Menü erneut öffnen.', 'err');
+    return;
+  }
+  if (freetext.length < 15){
+    setStatus('Beschreib deine Situation bitte in ein, zwei Sätzen mehr.', 'err');
+    return;
+  }
+
+  // Eingabe ausblenden, Ladezustand zeigen
+  sendBtn.disabled = true;
+  setStatus('');
+  document.getElementById('thinking').classList.add('show');
+  postHeight();
+
+  try {
+    const res = await fetch(BERATUNG_WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ email: P.email, freetext: freetext })
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const raw = await res.text();
+    const data = parseWebhookPayload(raw) || {};
+    const answer = (data.answer || '').trim();
+    currentEntryId = (data.entryId || '').trim() || null;
+
+    if (!answer){
+      throw new Error('Leere Antwort');
+    }
+
+    // Eingabe verbergen, Antwort zeigen
+    document.getElementById('thinking').classList.remove('show');
+    document.getElementById('inputBlock').style.display = 'none';
+    document.getElementById('answerBody').textContent = answer;
+    document.getElementById('answer').classList.add('show');
+    if (currentEntryId){
+      document.getElementById('feedback').classList.add('show');
+    }
+    document.getElementById('again').classList.add('show');
+    postHeight();
+  } catch(e){
+    console.error(e);
+    document.getElementById('thinking').classList.remove('show');
+    sendBtn.disabled = false;
+    setStatus('Das hat gerade nicht geklappt. Bitte versuch es noch einmal.', 'err');
+    postHeight();
+  }
+}
+
+async function sendFeedback(tap, btn){
+  // optimistisch markieren
+  document.querySelectorAll('.fb-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('fbThanks').classList.add('show');
+  postHeight();
+
+  if (!currentEntryId || FEEDBACK_WEBHOOK_URL.startsWith('PLATZHALTER')) return;
+  try {
+    await fetch(FEEDBACK_WEBHOOK_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ entryId: currentEntryId, feedback: tap })
+    });
+  } catch(e){
+    console.warn('Feedback konnte nicht gesendet werden:', e);
+  }
+}
+
+function resetForNext(){
+  document.getElementById('answer').classList.remove('show');
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('fbThanks').classList.remove('show');
+  document.querySelectorAll('.fb-btn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('again').classList.remove('show');
+  document.getElementById('freetext').value = '';
+  updateCharcount();
+  document.getElementById('inputBlock').style.display = '';
+  document.getElementById('sendBtn').disabled = false;
+  setStatus('');
+  currentEntryId = null;
+  document.getElementById('freetext').focus();
+  postHeight();
+}
+
+function bind(){
+  document.getElementById('sendBtn').addEventListener('click', send);
+  document.getElementById('freetext').addEventListener('input', updateCharcount);
+  document.getElementById('againBtn').addEventListener('click', resetForNext);
+  document.querySelectorAll('.fb-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> sendFeedback(btn.getAttribute('data-fb'), btn));
+  });
+}
+
+function init(){
+  bind();
+  const P = getParams();
+  if (!P.email){
+    setStatus('Nutzer nicht erkannt – bitte die Seite über das Menü erneut öffnen.', 'err');
+    document.getElementById('sendBtn').disabled = true;
+  }
+  updateCharcount();
+  postHeight();
+}
+
+let lastH = 0;
+function postHeight(){
+  const h = Math.max(
+    document.body.scrollHeight, document.documentElement.scrollHeight,
+    document.body.offsetHeight, document.documentElement.offsetHeight
+  );
+  if (h === lastH) return;
+  lastH = h;
+  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+}
+window.addEventListener("load",init);
+window.addEventListener("resize",postHeight);
+if (window.ResizeObserver){ new ResizeObserver(postHeight).observe(document.body); }
+if (document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
