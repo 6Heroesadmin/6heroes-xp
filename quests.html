@@ -124,6 +124,27 @@
   .quest.done-card .quest-title { color: var(--text-soft); }
   .opt-note { font-size: 12px; color: var(--text-muted); margin-bottom: 7px; font-style: italic; }
 
+  /* Teaser-Sperre: erster Quest gratis, restliche gesperrt.
+     Inhalt bleibt lesbar angedeutet (leichter Blur + Abdunklung),
+     klares Sperr-Signal via Schloss-Overlay + goldene Freischalt-Zeile. */
+  .quest.locked-card { position: relative; cursor: pointer; overflow: hidden; }
+  .quest.locked-card .quest-top { filter: blur(2.5px); opacity: 0.55; pointer-events: none; user-select: none; }
+  .quest.locked-card:hover { border-color: rgba(242,183,5,0.45); }
+  .status.locked {
+    color: var(--gold); background: rgba(242,183,5,0.12); border-color: rgba(242,183,5,0.40);
+  }
+  .lock-overlay {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    gap: 10px; flex-direction: column; text-align: center;
+    background: linear-gradient(180deg, rgba(32,41,58,0.10), rgba(32,41,58,0.30));
+  }
+  .lock-overlay .lock-badge { font-size: 20px; line-height: 1; }
+  .lock-overlay .lock-cta {
+    font-size: 13px; font-weight: 700; color: var(--navy, #20293A);
+    background: var(--gold); padding: 7px 16px; border-radius: 999px;
+  }
+  @media (prefers-reduced-motion: reduce) { .quest.locked-card .quest-top { filter: none; } }
+
   .brach-intro {
     font-size: 14px; color: var(--text-soft); line-height: 1.6;
     margin: 8px 0 18px; max-width: 52ch;
@@ -276,6 +297,10 @@ const SUBMIT_NETLIFY_URL = 'https://regal-mooncake-d3a250.netlify.app/submit.htm
 /* Make-Webhook "Quest Session Create": legt einen ExerciseEntries-Record an
    (email + questId) und gibt { entryId } zurück. */
 const QUEST_SESSION_WEBHOOK_URL = 'https://hook.eu1.make.com/6bcm1uggdn0jmvf3wxsvs1k76eiw4j0m';
+/* Zentrale Preisseite für den Teaser: erster Quest gratis, restliche Quests
+   für unbezahlte User gesperrt (Blur + Schloss). Klick auf gesperrte Quest
+   -> hierhin. Deep-Link auf Jahres-Paket-Anker wie bei den Profil-Kacheln. */
+const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
 /* WICHTIG: Kein automatischer Dummy-Fallback mehr (siehe Bug-3-Nachwirkung V91→V92).
    DUMMY_QUESTS bleibt nur als Referenz-/Testdaten-Konstante im Code, wird aber
    nirgends mehr automatisch als aktiver Zustand gesetzt. Ohne erfolgreichen
@@ -371,6 +396,9 @@ function getParams(){
     stress1:(p.get('stress1')||'').toLowerCase(), stress2:(p.get('stress2')||'').toLowerCase(),
     level: parseInt(p.get('level'))||1,
     email:(p.get('email')||'').trim(),
+    // Fehlender Param = Vollansicht (paid), sicherer Default wie im Dashboard.
+    // Nur explizit paid=0 schaltet den Teaser (erster Quest gratis) ein.
+    paid: p.get('paid') !== '0',
   };
 }
 function withDemoFallback(P){
@@ -426,25 +454,47 @@ function focusBar(focus){
   return `<div class="focus-bar"><span class="focus-label">Dein Fokus</span>${chips}${edit}</div>`;
 }
 
+/* Teaser-Zustand: erster Quest gratis, restliche für unbezahlte User gesperrt.
+   TEASER.paid wird in render() aus den Params gesetzt, TEASER.freeUsed zählt,
+   ob der eine Gratis-Quest schon vergeben wurde. Nur echte, nicht-optionale,
+   heute nicht erledigte Karten verbrauchen den Gratis-Slot. */
+const TEASER = { paid:true, freeUsed:false };
+
 function questCard(q, doneSet, optional, focus){
   const done = doneSet.has(q.QuestID);
   const streak = STREAK[q.QuestID]||0;
   // Erledigte Karten bleiben sichtbar (Habit-Modell), sind aber nicht mehr klickbar:
   // kein erneutes Session-Create für eine heute schon abgeschlossene Quest.
   const inert = optional || done;
-  const cls = 'quest'+(optional?' optional':'')+(done?' done-card':'');
-  const status = optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt ✓':'Offen'}</span>`;
+
+  // Sperr-Entscheidung: nur im Teaser (!paid), nur für echte offene Quests.
+  // Die erste solche Quest bleibt frei; jede weitere wird gesperrt.
+  let locked = false;
+  if (!TEASER.paid && !optional && !done){
+    if (!TEASER.freeUsed){ TEASER.freeUsed = true; }
+    else { locked = true; }
+  }
+
+  const cls = 'quest'+(optional?' optional':'')+(done?' done-card':'')+(locked?' locked-card':'');
+  const status = locked
+    ? `<span class="status locked">Gesperrt</span>`
+    : (optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt ✓':'Offen'}</span>`);
   const optNote = optional ? `<div class="opt-note">Optional – nur, wenn du heute Kapazität hast.</div>` : '';
   const streakHtml = streak>0 ? `<span class="streak">${streak} Tage in Folge</span>` : '';
-  const match = (!optional && !done && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
-  const tab = inert ? '' : 'tabindex="0" role="button"';
-  return `<div class="${cls}" ${tab} data-quest="${q.QuestID}">
+  const match = (!optional && !done && !locked && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
+  // Gesperrte Karten sind per Tastatur/Klick erreichbar (führen zur Preisseite).
+  const tab = (inert && !locked) ? '' : 'tabindex="0" role="button"';
+  const lockOverlay = locked
+    ? `<div class="lock-overlay"><span class="lock-badge">🔒</span>
+         <span class="lock-cta">Jetzt freischalten</span></div>`
+    : '';
+  return `<div class="${cls}" ${tab} data-quest="${q.QuestID}"${locked?' data-locked="1"':''}>
     <div class="quest-top"><div class="quest-main">${optNote}
       <div class="quest-title">${esc(q.Title)}</div>
       <div class="quest-instr">${esc(q.Instruction)}</div>
       <div class="quest-foot"><span>${q.DurationMin} Min</span>
         <span class="xp">+${q.XP_Base} XP</span>${streakHtml}${match}</div>
-    </div>${status}</div></div>`;
+    </div>${status}</div>${lockOverlay}</div>`;
 }
 
 function typeGroup(g, doneSet, focus){
@@ -472,6 +522,9 @@ function block(roleKey, heroKey, netto, groups, doneSet, focus){
 let doneSet;
 function render(){
   const P = withDemoFallback(getParams());
+  // Teaser-Zustand pro Render zurücksetzen: erster Quest gratis, Rest gesperrt.
+  TEASER.paid = P.paid;
+  TEASER.freeUsed = false;
   doneSet = new Set(DONE_TODAY);
   document.getElementById('focusbar').innerHTML = focusBar(P.focus);
   const el = document.getElementById('content');
@@ -543,7 +596,18 @@ function hideLoadingOverlay(){
 }
 
 function bindEvents(){
-  document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card)').forEach(card=>{
+  // Gesperrte Teaser-Karten: Klick/Enter führt zur Preisseite, kein Session-Create.
+  document.querySelectorAll('.quest.locked-card[data-locked="1"]').forEach(card=>{
+    const goUpgrade=(ev)=>{
+      if (ev){ ev.preventDefault(); ev.stopPropagation(); }
+      try { window.parent.location.href = UPGRADE_URL; }
+      catch(_) { window.location.href = UPGRADE_URL; }
+    };
+    card.addEventListener('click',goUpgrade);
+    card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();goUpgrade(e);}});
+  });
+
+  document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card):not(.locked-card)').forEach(card=>{
     const open=async (ev)=>{
       /* Verhindert, dass ein evtl. vorhandener Noloco-Handler parallel
          navigiert — der landet sonst auf einem Record, den Noloco noch
