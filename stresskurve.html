@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meine Stresskurve</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#20293A; --gold:#F2B705; --text:#F4F1E9; --text-soft:#C8CEDA;
+    --text-muted:#8E96A8; --border:rgba(255,255,255,0.08); --card:rgba(255,255,255,0.035);
+    --warn:#E8B93B; --hot:#D2607A;
+    --commander:#4C8DF5; --guardian:#1F9D62; --innovator:#F2B705;
+    --strategist:#8E96A8; --sage:#C0266A; --explorer:#F0672A;
+  }
+  html,body{background:var(--navy);font-family:'Inter',system-ui,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:720px;margin:0 auto;padding:24px 16px 36px}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+  h1{font-family:'DM Serif Display',serif;font-size:29px;font-weight:400;letter-spacing:-.01em;margin-bottom:10px}
+  .intro{font-size:14.5px;color:var(--text-soft);margin-bottom:20px;max-width:60ch}
+
+  .chart-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 16px 12px}
+  svg{width:100%;height:auto;display:block}
+  .cap{font-family:'Inter',sans-serif}
+
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:16px}
+  .lg{display:flex;gap:10px;align-items:flex-start;flex:1;min-width:240px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+  .lg-badge{flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.76rem}
+  .lg.s1 .lg-badge{background:var(--warn);color:#1a1a1a}
+  .lg.s2 .lg-badge{background:var(--hot);color:#fff}
+  .lg-hero{font-weight:700;font-size:.98rem}
+  .lg-phase{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;font-weight:600;color:var(--text-muted);margin:1px 0 4px}
+  .lg-desc{font-size:.86rem;color:var(--text-soft);line-height:1.5}
+
+  .note{margin-top:18px;font-size:13px;color:var(--text-muted);text-align:center;line-height:1.55}
+  .same{margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:13.5px;color:var(--text-soft);display:none}
+  .same.show{display:block}
+  .same b{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Unter Druck über Zeit</div>
+  <h1>Deine Stresskurve</h1>
+  <p class="intro">Wenn der Druck steigt, verändert sich dein Verhalten in zwei Stufen. Zwei Schwellen — die erste ist dein Frühwarnsignal, noch bevor du die Kontrolle verlierst.</p>
+
+  <div class="chart-card">
+    <svg viewBox="0 0 700 380" role="img" aria-label="Stress-Zeit-Diagramm">
+      <defs>
+        <!-- horizontaler Farbverlauf identisch zur Linie -->
+        <linearGradient id="areaColor" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#3FB27F" stop-opacity="0.34"/>
+          <stop offset="45%" stop-color="#E8B93B" stop-opacity="0.34"/>
+          <stop offset="100%" stop-color="#D2607A" stop-opacity="0.40"/>
+        </linearGradient>
+        <!-- vertikale Transparenz-Maske: oben kräftig, unten transparent -->
+        <linearGradient id="fadeMask" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff" stop-opacity="0.55"/>
+          <stop offset="55%" stop-color="#fff" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="#fff" stop-opacity="0.03"/>
+        </linearGradient>
+        <mask id="areaFade">
+          <rect x="0" y="0" width="700" height="380" fill="url(#fadeMask)"/>
+        </mask>
+        <linearGradient id="lineGrad" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stop-color="#3FB27F"/>
+          <stop offset="45%" stop-color="#E8B93B"/>
+          <stop offset="100%" stop-color="#D2607A"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Achsen -->
+      <line x1="60" y1="50" x2="60" y2="320" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+      <line x1="60" y1="320" x2="660" y2="320" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+      <!-- Achsen-Pfeile -->
+      <path d="M60 50 l-4 8 l8 0 z" fill="rgba(255,255,255,0.3)"/>
+      <path d="M660 320 l-8 -4 l0 8 z" fill="rgba(255,255,255,0.3)"/>
+      <!-- Achsen-Labels -->
+      <text x="52" y="46" text-anchor="end" class="cap" font-size="11" fill="#8E96A8" transform="rotate(0)">Stress</text>
+      <text x="655" y="340" text-anchor="end" class="cap" font-size="11" fill="#8E96A8">Zeit / anhaltender Druck &rarr;</text>
+      <text x="64" y="332" class="cap" font-size="10.5" fill="#8E96A8">ruhig</text>
+
+      <!-- Schwellen-Linien -->
+      <!-- S1-Schwelle y=206.6 -->
+      <line x1="60" y1="211.6" x2="660" y2="211.6" stroke="#E8B93B" stroke-width="1.3" stroke-dasharray="5 5" opacity="0.5"/>
+      <text x="66" y="202.7" text-anchor="start" class="cap" font-size="10" font-weight="700" fill="#E8B93B" letter-spacing="0.04em">SCHWELLE 1 · ALARM</text>
+      <!-- S2-Schwelle y=109.4 -->
+      <line x1="60" y1="118.8" x2="660" y2="118.8" stroke="#D2607A" stroke-width="1.3" stroke-dasharray="5 5" opacity="0.6"/>
+      <text x="66" y="107.3" text-anchor="start" class="cap" font-size="10" font-weight="700" fill="#D2607A" letter-spacing="0.04em">SCHWELLE 2 · ÜBERSTEUERUNG</text>
+
+      <!-- Fläche + Kurve -->
+      <path d="M 60.0 320.0 L 70.0 319.9 L 80.0 319.5 L 90.0 319.0 L 100.0 318.3 L 110.0 317.4 L 120.0 316.4 L 130.0 315.2 L 140.0 313.8 L 150.0 312.3 L 160.0 310.6 L 170.0 308.8 L 180.0 306.9 L 190.0 304.8 L 200.0 302.5 L 210.0 300.1 L 220.0 297.6 L 230.0 295.0 L 240.0 292.2 L 250.0 289.3 L 260.0 286.2 L 270.0 283.0 L 280.0 279.7 L 290.0 276.2 L 300.0 272.6 L 310.0 268.9 L 320.0 265.1 L 330.0 261.1 L 340.0 257.0 L 350.0 252.8 L 360.0 248.4 L 370.0 244.0 L 380.0 239.4 L 390.0 234.6 L 400.0 229.8 L 410.0 224.8 L 420.0 219.7 L 430.0 214.5 L 440.0 209.2 L 450.0 203.7 L 460.0 198.1 L 470.0 192.4 L 480.0 186.6 L 490.0 180.7 L 500.0 174.6 L 510.0 168.5 L 520.0 162.2 L 530.0 155.8 L 540.0 149.3 L 550.0 142.6 L 560.0 135.9 L 570.0 129.0 L 580.0 122.0 L 590.0 114.9 L 600.0 107.7 L 610.0 100.4 L 620.0 92.9 L 630.0 85.4 L 640.0 77.7 L 650.0 69.9 L 660.0 62.0 L 660.0 320.0 L 60.0 320.0 Z" fill="url(#areaColor)"/>
+      <path d="M 60.0 320.0 L 70.0 319.9 L 80.0 319.5 L 90.0 319.0 L 100.0 318.3 L 110.0 317.4 L 120.0 316.4 L 130.0 315.2 L 140.0 313.8 L 150.0 312.3 L 160.0 310.6 L 170.0 308.8 L 180.0 306.9 L 190.0 304.8 L 200.0 302.5 L 210.0 300.1 L 220.0 297.6 L 230.0 295.0 L 240.0 292.2 L 250.0 289.3 L 260.0 286.2 L 270.0 283.0 L 280.0 279.7 L 290.0 276.2 L 300.0 272.6 L 310.0 268.9 L 320.0 265.1 L 330.0 261.1 L 340.0 257.0 L 350.0 252.8 L 360.0 248.4 L 370.0 244.0 L 380.0 239.4 L 390.0 234.6 L 400.0 229.8 L 410.0 224.8 L 420.0 219.7 L 430.0 214.5 L 440.0 209.2 L 450.0 203.7 L 460.0 198.1 L 470.0 192.4 L 480.0 186.6 L 490.0 180.7 L 500.0 174.6 L 510.0 168.5 L 520.0 162.2 L 530.0 155.8 L 540.0 149.3 L 550.0 142.6 L 560.0 135.9 L 570.0 129.0 L 580.0 122.0 L 590.0 114.9 L 600.0 107.7 L 610.0 100.4 L 620.0 92.9 L 630.0 85.4 L 640.0 77.7 L 650.0 69.9 L 660.0 62.0" fill="none" stroke="url(#lineGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- Kreuzungspunkte -->
+      <!-- vertikale Hilfslinien -->
+      <line x1="435.4" y1="211.6" x2="435.4" y2="320" stroke="#E8B93B" stroke-width="1" stroke-dasharray="3 4" opacity="0.35"/>
+      <line x1="584.6" y1="118.8" x2="584.6" y2="320" stroke="#D2607A" stroke-width="1" stroke-dasharray="3 4" opacity="0.4"/>
+
+      <!-- S1-Punkt -->
+      <circle cx="435.4" cy="211.6" r="12" fill="#E8B93B"/>
+      <circle cx="435.4" cy="211.6" r="12" fill="none" stroke="#20293A" stroke-width="3"/>
+      <text x="435.4" y="215.6" text-anchor="middle" class="cap" font-size="11" font-weight="700" fill="#1a1a1a">S1</text>
+      <!-- S1 Hero-Label über Punkt -->
+      <text id="s1label" x="435.4" y="193.6" text-anchor="middle" class="cap" font-size="13" font-weight="700" fill="#E8B93B">Commander</text>
+
+      <!-- S2-Punkt -->
+      <circle cx="584.6" cy="118.8" r="12" fill="#D2607A"/>
+      <circle cx="584.6" cy="118.8" r="12" fill="none" stroke="#20293A" stroke-width="3"/>
+      <text x="584.6" y="122.8" text-anchor="middle" class="cap" font-size="11" font-weight="700" fill="#fff">S2</text>
+      <text id="s2label" x="584.6" y="100.8" text-anchor="middle" class="cap" font-size="13" font-weight="700" fill="#D2607A">Commander</text>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="lg s1">
+      <div class="lg-badge">S1</div>
+      <div>
+        <div class="lg-hero" id="l1hero" style="color:var(--warn)">Commander</div>
+        <div class="lg-phase" id="l1phase">Alarmphase · Dominanz</div>
+        <div class="lg-desc" id="l1desc"></div>
+      </div>
+    </div>
+    <div class="lg s2">
+      <div class="lg-badge">S2</div>
+      <div>
+        <div class="lg-hero" id="l2hero" style="color:var(--hot)">Commander</div>
+        <div class="lg-phase" id="l2phase">Übersteuerung · Zwangskontrolle</div>
+        <div class="lg-desc" id="l2desc"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="same" id="same"></div>
+  <p class="note" id="note">Schwelle 1 ist dein Frühwarnsignal — wer sie bei sich erkennt, kann gegensteuern, bevor Schwelle 2 die Kontrolle übernimmt.</p>
+</div>
+
+<script>
+const HERO_STRESS = {"Commander": {"s1": {"phase": "Alarmphase · Dominanz", "desc": "Übernimmt sofort das Kommando. Der Ton wird schärfer, das Tempo zieht an — Entscheidungen fallen schneller, ohne andere einzubeziehen.", "cost": "Das Umfeld fühlt sich übergangen, Widerstand entsteht."}, "s2": {"phase": "Übersteuerung · Zwangskontrolle", "desc": "Kippt in Aggression, Sarkasmus oder eiskalte Distanz. Duldet keinen Widerspruch mehr, macht andere klein — es geht nur noch um den Sieg.", "cost": "Vertrauen bricht, Teams gehen in die innere Kündigung."}}, "Guardian": {"s1": {"phase": "Alarmphase · Absicherung", "desc": "Wird zum Bedenkenträger. Prüft jedes Detail doppelt, pocht auf Regeln, verlangsamt durch ständige Risiko-Fragen.", "cost": "Projekte stocken, Tempo-Typen fühlen sich ausgebremst."}, "s2": {"phase": "Übersteuerung · Blockade", "desc": "Verfällt in Starre und Misstrauen. Blockiert jede Veränderung, sieht überall Bedrohungen — wirkt zwanghaft.", "cost": "Stillstand und Isolation, niemand kann mehr mitplanen."}}, "Innovator": {"s1": {"phase": "Alarmphase · Ablenkung", "desc": "Sprüht plötzlich vor Ideen, um dem Druck zu entgehen. Wechselt ständig das Thema, weicht konkreten Fragen aus.", "cost": "Verwirrung und fehlende Verbindlichkeit frustrieren das Umfeld."}, "s2": {"phase": "Übersteuerung · Sabotage", "desc": "Wird zynisch gegenüber Regeln, sabotiert Strukturen aktiv, stiftet Chaos oder verschwindet in Fantasiewelten.", "cost": "Glaubwürdigkeit und Beziehungen verbrennen."}}, "Strategist": {"s1": {"phase": "Alarmphase · Zerdenken", "desc": "Zieht sich mental zurück, wälzt Daten. Stellt immer mehr klärende Fragen, baut komplexe Modelle, bevor er handelt.", "cost": "Wirkt unnahbar, die Resonanz mit dem Team fehlt."}, "s2": {"phase": "Übersteuerung · Paralyse", "desc": "Verliert sich in totaler Abstraktion, trifft keine Entscheidung mehr, wirkt kühl und fast roboterhaft.", "cost": "Entscheidungsstau, das Team fühlt sich im Stich gelassen."}}, "Sage": {"s1": {"phase": "Alarmphase · Rückzug", "desc": "Wird auffallend still, hinterfragt den Sinn („Warum machen wir das?“) und zieht sich aus der Gruppe zurück.", "cost": "Wirkt wie ein passiver Bremser oder Spaßverderber."}, "s2": {"phase": "Übersteuerung · Resignation", "desc": "Verfällt in Fatalismus („Es hat eh keinen Zweck“), bricht Kontakt ab, ist emotional nicht mehr erreichbar.", "cost": "Burnout-Gefahr, völliger Verlust der Anbindung."}}, "Explorer": {"s1": {"phase": "Alarmphase · Hektik", "desc": "Wird unruhig, fängt viele Dinge gleichzeitig an, redet schneller, sucht Abkürzungen aus dem Stressfeld.", "cost": "Flüchtigkeitsfehler, wirkt getrieben und unzuverlässig."}, "s2": {"phase": "Übersteuerung · Flucht", "desc": "Bricht Projekte oder Beziehungen abrupt ab, rennt weg — physisch oder durch Verleugnung der Verantwortung.", "cost": "Hinterlässt Trümmer, langfristiger Schaden an der Reputation."}}};
+const COLORS = {Commander:'#4C8DF5',Guardian:'#1F9D62',Innovator:'#F2B705',Strategist:'#8E96A8',Sage:'#C0266A',Explorer:'#F0672A'};
+
+function getParams(){
+  const p=new URLSearchParams(location.search);
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
+  return {s1:cap((p.get('stress1')||'Commander').trim()), s2:cap((p.get('stress2')||'Commander').trim())};
+}
+function apply(){
+  const P=getParams();
+  const d1=(HERO_STRESS[P.s1]||{}).s1||{}, d2=(HERO_STRESS[P.s2]||{}).s2||{};
+  // SVG labels
+  document.getElementById('s1label').textContent=P.s1;
+  document.getElementById('s2label').textContent=P.s2;
+  // legend
+  document.getElementById('l1hero').textContent=P.s1;
+  document.getElementById('l2hero').textContent=P.s2;
+  document.getElementById('l1phase').textContent=d1.phase||'';
+  document.getElementById('l2phase').textContent=d2.phase||'';
+  document.getElementById('l1desc').textContent=d1.desc||'';
+  document.getElementById('l2desc').textContent=d2.desc||'';
+  if(P.s1===P.s2){
+    const s=document.getElementById('same'); s.classList.add('show');
+    s.innerHTML='Bei dir ist beides der <b>'+P.s1+'</b> — dieselbe Kraft steigt mit dem Druck von der Alarmphase in die Übersteuerung. Ein Muster, zwei Härtegrade.';
+  }
+  postHeight();
+}
+let lastH=0;
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);if(h===lastH)return;lastH=h;parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
+window.addEventListener('load',apply);
+window.addEventListener('resize',postHeight);
+if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+[50,200,500,1000].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
