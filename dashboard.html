@@ -207,7 +207,8 @@
     font-family: 'DM Serif Display', serif; font-size: 25px; font-weight: 400;
     line-height: 1.2; letter-spacing: -0.01em;
   }
-  .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; }
+  .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; align-items: stretch; }
+  .paths > .path { height: 100%; }
   @media (max-width: 560px){ .paths { grid-template-columns: 1fr; } }
 
   .path {
@@ -273,8 +274,7 @@
     --path-border-hover: rgba(76,141,245,0.6); --path-glow: rgba(76,141,245,0.13);
   }
 
-  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 520px){ .tiles { grid-template-columns: 1fr; } }
+  .tiles { display: grid; grid-template-columns: 1fr; gap: 14px; }
 
   .tile {
     display: block; text-decoration: none; color: inherit;
@@ -306,9 +306,12 @@
     opacity: 0.08; pointer-events: none;
   }
 
-  /* Profil-Kachel: 2x2 Helden-Quad */
+  /* Profil-Kachel: Helden-Modi — 4 nebeneinander auf breit, 2x2 auf mobil */
   .hero-quad {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;
+  }
+  @media (max-width: 560px){
+    .hero-quad { grid-template-columns: 1fr 1fr; gap: 8px; }
   }
   .hero-slot {
     display: flex; align-items: center; gap: 8px;
