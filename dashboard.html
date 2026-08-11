@@ -192,6 +192,87 @@
     font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--text-muted); margin: 0 2px 12px;
   }
+
+  /* ---------- Zwei gleichwertige Wege (Konzept B) ---------- */
+  .choose-intro { margin-bottom: 16px; }
+  .choose-intro .kicker {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .choose-intro .kicker .pulse {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 0 0 rgba(242,183,5,0.6); animation: pulse 2.4s infinite;
+  }
+  .choose-intro h2 {
+    font-family: 'DM Serif Display', serif; font-size: 25px; font-weight: 400;
+    line-height: 1.2; letter-spacing: -0.01em;
+  }
+  .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 26px; }
+  @media (max-width: 560px){ .paths { grid-template-columns: 1fr; } }
+
+  .path {
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+    border-radius: 20px; padding: 22px 22px 20px;
+    text-decoration: none; color: inherit;
+    background:
+      radial-gradient(120% 140% at 100% 0%, var(--path-glow, rgba(242,183,5,0.12)), transparent 60%),
+      var(--card);
+    border: 1px solid var(--path-border, rgba(242,183,5,0.26));
+    transition: transform .12s, border-color .12s, background .12s;
+    min-height: 190px;
+  }
+  .path:hover { transform: translateY(-2px); border-color: var(--path-border-hover, rgba(242,183,5,0.5)); }
+  .path .path-eyebrow {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--path-accent, var(--gold)); margin-bottom: 10px;
+  }
+  .path h3 {
+    font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400;
+    line-height: 1.22; letter-spacing: -0.01em; margin-bottom: 8px;
+  }
+  .path .path-lead {
+    font-size: 13.5px; color: var(--text-soft); line-height: 1.55; margin-bottom: 16px; flex: 1;
+  }
+  .path .path-go {
+    display: inline-flex; align-items: center; gap: 8px; align-self: flex-start;
+    margin-top: auto;
+    font-weight: 700; font-size: 14px; padding: 10px 18px; border-radius: 999px;
+    background: var(--path-accent, var(--gold)); color: #1a1a1a; border: none;
+  }
+  .path .path-go.ghost {
+    background: transparent; color: var(--path-accent, var(--gold));
+    border: 1px solid var(--path-border, rgba(242,183,5,0.4));
+  }
+  .path .path-go .arrow { font-size: 15px; }
+  .path .path-meta {
+    display: flex; align-items: center; gap: 7px; margin-bottom: 14px;
+    font-size: 12.5px; color: var(--text-muted);
+  }
+  /* Coach-Weg im Fortschritt: kompakter Mini-Balken */
+  .path-progress { margin: 4px 0 16px; }
+  .path-progress .pp-track {
+    height: 7px; border-radius: 999px; background: rgba(0,0,0,0.22); overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04); margin-bottom: 8px;
+  }
+  .path-progress .pp-fill {
+    height: 100%; border-radius: 999px; width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-soft));
+    transition: width .9s cubic-bezier(.2,.8,.2,1);
+  }
+  .path-progress .pp-cap { font-size: 12.5px; color: var(--text-soft); }
+  .path-progress .pp-cap b { color: var(--gold); }
+  .path .quest-dots { display: flex; gap: 5px; margin: 2px 0 14px; }
+
+  /* Akzent-Varianten */
+  .path.coach {
+    --path-accent: var(--gold); --path-border: rgba(242,183,5,0.28);
+    --path-border-hover: rgba(242,183,5,0.55); --path-glow: rgba(242,183,5,0.13);
+  }
+  .path.quests {
+    --path-accent: var(--commander, #4C8DF5); --path-border: rgba(76,141,245,0.30);
+    --path-border-hover: rgba(76,141,245,0.6); --path-glow: rgba(76,141,245,0.13);
+  }
+
   .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 520px){ .tiles { grid-template-columns: 1fr; } }
 
@@ -363,11 +444,15 @@
 
   <div style="height:22px"></div>
 
-  <!-- ================= COACH — der Held der Seite ================= -->
-  <div class="coach" id="coach"><!-- per JS gefüllt (zwei Zustände) --></div>
+  <!-- ================= ZWEI GLEICHWERTIGE WEGE (Konzept B) ================= -->
+  <div class="choose-intro">
+    <div class="kicker"><span class="pulse"></span>Dein Dashboard</div>
+    <h2>Was brauchst du gerade?</h2>
+  </div>
+  <div class="paths" id="paths"><!-- per JS gefüllt: Coach-Weg + Quests-Weg --></div>
 
   <!-- ================= Schaufenster ================= -->
-  <div class="shelf-label">Deine Bereiche</div>
+  <div class="shelf-label">Dein Profil</div>
   <div class="tiles">
 
     <a class="tile" id="tileProfile" style="--tile-accent: var(--commander)" href="#" target="_top">
@@ -376,15 +461,6 @@
       <h3>Deine vier Modi</h3>
       <div class="hero-quad" id="heroQuad"><!-- per JS --></div>
       <span class="tile-open">Profil öffnen <span class="arrow">&rarr;</span></span>
-    </a>
-
-    <a class="tile" id="tileQuests" style="--tile-accent: var(--gold)" href="#" target="_top">
-      <span class="glow"></span>
-      <div class="tile-eyebrow">Meine Quests</div>
-      <h3>Was heute dran ist</h3>
-      <div class="quest-dots" id="questDots"></div>
-      <div class="tile-value"><span class="accent" id="questOpen">3 Quests</span> warten auf dich</div>
-      <span class="tile-open">Quests öffnen <span class="arrow">&rarr;</span></span>
     </a>
 
   </div>
@@ -468,7 +544,7 @@ const ROUTES = {
   quests:   'https://app.6heroes.de/meine-quests',
   profile:  'https://app.6heroes.de/profiles',
   entries:  'https://app.6heroes.de/iframe-2',   // Quest-Einträge
-  advice:   'https://app.6heroes.de/meine-quests', // freie Beratung (noch kein eigener Slug)
+  advice:   'https://app.6heroes.de/iframe-3', // freie Beratung (Coach-Seite)
   badges:   'https://app.6heroes.de/iframe',      // Meine Badges
 };
 
@@ -672,6 +748,7 @@ function applyHeroes(src){
 
 // PAID ist jetzt veränderbar (Webhook kann ihn setzen); Default aus URL.
 let PAID_STATE = PAID;
+let COACH_UNLOCKED = false;
 
 // Erst URL-Parameter anwenden (Fallback, greift sofort ohne Fetch).
 applyHeroes({
@@ -849,66 +926,78 @@ function pct(){
   return Math.round((p1*0.4 + p2*0.4 + p3*0.2) * 100);
 }
 
-function renderCoachTeaser(){
-  const coach = document.getElementById('coach');
-  coach.classList.add('teaser');
-  coach.innerHTML = `
-    <div class="kicker"><span class="pulse"></span>Dein Coach</div>
-    <h2>Ab hier begleitet dich 6Heroes jeden Tag</h2>
-    <p class="lead">Dein persönlicher Coach denkt echte Situationen mit dir durch — Gespräche, Entscheidungen, alles, was vor dir liegt. Auf Basis deiner sechs Helden. Sobald du freigeschaltet hast, öffnet sich hier dein freies Textfeld.</p>
-    <a class="coach-cta" href="${UPGRADE_URL}" target="_top">Jetzt freischalten <span class="arrow">&rarr;</span></a>
-    <div class="coach-sub-actions">
-      <a class="textlink" target="_top" href="${ROUTES.quests}">Ersten Quest kostenlos starten</a>
-    </div>`;
+/* Baustein: Quests-Weg (immer voll aktiv, gleichwertig) */
+function questPathHtml(){
+  let dots = '';
+  for (let i=0;i<D.totalQuestSlots;i++){
+    dots += `<span class="qd ${i<D.openQuests?'open':''}"></span>`;
+  }
+  const n = D.openQuests + (D.openQuests===1?' Quest':' Quests');
+  return `
+    <a class="path quests" target="_top" href="${ROUTES.quests}">
+      <div class="path-eyebrow">Geführte Weiterentwicklung · meine Potenziale</div>
+      <h3>Woran willst du wachsen?</h3>
+      <p class="path-lead">Geführte Übungen, abgestimmt auf deine sechs Helden. Schritt für Schritt, dranbleiben zählt.</p>
+      <div class="quest-dots">${dots}</div>
+      <span class="path-go ghost">${n} öffnen <span class="arrow">&rarr;</span></span>
+    </a>`;
 }
 
-function renderCoachLocked(){
-  const crits = [
-    { got: D.withFeedback, need: D.minWithFeedback, label: 'Einträge mit Rückmeldung' },
-    { got: D.clear,        need: D.minClear,        label: 'davon klar bewertet',
-      hint: '„Hat geholfen" oder „Ging daneben"' },
-    { got: D.types,        need: D.minTypes,        label: 'verschiedene Quest-Arten' },
-  ];
-  const critRows = crits.map(c => {
-    const met = c.got >= c.need;
-    const w = Math.min(c.got / c.need * 100, 100);
-    return `
-      <div class="crit ${met?'met':''}">
-        <div class="crit-line">
-          <span class="crit-label">${c.label}${c.hint?` <span class="crit-hint">${c.hint}</span>`:''}</span>
-          <span class="crit-count">${c.got} / ${c.need}${met?' <span class="crit-check">&checkmark;</span>':''}</span>
-        </div>
-        <div class="crit-bar"><div class="crit-fill" style="width:${w}%"></div></div>
-      </div>`;
-  }).join('');
+/* Coach-Weg — Teaser (unpaid) */
+function coachPathTeaser(){
+  return `
+    <a class="path coach" href="${UPGRADE_URL}" target="_top">
+      <div class="path-eyebrow">Konkrete Fragestellung · aktuelle Situation</div>
+      <h3>Ab hier begleitet dich 6Heroes jeden Tag</h3>
+      <p class="path-lead">Dein Coach denkt echte Situationen mit dir durch — auf Basis deiner sechs Helden. Sobald du freigeschaltet hast, öffnet sich dein freies Textfeld.</p>
+      <span class="path-go">Jetzt freischalten <span class="arrow">&rarr;</span></span>
+    </a>`;
+}
 
-  document.getElementById('coach').innerHTML = `
-    <div class="kicker"><span class="pulse"></span>Dein Coach</div>
-    <h2>6Heroes lernt dich gerade kennen</h2>
-    <p class="lead">Dein Coach öffnet dann ein freies Textfeld, in das du eigene Situationen und Fragen einträgst — „So bereite ich mein nächstes Gespräch vor." Sobald er dich gut genug versteht, geht es los. Daran arbeitet ihr gerade:</p>
-    <div class="crit-list">${critRows}</div>
-    <div class="coach-sub-actions">
-      <a class="textlink" target="_top" href="${ROUTES.entries}">Coaching-Einträge bewerten</a>
-      <a class="textlink" target="_top" href="${ROUTES.quests}">Neue Quest starten</a>
-    </div>`;
+/* Coach-Weg — im Fortschritt (paid, noch nicht offen): zeigt EINEN Fortschrittsbalken */
+function coachPathLocked(){
+  const p = pct();
+  return `
+    <a class="path coach" target="_top" href="${ROUTES.entries}">
+      <div class="path-eyebrow">Konkrete Fragestellung · aktuelle Situation</div>
+      <h3>6Heroes lernt dich gerade kennen</h3>
+      <p class="path-lead">Dein Coach öffnet ein freies Textfeld für eigene Situationen und Fragen. Sobald er dich gut genug versteht, geht es los.</p>
+      <div class="path-progress">
+        <div class="pp-track"><div class="pp-fill" data-w="${p}%"></div></div>
+        <div class="pp-cap">Noch etwas dranbleiben — <b>${p}%</b> bis dein Coach öffnet</div>
+      </div>
+      <span class="path-go ghost">Einträge bewerten <span class="arrow">&rarr;</span></span>
+    </a>`;
+}
+
+/* Coach-Weg — offen (voll freigeschaltet) */
+function coachPathUnlocked(){
+  return `
+    <a class="path coach" target="_top" href="${ROUTES.advice}">
+      <div class="path-eyebrow">Konkrete Fragestellung · aktuelle Situation</div>
+      <h3>Was steht bei dir an?</h3>
+      <p class="path-lead">Trag eine Situation ein, die vor dir liegt — ein Gespräch, eine Entscheidung, etwas Unklares. Ganz in deinen Worten. Ihr denkt sie gemeinsam durch.</p>
+      <span class="path-go">Situation einbringen <span class="arrow">&rarr;</span></span>
+    </a>`;
+}
+
+function renderPaths(){
+  let coachHtml;
+  if (!PAID_STATE)            coachHtml = coachPathTeaser();
+  else if (!COACH_UNLOCKED)   coachHtml = coachPathLocked();
+  else                        coachHtml = coachPathUnlocked();
+
+  // Coach zuerst (konkrete Situation), dann Quests — beide gleich groß
+  document.getElementById('paths').innerHTML = coachHtml + questPathHtml();
+
+  // Fortschrittsbalken animieren, falls vorhanden
   requestAnimationFrame(()=>{
-    document.querySelectorAll('#coach .crit-fill').forEach(f => {
-      const target = f.style.width; f.style.width = '0%';
+    document.querySelectorAll('#paths .pp-fill').forEach(f => {
+      const target = f.getAttribute('data-w');
+      f.style.width = '0%';
       requestAnimationFrame(()=>{ f.style.width = target; });
     });
   });
-}
-
-function renderCoachUnlocked(){
-  document.getElementById('coach').innerHTML = `
-    <div class="kicker"><span class="pulse"></span>Dein Coach — offen</div>
-    <h2>Was steht bei dir an?</h2>
-    <p class="lead">Dein Coach kennt dich jetzt gut genug. Trag unten eine Situation ein, die vor dir liegt — ein Gespräch, eine Entscheidung, etwas Unklares. Ins freie Textfeld, ganz in deinen Worten. Ihr denkt sie gemeinsam durch.</p>
-    <a class="coach-cta" target="_top" href="${ROUTES.advice}">Situation einbringen <span class="arrow">&rarr;</span></a>
-    <div class="coach-sub-actions">
-      <a class="textlink" target="_top" href="${ROUTES.entries}">Frühere Gespräche ansehen</a>
-      <a class="textlink" target="_top" href="${ROUTES.quests}">Neue Quest starten</a>
-    </div>`;
 }
 
 function renderWeek(){
@@ -951,20 +1040,9 @@ function renderTiles(){
     </div>`;
   }).join('');
 
-  // Quests-Punkte
-  const dots = document.getElementById('questDots');
-  let h = '';
-  for (let i=0;i<D.totalQuestSlots;i++){
-    h += `<span class="qd ${i<D.openQuests?'open':''}"></span>`;
-  }
-  dots.innerHTML = h;
-  document.getElementById('questOpen').textContent =
-    D.openQuests + (D.openQuests===1?' Quest':' Quests');
-
-  // Profil-Kachel im Teaser -> Preisseite (gesperrte Helden liegen dort/auf Profil);
-  // Quests-Kachel bleibt immer offen (erster Quest ist gratis).
+  // Profil-Kachel im Teaser -> Preisseite (gesperrte Helden liegen dort/auf Profil).
+  // Quests-Punkte werden jetzt im Quests-WEG (renderPaths) gerendert, nicht mehr hier.
   document.getElementById('tileProfile').setAttribute('href', PAID_STATE ? ROUTES.profile : UPGRADE_URL);
-  document.getElementById('tileQuests').setAttribute('href', ROUTES.quests);
 }
 
 function escapeHtml(s){ return (s||'').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -1016,8 +1094,8 @@ async function init(){
 
   if (!PAID_STATE){
     // ---- TEASER-ZUSTAND (Nicht-Zahler) ----
-    renderCoachTeaser();
-    renderTiles();               // Basisheld scharf, Rest geblurrt; Quests offen
+    renderPaths();               // Coach-Weg (freischalten) + Quests-Weg, gleichwertig
+    renderTiles();               // Profil: Basisheld scharf, Rest geblurrt
     applyStandTeaser();          // "Dein Stand": leere Struktur, geblurrt, Erklärzeile
     applyBadgesTeaser();         // Badges-Zeile: leere Coins, geblurrt, Erklärzeile
     document.getElementById('footerNote').textContent = '';
@@ -1026,7 +1104,8 @@ async function init(){
   }
 
   // ---- VOLLANSICHT (Zahler) ----
-  if (STATE === 'unlocked') renderCoachUnlocked(); else renderCoachLocked();
+  COACH_UNLOCKED = (STATE === 'unlocked');
+  renderPaths();
   renderTiles();
 
   // Dein Stand
