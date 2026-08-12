@@ -48,8 +48,21 @@
   .batteries { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
 
   /* Kompakt-Modus fürs Profil: Batterien mittiger + klickbar */
+  html.compact .batteries,
   body.compact .batteries,
-  .energie-link .batteries { max-width: 460px; }
+  .energie-link .batteries {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  /* Die Zeilen selbst als Block zentrieren: Label bleibt rechtsbündig am
+     Batterie-Rand, aber der ganze Label+Batterie+Text-Block sitzt mittig. */
+  html.compact .batt-row,
+  body.compact .batt-row {
+    grid-template-columns: 118px auto;
+    justify-content: center;
+    gap: 14px;
+  }
   .energie-link { display: block; text-decoration: none; color: inherit; }
   .energie-more {
     display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -200,6 +213,23 @@
 <script>
 /* Frame-Kennung fuer den Profil-Wrapper (Cross-Origin-sichere Hoehen-Zuordnung) */
 var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
+
+/* === COMPACT-MODUS: robust erkennen ===
+   Greift bei ?compact=1, ?compact=true, ?compact (leer) ODER automatisch,
+   sobald die Seite im Profil-Wrapper laeuft (in einem iframe UND mit frame-Param).
+   Letzteres ist der Sicherheitsanker, falls der Wrapper compact nicht durchreicht. */
+var __CQ__ = (new URLSearchParams(location.search)).get('compact');
+// Explizit voll erzwingen: compact=0 gewinnt immer (Detailseite/Landingpage).
+var __FORCE_FULL__ = (__CQ__ === '0' || __CQ__ === 'false');
+var __EXPLICIT_COMPACT__ = (__CQ__ === '1' || __CQ__ === 'true' || __CQ__ === '');
+// Auto-Compact: sobald die Seite den frame-Param traegt, laeuft sie im Profil-Wrapper.
+// Das ist der zuverlaessige Anker, falls der Wrapper compact nicht durchreicht.
+var __IN_WRAPPER__ = (__FRAME_ID__ !== '');
+var IS_COMPACT = !__FORCE_FULL__ && (__EXPLICIT_COMPACT__ || __IN_WRAPPER__);
+if (IS_COMPACT) { document.documentElement.classList.add('compact'); }
+window.addEventListener('DOMContentLoaded', function(){
+  if (IS_COMPACT) document.body.classList.add('compact');
+});
 
 const HEROES = [
   { key: 'innovator',  label: 'Innovator',  color: '#F2B705', nettoKey: 'ni' },
@@ -417,15 +447,18 @@ function render() {
 
   /* --- Kompakt-Modus fürs Profil: nur oberer Teil (Titel+Netto+Batterien),
      ganze Sektion klickbar → Energie-Detailseite (Platzhalter). Aktiviert über ?compact=1. --- */
-  const isCompact = (new URLSearchParams(location.search)).get('compact') === '1';
-  if (isCompact) {
+  if (IS_COMPACT) {
     html += `<div class="energie-more">Mehr über deine Energiebilanz <span class="arrow">&rarr;</span></div>`;
     el.innerHTML = html;
     // Inhalt in einen Link wickeln → _top, Platzhalter-Ziel bis Energie-Detailseite steht
     const BASE = 'https://regal-mooncake-d3a250.netlify.app';
+    // Detail-URL sauber bauen: Vollansicht erzwingen (compact=0), frame-Param raus
+    const dp = new URLSearchParams(location.search);
+    dp.set('compact', '0');
+    dp.delete('frame');
     const link = document.createElement('a');
     link.className = 'energie-link';
-    link.href = BASE + '/energie-detail.html' + location.search.replace('compact=1','compact=0');
+    link.href = BASE + '/energie-detail.html?' + dp.toString();
     link.target = '_top';
     while (el.firstChild) link.appendChild(el.firstChild);
     el.appendChild(link);
