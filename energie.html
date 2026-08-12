@@ -439,7 +439,7 @@ function render() {
   if (isPaid) {
     html += `<div class="net-summary" id="net-summary">${getNetSummary(nettos, basis, zweit, stress1, stress2)}</div>`;
   } else {
-    html += `<div class="net-summary" id="net-summary">Das hier ist erst dein <strong>Basisheld</strong>. Deine vollständige Energiebilanz zeigt, welche deiner sechs Modi dich tragen – und welche dich heimlich auslaugen.</div>`;
+    html += `<div class="net-summary" id="net-summary">Deine Energiebilanz zeigt, welche deiner sechs Modi dich tragen – und welche dich heimlich auslaugen. <strong>Schalte frei, um sie zu sehen.</strong></div>`;
   }
 
   /* --- Batterie-Liste ---
@@ -470,7 +470,7 @@ function render() {
   if (showTeaser) {
     html += `<div class="batt-lock-overlay">
       <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-      <div class="lock-title">Sieh, welche deiner sechs Modi dich tragen – und welche dich Kraft kosten.</div>
+      <div class="lock-title">Deine vollständige Energiebilanz</div>
       <a class="lock-cta" href="${UPGRADE_URL}" target="_top">Jetzt freischalten</a>
     </div>`;
   }
