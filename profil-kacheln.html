@@ -88,6 +88,23 @@
     line-height: 1.5;
   }
 
+  .tile-leitfrage {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  .tile-leitfrage span { color: var(--text-main); font-style: italic; }
+
+  .tile-more {
+    display: flex; align-items: center; gap: 7px;
+    margin-top: 18px;
+    font-size: 13px; font-weight: 600;
+    color: var(--accent);
+  }
+  .tile-more .arrow { transition: transform .12s; }
+  .tile:hover .tile-more .arrow { transform: translateX(3px); }
+
   /* Locked state – Inhalt bleibt SCHARF lesbar (Name + Teaser sichtbar),
      nur ein dezentes Sperr-Signal statt Blur. */
   .tile.locked {
@@ -167,6 +184,16 @@
       'Stressheld 2': 'Deine zweite Stressreaktion – dein Eskalationsmuster, wenn der Druck am größten ist.',
     };
 
+    // Verdichtete Kurzbeschreibung pro Held: ein Kernsatz + Leitfrage.
+    const HERO_SHORT = {
+      'Innovator':  { line: 'Du erzeugst Neues und denkst in Möglichkeiten.',            q: 'Was wäre noch möglich?' },
+      'Explorer':   { line: 'Du testest die Realität und lernst durch Erfahrung.',        q: 'Was passiert, wenn wir es ausprobieren?' },
+      'Commander':  { line: 'Du lieferst Ergebnisse und bringst Entscheidungen ins Tun.', q: 'Was tun wir jetzt?' },
+      'Guardian':   { line: 'Du hältst Stabilität, Sicherheit und Verlässlichkeit.',      q: 'Was ist richtig, sicher, verlässlich?' },
+      'Sage':       { line: 'Du schaffst Verstehen, Klarheit und Orientierung.',          q: 'Was stimmt – und was bedeutet das?' },
+      'Strategist': { line: 'Du machst Komplexität beherrschbar – mit Plan und Trade-offs.', q: 'Was ist die beste Option unter aktuellen Bedingungen?' },
+    };
+
     function normalizeHero(name) {
       if (!name) return '';
       return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -176,13 +203,14 @@
     function tileHTML({ role, hero, url, locked }) {
       const heroNorm = normalizeHero(hero);
       const color = HERO_COLORS[heroNorm] || '#64748B';
-      const desc = ROLE_DESCRIPTIONS[role] || '';
+      const short = HERO_SHORT[heroNorm] || { line: ROLE_DESCRIPTIONS[role] || '', q: '' };
       const href = locked ? UPGRADE_URL : url;
-      const lockBadge = locked
-        ? `<div class="lock-badge">${LOCK_ICON}</div>`
-        : '';
-      const unlockBar = locked
+      const lockBadge = locked ? `<div class="lock-badge">${LOCK_ICON}</div>` : '';
+      const cta = locked
         ? `<div class="unlock-bar">${LOCK_ICON}<span>Jetzt freischalten</span></div>`
+        : `<div class="tile-more">Mehr über deinen ${role} <span class="arrow">&rarr;</span></div>`;
+      const leitfrage = short.q
+        ? `<div class="tile-leitfrage">Leitfrage: <span>„${short.q}"</span></div>`
         : '';
 
       return `
@@ -192,9 +220,10 @@
           <div class="tile-body">
             <div class="tile-role">${role}</div>
             <div class="tile-hero" style="color:${color}">${heroNorm}</div>
-            <div class="tile-desc">${desc}</div>
+            <div class="tile-desc">${short.line}</div>
+            ${leitfrage}
+            ${cta}
           </div>
-          ${unlockBar}
         </a>
       `;
     }
@@ -217,10 +246,8 @@
       }
 
       const tiles = [
-        { role: 'Basisheld',    hero: base,   url: `${BASE_SITE}/paid_${lc(base)}.html`,              locked: false },
-        { role: 'Zweitheld',    hero: second, url: `${BASE_SITE}/kombi_${lc(base)}_${lc(second)}.html`, locked: !isPaid },
-        { role: 'Stressheld 1', hero: s1,     url: `${BASE_SITE}/stress_${lc(s1)}_s1.html`,            locked: !isPaid },
-        { role: 'Stressheld 2', hero: s2,     url: `${BASE_SITE}/stress_${lc(s2)}_s2.html`,            locked: !isPaid },
+        { role: 'Basisheld', hero: base,   url: `${BASE_SITE}/basisheld.html?hero=${lc(base)}`,   locked: false },
+        { role: 'Zweitheld', hero: second, url: `${BASE_SITE}/basisheld.html?hero=${lc(second)}`, locked: !isPaid },
       ];
 
       content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}</div>`;
