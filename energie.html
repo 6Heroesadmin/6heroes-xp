@@ -66,6 +66,40 @@
     gap: 14px;
   }
   .energie-link { display: block; text-decoration: none; color: inherit; }
+
+  /* === UNPAID-TEASER: Batterie-Block geblurrt + Freischalten-Overlay ===
+     Optik konsistent mit quests.html / Rad-Teaser. */
+  .batt-lock-wrap { position: relative; }
+  .batt-lock-wrap.locked .batteries {
+    filter: blur(4px);
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+  }
+  .batt-lock-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    text-align: center; padding: 16px;
+  }
+  .batt-lock-overlay .lock-ico {
+    width: 34px; height: 34px; color: var(--accent);
+  }
+  .batt-lock-overlay .lock-title {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    max-width: 260px; line-height: 1.4;
+  }
+  .batt-lock-overlay .lock-cta {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--accent); color: #20293A;
+    font-weight: 700; font-size: 14px;
+    padding: 10px 22px; border-radius: 999px;
+    text-decoration: none; transition: transform .12s;
+  }
+  .batt-lock-overlay .lock-cta:hover { transform: translateY(-2px); }
+  @media (prefers-reduced-motion: reduce) {
+    .batt-lock-wrap.locked .batteries { filter: none; opacity: 0.4; }
+  }
   .energie-more {
     display: flex; align-items: center; justify-content: center; gap: 8px;
     margin-top: 26px; font-size: 14px; font-weight: 700; color: var(--accent);
@@ -242,7 +276,7 @@ const HEROES = [
   { key: 'explorer',   label: 'Explorer',   color: '#F0672A', nettoKey: 'ne' },
 ];
 
-const UPGRADE_URL = 'https://6heroes.de/preise'; // TODO: zentrale Preisseite mit 3 Paketen
+const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing'; // konsistent mit quests.html / profil-kacheln.html
 
 /* Drei Zustände statt fünf Farbkategorien.
    Die dahinterliegende 5-stufige Intelligenz bleibt im Netto-Wert erhalten,
@@ -408,31 +442,17 @@ function render() {
     html += `<div class="net-summary" id="net-summary">Das hier ist erst dein <strong>Basisheld</strong>. Deine vollständige Energiebilanz zeigt, welche deiner sechs Modi dich tragen – und welche dich heimlich auslaugen.</div>`;
   }
 
-  /* --- Batterie-Liste --- */
+  /* --- Batterie-Liste ---
+     Alle sechs Modi werden immer voll gerendert. Im Unpaid-Teaser wird der
+     GANZE Block geblurrt + mit Freischalten-Overlay versehen (nicht mehr
+     einzeln gesperrt) — Cliffhanger-Text darüber bleibt scharf. */
+  const showTeaser = !isPaid;
+  html += `<div class="batt-lock-wrap${showTeaser ? ' locked' : ''}">`;
   html += `<div class="batteries">`;
   HEROES.forEach((h, i) => {
     const netto = nettos[h.key];
-    const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
-    const isBasis = h.label.toLowerCase() === basisLc;
-
-    // Im Teaser: nur der Basisheld ist sichtbar, der Rest gesperrt.
-    const locked = !isPaid && !isBasis;
-
-    if (locked) {
-      html += `<div class="batt-row locked" style="--hero-color:${h.color}; transition-delay:${i*0.06}s">
-        <div class="batt-label">
-          <div class="batt-hero">${h.label}</div>
-          ${badge ? `<span class="batt-role">${badge}</span>` : ''}
-        </div>
-        <div class="batt-right">
-          <div class="battery state-neutral"><div class="battery-fill" data-fill="50"></div></div>
-          <div class="batt-state">${LOCK_ICON}Gesperrt</div>
-        </div>
-      </div>`;
-      return;
-    }
-
     if (netto === null) return;
+    const badge = getRoleBadge(h.label, basis, zweit, stress1, stress2);
     const st = getState(netto);
     html += `<div class="batt-row state-${st.key}" style="--hero-color:${h.color}; transition-delay:${i*0.06}s">
       <div class="batt-label">
@@ -445,11 +465,28 @@ function render() {
       </div>
     </div>`;
   });
-  html += `</div>`;
+  html += `</div>`; // .batteries
+
+  if (showTeaser) {
+    html += `<div class="batt-lock-overlay">
+      <svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      <div class="lock-title">Sieh, welche deiner sechs Modi dich tragen – und welche dich Kraft kosten.</div>
+      <a class="lock-cta" href="${UPGRADE_URL}" target="_top">Jetzt freischalten</a>
+    </div>`;
+  }
+  html += `</div>`; // .batt-lock-wrap
 
   /* --- Kompakt-Modus fürs Profil: nur oberer Teil (Titel+Netto+Batterien),
      ganze Sektion klickbar → Energie-Detailseite (Platzhalter). Aktiviert über ?compact=1. --- */
   if (IS_COMPACT) {
+    // Unpaid: KEIN "Mehr →" und KEIN Detail-Link — der Batterie-Block ist
+    // geblurrt, das Overlay-CTA führt zur Preisseite. Sonst würde ein Klick
+    // die Paywall umgehen.
+    if (!isPaid) {
+      el.innerHTML = html;
+      animate(false);
+      return;
+    }
     html += `<div class="energie-more">Mehr über deine Energiebilanz <span class="arrow">&rarr;</span></div>`;
     el.innerHTML = html;
     // Inhalt in einen Link wickeln → _top, Platzhalter-Ziel bis Energie-Detailseite steht

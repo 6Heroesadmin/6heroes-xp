@@ -58,6 +58,39 @@
   body.compact .stress-more { display: flex; }
   .stress-more .arrow { transition: transform .12s; }
   body.compact a.stress-link:hover .stress-more .arrow { transform: translateX(3px); }
+
+  /* === UNPAID-TEASER: Chart geblurrt + Freischalten-Overlay ===
+     Optik konsistent mit quests.html / Energie-Teaser. Text (eyebrow, h1,
+     intro) bleibt scharf, nur die Grafik wird verdeckt. */
+  .chart-lock-wrap { position: relative; }
+  .chart-lock-wrap.locked .chart-card {
+    filter: blur(5px);
+    opacity: 0.55;
+    pointer-events: none;
+    user-select: none;
+  }
+  .chart-lock-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 14px;
+    text-align: center; padding: 20px;
+  }
+  .chart-lock-overlay .lock-ico { width: 38px; height: 38px; color: var(--gold); }
+  .chart-lock-overlay .lock-title {
+    font-size: 16px; font-weight: 700; color: var(--text);
+    max-width: 340px; line-height: 1.45;
+  }
+  .chart-lock-overlay .lock-cta {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--gold); color: #20293A;
+    font-weight: 700; font-size: 14.5px;
+    padding: 11px 24px; border-radius: 999px;
+    text-decoration: none; transition: transform .12s;
+  }
+  .chart-lock-overlay .lock-cta:hover { transform: translateY(-2px); }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-lock-wrap.locked .chart-card { filter: none; opacity: 0.4; }
+  }
 </style>
 </head>
 <body>
@@ -66,6 +99,7 @@
   <h1>Deine Stresskurve</h1>
   <p class="intro">Wenn der Druck steigt, verändert sich dein Verhalten in zwei Stufen. Zwei Schwellen — die erste ist dein Frühwarnsignal, noch bevor du die Kontrolle verlierst.</p>
 
+  <div class="chart-lock-wrap" id="chartLockWrap">
   <div class="chart-card">
     <svg viewBox="0 0 700 380" role="img" aria-label="Stress-Zeit-Diagramm">
       <defs>
@@ -133,6 +167,8 @@
       <text id="s2label" x="584.6" y="100.8" text-anchor="middle" class="cap" font-size="13" font-weight="700" fill="#D2607A">Commander</text>
     </svg>
   </div>
+  <div class="chart-lock-overlay" id="chartLockOverlay" style="display:none"></div>
+  </div>
 
   <div class="stress-more">Mehr über deine Stressdynamik <span class="arrow">&rarr;</span></div>
 
@@ -166,10 +202,16 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
 const HERO_STRESS = {"Commander": {"s1": {"phase": "Alarmphase · Dominanz", "desc": "Übernimmt sofort das Kommando. Der Ton wird schärfer, das Tempo zieht an — Entscheidungen fallen schneller, ohne andere einzubeziehen.", "cost": "Das Umfeld fühlt sich übergangen, Widerstand entsteht."}, "s2": {"phase": "Übersteuerung · Zwangskontrolle", "desc": "Kippt in Aggression, Sarkasmus oder eiskalte Distanz. Duldet keinen Widerspruch mehr, macht andere klein — es geht nur noch um den Sieg.", "cost": "Vertrauen bricht, Teams gehen in die innere Kündigung."}}, "Guardian": {"s1": {"phase": "Alarmphase · Absicherung", "desc": "Wird zum Bedenkenträger. Prüft jedes Detail doppelt, pocht auf Regeln, verlangsamt durch ständige Risiko-Fragen.", "cost": "Projekte stocken, Tempo-Typen fühlen sich ausgebremst."}, "s2": {"phase": "Übersteuerung · Blockade", "desc": "Verfällt in Starre und Misstrauen. Blockiert jede Veränderung, sieht überall Bedrohungen — wirkt zwanghaft.", "cost": "Stillstand und Isolation, niemand kann mehr mitplanen."}}, "Innovator": {"s1": {"phase": "Alarmphase · Ablenkung", "desc": "Sprüht plötzlich vor Ideen, um dem Druck zu entgehen. Wechselt ständig das Thema, weicht konkreten Fragen aus.", "cost": "Verwirrung und fehlende Verbindlichkeit frustrieren das Umfeld."}, "s2": {"phase": "Übersteuerung · Sabotage", "desc": "Wird zynisch gegenüber Regeln, sabotiert Strukturen aktiv, stiftet Chaos oder verschwindet in Fantasiewelten.", "cost": "Glaubwürdigkeit und Beziehungen verbrennen."}}, "Strategist": {"s1": {"phase": "Alarmphase · Zerdenken", "desc": "Zieht sich mental zurück, wälzt Daten. Stellt immer mehr klärende Fragen, baut komplexe Modelle, bevor er handelt.", "cost": "Wirkt unnahbar, die Resonanz mit dem Team fehlt."}, "s2": {"phase": "Übersteuerung · Paralyse", "desc": "Verliert sich in totaler Abstraktion, trifft keine Entscheidung mehr, wirkt kühl und fast roboterhaft.", "cost": "Entscheidungsstau, das Team fühlt sich im Stich gelassen."}}, "Sage": {"s1": {"phase": "Alarmphase · Rückzug", "desc": "Wird auffallend still, hinterfragt den Sinn („Warum machen wir das?“) und zieht sich aus der Gruppe zurück.", "cost": "Wirkt wie ein passiver Bremser oder Spaßverderber."}, "s2": {"phase": "Übersteuerung · Resignation", "desc": "Verfällt in Fatalismus („Es hat eh keinen Zweck“), bricht Kontakt ab, ist emotional nicht mehr erreichbar.", "cost": "Burnout-Gefahr, völliger Verlust der Anbindung."}}, "Explorer": {"s1": {"phase": "Alarmphase · Hektik", "desc": "Wird unruhig, fängt viele Dinge gleichzeitig an, redet schneller, sucht Abkürzungen aus dem Stressfeld.", "cost": "Flüchtigkeitsfehler, wirkt getrieben und unzuverlässig."}, "s2": {"phase": "Übersteuerung · Flucht", "desc": "Bricht Projekte oder Beziehungen abrupt ab, rennt weg — physisch oder durch Verleugnung der Verantwortung.", "cost": "Hinterlässt Trümmer, langfristiger Schaden an der Reputation."}}};
 const COLORS = {Commander:'#4C8DF5',Guardian:'#1F9D62',Innovator:'#F2B705',Strategist:'#8E96A8',Sage:'#C0266A',Explorer:'#F0672A'};
 
+const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
+
 function getParams(){
   const p=new URLSearchParams(location.search);
   const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
-  return {s1:cap((p.get('stress1')||'Commander').trim()), s2:cap((p.get('stress2')||'Commander').trim())};
+  return {
+    s1:cap((p.get('stress1')||'Commander').trim()),
+    s2:cap((p.get('stress2')||'Commander').trim()),
+    isPaid: p.get('paid') !== '0',   // Default = paid (fehlender Param sicher), nur paid=0 = Teaser
+  };
 }
 function apply(){
   const P=getParams();
@@ -188,8 +230,24 @@ function apply(){
     const s=document.getElementById('same'); s.classList.add('show');
     s.innerHTML='Bei dir ist beides der <b>'+P.s1+'</b> — dieselbe Kraft steigt mit dem Druck von der Alarmphase in die Übersteuerung. Ein Muster, zwei Härtegrade.';
   }
+  applyTeaser(P);
   applyCompact(P);
   postHeight();
+}
+
+/* Unpaid-Teaser: Text (eyebrow/h1/intro) bleibt scharf, die Grafik wird
+   geblurrt und mit einem Freischalten-Overlay verdeckt. */
+function applyTeaser(P){
+  if (P.isPaid) return;
+  const wrap = document.getElementById('chartLockWrap');
+  const ov = document.getElementById('chartLockOverlay');
+  if (!wrap || !ov) return;
+  wrap.classList.add('locked');
+  ov.style.display = 'flex';
+  ov.innerHTML =
+    '<svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+    + '<div class="lock-title">Sieh, wie sich dein Verhalten unter Druck in zwei Stufen verändert.</div>'
+    + '<a class="lock-cta" href="' + UPGRADE_URL + '" target="_top">Jetzt freischalten</a>';
 }
 
 /* Kompakt-Modus fürs Profil: nur Grafik, klickbar → Stress-Detailseite.
@@ -197,8 +255,20 @@ function apply(){
    ausführliche Stress-Detailseite gebaut ist. */
 function applyCompact(P){
   const p = new URLSearchParams(location.search);
-  if (p.get('compact') !== '1') return;
+  const cq = p.get('compact');
+  const forceFull = (cq === '0' || cq === 'false');
+  const explicit = (cq === '1' || cq === 'true' || cq === '');
+  // frame-Param = die Seite laeuft im Profil-Wrapper. Zuverlaessiger Anker,
+  // falls der Wrapper compact nicht durchreicht (analog energie.html).
+  const inWrapper = (__FRAME_ID__ !== '');
+  const isCompact = !forceFull && (explicit || inWrapper);
+  if (!isCompact) return;
   document.body.classList.add('compact');
+
+  // Unpaid: NICHT in Detail-Link wrappen — die Grafik ist geblurrt, das
+  // Overlay-CTA fuehrt zur Preisseite. Sonst umginge ein Klick die Paywall.
+  if (!P.isPaid) return;
+
   // TODO: sobald die Stress-Detailseite existiert, hier die echte URL setzen.
   const BASE = 'https://regal-mooncake-d3a250.netlify.app';
   const target = BASE + '/stress-detail.html'
@@ -210,7 +280,7 @@ function applyCompact(P){
   link.className = 'stress-link';
   link.href = target;
   link.target = '_top';
-  // Alle sichtbaren Kinder (eyebrow, h1, intro, chart-card, stress-more) in den Link verschieben
+  // Alle sichtbaren Kinder (eyebrow, h1, intro, chart-lock-wrap, stress-more) in den Link verschieben
   while (wrap.firstChild) link.appendChild(wrap.firstChild);
   wrap.appendChild(link);
 }
