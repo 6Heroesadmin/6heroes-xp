@@ -7,153 +7,97 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root { --navy: #20293A; }
-  html, body {
-    background: var(--navy);
-    -webkit-font-smoothing: antialiased;
-  }
-  /* Nahtloser Stapel: kein Rand, kein Abstand, ein Hintergrund */
-  .profil-stack {
-    display: block;
-    background: var(--navy);
-    max-width: 760px;
-    margin: 0 auto;
-  }
-  .sec {
-    display: block;
-    width: 100%;
-    border: none;
-    overflow: hidden;
-  }
-  .sec iframe {
-    display: block;
-    width: 100%;
-    border: 0;
-    background: var(--navy);
-  }
+  html, body { background: var(--navy); -webkit-font-smoothing: antialiased; }
+  .profil-stack { display: block; background: var(--navy); max-width: 760px; margin: 0 auto; }
+  .sec { display: block; width: 100%; font-size: 0; }
+  .sec iframe { display: block; width: 100%; border: 0; background: var(--navy); vertical-align: top; }
 </style>
 </head>
 <body>
 <div class="profil-stack" id="stack">
-  <!-- Vier randlose iframes, per JS befüllt und in der Höhe gesteuert -->
-  <div class="sec"><iframe id="f-rad"    scrolling="no" title="Heldenkompass"></iframe></div>
-  <div class="sec"><iframe id="f-tiles"  scrolling="no" title="Deine Helden"></iframe></div>
-  <div class="sec"><iframe id="f-stress" scrolling="no" title="Deine Stressdynamik"></iframe></div>
+  <div class="sec"><iframe id="f-rad"     scrolling="no" title="Heldenkompass"></iframe></div>
+  <div class="sec"><iframe id="f-tiles"   scrolling="no" title="Deine Helden"></iframe></div>
+  <div class="sec"><iframe id="f-stress"  scrolling="no" title="Deine Stressdynamik"></iframe></div>
   <div class="sec"><iframe id="f-energie" scrolling="no" title="Deine Energiebilanz"></iframe></div>
 </div>
-
 <script>
-/* 6HEROES profil.html — Wrapper
-   Bindet die vier bestehenden Profil-Seiten als nahtlose iframes ein.
-   Nimmt EINEN gemeinsamen Parameter-Satz aus der URL und reicht ihn
-   an jede innere Seite weiter — mit Übersetzung der Parameter-Namen.
-
-   Erwartete URL-Parameter (aus dem Airtable-Formelfeld Profil_URL):
-     basis, zweit, stress1, stress2   — Held-Namen (Klartext)
-     paid                             — "1" oder "0"
-     ni, nc, nst, ns, ng, ne          — Netto-Energiewerte (für Energiebilanz)
-     si, sc, ss, sa, sg, se           — Score-Werte (optional, fürs Rad)
-*/
-
 const BASE = 'https://regal-mooncake-d3a250.netlify.app';
+const FIXED_HEIGHT = { rad: 500 };
 
 function getParams(){
   const p = new URLSearchParams(location.search);
   const g = k => (p.get(k) || '').trim();
   return {
-    basis:   g('basis'),
-    zweit:   g('zweit'),
-    stress1: g('stress1'),
-    stress2: g('stress2'),
-    paid:    g('paid') === '1' ? '1' : '0',
-    // Netto-Energiewerte (weitergeben wie sie kommen)
-    ni: g('ni'), nc: g('nc'), nst: g('nst'), ns: g('ns'), ng: g('ng'), ne: g('ne'),
-    // Score-Werte fürs Rad (optional)
-    si: g('si'), sc: g('sc'), ss: g('ss'), sa: g('sa'), sg: g('sg'), se: g('se'),
+    basis:g('basis'), zweit:g('zweit'), stress1:g('stress1'), stress2:g('stress2'),
+    paid: g('paid') === '1' ? '1' : '0',
+    ni:g('ni'), nc:g('nc'), nst:g('nst'), ns:g('ns'), ng:g('ng'), ne:g('ne'),
+    si:g('si'), sc:g('sc'), ss:g('ss'), sa:g('sa'), sg:g('sg'), se:g('se'),
   };
 }
-
-/* Baut Query-Strings pro innerer Seite — jede nutzt andere Parameter-Namen. */
 function buildUrls(P){
-  const enc = encodeURIComponent;
-
-  // RAD nutzt: b, z, s1, s2, mode, si/sc/ss/sa/sg/se
-  const radParams = new URLSearchParams();
-  if (P.basis)   radParams.set('b',  P.basis);
-  if (P.zweit)   radParams.set('z',  P.zweit);
-  if (P.stress1) radParams.set('s1', P.stress1);
-  if (P.stress2) radParams.set('s2', P.stress2);
-  radParams.set('mode', P.paid === '1' ? 'full' : 'free');
-  ['si','sc','ss','sa','sg','se'].forEach(k => { if (P[k]) radParams.set(k, P[k]); });
-
-  // KACHELN nutzt: basis, zweit, stress1, stress2, paid
-  const tileParams = new URLSearchParams();
-  ['basis','zweit','stress1','stress2'].forEach(k => { if (P[k]) tileParams.set(k, P[k]); });
-  tileParams.set('paid', P.paid);
-
-  // STRESSKURVE nutzt: stress1, stress2
-  const stressParams = new URLSearchParams();
-  if (P.stress1) stressParams.set('stress1', P.stress1);
-  if (P.stress2) stressParams.set('stress2', P.stress2);
-
-  // ENERGIE nutzt: basis, zweit, stress1, stress2, paid, ni/nc/nst/ns/ng/ne
-  const enerParams = new URLSearchParams();
-  ['basis','zweit','stress1','stress2'].forEach(k => { if (P[k]) enerParams.set(k, P[k]); });
-  enerParams.set('paid', P.paid);
-  ['ni','nc','nst','ns','ng','ne'].forEach(k => { if (P[k]) enerParams.set(k, P[k]); });
-
+  const rad = new URLSearchParams();
+  if(P.basis)rad.set('b',P.basis); if(P.zweit)rad.set('z',P.zweit);
+  if(P.stress1)rad.set('s1',P.stress1); if(P.stress2)rad.set('s2',P.stress2);
+  rad.set('mode', P.paid==='1'?'full':'free');
+  ['si','sc','ss','sa','sg','se'].forEach(k=>{ if(P[k])rad.set(k,P[k]); });
+  const tiles = new URLSearchParams();
+  ['basis','zweit','stress1','stress2'].forEach(k=>{ if(P[k])tiles.set(k,P[k]); });
+  tiles.set('paid',P.paid);
+  const stress = new URLSearchParams();
+  if(P.stress1)stress.set('stress1',P.stress1);
+  if(P.stress2)stress.set('stress2',P.stress2);
+  const ener = new URLSearchParams();
+  ['basis','zweit','stress1','stress2'].forEach(k=>{ if(P[k])ener.set(k,P[k]); });
+  ener.set('paid',P.paid);
+  ['ni','nc','nst','ns','ng','ne'].forEach(k=>{ if(P[k])ener.set(k,P[k]); });
   return {
-    rad:     `${BASE}/6heroes_rad-4_light-3.html?${radParams.toString()}`,
-    tiles:   `${BASE}/profil-kacheln.html?${tileParams.toString()}`,
-    stress:  `${BASE}/stresskurve.html?${stressParams.toString()}`,
-    energie: `${BASE}/energie.html?${enerParams.toString()}`,
+    rad:     BASE+'/6heroes_rad-4_light-3.html?'+rad.toString(),
+    tiles:   BASE+'/profil-kacheln.html?'+tiles.toString(),
+    stress:  BASE+'/stresskurve.html?'+stress.toString(),
+    energie: BASE+'/energie.html?'+ener.toString(),
   };
 }
-
-/* Höhen-Steuerung: jede innere Seite sendet {type:"6heroes:setHeight",height}.
-   Wir ordnen die Nachricht dem richtigen iframe über event.source zu. */
 const frames = {};
+const heights = {};
+function setHeight(key, h){
+  if (FIXED_HEIGHT[key] != null) h = FIXED_HEIGHT[key];
+  h = Math.round(h);
+  if (heights[key] != null && Math.abs(heights[key] - h) <= 1) return;
+  heights[key] = h;
+  if (frames[key]) frames[key].style.height = h + 'px';
+  scheduleOwnHeight();
+}
 function initFrames(){
   const P = getParams();
   const urls = buildUrls(P);
-  frames.rad     = document.getElementById('f-rad');
-  frames.tiles   = document.getElementById('f-tiles');
-  frames.stress  = document.getElementById('f-stress');
-  frames.energie = document.getElementById('f-energie');
-  frames.rad.src     = urls.rad;
-  frames.tiles.src   = urls.tiles;
-  frames.stress.src  = urls.stress;
-  frames.energie.src = urls.energie;
-  // Sinnvolle Startanhöhe, bis die echte Höhe gemeldet wird
-  Object.values(frames).forEach(f => { f.style.height = '420px'; });
+  ['rad','tiles','stress','energie'].forEach(key=>{
+    frames[key] = document.getElementById('f-'+key);
+    const start = FIXED_HEIGHT[key] || 460;
+    frames[key].style.height = start + 'px';
+    heights[key] = start;
+    frames[key].src = urls[key];
+  });
 }
-
-window.addEventListener('message', (e) => {
+window.addEventListener('message', function(e){
   const d = e.data;
   if (!d || d.type !== '6heroes:setHeight' || !d.height) return;
-  // Finde das iframe, dessen contentWindow die Nachricht gesendet hat
   for (const key in frames){
-    if (frames[key] && frames[key].contentWindow === e.source){
-      frames[key].style.height = (d.height + 2) + 'px';
-      postOwnHeight();
-      break;
-    }
+    if (frames[key] && frames[key].contentWindow === e.source){ setHeight(key, d.height); return; }
   }
 });
-
-/* Der Wrapper selbst sitzt in Noloco in einem iframe — also meldet er
-   seine Gesamthöhe ebenfalls nach oben. */
-let lastOwn = 0;
-function postOwnHeight(){
-  const h = document.getElementById('stack').getBoundingClientRect().height;
-  const rounded = Math.ceil(h) + 4;
-  if (rounded === lastOwn) return;
-  lastOwn = rounded;
-  parent.postMessage({ type: '6heroes:setHeight', height: rounded }, '*');
+let ownTimer = null, lastOwn = 0;
+function scheduleOwnHeight(){
+  if (ownTimer) return;
+  ownTimer = setTimeout(function(){
+    ownTimer = null;
+    let total = 0;
+    for (const k in heights) total += (heights[k] || 0);
+    if (Math.abs(total - lastOwn) <= 1) return;
+    lastOwn = total;
+    parent.postMessage({ type:'6heroes:setHeight', height: total + 4 }, '*');
+  }, 120);
 }
-
-window.addEventListener('load', () => { initFrames(); postOwnHeight(); });
-window.addEventListener('resize', postOwnHeight);
-[300, 800, 1500, 2500].forEach(t => setTimeout(postOwnHeight, t));
+window.addEventListener('load', initFrames);
 </script>
 </body>
 </html>
