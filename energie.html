@@ -55,12 +55,14 @@
     margin-left: auto;
     margin-right: auto;
   }
-  /* Die Zeilen selbst als Block zentrieren: Label bleibt rechtsbündig am
-     Batterie-Rand, aber der ganze Label+Batterie+Text-Block sitzt mittig. */
+  /* Feste Spalten: Label rechtsbündig | Batterie+Text.
+     Dadurch stehen alle Batterien exakt untereinander (eine gemeinsame
+     linke Kante), egal wie lang der Heldenname ist. Die ganze Gruppe
+     sitzt durch die zentrierte .batteries-Box mittig. */
   html.compact .batt-row,
   body.compact .batt-row {
-    grid-template-columns: 118px auto;
-    justify-content: center;
+    grid-template-columns: 120px auto;
+    justify-content: start;
     gap: 14px;
   }
   .energie-link { display: block; text-decoration: none; color: inherit; }
