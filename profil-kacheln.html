@@ -160,6 +160,9 @@
   <div id="content"></div>
 
   <script>
+/* Frame-Kennung fuer den Profil-Wrapper (Cross-Origin-sichere Hoehen-Zuordnung) */
+var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
+
     const BASE_SITE = 'https://regal-mooncake-d3a250.netlify.app';
     const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
 
@@ -265,7 +268,7 @@
       } else {
         h = document.documentElement.scrollHeight;
       }
-      parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+      parent.postMessage({type:"6heroes:setHeight",height:h,frame:__FRAME_ID__},"*");
     }
     window.addEventListener("load",postHeight);
     window.addEventListener("resize",postHeight);

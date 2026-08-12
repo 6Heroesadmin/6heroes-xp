@@ -187,6 +187,9 @@
 <div id="content"></div>
 
 <script>
+/* Frame-Kennung fuer den Profil-Wrapper (Cross-Origin-sichere Hoehen-Zuordnung) */
+var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
+
 const HEROES = [
   { key: 'innovator',  label: 'Innovator',  color: '#F2B705', nettoKey: 'ni' },
   { key: 'commander',  label: 'Commander',  color: '#1167D6', nettoKey: 'nc' },
@@ -519,7 +522,7 @@ render();
 function postHeight(){
   var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,
     document.documentElement.scrollHeight,document.documentElement.offsetHeight);
-  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+  parent.postMessage({type:"6heroes:setHeight",height:h,frame:__FRAME_ID__},"*");
 }
 window.addEventListener("load",postHeight);
 window.addEventListener("resize",postHeight);

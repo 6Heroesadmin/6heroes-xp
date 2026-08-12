@@ -17,6 +17,9 @@
 <div id="legend"></div>
 <div id="caption"></div>
 <script>
+/* Frame-Kennung fuer den Profil-Wrapper (Cross-Origin-sichere Hoehen-Zuordnung) */
+var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
+
 const HEROES=[
   {name:'Innovator', score:88,color:'#F2B705'},
   {name:'Commander', score:83,color:'#0B63CE'},
@@ -166,7 +169,7 @@ draw();
 function postHeight(){
   var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,
     document.documentElement.scrollHeight,document.documentElement.offsetHeight);
-  parent.postMessage({type:"6heroes:setHeight",height:h},"*");
+  parent.postMessage({type:"6heroes:setHeight",height:h,frame:__FRAME_ID__},"*");
 }
 window.addEventListener("load",postHeight);
 window.addEventListener("resize",postHeight);

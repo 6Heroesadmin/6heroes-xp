@@ -40,17 +40,19 @@ function buildUrls(P){
   if(P.stress1)rad.set('s1',P.stress1); if(P.stress2)rad.set('s2',P.stress2);
   rad.set('mode', P.paid==='1'?'full':'free');
   ['si','sc','ss','sa','sg','se'].forEach(k=>{ if(P[k])rad.set(k,P[k]); });
+  rad.set('frame','rad');
   const tiles = new URLSearchParams();
   ['basis','zweit','stress1','stress2'].forEach(k=>{ if(P[k])tiles.set(k,P[k]); });
-  tiles.set('paid',P.paid);
+  tiles.set('paid',P.paid); tiles.set('frame','tiles');
   const stress = new URLSearchParams();
   if(P.stress1)stress.set('stress1',P.stress1);
   if(P.stress2)stress.set('stress2',P.stress2);
-  stress.set('compact','1');
+  stress.set('compact','1'); stress.set('frame','stress');
   const ener = new URLSearchParams();
   ['basis','zweit','stress1','stress2'].forEach(k=>{ if(P[k])ener.set(k,P[k]); });
   ener.set('paid',P.paid);
   ['ni','nc','nst','ns','ng','ne'].forEach(k=>{ if(P[k])ener.set(k,P[k]); });
+  ener.set('frame','energie');
   return {
     rad:     BASE+'/6heroes_rad-4_light-3.html?'+rad.toString(),
     tiles:   BASE+'/profil-kacheln.html?'+tiles.toString(),
@@ -61,11 +63,12 @@ function buildUrls(P){
 const frames = {};
 const heights = {};
 function setHeight(key, h){
+  if (!frames[key]) return;
   if (FIXED_HEIGHT[key] != null) h = FIXED_HEIGHT[key];
   h = Math.round(h);
   if (heights[key] != null && Math.abs(heights[key] - h) <= 1) return;
   heights[key] = h;
-  if (frames[key]) frames[key].style.height = h + 'px';
+  frames[key].style.height = h + 'px';
   scheduleOwnHeight();
 }
 function initFrames(){
@@ -79,12 +82,14 @@ function initFrames(){
     frames[key].src = urls[key];
   });
 }
+/* WICHTIG: Zuordnung über die mitgeschickte Kennung d.frame,
+   NICHT über contentWindow — Cross-Origin (netlify vs app.6heroes.de)
+   verbietet den contentWindow-Zugriff und würde eine Exception werfen. */
 window.addEventListener('message', function(e){
   const d = e.data;
   if (!d || d.type !== '6heroes:setHeight' || !d.height) return;
-  for (const key in frames){
-    if (frames[key] && frames[key].contentWindow === e.source){ setHeight(key, d.height); return; }
-  }
+  if (d.frame && frames[d.frame]) { setHeight(d.frame, d.height); return; }
+  // Fallback: wenn keine Kennung dabei ist, ignorieren (keine contentWindow-Prüfung!)
 });
 let ownTimer = null, lastOwn = 0;
 function scheduleOwnHeight(){
