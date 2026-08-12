@@ -47,6 +47,17 @@
   /* === BATTERIE-LISTE === */
   .batteries { max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
 
+  /* Kompakt-Modus fürs Profil: Batterien mittiger + klickbar */
+  body.compact .batteries,
+  .energie-link .batteries { max-width: 460px; }
+  .energie-link { display: block; text-decoration: none; color: inherit; }
+  .energie-more {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 26px; font-size: 14px; font-weight: 700; color: var(--accent);
+  }
+  .energie-more .arrow { transition: transform .12s; }
+  .energie-link:hover .energie-more .arrow { transform: translateX(3px); }
+
   .batt-row {
     display: grid;
     grid-template-columns: 128px 1fr;
@@ -403,6 +414,24 @@ function render() {
     </div>`;
   });
   html += `</div>`;
+
+  /* --- Kompakt-Modus fürs Profil: nur oberer Teil (Titel+Netto+Batterien),
+     ganze Sektion klickbar → Energie-Detailseite (Platzhalter). Aktiviert über ?compact=1. --- */
+  const isCompact = (new URLSearchParams(location.search)).get('compact') === '1';
+  if (isCompact) {
+    html += `<div class="energie-more">Mehr über deine Energiebilanz <span class="arrow">&rarr;</span></div>`;
+    el.innerHTML = html;
+    // Inhalt in einen Link wickeln → _top, Platzhalter-Ziel bis Energie-Detailseite steht
+    const BASE = 'https://regal-mooncake-d3a250.netlify.app';
+    const link = document.createElement('a');
+    link.className = 'energie-link';
+    link.href = BASE + '/energie-detail.html' + location.search.replace('compact=1','compact=0');
+    link.target = '_top';
+    while (el.firstChild) link.appendChild(el.firstChild);
+    el.appendChild(link);
+    animate(false);
+    return;
+  }
 
   /* --- Ab hier: volle Auswertung nur für paid. Im Teaser: Paywall-Karte. --- */
   if (!isPaid) {
