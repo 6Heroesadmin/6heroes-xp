@@ -46,6 +46,7 @@ function buildUrls(P){
   const stress = new URLSearchParams();
   if(P.stress1)stress.set('stress1',P.stress1);
   if(P.stress2)stress.set('stress2',P.stress2);
+  stress.set('compact','1');
   const ener = new URLSearchParams();
   ['basis','zweit','stress1','stress2'].forEach(k=>{ if(P[k])ener.set(k,P[k]); });
   ener.set('paid',P.paid);
