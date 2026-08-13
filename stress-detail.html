@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deine Stressdynamik – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
+    --ink:#F4F1E9; --ink-dim:#AEB6C6; --ink-faint:#717C92;
+    --line:rgba(255,255,255,0.07);
+    --card:rgba(255,255,255,0.035); --border:rgba(255,255,255,0.08);
+    --warn:#E8B93B; --hot:#D2607A;
+    --text-soft:#C8CEDA; --text-muted:#8E96A8;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
+  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
+
+  /* ---- Kopf ---- */
+  .head { text-align:center; padding:40px 0 8px; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; }
+  .head h1 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(36px,9vw,58px); line-height:1.02; letter-spacing:-.015em; margin-bottom:18px; }
+  .head h1 .accent { font-style:italic; color:var(--gold); }
+  .head .intro { font-size:17px; color:var(--ink-dim); max-width:52ch; margin:0 auto; }
+
+  /* ---- Kurve ---- */
+  .chart-section { padding-top:40px; }
+  .chart-card { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px 16px 12px; }
+  svg { width:100%; height:auto; display:block; }
+  .cap { font-family:'Inter',sans-serif; }
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:16px; }
+  .lg { display:flex; gap:12px; align-items:flex-start; flex:1; min-width:240px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:13px 15px; }
+  .lg-badge { flex:none; width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.76rem; }
+  .lg.s1 .lg-badge { background:var(--warn); color:#1a1a1a; }
+  .lg.s2 .lg-badge { background:var(--hot); color:#fff; }
+  .lg-hero { font-weight:700; font-size:.98rem; }
+  .lg-phase { font-size:.7rem; letter-spacing:.05em; text-transform:uppercase; font-weight:600; color:var(--text-muted); margin:1px 0 4px; }
+  .lg-desc { font-size:.86rem; color:var(--text-soft); line-height:1.5; }
+  .same { margin-top:16px; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:13px 16px; font-size:13.5px; color:var(--text-soft); display:none; }
+  .same.show { display:block; }
+  .same b { color:var(--gold); }
+  .curve-note { margin-top:14px; font-size:13px; color:var(--text-muted); text-align:center; line-height:1.55; }
+
+  /* ---- Übergang zur Handlungsebene ---- */
+  .bridge-line { margin:60px 0 0; text-align:center; }
+  .bridge-line p { font-family:'DM Serif Display',serif; font-size:clamp(22px,5vw,30px); line-height:1.34; color:var(--ink); letter-spacing:-.01em; }
+  .bridge-line .accent { color:var(--gold); font-style:italic; }
+
+  /* ---- Held-Block (Stufe) ---- */
+  .hero-block { padding-top:56px; }
+  .stage-head { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  .stage-badge { flex:none; width:40px; height:40px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; }
+  .stage-badge.s1 { background:var(--warn); color:#1a1a1a; }
+  .stage-badge.s2 { background:var(--hot); color:#fff; }
+  .stage-titles .st-phase { font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:2px; }
+  .stage-titles .st-name { font-family:'DM Serif Display',serif; font-size:26px; line-height:1.15; }
+  .stage-titles .st-name.s1 { color:var(--warn); }
+  .stage-titles .st-name.s2 { color:var(--hot); }
+  .stage-trigger { font-size:15px; color:var(--ink-dim); line-height:1.6; margin:14px 0 24px; padding-left:54px; }
+  .stage-trigger b { color:var(--ink); font-weight:600; }
+  @media (max-width:480px){ .stage-trigger { padding-left:0; } }
+
+  /* Karten-Grid der Handlungsebene */
+  .act-card { background:var(--navy-soft); border:1px solid var(--line); border-radius:20px; padding:26px 24px; margin-bottom:16px; }
+  .act-card .ac-lab { font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:14px; }
+
+  /* Innere Sätze */
+  .saetze { display:flex; flex-direction:column; gap:9px; }
+  .satz { font-family:'DM Serif Display',serif; font-style:italic; font-size:18px; line-height:1.4; color:var(--ink); padding-left:18px; border-left:2px solid var(--stage-col,var(--warn)); }
+
+  /* Verhalten */
+  .verhalten { display:grid; gap:9px; }
+  .vh { display:flex; gap:11px; align-items:flex-start; font-size:15.5px; color:var(--ink-dim); line-height:1.55; }
+  .vh .vh-dot { flex:none; width:6px; height:6px; border-radius:50%; background:var(--stage-col,var(--warn)); margin-top:9px; }
+
+  /* Coaching-Hebel */
+  .hebel { display:grid; gap:0; }
+  .hb { padding:16px 0; border-bottom:1px solid var(--line); display:grid; grid-template-columns:118px 1fr; gap:16px; align-items:start; }
+  .hb:last-child { border-bottom:none; padding-bottom:0; }
+  .hb:first-child { padding-top:0; }
+  .hb .hb-when { font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--stage-col,var(--warn)); padding-top:2px; }
+  .hb .hb-what { font-size:15.5px; color:var(--ink); line-height:1.6; }
+  @media (max-width:480px){ .hb { grid-template-columns:1fr; gap:5px; } }
+
+  /* Need-Zeile */
+  .need-line { margin-top:16px; padding:18px 22px; border-radius:14px; background:rgba(0,0,0,0.18); font-size:15px; color:var(--ink-dim); line-height:1.6; }
+  .need-line b { color:var(--gold); font-weight:600; }
+
+  /* ---- CTA ---- */
+  .cta-section { padding-top:64px; text-align:center; }
+  .cta-section h2 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(24px,6vw,34px); line-height:1.2; margin-bottom:16px; }
+  .cta-section p { font-size:16px; color:var(--ink-dim); max-width:46ch; margin:0 auto 24px; }
+  .cta-quests { display:inline-flex; align-items:center; gap:8px; font-size:16px; font-weight:600; color:var(--navy); background:var(--gold); text-decoration:none; padding:15px 28px; border-radius:999px; transition:transform .15s,filter .15s; }
+  .cta-quests:hover { transform:translateY(-1px); filter:brightness(1.05); }
+  .bridge { display:block; text-align:center; margin-top:40px; font-size:13px; color:var(--ink-faint); text-decoration:none; }
+  .bridge:hover { color:var(--ink-dim); }
+  .bridge span { color:var(--gold); }
+
+  /* ---- UNPAID-Teaser ---- */
+  .lock-wrap { position:relative; }
+  .lock-wrap.locked .lockable { filter:blur(6px); opacity:0.5; pointer-events:none; user-select:none; }
+  .lock-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; padding:24px; }
+  .lock-overlay .lock-ico { width:40px; height:40px; color:var(--gold); }
+  .lock-overlay .lock-title { font-size:17px; font-weight:700; color:var(--ink); max-width:360px; line-height:1.45; }
+  .lock-overlay .lock-cta { display:inline-flex; align-items:center; gap:7px; background:var(--gold); color:#20293A; font-weight:700; font-size:14.5px; padding:12px 26px; border-radius:999px; text-decoration:none; transition:transform .12s; }
+  .lock-overlay .lock-cta:hover { transform:translateY(-2px); }
+  @media (prefers-reduced-motion: reduce){ .lock-wrap.locked .lockable { filter:none; opacity:0.4; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="eyebrow">Unter Druck &#8212; und wieder heraus</div>
+    <h1>Deine <span class="accent">Stressdynamik</span></h1>
+    <p class="intro">Wenn der Druck steigt, ver&#228;ndert sich dein Verhalten in zwei Stufen. Hier siehst du nicht nur, <em>was</em> passiert &#8212; sondern woran du es erkennst und was dann konkret hilft.</p>
+  </div>
+
+  <div class="chart-section">
+    <div class="chart-card">
+      <svg viewBox="0 0 700 380" role="img" aria-label="Stress-Zeit-Diagramm">
+  <defs>
+    <linearGradient id="areaColor" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3FB27F" stop-opacity="0.34"/>
+      <stop offset="45%" stop-color="#E8B93B" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#D2607A" stop-opacity="0.40"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3FB27F"/>
+      <stop offset="45%" stop-color="#E8B93B"/>
+      <stop offset="100%" stop-color="#D2607A"/>
+    </linearGradient>
+  </defs>
+  <line x1="60" y1="50" x2="60" y2="320" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+  <line x1="60" y1="320" x2="660" y2="320" stroke="rgba(255,255,255,0.14)" stroke-width="1.5"/>
+  <path d="M60 50 l-4 8 l8 0 z" fill="rgba(255,255,255,0.3)"/>
+  <path d="M660 320 l-8 -4 l0 8 z" fill="rgba(255,255,255,0.3)"/>
+  <text x="52" y="46" text-anchor="end" class="cap" font-size="11" fill="#8E96A8">Stress</text>
+  <text x="655" y="340" text-anchor="end" class="cap" font-size="11" fill="#8E96A8">Zeit / anhaltender Druck &#8594;</text>
+  <text x="64" y="332" class="cap" font-size="10.5" fill="#8E96A8">ruhig</text>
+  <line x1="60" y1="211.6" x2="660" y2="211.6" stroke="#E8B93B" stroke-width="1.3" stroke-dasharray="5 5" opacity="0.5"/>
+  <text x="66" y="202.7" text-anchor="start" class="cap" font-size="10" font-weight="700" fill="#E8B93B" letter-spacing="0.04em">SCHWELLE 1 &#183; ALARM</text>
+  <line x1="60" y1="118.8" x2="660" y2="118.8" stroke="#D2607A" stroke-width="1.3" stroke-dasharray="5 5" opacity="0.6"/>
+  <text x="66" y="107.3" text-anchor="start" class="cap" font-size="10" font-weight="700" fill="#D2607A" letter-spacing="0.04em">SCHWELLE 2 &#183; &#220;BERSTEUERUNG</text>
+  <path d="M 60.0 320.0 L 70.0 319.9 L 80.0 319.5 L 90.0 319.0 L 100.0 318.3 L 110.0 317.4 L 120.0 316.4 L 130.0 315.2 L 140.0 313.8 L 150.0 312.3 L 160.0 310.6 L 170.0 308.8 L 180.0 306.9 L 190.0 304.8 L 200.0 302.5 L 210.0 300.1 L 220.0 297.6 L 230.0 295.0 L 240.0 292.2 L 250.0 289.3 L 260.0 286.2 L 270.0 283.0 L 280.0 279.7 L 290.0 276.2 L 300.0 272.6 L 310.0 268.9 L 320.0 265.1 L 330.0 261.1 L 340.0 257.0 L 350.0 252.8 L 360.0 248.4 L 370.0 244.0 L 380.0 239.4 L 390.0 234.6 L 400.0 229.8 L 410.0 224.8 L 420.0 219.7 L 430.0 214.5 L 440.0 209.2 L 450.0 203.7 L 460.0 198.1 L 470.0 192.4 L 480.0 186.6 L 490.0 180.7 L 500.0 174.6 L 510.0 168.5 L 520.0 162.2 L 530.0 155.8 L 540.0 149.3 L 550.0 142.6 L 560.0 135.9 L 570.0 129.0 L 580.0 122.0 L 590.0 114.9 L 600.0 107.7 L 610.0 100.4 L 620.0 92.9 L 630.0 85.4 L 640.0 77.7 L 650.0 69.9 L 660.0 62.0 L 660.0 320.0 L 60.0 320.0 Z" fill="url(#areaColor)"/>
+  <path d="M 60.0 320.0 L 70.0 319.9 L 80.0 319.5 L 90.0 319.0 L 100.0 318.3 L 110.0 317.4 L 120.0 316.4 L 130.0 315.2 L 140.0 313.8 L 150.0 312.3 L 160.0 310.6 L 170.0 308.8 L 180.0 306.9 L 190.0 304.8 L 200.0 302.5 L 210.0 300.1 L 220.0 297.6 L 230.0 295.0 L 240.0 292.2 L 250.0 289.3 L 260.0 286.2 L 270.0 283.0 L 280.0 279.7 L 290.0 276.2 L 300.0 272.6 L 310.0 268.9 L 320.0 265.1 L 330.0 261.1 L 340.0 257.0 L 350.0 252.8 L 360.0 248.4 L 370.0 244.0 L 380.0 239.4 L 390.0 234.6 L 400.0 229.8 L 410.0 224.8 L 420.0 219.7 L 430.0 214.5 L 440.0 209.2 L 450.0 203.7 L 460.0 198.1 L 470.0 192.4 L 480.0 186.6 L 490.0 180.7 L 500.0 174.6 L 510.0 168.5 L 520.0 162.2 L 530.0 155.8 L 540.0 149.3 L 550.0 142.6 L 560.0 135.9 L 570.0 129.0 L 580.0 122.0 L 590.0 114.9 L 600.0 107.7 L 610.0 100.4 L 620.0 92.9 L 630.0 85.4 L 640.0 77.7 L 650.0 69.9 L 660.0 62.0" fill="none" stroke="url(#lineGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="435.4" y1="211.6" x2="435.4" y2="320" stroke="#E8B93B" stroke-width="1" stroke-dasharray="3 4" opacity="0.35"/>
+  <line x1="584.6" y1="118.8" x2="584.6" y2="320" stroke="#D2607A" stroke-width="1" stroke-dasharray="3 4" opacity="0.4"/>
+  <circle cx="435.4" cy="211.6" r="12" fill="#E8B93B"/>
+  <circle cx="435.4" cy="211.6" r="12" fill="none" stroke="#20293A" stroke-width="3"/>
+  <text x="435.4" y="215.6" text-anchor="middle" class="cap" font-size="11" font-weight="700" fill="#1a1a1a">S1</text>
+  <text id="s1label" x="435.4" y="193.6" text-anchor="middle" class="cap" font-size="13" font-weight="700" fill="#E8B93B">Commander</text>
+  <circle cx="584.6" cy="118.8" r="12" fill="#D2607A"/>
+  <circle cx="584.6" cy="118.8" r="12" fill="none" stroke="#20293A" stroke-width="3"/>
+  <text x="584.6" y="122.8" text-anchor="middle" class="cap" font-size="11" font-weight="700" fill="#fff">S2</text>
+  <text id="s2label" x="584.6" y="100.8" text-anchor="middle" class="cap" font-size="13" font-weight="700" fill="#D2607A">Commander</text>
+</svg>
+    </div>
+
+    <div class="legend">
+      <div class="lg s1">
+        <div class="lg-badge">S1</div>
+        <div>
+          <div class="lg-hero" id="l1hero" style="color:var(--warn)">Commander</div>
+          <div class="lg-phase" id="l1phase"></div>
+          <div class="lg-desc" id="l1desc"></div>
+        </div>
+      </div>
+      <div class="lg s2">
+        <div class="lg-badge">S2</div>
+        <div>
+          <div class="lg-hero" id="l2hero" style="color:var(--hot)">Commander</div>
+          <div class="lg-phase" id="l2phase"></div>
+          <div class="lg-desc" id="l2desc"></div>
+        </div>
+      </div>
+    </div>
+    <div class="same" id="same"></div>
+    <p class="curve-note">Schwelle 1 ist dein Fr&#252;hwarnsignal &#8212; wer sie bei sich erkennt, kann gegensteuern, bevor Schwelle 2 die Kontrolle &#252;bernimmt.</p>
+  </div>
+
+  <div class="bridge-line">
+    <p>Von der Diagnose zum <span class="accent">Werkzeug</span>: So f&#228;ngst du jede Stufe ab.</p>
+  </div>
+
+  <!-- Handlungsebene: dynamisch befüllt -->
+  <div class="lock-wrap" id="lockWrap">
+    <div class="lockable" id="stageList"></div>
+    <div class="lock-overlay" id="lockOverlay" style="display:none"></div>
+  </div>
+
+  <div class="cta-section lockable-cta" id="ctaSection">
+    <h2>Erkennen ist der erste Schritt.</h2>
+    <p>In deinen Quests &#252;bst du genau die Hebel, die deine Stress-Stufen abfangen &#8212; Schritt f&#252;r Schritt, im echten Alltag.</p>
+    <a class="cta-quests" id="ctaQuests" href="#">Zu deinen Stress-Quests &#8594;</a>
+    <a class="bridge" id="bridgeLink" href="#">Zur&#252;ck zu <span>deinem Profil</span></a>
+  </div>
+
+</div>
+
+<script>
+var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
+const STRESS = {"Commander":{"s1":{"verhalten":["übernimmt Führung ohne Nachfrage","entscheidet schnell, reduziert Diskussion","priorisiert hart (\"das zuerst\")","fordert Updates/Status, setzt Deadlines","wird direkter im Ton, weniger Geduld"],"saetze":["Wir verlieren Zeit.","Jemand muss das jetzt ziehen.","Nicht reden – machen.","So kriegen wir das wieder in den Griff."],"hebel":{"sofort":"1 Ergebnis definieren („Was muss in 30 Minuten klar sein?\") + 1 Delegation („Wer macht was bis wann?\").","kurz":"\"Decision Box\" (was entscheide ich / was delegiere ich / was lasse ich offen).","stabil":"Feedback-Routine: \"hart in der Sache, weich im Ton\" + regelmäßige Verantwortungsschnitte."},"trigger":"Unklarheit, Chaos, langsames Tempo, Widerstand, fehlende Verantwortung, \"niemand entscheidet\".","ziel":"Kontrolle + Richtung + Tempo herstellen.","nutzen":"Momentum, Klarheit, Handlungsfähigkeit für alle.","risiko":"Dominanz, Druck, Mikromanagement, andere machen zu oder gehen in Widerstand.","need":"Entscheidungsrahmen, Zuständigkeiten, sichtbarer Fortschritt."},"s2":{"verhalten":["setzt durch, drückt, eskaliert Hierarchie","wird schneidend, sarkastisch oder kalt","übernimmt alles selbst, vertraut niemandem","macht Druck über Angst/Schuld (\"sonst...\")","verliert Zuhören, nur noch Output zählt"],"saetze":["Ich kann mich auf keinen verlassen.","Dann mache ich es eben selbst.","Das ist nicht verhandelbar."],"hebel":{"sofort":"Stopp-Signal + 10-Minuten-Reset (raus aus Interaktion, runterregeln).","kurz":"Reparaturgespräch (Impact benennen, Verantwortung übernehmen, klare nächste Schritte).","stabil":"Delegations-Architektur + Stress-Checkpoints (früher raus bei 1–2 Warnsignalen)."},"trigger":"Dauerstress ohne Wirkung, Kontrollverlust trotz Einsatz, wiederholte Inkompetenz/Blockaden, gefühlte Ohnmacht.","ziel":"Zwangskontrolle: \"Es muss jetzt passieren – egal wie.\"","nutzen":"Ergebnis um jeden Preis.","risiko":"Beziehungsschäden, Angstkultur, Erschöpfung, Fehlentscheidungen durch Tunnelblick.","need":"Sicherheitsgefühl, Entlastung, Co-Regulation, klare Grenzen der Verantwortlichkeit."}},"Guardian":{"s1":{"verhalten":["checkt Details, packt Listen/Standards aus","erinnert an Regeln, Risiken, Zuständigkeiten","wird vorsichtig, bremst Tempo","will Freigaben/Bestätigungen","kontrolliert \"Essentials\" (nichts vergessen)"],"saetze":["Wir dürfen nichts übersehen.","Sicherheit zuerst.","Sonst zahlen wir später."],"hebel":{"sofort":"\"2 Fixpunkte + 1 Risiko\": Essentials sichern, 1 Haupt-Risiko benennen, dann weiter.","kurz":"\"Good-enough-Standard\" definieren (was reicht für jetzt?).","stabil":"Risiko-Matrix (hoch/mittel/niedrig) + klare Übergaben."},"trigger":"Risiko, Unsicherheit, Fehlergefahr, Regelbruch, fehlende Infos, \"das ist nicht sauber\".","ziel":"Absichern + Richtigkeit + Schaden vermeiden.","nutzen":"Qualität, Stabilität, Fehlerprävention.","risiko":"Verharren, Belehrmodus, Angst vor Fehlern, Konflikt mit Tempo-Typen.","need":"Mindestkriterien, Plan B, verlässliche Info, klare Verantwortung."},"s2":{"verhalten":["perfektionistisch, überdokumentiert","misstrauisch, prüft alles doppelt","blockiert Entscheidungen ohne 100% Sicherheit","wird rigide (\"so MUSS das sein\")","kann moralisch/anklagend wirken"],"saetze":["Niemand nimmt das ernst.","Wenn ich nicht aufpasse, passiert was.","Das ist unverantwortlich."],"hebel":{"sofort":"\"Stop the spiral\": 1 Entscheidung trotz Unsicherheit + 1 Absicherung (nicht 5).","kurz":"Verantwortungsgrenzen schriftlich (was ist meins / nicht meins).","stabil":"Expositions-Training \"80% reicht\" + Ritual zum Loslassen (Abschluss statt endloses Prüfen)."},"trigger":"Wiederholte Fehler/Unzuverlässigkeit, gefühlte Unsicherheit über längere Zeit, Kontrollverlust.","ziel":"Überkontrolle: \"Wenn ich nicht alles absichere, geht es schief.\"","nutzen":"Scheinsicherheit.","risiko":"Stillstand, Erschöpfung, Frust im Umfeld, Verlust von Leichtigkeit.","need":"Vertrauen, Entlastung, Grenzen, psychologische Sicherheit."}},"Innovator":{"s1":{"verhalten":["brainstormt, springt zwischen Ideen","stellt Vorgehen infrage, provoziert Perspektivwechsel","sucht Abkürzungen/Tools/Hacks","wechselt Fokus, wenn es zäh wird","wirkt ungeduldig gegenüber Bürokratie"],"saetze":["Das muss doch einfacher gehen.","Warum machen wir das so kompliziert?","Ich löse das anders."],"hebel":{"sofort":"1 Idee → 1 Experiment (timeboxed 15–30 Min).","kurz":"\"One-Option-Commit\" (eine Option wählen und durchziehen bis Review).","stabil":"Kreativslots + Umsetzungsritual (Idee → nächste 3 Schritte)."},"trigger":"Einschränkung, Stillstand, enge Regeln, \"geht nicht\", Kritik ohne Lösungsraum.","ziel":"Optionen öffnen + kreative Flucht nach vorn.","nutzen":"Neue Wege, Innovation unter Druck.","risiko":"Chaos, Unverbindlichkeit, \"Ideen statt Umsetzung\".","need":"Spielraum, Experimentierfenster, schnelle Tests."},"s2":{"verhalten":["sabotiert Regeln, wird zynisch","kündigt innerlich, zieht sich aus Verbindlichkeit","macht nur noch das Minimum oder chaotische Aktionen","provoziert Konflikte, um Bewegung zu erzwingen"],"saetze":["Das ist alles sinnlos.","Dann macht euren Quatsch halt ohne mich.","Ich lass mich nicht einengen."],"hebel":{"sofort":"\"Exit vermeiden\": 24h keine radikalen Entscheidungen + körperlicher Reset.","kurz":"Grenzen & Freiraum verhandeln (konkret: was genau wird enger/weiter?).","stabil":"Verbindlichkeit über kleine Verträge (Micro-Commitments) + kreative Ventile."},"trigger":"Dauerhafte Begrenzung, wiederholtes Scheitern, Gefühl \"eingesperrt\", Wertschätzung fehlt.","ziel":"Radikaler Bruch: \"Ich sprenge das System / ich bin raus.\"","nutzen":"Selbstschutz durch Distanz/Autonomie.","risiko":"Vertrauensverlust, Brüche, verbrannte Erde.","need":"Autonomie, Anerkennung, echter Handlungsspielraum, Reset."}},"Strategist":{"s1":{"verhalten":["stellt Klärungsfragen, ordnet, priorisiert","baut Szenarien, prüft Annahmen","zieht sich kurz zurück (mentaler Abstand)","will Kriterien statt Bauchgefühl"],"saetze":["Das ergibt so keinen Sinn.","Welche Variable fehlt?","Erst Struktur, dann Aktion."],"hebel":{"sofort":"\"3 Fragen\": Ziel? Optionen? Kriterium? → dann provisorische Entscheidung.","kurz":"\"Assumptions Board\" (Annahmen sichtbar + Review-Termin).","stabil":"Entscheidungsfenster (bis wann analysieren, ab wann handeln)."},"trigger":"Unklare Ziele, Widersprüche, fehlende Daten, taktisches Risiko, \"Planlosigkeit\".","ziel":"Struktur + Logik + Entscheidungsfähigkeit herstellen.","nutzen":"Klarheit, bessere Entscheidungen, weniger Blindflug.","risiko":"Analyseparalyse, wirkt kühl/abwertend.","need":"Zieldefinition, Entscheidungsregeln, Zeit zum Denken."},"s2":{"verhalten":["zerdacht alles, blockiert über Kriterien","wird zynisch/überkritisch","zieht sich sozial zurück, \"ihr versteht es nicht\"","perfektioniert Modelle statt Umsetzung"],"saetze":["Das ist alles irrational.","Mit diesen Leuten geht das nicht.","Ohne sauberen Plan ist das Unsinn."],"hebel":{"sofort":"\"Action despite uncertainty\": 1 Schritt, der Informationen erzeugt.","kurz":"Re-Sozialisierung: 1 Gespräch mit Fokus auf Nutzen statt Recht haben.","stabil":"Iterationsroutine (Plan → Test → Review) + Körperanker (Raus aus Kopf)."},"trigger":"Dauerhafte Unplanbarkeit, wiederholte Fehlentscheidungen im Umfeld, Kontrollverlust.","ziel":"Überintellektualisierung/Abschottung: \"Nur noch Denken schützt.\"","nutzen":"Scheinkontrolle.","risiko":"Isolation, Stillstand, Beziehungskälte, verpasste Chancen.","need":"Sicherheit, Verbundenheit, Vertrauen in Iteration."}},"Sage":{"s1":{"verhalten":["wird stiller, beobachtet, reflektiert","zieht sich zurück, reduziert Kontakte/Input","stellt Grundsatzfragen (Warum? Wozu?)","bremst Schnellschüsse, sucht Stimmigkeit"],"saetze":["Was ist hier wirklich wichtig?","Das fühlt sich nicht stimmig an.","Ich brauche kurz Abstand."],"hebel":{"sofort":"60 Sekunden Stille + 1 Satz: „Mein nächster stimmiger Schritt ist ...\"","kurz":"Meaning→Action: Sinn in 1 Handlung übersetzen.","stabil":"Input-Diät + regelmäßige Reflexionsslots (statt Rückzug als Notfall)."},"trigger":"Sinnverlust, Wertebruch, Oberflächlichkeit, zu viel Input, Konflikte ohne Tiefe.","ziel":"Abstand + innere Ordnung + Bedeutung finden.","nutzen":"Wertekompass, Ruhe, Tiefenklarheit.","risiko":"wirkt kalt/abwesend, Dinge bleiben liegen, Missverständnisse.","need":"Ruhe, Sinn, respektierter Rückzug, klare Prioritäten."},"s2":{"verhalten":["emotional dicht, kaum erreichbar","vermeidet Gespräche, ghostet Termine","wird fatalistisch („bringt eh nichts\")","kann innerlich kündigen (mentale Abwesenheit)"],"saetze":["Ich kann das nicht mehr.","Es versteht mich niemand.","Ich bin raus."],"hebel":{"sofort":"Stabilisierung (Schlaf/Essensrhythmus/Bewegung) + 1 sichere Person kontaktieren.","kurz":"Grenzen klar (was geht / was geht nicht) + kleine Rückkehrschritte.","stabil":"Sinn-Architektur (Werte, Projekte, Kontakte) + Frühwarnsystem für Überlast."},"trigger":"Dauerhafter Sinnkonflikt, keine Anerkennung der Tiefe, Überforderung ohne Pause.","ziel":"Totaler Rückzug / Entkopplung: \"Ich bin nicht mehr verfügbar.\"","nutzen":"Schutz vor Überflutung.","risiko":"Isolation, depressive Tendenzen, Beziehungsabbrüche, Stillstand.","need":"Sicherheit, Entlastung, Co-Regulation, Wiederanbindung."}},"Explorer":{"s1":{"verhalten":["wird unruhig, wechselt Ort/Thema/Task","handelt pragmatisch (\"unterwegs lösen\")","meidet Details/Drama, kürzt ab","sucht Reize, Luft, Tempo"],"saetze":["Ich muss hier raus.","Lass uns einfach anfangen.","Das klären wir später."],"hebel":{"sofort":"\"Walk & Decide\" (2–5 Min gehen + 1 Entscheidung).","kurz":"Micro-Commitments (klein, sofort, sichtbar).","stabil":"Rhythmus statt Regeln (feste Etappen, flexible Wege)."},"trigger":"Enge, Stillstand, zu viele Regeln, Schwere, festgefahrene Situationen.","ziel":"Bewegung + Freiheit + Druck rausnehmen.","nutzen":"Energie, Momentum, Stressabbau durch Aktion.","risiko":"Flüchtigkeit, offene Loops, andere fühlen sich allein gelassen.","need":"Autonomie, Bewegung, klare Mini-Etappe, wenig Overhead."},"s2":{"verhalten":["bricht Kontakte/Projekte abrupt ab","vermeidet Verantwortung, taucht ab","sucht starke Ablenkung, rastlos","wird reizbar, \"lass mich in Ruhe\""],"saetze":["Ich halte das nicht aus.","Ich muss da weg.","Mir ist alles zu viel."],"hebel":{"sofort":"Safe-Exit: 20–60 Min Reset + keine endgültigen Entscheidungen heute.","kurz":"\"Return Path\" planen (kleiner, realistischer Wiedereinstieg).","stabil":"Belastungsgrenzen & Pausenarchitektur (damit es nicht wieder kippt)."},"trigger":"Dauerhafte Einengung, Überforderung, Konflikte, die sich \"klebrig\" anfühlen, keine Exit-Option.","ziel":"Flucht/Abbruch: \"Weg hier – koste es, was es wolle.\"","nutzen":"kurzfristige Entlastung.","risiko":"Instabilität, Vertrauensverlust, langfristige Probleme durch Vermeidung.","need":"sichere Pausen, Wahlmöglichkeiten, klare Grenzen, Wiedereinstieg ohne Scham."}}};
+const COLORS = {Commander:'#4C8DF5',Guardian:'#1F9D62',Innovator:'#F2B705',Strategist:'#8E96A8',Sage:'#C0266A',Explorer:'#F0672A'};
+const PHASE_SHORT = { s1:{tag:'Alarmphase',col:'var(--warn)'}, s2:{tag:'\u00dcbersteuerung',col:'var(--hot)'} };
+const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
+const QUEST_STRESS = 'https://app.6heroes.de/meine-quests?kategorie=stress';
+const PROFILE_URL = 'https://app.6heroes.de/profil';
+
+// Kurz-Beschreibung für die Legende (aus stresskurve.html übernommen, knapp)
+const CURVE_DESC = {
+  Commander:{s1:'\u00dcbernimmt sofort das Kommando. Der Ton wird sch\u00e4rfer, das Tempo zieht an \u2014 Entscheidungen fallen schneller, ohne andere einzubeziehen.',s2:'Kippt in Aggression, Sarkasmus oder eiskalte Distanz. Duldet keinen Widerspruch mehr \u2014 es geht nur noch um den Sieg.'},
+  Guardian:{s1:'Wird zum Bedenkentr\u00e4ger. Pr\u00fcft jedes Detail doppelt, pocht auf Regeln, verlangsamt durch st\u00e4ndige Risiko-Fragen.',s2:'Verf\u00e4llt in Starre und Misstrauen. Blockiert jede Ver\u00e4nderung, sieht \u00fcberall Bedrohungen \u2014 wirkt zwanghaft.'},
+  Innovator:{s1:'Spr\u00fcht pl\u00f6tzlich vor Ideen, um dem Druck zu entgehen. Wechselt st\u00e4ndig das Thema, weicht konkreten Fragen aus.',s2:'Wird zynisch gegen\u00fcber Regeln, sabotiert Strukturen aktiv, stiftet Chaos oder verschwindet in Fantasiewelten.'},
+  Strategist:{s1:'Zieht sich mental zur\u00fcck, w\u00e4lzt Daten. Stellt immer mehr kl\u00e4rende Fragen, baut komplexe Modelle, bevor er handelt.',s2:'Verliert sich in totaler Abstraktion, trifft keine Entscheidung mehr, wirkt k\u00fchl und fast roboterhaft.'},
+  Sage:{s1:'Wird auffallend still, hinterfragt den Sinn und zieht sich aus der Gruppe zur\u00fcck.',s2:'Verf\u00e4llt in Fatalismus, bricht Kontakt ab, ist emotional nicht mehr erreichbar.'},
+  Explorer:{s1:'Wird unruhig, f\u00e4ngt viele Dinge gleichzeitig an, redet schneller, sucht Abk\u00fcrzungen aus dem Stressfeld.',s2:'Bricht Projekte oder Beziehungen abrupt ab, rennt weg \u2014 physisch oder durch Verleugnung der Verantwortung.'}
+};
+
+function getParams(){
+  const p=new URLSearchParams(location.search);
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
+  return {
+    s1:cap((p.get('stress1')||'Commander').trim()),
+    s2:cap((p.get('stress2')||'Commander').trim()),
+    isPaid: p.get('paid') !== '0',
+  };
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function stageBlock(hero, phase){
+  const d=(STRESS[hero]||{})[phase]||{};
+  const ps=PHASE_SHORT[phase];
+  const col=ps.col;
+  const saetze=(d.saetze||[]).map(s=>'<div class="satz">\u201e'+esc(s)+'\u201c</div>').join('');
+  const verh=(d.verhalten||[]).map(v=>'<div class="vh"><span class="vh-dot"></span><span>'+esc(v)+'</span></div>').join('');
+  const heb=d.hebel||{};
+  const hebRows=[
+    ['Sofort', heb.sofort],
+    ['Kurzfristig', heb.kurz],
+    ['Stabilisierend', heb.stabil]
+  ].filter(r=>r[1]).map(r=>'<div class="hb"><div class="hb-when">'+r[0]+'</div><div class="hb-what">'+esc(r[1])+'</div></div>').join('');
+
+  return '<div class="hero-block" style="--stage-col:'+col+'">'
+    + '<div class="stage-head">'
+      + '<div class="stage-badge '+phase+'">'+phase.toUpperCase()+'</div>'
+      + '<div class="stage-titles">'
+        + '<div class="st-phase">'+esc(ps.tag)+'</div>'
+        + '<div class="st-name '+phase+'">'+esc(hero)+'</div>'
+      + '</div>'
+    + '</div>'
+    + '<p class="stage-trigger"><b>Ausgel\u00f6st durch:</b> '+esc(d.trigger||'')+'</p>'
+    + '<div class="act-card"><div class="ac-lab">Das denkst du dann</div><div class="saetze">'+saetze+'</div></div>'
+    + '<div class="act-card"><div class="ac-lab">So zeigt es sich</div><div class="verhalten">'+verh+'</div></div>'
+    + '<div class="act-card"><div class="ac-lab">Dein Coaching-Hebel</div><div class="hebel">'+hebRows+'</div>'
+      + (d.need?'<div class="need-line"><b>Worum es eigentlich geht:</b> '+esc(d.need)+'</div>':'')
+    + '</div>'
+  + '</div>';
+}
+
+function render(){
+  const P=getParams();
+  const same = (P.s1===P.s2);
+
+  // SVG + Legende
+  document.getElementById('s1label').textContent=P.s1;
+  document.getElementById('s2label').textContent=P.s2;
+  document.getElementById('l1hero').textContent=P.s1;
+  document.getElementById('l2hero').textContent=P.s2;
+  const c1=CURVE_DESC[P.s1]||{}, c2=CURVE_DESC[P.s2]||{};
+  document.getElementById('l1phase').textContent='Alarmphase';
+  document.getElementById('l2phase').textContent='\u00dcbersteuerung';
+  document.getElementById('l1desc').textContent=c1.s1||'';
+  document.getElementById('l2desc').textContent=c2.s2||'';
+  if(same){
+    const s=document.getElementById('same'); s.classList.add('show');
+    s.innerHTML='Bei dir ist beides der <b>'+esc(P.s1)+'</b> \u2014 dieselbe Kraft steigt mit dem Druck von der Alarmphase in die \u00dcbersteuerung. Ein Muster, zwei H\u00e4rtegrade.';
+  }
+
+  // Handlungsebene: gleicher Held -> S1+S2 desselben; zwei Helden -> S1 von s1, S2 von s2
+  let html='';
+  if(same){
+    html = stageBlock(P.s1,'s1') + stageBlock(P.s1,'s2');
+  } else {
+    html = stageBlock(P.s1,'s1') + stageBlock(P.s2,'s2');
+  }
+  document.getElementById('stageList').innerHTML=html;
+
+  document.getElementById('ctaQuests').href=QUEST_STRESS;
+  document.getElementById('bridgeLink').href=PROFILE_URL;
+
+  applyTeaser(P);
+  postHeight();
+}
+
+function applyTeaser(P){
+  if (P.isPaid) return;
+  const wrap=document.getElementById('lockWrap');
+  const ov=document.getElementById('lockOverlay');
+  wrap.classList.add('locked');
+  ov.style.display='flex';
+  ov.innerHTML =
+    '<svg class="lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'
+    + '<div class="lock-title">Sieh, woran du jede Stress-Stufe erkennst \u2014 und was sie sofort abf\u00e4ngt.</div>'
+    + '<a class="lock-cta" href="'+UPGRADE_URL+'" target="_top">Jetzt freischalten</a>';
+  // CTA-Abschnitt unter der Paywall ausblenden (kein Quest-Link im Teaser)
+  const cta=document.getElementById('ctaSection');
+  if(cta) cta.style.display='none';
+}
+
+let lastH=0;
+function postHeight(){
+  const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+  if(h===lastH)return; lastH=h;
+  parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');
+}
+window.addEventListener('load',render);
+window.addEventListener('resize',postHeight);
+if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+[50,200,500,1000].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
