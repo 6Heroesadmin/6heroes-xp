@@ -128,42 +128,2044 @@ const HERO_LABEL = {
 
 // Kombi-Daten: Schlüssel "basis_zweit". Prototyp: commander_explorer (echte docx-Daten).
 const COMBO = {
-  commander_explorer: {
-    name:'Der <span class="accent">Action-Leader</span>',
-    initials:["C","E"],
-    hook:'Dein <span class="b">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class="z">Explorer</span> bringt Bewegung, Mut zum Ausprobieren und schnelle Realitätsnähe. Zusammen führst du entschlossen, aber beweglich.',
-    traits:[
-      {h:"Intuitive Entscheidungskraft", p:"Du nutzt den Mut zum Ausprobieren, um auch in unbekannten oder komplexen Lagen sofort handlungsfähig zu sein."},
-      {h:"Pragmatisches Momentum", p:"Du beschleunigst Prozesse durch direkten Kontakt zur Realität – „raus aus dem Kopf, rein ins Tun“."},
-      {h:"Flexible Führung", p:"Du führst durch klare Richtung und Verantwortung, bleibst dabei aber beweglich genug, um Pläne spontan an neue Erfahrungen anzupassen."},
-      {h:"Mut zum Experiment", p:"Du integrierst schnelle Test-Loops und Prototypen, um theoretische Planung durch echtes Erleben und direktes Feedback zu ersetzen."},
-      {h:"Begeisternde Tatkraft", p:"Du motivierst andere durch eine Mischung aus klarer, zielorientierter Ansage und ansteckender, spielerischer Energie."}
+  "commander_explorer": {
+    "name": "Der <span class=\"accent\">Action-Leader</span>",
+    "initials": [
+      "C",
+      "E"
     ],
-    mods:[
-      {tag:"Situation 1", title:"Alltag unter Zeitdruck",
-       what:"Unter hohem Zeitdruck (z. B. morgens mit der Familie) will dein Commander sofort Resultate und klare Prioritäten. Dein Explorer beschleunigt durch radikale Improvisation: Frühstück wird zum „To-go-Event“, Details werden „unterwegs“ geklärt – Bewegung aus der Tür zählt mehr als saubere Ordnung.",
-       risk:"Dein Umfeld fühlt sich hektisch überfahren und emotional nicht mitgenommen. Durch das Tempo werden wichtige Dinge vergessen, was später neuen Stress erzeugt.",
-       goal:"Umsetzungsgeschwindigkeit erhalten – durch kluge, vorbereitete Strukturen, ohne die Mitmenschen durch Hektik zu belasten.",
-       exName:"„Departure Kit“",
-       ex:"Installiere einen festen Korb an der Tür mit allen „Ready-to-go“-Utensilien (Schlüssel, Snacks, Ersatz). Nutze die Explorer-Energie für den schnellen Aufbruch, während das Kit die Commander-Sicherheit garantiert, nichts Wichtiges zu vergessen."},
-      {tag:"Situation 2", title:"Komplexe Entscheidungen",
-       what:"Eine wichtige Entscheidung steht an. Dein Commander will eine klare Richtung vorgeben und Verantwortung übernehmen. Dein Explorer drängt, keine Zeit mit langen Analysen zu verlieren, sondern durch „Trial-and-Error“ sofort Fakten zu schaffen – handeln und die Wirkung spüren, bevor alles zu Ende gedacht ist.",
-       risk:"Du neigst zu impulsiven Entscheidungen ohne strategische Absicherung. Stakeholder fühlen sich übergangen, weil du Risiken durch Ausprobieren managst statt sie vorab einzuordnen.",
-       goal:"Führung durch schnelles Handeln, das auf einem minimalen, aber soliden strategischen Gerüst basiert.",
-       exName:"„30-Min Rapid Assessment“",
-       ex:"Begrenze die Analysezeit radikal. Definiere in 30 Minuten nur: 1. das übergeordnete Ziel, 2. das absolut Nicht-Verhandelbare, 3. die erste konkrete Aktion. Handle danach sofort."},
-      {tag:"Situation 3", title:"Deadline-Phasen in Projekten",
-       what:"Ein Projekt nähert sich der Ziellinie. Dein Commander treibt die Ausführung massiv voran und fordert Ergebnisse. Dein Explorer sucht gleichzeitig nach Abkürzungen, Prototypen und direktem Kundenkontakt – du willst das Ziel erreichen, den Weg aber dynamisch halten.",
-       risk:"Der Fokus leidet unter „Scope-Sprüngen“. Spontane Richtungswechsel verwässern die Planung, verunsichern das Team und schwächen die Verbindlichkeit im Endspurt.",
-       goal:"Projekterfolg sichern durch kontrollierte Experimentierfenster innerhalb einer ansonsten harten Umsetzungsphase.",
-       exName:"„Timeboxed Field Loops“",
-       ex:"Erlaube dir und dem Team definierte Zeitfenster (z. B. 2 Stunden) für einen schnellen Test. Nach Ablauf wird das Ergebnis bewertet, die Richtung eingefroren und die Commander-Energie fließt ausschließlich in die finale Fertigstellung."},
-      {tag:"Situation 4", title:"Schwierige Feedbackgespräche",
-       what:"Ein kritisches Mitarbeitergespräch steht an. Dein Commander will die Fakten direkt und unmissverständlich auf den Tisch legen. Dein Explorer will es locker, humorvoll und motivierend halten („Das kriegen wir easy hin“) – es entsteht eine Dynamik zwischen harter Ansage und kumpelhafter Ermutigung.",
-       risk:"Die notwendige Kritik wird zu vage oder „zu weich“ verpackt. Dein Gegenüber nimmt die Dringlichkeit nicht ernst, weil die lockere Explorer-Art die Commander-Konsequenz überlagert.",
-       goal:"Unmissverständliche, direkte Klarheit mit einer motivierenden Begeisterung für die gemeinsame Weiterentwicklung verbinden.",
-       exName:"„Care + Cut + Coach“",
-       ex:"1. Care: echtes Vertrauen ausdrücken („Ich will, dass du erfolgreich bist“). 2. Cut: glasklar und mit Beispielen benennen, was sich ändern muss. 3. Coach: ein 10-tägiges „Explorer-Experiment“ mit festem Review-Datum vereinbaren."}
+    "hook": "Dein <span class=\"b\">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class=\"z\">Explorer</span> bringt Freiheit hinein und lebt von Neugier, Spontaneität und dem Entdecken neuer Wege. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Intuitive Entscheidungskraft",
+        "p": "Nutzt den Mut zum Ausprobieren, um auch in unbekannten oder komplexen Lagen sofort handlungsfähig zu sein."
+      },
+      {
+        "h": "Pragmatisches Momentum",
+        "p": "Beschleunigt Prozesse durch den direkten Kontakt zur Realität nach dem Motto: „Raus aus dem Kopf -- rein ins Tun\"."
+      },
+      {
+        "h": "Flexible Führung",
+        "p": "Führt durch klare Richtung und Verantwortung, bleibt dabei aber beweglich genug, um Pläne spontan an neue Erfahrungen anzupassen."
+      },
+      {
+        "h": "Mut zum Experiment",
+        "p": "Integriert schnelle Test-Loops und Prototypen, um theoretische Planung durch echtes Erleben und direktes Feedback zu ersetzen."
+      },
+      {
+        "h": "Begeisternde Tatkraft",
+        "p": "Motiviert andere durch eine Mischung aus klarer, zielorientierter Ansage und einer ansteckenden, spielerischen Energie."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) will dein Commandersofortige Resultate und klare Prioritäten („Wir müssen jetzt los\"). Dein Zweitheld Explorer beschleunigt diesen Prozess durch radikale Improvisation und den Verzicht auf lange Vorbereitung. Frühstück wird zum „To-go-Event\", Schuhe werden irgendwie angezogen und wichtige Details werden „unterwegs\" geklärt. Die physische Bewegung aus der Tür zählt in diesem Moment mehr als eine saubere Ordnung.",
+        "risk": "Dein Umfeld (Partner oder Kinder) fühlt sich oft hektisch überfahren und emotional nicht mitgenommen. Durch die hohe Geschwindigkeit und das spontane Improvisieren werden häufig wichtige Dinge vergessen, was zu einem späteren Zeitpunkt neuen Stress und Koordinationsaufwand erzeugt.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch kluge, vorbereitete Strukturen, ohne die Mitmenschen durch Hektik zu belasten.",
+        "exName": "„Departure Kit\"",
+        "ex": "Installiere einen festen Korb an der Tür mit allen „Ready-to-go\"-Utensilien (Schlüssel, Snacks, Ersatz-Utensilien). Nutze die Explorer-Energie für den schnellen Aufbruch, während das Kit die notwendige Commander-Sicherheit garantiert, nichts Wichtiges zu vergessen."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine wichtige Entscheidung steht an. Dein Commander will eine klare Richtung vorgeben und die volle Verantwortung übernehmen. Dein Zweitheld Explorer drängt darauf, keine Zeit mit langwierigen theoretischen Analysen zu verschwenden, sondern durch „Trial-and-Error\" und Intuition sofort Fakten in der Realität zu schaffen. Du willst handeln und die Wirkung spüren, bevor alle Eventualitäten zu Ende gedacht sind.",
+        "risk": "Du neigst zu impulsiven Entscheidungen ohne langfristige strategische Absicherung. Stakeholder oder Mitarbeiter fühlen sich oft übergangen, da du Risiken durch reines Ausprobieren managst, statt sie vorab fundiert einzuordnen.",
+        "goal": "Führung durch schnelles Handeln, das auf einem minimalen, aber soliden strategischen Gerüst basiert.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Begrenze die Analysezeit radikal. Definiere innerhalb von 30 Minuten nur: 1. Das übergeordnete Ziel, 2. Das absolut Nicht-Verhandelbare und 3. Die erste konkrete Aktion. Handle danach sofort."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich der kritischen Ziellinie. Dein Commander treibt die Ausführung („Execution\") massiv voran und fordert Ergebnisse. Der Zweitheld Explorer sucht gleichzeitig nach schnellen Wegen, Abkürzungen oder Prototypen durch direkten Kundenkontakt. Du willst das Ziel erreichen, versuchst aber dabei, den Weg so dynamisch und flexibel wie möglich zu halten, um auf Chancen reagieren zu können.",
+        "risk": "Der Fokus des Projekts leidet unter sogenannten „Scope-Sprüngen\". Neue Test-Ideen oder spontane Richtungswechsel verwässern die ursprüngliche Planung, was das Team verunsichert und die notwendige Verbindlichkeit im Endspurt schwächt.",
+        "goal": "Sicherstellung des Projekterfolgs durch kontrollierte Experimentierfenster innerhalb einer ansonsten harten Umsetzungsphase.",
+        "exName": "„Timeboxed field loops\"",
+        "ex": "Erlaube dir und dem Team genau definierte Zeitfenster (z. B. 2 Stunden) für einen schnellen Test oder Prototyp. Nach Ablauf dieser Zeit wird das Ergebnis bewertet, die Richtung eingefroren und die Commander-Energie fließt ausschließlich in die finale Fertigstellung."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Commander möchte die Fakten direkt und unmissverständlich auf den Tisch legen, um Klarheit zu schaffen. Dein Zweitheld Explorer möchte das Gespräch jedoch locker, humorvoll und motivierend gestalten („Das kriegen wir easy hin\"), um die Stimmung nicht zu belasten. Es entsteht eine Dynamik zwischen harter Ansage und fast kumpelhafter Ermutigung.",
+        "risk": "Die notwendige Kritik wird oft zu vage oder „zu weich\" verpackt. Dein Gegenüber nimmt die Dringlichkeit der Verhaltensänderung nicht ernst, da die lockere Explorer-Art die notwendige Commander-Konsequenz überlagert.",
+        "goal": "Kombination von unmissverständlicher, direkter Klarheit mit einer motivierenden Begeisterung für die gemeinsame Weiterentwicklung.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Drücke echtes Vertrauen aus („Ich will, dass du erfolgreich bist\"). 2. Cut: Benenne glasklar und mit konkreten Beispielen, was sich ändern muss (Commander-Klarheit). 3. Coach: Vereinbare ein 10-tägiges „Explorer-Experiment\" für die neue Arbeitsweise mit einem festen Review-Datum."
+      }
+    ]
+  },
+  "commander_guardian": {
+    "name": "Der <span class=\"accent\">Protective Commander</span>",
+    "initials": [
+      "C",
+      "G"
+    ],
+    "hook": "Dein <span class=\"b\">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class=\"z\">Guardian</span> bringt Nähe und Verlässlichkeit hinein und lebt von Empathie, Harmonie und der Sorge um das Wohl der Gemeinschaft. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Protektive Führung",
+        "p": "Verbindet starke Durchsetzungskraft mit hoher Fürsorge und Loyalität für das Team."
+      },
+      {
+        "h": "Qualitätsorientierte Umsetzung",
+        "p": "Treibt Ergebnisse mit Nachdruck voran, sichert aber gleichzeitig Standards und Prozesse akribisch ab."
+      },
+      {
+        "h": "Verlässlicher Rahmen",
+        "p": "Schafft psychologische Sicherheit durch eine klare Richtung und stabile, schützende Regeln."
+      },
+      {
+        "h": "Menschliche Stärke",
+        "p": "Bleibt streng in der Sache und fordernd in der Leistung, ist dabei aber zutiefst unterstützend gegenüber den Menschen."
+      },
+      {
+        "h": "Strukturierte Fürsorge",
+        "p": "Nutzt klare Ansagen und Führung als Werkzeug, um Chaos zu vermeiden und das Team vor unnötigem Stress zu schützen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten mit hohem Zeitdruck (z. B. am Morgen mit der Familie) will dein Commander sofortige Resultate und klare Prioritäten („Wir müssen jetzt los\"). Gleichzeitig meldet sich dein Zweitheld Guardian, der sicherstellen will, dass alles ordentlich, richtig und sicher erledigt ist (Brotbox, Helm, Wetterregeln). Du wirst sehr strukturierend und korrigierst jedes Detail, um ein Scheitern des Ablaufs zu verhindern.",
+        "risk": "Du gibst extrem viele Anweisungen. Wenn Widerstand kommt oder die Zeit wegläuft, steigt deine verbale Schärfe massiv an. Dein Umfeld fühlt sich durch das Mikromanagement der Details bevormundet und unter Druck gesetzt, was die Stimmung belastet.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch die bewusste Wahl des passenden Qualitätsmodus, ohne die Mitmenschen durch unnötige Strenge zu überfordern.",
+        "exName": "„2-Modus-Morgen\"",
+        "ex": "Entscheide vorab: Gilt heute der Tempo-Modus (nur das Nötigste, „gut genug\" reicht) oder der Qualitäts-Modus (wenn Zeit für Details ist). Nutze einen Standardsatz: „Heute ist Tempo-Modus\", um die Erwartungen für dich und andere zu klären."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine wichtige Entscheidung steht an. Dein Commander will die Richtung vorgeben und die Verantwortung übernehmen. Dein Zweitheld Guardian drängt jedoch auf zusätzliche Absicherung und Genauigkeit, um keine Fehler zu machen, die dem System oder den Menschen schaden könnten. Du steckst fest zwischen dem Drang zum schnellen Abschluss und der Angst vor einer unsauberen Entscheidung.",
+        "risk": "Es entsteht eine „Paralyse durch Analyse\" oder eine Dauer-Nachkontrolle. Du triffst zwar Entscheidungen, traust ihnen aber nicht vollends und prüfst ständig nach, was das Tempo bremst und bei Mitarbeitern das Gefühl von Misstrauen erzeugt.",
+        "goal": "Erhöhung der Entscheidungsgeschwindigkeit durch Akzeptanz kalkulierter Risiken und Reduktion von Kontrollschleifen.",
+        "exName": "„3 Zeilen nach oben\"",
+        "ex": "Wenn eine Entscheidung ansteht, reduziere sie auf drei Punkte: 1. Was ist das gewünschte Outcome? 2. Wo liegt der eigentliche Engpass? 3. Welche Entscheidung brauche ich jetzt? Triff die Wahl und verbiete dir danach für einen festen Zeitraum jede Nachkontrolle."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich der kritischen Ziellinie. Dein Commander treibt die Umsetzung massiv voran. Der Zweitheld Guardian bekommt jedoch kurz vor Schluss eine „Qualitätspanik\": Er will alles noch einmal prüfen und absichern, um nichts „Halbgares\" oder Fehlerhaftes abzuliefern. Du schwankst zwischen dem Schutz des Zeitplans und dem Drang nach lückenloser Sicherheit.",
+        "risk": "Es kommt zu späten Review-Schleifen und „Scope-Creep\" (nachträgliche Änderungen). Dies erzeugt massiven Stress im Team, gefährdet die Deadline und führt dazu, dass du dich in kleinteiligen Kontrollen verlierst, statt das große Ganze zu steuern.",
+        "goal": "Sicherstellung des Projekterfolgs durch striktes Einfrieren von Prüfprozessen und Fokus auf die finale Fertigstellung.",
+        "exName": "„Freeze Dates\"",
+        "ex": "Lege unumstößliche Termine fest. Ab T-10 (10 Tage vor Deadline) wird kein neuer Umfang (Scope) mehr zugelassen. Ab T-5 sind ausschließlich kritische Fehlerkorrekturen (Bugfixes) erlaubt. Nutze den täglichen 12-Minuten-Stand-up, um nur noch Engpässe und Blocker zu klären."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Commander möchte die Fakten direkt und unmissverständlich benennen. Dein Zweitheld Guardian möchte dabei absolut fair sein, will die Standards des Teams schützen und sammelt unzählige Beispiele, um die Kritik hieb- und stichfest zu beweisen. Du willst Klarheit schaffen, ohne die moralische Integrität zu verlieren.",
+        "risk": "Das Feedback wird oft zu hart im Ton (moralisierend) oder zu umfangreich in der Beweisführung. Dein Gegenüber fühlt sich durch die Menge an Beispielen „erdrückt\" oder persönlich angegriffen, wodurch die eigentliche Botschaft zur Verhaltensänderung untergeht.",
+        "goal": "Kombination von unmissverständlicher Direktheit mit einer wertschätzenden Haltung, die an das Potenzial des Gegenübers glaubt.",
+        "exName": "„Die 4-Satz-Formel\"",
+        "ex": "1. Beobachtung: Benenne max. 2 konkrete Beispiele. 2. Wirkung: Erkläre die sachliche Folge für das Team. 3. Erwartung: Formuliere klar den künftigen Standard. 4. Support: Frage: „Wie können wir das sicher hinbekommen?\". Steige mit einem wertschätzenden Satz ein: „Ich sage dir das, weil du wichtig für das Team bist.\""
+      }
+    ]
+  },
+  "commander_innovator": {
+    "name": "Der <span class=\"accent\">Disruptive Leader</span>",
+    "initials": [
+      "C",
+      "I"
+    ],
+    "hook": "Dein <span class=\"b\">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class=\"z\">Innovator</span> bringt Möglichkeiten hinein und lebt von Zukunftsvisionen, kreativer Neuerfindung und dem Mut, das Bekannte radikal infrage zu stellen. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Visionäre Durchsetzung",
+        "p": "Öffnet neue Türen und setzt radikale, unkonventionelle Ideen konsequent und energisch durch."
+      },
+      {
+        "h": "Kreative Führung",
+        "p": "Führt nicht linear, sondern nutzt mutige Perspektivwechsel und innovative Optionen, um Ziele zu erreichen."
+      },
+      {
+        "h": "Smarte Effizienz",
+        "p": "Sucht ständig nach technologischen oder prozessualen Shortcuts und Hacks, um Ergebnisse intelligenter zu erzielen."
+      },
+      {
+        "h": "Mutige Entscheidungskraft",
+        "p": "Trifft Entscheidungen oft jenseits des Standardweges, um eine disruptive Wirkung im System zu erzeugen."
+      },
+      {
+        "h": "Inspirierendes Momentum",
+        "p": "Motiviert andere durch visionäres Framing und eine ansteckende Lust am spielerischen Ausprobieren."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) will dein Commandersofortige Resultate und klare Prioritäten („Wir müssen jetzt los\"). Dein Zweitheld Innovator versucht gleichzeitig, das Tempo über kreative Hacks zu erhöhen. Du hast eine plötzliche Idee, wie man den Ablauf spielerischer gestalten könnte, etwa durch eine Challenge oder eine völlig neue Routine, um den Widerstand bei anderen zu brechen. Du schwankst zwischen der autoritären Ansage und dem Versuch, die Situation durch eine smarte, neue Methode zu „gewinnen\".",
+        "risk": "Wenn die neue Idee den Ablauf instabil macht oder du die Methode zu oft wechselst, entsteht Unruhe im Umfeld. Dein Commander reagiert bei Scheitern des Hacks oft genervt oder extrem kontrollierend. Die ständigen Richtungswechsel wirken chaotisch statt beschleunigend.",
+        "goal": "Erhöhung der Effizienz durch stabile, wiederholbare Routinen bei gleichzeitigem Raum für gezielte, zeitlich begrenzte Innovation.",
+        "exName": "„Ein Hack pro Woche\"",
+        "ex": "Du darfst den Ablauf optimieren, aber nur mit maximal einer neuen Methode pro Woche. Nutze für Zeitdruck-Momente das „2-Minuten-Game\" (feste Mini-Challenge wie „Zähne in 120 Sek.\"), um spielerisch Tempo zu machen, ohne die Routine zu sprengen."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine komplexe Entscheidung steht an, die Führung verlangt. Dein Commander ist bereit, die Richtung vorzugeben und die Verantwortung zu übernehmen. Doch dein Zweitheld Innovator bringt unkonventionelle Hypothesen und mutige Perspektivwechsel ins Spiel. Anstatt dem Gegenüber eine klare, einfache Richtung zu geben, präsentierst du oft eine Vielzahl von „genialen Hebeln\" oder kreativen Optionen gleichzeitig. Du willst nicht nur führen, sondern dabei auch einen radikalen Shortcut finden, der über das Gewöhnliche hinausgeht.",
+        "risk": "Die eigentliche Entscheidungskraft des Commanders wird verwässert. Stakeholder fühlen sich durch den „Ideen-Overkill\" überfordert und vermissen eine klare Zusage. Die Verbindlichkeit leidet unter der ständigen Suche nach einer noch smarteren Option.",
+        "goal": "Schnelle Entschlossenheit durch Reduktion der Komplexität auf einen einzigen, wirksamen Haupthebel.",
+        "exName": "„One lever answer\"",
+        "ex": "Präsentiere bei Entscheidungen immer nur genau einen Haupthebel und maximal ein Backup. Kommuniziere den Trade-off zwischen Geschwindigkeit und Scope/Qualität klar: „Ich liefere Speed, dafür reduzieren wir diesen Teil des Projekts.\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich der kritischen Ziellinie. Dein Commander treibt die Umsetzung massiv voran und fordert Ownership vom Team. Mitten in dieser Hochphase hat dein Zweitheld Innovator jedoch den „letzten genialen Einfall\": Er möchte den Prozess kurz vor Schluss automatisieren oder ein neues Tool einführen, weil das morgen Zeit sparen würde. Du bist überzeugt, dass diese Neuerung den Durchbruch bringt, und willst das System umstellen, während alle anderen bereits auf Hochtouren für die Fertigstellung arbeiten.",
+        "risk": "Der „letzte geniale Einfall\" erzeugt kurz vor der Deadline Chaos statt Fortschritt. Die Fehlerquote steigt durch die Umstellung massiv an, das Team verliert den Fokus, und die eigentlich sichere Lieferung wird durch das Experiment gefährdet.",
+        "goal": "Sicherstellung des Projekterfolgs durch strikte Trennung von Optimierungs- und Umsetzungsphasen.",
+        "exName": "„No-new-tools window\"",
+        "ex": "Lege fest, dass ab T-10 Tagen (10 Tage vor Deadline) absolut keine neuen Tools oder Prozesse mehr eingeführt werden dürfen. Reserviere täglich maximal 45 Minuten als „Innovation Slot\" für kleine Optimierungen; der Rest des Tages gehört der kompromisslosen Execution."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Commander möchte die Fakten direkt und unmissverständlich benennen, um die Leistung zu korrigieren. Dein Zweitheld Innovator möchte das Feedback jedoch „kreativ\" gestalten. Du nutzt Metaphern, sprichst über das „Big Picture\" oder versuchst, das Problem in eine neue visionäre Rolle umzudeuten. Du willst inspirieren statt nur zu korrigieren und hoffst, dass die Vision allein schon die Veränderung bewirkt, ohne dass du zu hart klingen musst.",
+        "risk": "Das Feedback bleibt unkonkret. Der Mitarbeiter hört zwar spannende Visionen, weiß aber am Ende des Gesprächs nicht, was er konkret falsch gemacht hat. Die notwendige Verhaltensänderung geht in der „Ideen-Welt\" verloren und wirkt wie ein unverbindlicher Pitch.",
+        "goal": "Kombination von unmissverständlicher, direkter Klarheit mit einer inspirierenden Vision für die künftige Entwicklung.",
+        "exName": "„Vision + Clear Action\"",
+        "ex": "Nutze den Commander für den Einstieg: „Ich spreche das an, weil ich an dich glaube.\" Benenne dann glasklar den kritischen Punkt. Nutze den Innovator erst danach, um gemeinsam ein konkretes 10-Tage-Experiment für das neue Verhalten zu definieren."
+      }
+    ]
+  },
+  "commander_sage": {
+    "name": "Der <span class=\"accent\">Principled Leader</span>",
+    "initials": [
+      "C",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class=\"z\">Sage</span> bringt Klarheit und Erkenntnis hinein und lebt von Analyse, Logik und dem tiefen Verständnis der Welt. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Begründete Kraft",
+        "p": "Führt nicht nur durch Ansagen, sondern durch tief durchdachte Logik und Sinnhaftigkeit."
+      },
+      {
+        "h": "Integrität in Aktion",
+        "p": "Verbindet entschlossenes Handeln mit einem unbestechlichen inneren Wertekompass."
+      },
+      {
+        "h": "Reflektierte Führung",
+        "p": "Bleibt auch unter Druck besonnen und ordnet Entscheidungen in einen größeren Kontext ein."
+      },
+      {
+        "h": "Souveräne Sachlichkeit",
+        "p": "Schafft Orientierung durch Objektivität und die Fähigkeit, Perspektiven klug zu wechseln."
+      },
+      {
+        "h": "Wertebasierte Verbindlichkeit",
+        "p": "Steht für Ergebnisse ein, die moralisch und fachlich einer tiefen Prüfung standhalten."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten (z. B. am Morgen mit der Familie) will dein Commander sofortige Resultate und klare Prioritäten („Wir müssen jetzt los\"). Dein Zweitheld Sage möchte die Situation jedoch nutzen, um Prinzipien zu vermitteln oder den Sinn einer Regel zu erklären (z. B. „Wir respektieren die Zeit anderer\"). Du fühlst dich verpflichtet, nicht nur zu agieren, sondern dabei auch eine pädagogische oder philosophische Tiefe zu wahren, um sicherzustellen, dass das richtige Muster gelernt wird.",
+        "risk": "Du hältst eine „Mini-Rede\" oder beginnst eine Grundsatzdiskussion, während die Uhr unaufhörlich tickt. Dies führt zu Verzögerungen und erzeugt bei anderen das Gefühl, belehrt zu werden, statt einfach nur loszukommen. Die Energie verpufft in der Theorie, während die praktische Umsetzung blockiert wird.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch radikale Verkürzung der Sinnvermittlung in Hochdruckphasen.",
+        "exName": "„Principle in one line\"",
+        "ex": "Reduziere dein Prinzip auf genau einen Satz (z. B. „Wir gehen respektvoll mit Zeit um -- jetzt Schuhe an.\"). Danach wird sofort gehandelt. Vertage tiefergehende Erklärungen oder Reflexionen auf einen ruhigen Moment am Abend („Teaching later\")."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine wichtige Entscheidung verlangt nach einer klaren Richtung. Dein Commander ist bereit, die Verantwortung zu übernehmen und voranzugehen. Dein Zweitheld Sage drängt jedoch auf eine lückenlose Reflexion und den Einbezug aller Perspektiven. Du willst nicht einfach nur entscheiden, sondern sicherstellen, dass die Wahl fachlich wahr, ethisch korrekt und bis ins Letzte durchdrungen ist. Du hast Angst, durch schnelles Handeln an Tiefe oder Integrität zu verlieren.",
+        "risk": "Die Entscheidung wird unnötig komplex. Du blockierst den Fortschritt durch „Prinzipienreiterei\" oder verlierst dich in theoretischen Erörterungen, die für die pragmatische Lösung nicht zwingend erforderlich sind. Dein Umfeld erlebt dich als zögerlich oder zu akademisch, was die Durchschlagskraft der Führung schwächt.",
+        "goal": "Erhöhung der Entscheidungsgeschwindigkeit durch Akzeptanz pragmatischer Wahrheiten und den Fokus auf den Kernhebel.",
+        "exName": "„3 Zeilen nach oben\"",
+        "ex": "Reduziere die Entscheidungsvorlage für dich selbst auf drei Punkte: 1. Was ist das gewünschte Outcome? 2. Wo liegt der eigentliche Engpass? 3. Welche Entscheidung brauche ich jetzt? Triff die Wahl basierend auf diesen Fakten und beende die Suche nach weiteren „Warum\"-Ebenen."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Commander treibt die Fertigstellung mit Nachdruck voran. Plötzlich erkennt dein Zweitheld Sage eine fachliche Unschärfe oder einen Widerspruch zu den ursprünglichen Werten des Projekts. Du spürst den Drang, kurz vor Schluss noch einmal alles „richtig\" zu stellen, da eine fachlich nicht 100% korrekte Lösung für dich wertlos erscheint. Du willst um keinen Preis eine „Lüge\" oder ein halbgares Produkt abliefern.",
+        "risk": "Es kommt zu späten Korrekturen oder tiefgreifenden Diskussionen über Grundsatzfragen unmittelbar vor der Deadline. Dein Perfektionismus und dein Anspruch an absolute Wahrheit gefährden den Zeitplan und überfordern das Team, das in diesem Moment nur noch die Ziellinie erreichen will.",
+        "goal": "Projektsicherheit durch die Definition von „wahr genug\" für die aktuelle Version und das Aushalten kleinerer Unschärfen.",
+        "exName": "„Truth gate\" früh (T-14)",
+        "ex": "Installiere einen verbindlichen Qualitäts- und Wahrheitscheck genau 14 Tage vor der Deadline. Danach sind keine grundlegenden Korrekturen am System oder den Prinzipien mehr erlaubt. Definiere ein „Error budget\" -- was ist eine tolerierbare Unschärfe, die den Projekterfolg nicht gefährdet?"
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Commander möchte direkt und unmissverständlich auf den Punkt kommen. Dein Zweitheld Sage möchte dem Gegenüber jedoch den tieferen Sinn der Kritik vermitteln und spricht über Haltung, Werte und Identität („So wirst du die Person, die\\...\"). Du versuchst, das Fehlverhalten in einen großen philosophischen oder wertebasierten Rahmen einzuordnen, um eine echte Einsicht zu bewirken.",
+        "risk": "Das Feedback wird zu philosophisch oder moralisch überladen. Der Mitarbeiter fühlt sich moralisch bewertet statt professionell korrigiert. Die eigentliche Botschaft, was konkret anders gemacht werden soll, geht in der Tiefe der Argumentation verloren und wirkt auf das Gegenüber oft wie eine schwere Standpauke.",
+        "goal": "Kombination von direkter Commander-Klarheit mit einer kurzen, prägnanten Sinnstiftung.",
+        "exName": "„Behavior → Principle → Choice\"",
+        "ex": "1. Behavior: Benenne das beobachtete Verhalten (max. 2 Beispiele). 2. Principle: Erkläre in maximal 60 Sekunden das dahinterliegende Prinzip (z. B. „Für unsere Arbeit ist Verlässlichkeit wichtig\"). 3. Choice: Gib dem Mitarbeiter eine klare Wahl für die Zukunft und vereinbare einen nächsten Schritt bis zum Ende der Woche. Beende das Gespräch mit einer konkreten Frage: „Was nimmst du daraus mit?\"."
+      }
+    ]
+  },
+  "commander_strategist": {
+    "name": "Der <span class=\"accent\">Präzise Macher</span>",
+    "initials": [
+      "C",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class=\"z\">Strategist</span> bringt Struktur und Exzellenz hinein und lebt von Präzision, Logik und methodische Stärke. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Gezielte Tatkraft",
+        "p": "Liefert Ergebnisse nicht nur schnell, sondern mit strategischem Fokus und exzellentem Timing."
+      },
+      {
+        "h": "Systematische Umsetzung",
+        "p": "Verwandelt hohen Drive und Energie in geordnete, hocheffiziente Prozesse."
+      },
+      {
+        "h": "Analytische Führung",
+        "p": "Führt durch klare Ansagen, die auf einer tiefen Durchdringung von Abhängigkeiten basieren."
+      },
+      {
+        "h": "Hebel-Optimierung",
+        "p": "Findet instinktiv den Punkt mit der größten Wirkung, um Ressourcen maximal wirksam einzusetzen."
+      },
+      {
+        "h": "Methodisches Momentum",
+        "p": "Kombiniert unaufhaltsamen Vorwärtsdrang mit präziser Priorisierung und Szenarioplanung."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten (z. B. am Morgen mit der Familie) will dein Commander sofortige Resultate und klare Prioritäten („Wir müssen jetzt los\"). Dein Zweitheld Strategist beginnt sofort damit, den Ablauf zu optimieren: Er sucht den Engpass, ändert die Sequenz (erst Kleidung, dann Frühstück oder umgekehrt) und delegiert klare Rollen („Du machst X, ich Y\"). Du willst, dass es stabil läuft, und versuchst, das Chaos durch Prozesslogik zu beherrschen.",
+        "risk": "Du wirst sehr „prozessig\" und ungeduldig, wenn andere dem optimierten Ablauf nicht folgen. Der Versuch, Zeit durch Umstrukturierung zu sparen, führt oft zu Reibung und Frust im Umfeld, da die menschliche Flexibilität hinter die Systemlogik zurückfällt.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch die Lösung eines einzigen Engpasses, statt den gesamten Prozess unter Druck umzubauen.",
+        "exName": "„Bottleneck zuerst\"",
+        "ex": "Identifiziere genau einen physischen Engpass (z. B. „Wo sind die Schuhe?\"). Löse nur diesen (z. B. durch einen festen Platz), statt die gesamte morgendliche Sequenz neu zu verhandeln. Nutze den Satz: „Ein Engpass, eine Lösung, dann Action.\""
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine wichtige Entscheidung steht an. Dein Commander ist bereit, die Richtung vorzugeben und Verantwortung zu übernehmen. Doch der Zweitheld Strategist will erst alle Abhängigkeiten klären und den „besten Hebel\" finden. Du suchst nach dem optimalen Timing und spielst verschiedene Szenarien durch. Du willst nicht nur entscheiden, sondern die strategisch klügste Wahl treffen, die das System langfristig stabilisiert.",
+        "risk": "Es droht eine „Hebel-Blockade\". Der Versuch, die perfekte taktische Positionierung zu finden, bremst den natürlichen Vorwärtsdrang. Du wirkst auf andere zögerlich oder übermäßig taktisch, wodurch die Klarheit der Führung verloren geht.",
+        "goal": "Schnelle Entschlossenheit durch Fokus auf den kritischen Pfad und Akzeptanz von „gut genug\".",
+        "exName": "„Critical Path Board\"",
+        "ex": "Skizziere in 15 Minuten nur das eine Hauptziel und die 5--7 absolut kritischen Aufgaben. Blende alle Neben-Szenarien aus. Triff die Entscheidung basierend auf diesem Kern und starte sofort die Umsetzung."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt geht ins Finale. Dein Commander treibt die Fertigstellung mit Nachdruck voran. Der Zweitheld Strategist fokussiert sich massiv auf den „kritischen Pfad\" und die Einhaltung der Abhängigkeiten. Du willst sicherstellen, dass das Timing perfekt ist und keine Fehler durch unsaubere Prozesse entstehen. Du neigst dazu, kurz vor Schluss noch einmal die Abläufe zu straffen, um die Effizienz zu maximieren.",
+        "risk": "Risiko von Mikromanagement oder zu aggressiven Änderungen an den Abläufen kurz vor dem Ziel. Der Versuch, die „letzte Meile\" methodisch zu perfektionieren, erzeugt Unruhe im Team und kann die eigentliche Ausführung (Execution) behindern.",
+        "goal": "Sicherung des Projekterfolgs durch striktes Einfrieren von Abläufen und Fokus auf reine Erledigung.",
+        "exName": "„Freeze Dates\"",
+        "ex": "Lege unumstößliche Termine fest. Ab Datum X werden keine Änderungen mehr an Prozessen oder Zuständigkeiten zugelassen. Ab Datum Y erfolgt ausschließlich die Fehlerbehebung. Nutze das tägliche 12-Minuten-Stand-up nur für drei Fragen: Was ist kritisch? Was blockiert? Was entscheide ich jetzt?"
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Commander ist direkt und klar in der Erwartung. Dein Zweitheld Strategist möchte dem Gegenüber jedoch einen strukturierten Entwicklungspfad und ein taktisches „Playbook\" an die Hand geben („So kommst du weiter\"). Du versuchst, die Leistung durch Prozessoptimierung und Karriere-Design zu steuern.",
+        "risk": "Das Feedback wird oft zu taktisch oder wirkt wie ein kühles „Performance-Design\". Die menschliche Ebene und die emotionale Wirkung der Kritik werden durch die strukturierte Entwicklungsplanung überlagert, was beim Gegenüber zu Distanz führen kann.",
+        "goal": "Kombination von direkter Klarheit mit einem einfachen, messbaren Entwicklungsschritt.",
+        "exName": "„Now / Next / Path\"",
+        "ex": "1. Now: Benenne den aktuellen Gap mit 2 konkreten Beispielen. 2. Next: Definiere genau ein Verhalten, das ab sofort erwartet wird. 3. Path: Vereinbare eine zweiwöchige Übungsphase mit festem Review-Termin. Schreibe gemeinsam eine „Definition of Great\" (3 Bulletpoints), um den Erfolg messbar zu machen."
+      }
+    ]
+  },
+  "explorer_commander": {
+    "name": "Der <span class=\"accent\">Expedition Leader</span>",
+    "initials": [
+      "E",
+      "C"
+    ],
+    "hook": "Dein <span class=\"b\">Explorer</span> will Freiheit, Bewegung und eigene Wege – dein <span class=\"z\">Commander</span> bringt Umsetzung hinein und lebt von Tatkraft, klare Prioritäten und entschlossenes Handeln. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Zielgerichtete Freiheit",
+        "p": "Verbindet Abenteuerlust und Neugier mit klarer Führung und Richtung."
+      },
+      {
+        "h": "Entschlussfreudiger Aufbruch",
+        "p": "Nutzt den Mut zum Neuen, um schnell und verantwortlich Weichen zu stellen."
+      },
+      {
+        "h": "Pragmatische Führung",
+        "p": "Geht voran und setzt klare Ziele, während er den Raum für Flexibilität bewahrt."
+      },
+      {
+        "h": "Tatenreiches Momentum",
+        "p": "Beschleunigt Entdeckungen durch klare Ansagen und konsequentes Handeln im Gelände."
+      },
+      {
+        "h": "Souveräner Kurs",
+        "p": "Hält auch in komplexen Situationen die Richtung und nimmt andere aktiv mit in die Umsetzung."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten mit hohem Zeitdruck (z. B. am Morgen mit der Familie) will dein Explorer einfach nur in Bewegung kommen und die Welt im Tun ordnen („Wir gehen einfach mal raus, der Rest regelt sich unterwegs\"). Dein Zweitheld Commander schaltet sich jedoch ein und fordert Struktur, um den Aufbruch nicht im Chaos versinken zu lassen. Er verlangt klare Prioritäten und kurze Checks, bevor die Tür ins Schloss fällt. Es entsteht ein innerer Konflikt: Du willst die Freiheit des spontanen Losgehens spüren, merkst aber, dass du ohne die Führung des Commanders wichtige Dinge (Schlüssel, Brotbox) vergessen würdest.",
+        "risk": "Der Commander wirkt oft wie eine „Spaßbremse\" auf deine Explorer-Leichtigkeit, was zu Trotz oder innerem Widerstand führen kann. Wenn du den Druck nach außen gibst, wirst du scharf und ungeduldig gegenüber anderen, um das Tempo mit Härte zu erzwingen, statt die Situation spielerisch zu lösen.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch kurze, klare Ankerpunkte, um ohne Schärfe oder Vergesslichkeit in Bewegung zu kommen.",
+        "exName": "„2 Fixpunkte\"",
+        "ex": "Definiere genau zwei Dinge (z. B. Schlüssel und Helm), die vor jedem Aufbruch sitzen müssen. Nutze einen „Soft Command\": „Ich übernehme kurz für 60 Sekunden die Führung, danach sind wir frei.\" Nutze neutrale Signale wie einen 5-Minuten-Countdown statt verbalem Druck."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Druck von außen / Entscheidungssituationen",
+        "what": "Wenn von außen Druck kommt oder eine schnelle Entscheidung verlangt wird, möchte der Explorer oft flexibel bleiben und sich alle Optionen offen halten. Dein Zweitheld Commander neigt jedoch dazu, sofort „Ja\" zu sagen und die volle Verantwortung zu übernehmen, um Handlungsfähigkeit zu demonstrieren („Nicht diskutieren -- handeln\"). Du steckst fest zwischen dem Wunsch, ungebunden zu bleiben, und dem Drang, als starker Entscheider aufzutreten, der die Dinge im Griff hat.",
+        "risk": "Du gibst oft zu schnell eine Zusage, ohne die Konsequenzen für deine eigene Freiheit oder notwendige Trade-offs zu prüfen. Dies führt dazu, dass du dich später durch deine eigene Entscheidung eingesperrt fühlst, was den Fluchtimpuls des Explorers triggert und zu innerem Rückzug führt.",
+        "goal": "Bewusste Verlangsamung des Entscheidungsprozesses, um Klarheit über die Machbarkeit und den Erhalt der eigenen Autonomie zu gewinnen.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Wenn Druck entsteht, nimm dir 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist nicht verhandabel? 3. Wo liegt der eigentliche Engpass? Gib erst danach eine Zusage oder ein „Conditional Yes\" („Ja, wenn Bedingung X erfüllt ist\")."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Ende. Dein Explorer liebt es, in dieser Phase schnelle „Field-Loops\" zu drehen, direkt mit Stakeholdern zu sprechen und Dinge im Tun auszuprobieren. Der Zweitheld Commander will jedoch den Sack zumachen, fordert einen festen Plan und Ownership für das Ergebnis. Es prallt der Wunsch nach spielerischem Ausprobieren auf den harten Drang zur finalen Execution. Du willst das Ziel erreichen, versuchst aber, den Weg so dynamisch wie möglich zu halten.",
+        "risk": "Der Fokus leidet unter sogenannten „Scope-Sprüngen\". Ständig kommen neue Test-Ideen dazukommen, was das Team verunsichert und gehetzt wirken lässt. Die klare Commander-Richtung wird durch sprunghafte Aktionen verwässert, wodurch die notwendige Verbindlichkeit im Endspurt verloren geht.",
+        "goal": "Sicherung der Projektdisziplin durch zeitlich begrenzte Testfenster und einen stabilen Fokus auf das Hauptziel.",
+        "exName": "„Timeboxed loops\"",
+        "ex": "Erlaube dir maximal 2 Stunden für einen Test oder eine Abstimmung im Feld. Danach kehrst du zwingend zur reinen Ausführung zurück. Nutze ein „One outcome board\": Sichtbar ist nur 1 Ziel und 3 Meilensteine, um die Commander-Klarheit für alle zu wahren."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Explorer möchte die Situation leicht, locker und motivierend halten („Das kriegen wir easy hin\"), um die gute Stimmung und die kumpelhafte Beziehung nicht zu gefährden. Der Zweitheld Commander will jedoch Klartext reden, die Fakten direkt auf den Tisch legen und eine Korrektur erzwingen. Es entsteht eine Dynamik zwischen harter Ansage und fast kumpelhafter Ermutigung.",
+        "risk": "Die Kritik wird oft zu weich oder zu vage verpackt. Dein Gegenüber nimmt die Dringlichkeit der Veränderung nicht ernst, da die lockere Explorer-Art die notwendige Commander-Konsequenz überlagert. Es fehlt die klare Linie zwischen Unterstützung und Forderung.",
+        "goal": "Kombination von unmissverständlicher Commander-Klarheit mit einer motivierenden und unterstützenden Explorer-Haltung.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Drücke Vertrauen aus („Ich will, dass du erfolgreich bist\"). 2. Cut: Benenne glasklar den kritischen Punkt mit 2 Beispielen (Commander-Klarheit). 3. Coach: Vereinbare ein 10-tägiges „Explorer-Experiment\" für die neue Arbeitsweise und lege ein festes Review-Datum fest. Benenne die Konsequenz ruhig und klar: „Wenn X nicht passiert, hat das Wirkung Y.\""
+      }
+    ]
+  },
+  "explorer_guardian": {
+    "name": "Der <span class=\"accent\">Grounded Explorer</span>",
+    "initials": [
+      "E",
+      "G"
+    ],
+    "hook": "Dein <span class=\"b\">Explorer</span> will Freiheit, Bewegung und eigene Wege – dein <span class=\"z\">Guardian</span> bringt Nähe und Verlässlichkeit hinein und lebt von Empathie, Harmonie und der Sorge um das Wohl der Gemeinschaft. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Verantwortungsbewusste Freiheit",
+        "p": "Verbindet Abenteuerlust und Neugier mit einer tiefen Sorgfalt für das Umfeld und die Mitmenschen."
+      },
+      {
+        "h": "Nachhaltiger Aufbruch",
+        "p": "Erforscht neue Wege, ohne die Sicherheit und Stabilität des Bestehenden leichtfertig zu gefährden."
+      },
+      {
+        "h": "Empathische Flexibilität",
+        "p": "Bleibt in der Sache beweglich und offen, achtet dabei aber sensibel auf die emotionalen Bedürfnisse des Teams."
+      },
+      {
+        "h": "Berechenbare Spontaneität",
+        "p": "Nutzt intuitive Impulse, sichert diese aber durch verlässliche Routinen und Nachsorge ab."
+      },
+      {
+        "h": "Soziale Exploration",
+        "p": "Öffnet Räume für Neues, in denen sich Menschen durch ein starkes Sicherheitsnetz sicher und gut aufgehoben fühlen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten (z. B. am Morgen mit der Familie) will dein Explorer einfach nur in Bewegung kommen und die Welt im Tun ordnen („Komm -- raus hier, unterwegs regeln wir's\"). Dein Zweitheld Guardian zieht jedoch die Notbremse: Er fordert Sicherheit, Ordnung und Sorgfalt ein (Schuhe, Brotbox, Wetter-Check). Es entsteht ein innerer Konflikt zwischen dem Drang nach Freiheit und dem Bedürfnis, alles „richtig\" zu machen, um später keinen Stress durch Vergessenes zu haben.",
+        "risk": "Du fühlst dich durch den Guardian ausgebremst und wirst ungeduldig. Gleichzeitig wird der Guardian nervös und kontrollierend, weil er das drohende Chaos absichern will. Das Ergebnis ist oft Hektik im Außen bei gleichzeitiger Detail-Fixierung im Innen.",
+        "goal": "Erhalt der Explorer-Leichtigkeit durch minimale, verlässliche Sicherheitsanker, um ohne „Nachstress\" in Bewegung zu kommen.",
+        "exName": "„2 Fixpunkte\"",
+        "ex": "Definiere genau zwei Dinge (z. B. Schlüssel und Brotbox/Helm), die absolut sicher sein müssen. Nutze das „Departure Kit\" (fester Korb an der Tür) für Kleinteile. Verpflichte dich im Zeitdruck auf den „Tempo-Modus\": „Heute ist gut genug\"."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck kommt, eine schnelle Zusage zu geben, will der Explorer oft sofort ins Machen kommen, um die Dynamik zu nutzen. Dein Zweitheld Guardian mahnt jedoch zur Vorsicht: Er sorgt sich um die Belastung des Teams oder um die Qualität der Umsetzung. Du steckst fest zwischen dem Drang, den Weg frei zu machen, und der Sorge, durch ein zu schnelles „Ja\" Menschen oder Standards zu verbrennen.",
+        "risk": "Du gibst entweder ein zu schnelles Versprechen ab, das dich später einengt (Explorer-Falle), oder du blockierst die Entscheidung aus einer vagen Sorge heraus, was dich unentschlossen wirken lässt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch klare Priorisierung und den Mut zu kalkulierten Trade-offs.",
+        "exName": "„Conditional Yes\"",
+        "ex": "Gib keine bedingungslose Zusage. Nutze die Formel: „Ja, wenn A oder B geklärt ist.\" Oder stelle ein „2-Pfad-Angebot\" auf: Entweder wir machen es schnell (mit Risiko) oder sauber (mit mehr Zeit/Ressourcen)."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer liebt es, in dieser Phase noch schnelle Loops zu drehen und Dinge im Feld auszuprobieren. Der Zweitheld Guardian hingegen bekommt eine „Qualitätspanik\": Er will alles noch einmal prüfen, absichern und Review-Schleifen drehen, um Überraschungen oder Fehler zu vermeiden.",
+        "risk": "Der Fokus leidet massiv. Entweder springt der Scope durch neue Explorer-Ideen ständig hin und her, oder der Guardian bremst den Endspurt durch späte Korrekturwünsche aus. Das Team reagiert genervt auf die mangelnde Verbindlichkeit.",
+        "goal": "Sicherung der Umsetzungsdisziplin durch radikale zeitliche Begrenzung von Tests und Prüfungen.",
+        "exName": "„Timeboxed loops\"",
+        "ex": "Erlaube dir maximal 2 Stunden für einen Test oder ein Review. Danach wird die Richtung kompromisslos eingefroren. Nutze die „Definition of Done\": Definiere 3 Kriterien, bei deren Erreichen das Projekt als abgeschlossen gilt, und verbiete dir danach jeden weiteren Check."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Explorer möchte die Situation leicht und motivierend halten, um die Beziehung nicht durch „schwere Kost\" zu belasten. Dein Zweitheld Guardian hingegen will fair sein und sammelt unzählige Beispiele, um die Kritik korrekt und hieb- und stichfest zu belegen. Es prallt der Wunsch nach Leichtigkeit auf den Drang nach (über-)sorgfältiger Beweisführung.",
+        "risk": "Das Feedback wird entweder zu weich verpackt (die Botschaft geht verloren) oder es wird durch die Menge an Guardian-Beispielen so schwer und umfangreich, dass das Gegenüber eher demotiviert als gecoacht wird.",
+        "goal": "Kombination von motivierender Offenheit mit einer prägnanten, sachlichen Klarheit.",
+        "exName": "„Care + Beobachtung + Erwartung\"",
+        "ex": "1. Care: Signalisiere Wertschätzung. 2. Beobachtung: Nenne max. 2 konkrete Beispiele (nicht 7!). 3. Erwartung: Formuliere ein klares Ziel für die nächsten 10 Tage. 4. Review: Lege sofort ein Datum fest, an dem ihr den Fortschritt prüft. Halte den Ton ruhig, kurz und konkret."
+      }
+    ]
+  },
+  "explorer_innovator": {
+    "name": "Der <span class=\"accent\">Trailblazer</span>",
+    "initials": [
+      "E",
+      "I"
+    ],
+    "hook": "Dein <span class=\"b\">Explorer</span> will Freiheit, Bewegung und eigene Wege – dein <span class=\"z\">Innovator</span> bringt Möglichkeiten hinein und lebt von Zukunftsvisionen, kreativer Neuerfindung und dem Mut, das Bekannte radikal infrage zu stellen. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Erfinderischer Vorwärtsdrang",
+        "p": "Erfindet direkt im Tun neue Wege und Optionen, die für andere unsichtbar bleiben."
+      },
+      {
+        "h": "Kreative Improvisation",
+        "p": "Verknüpft pragmatisches Handeln mit originellen Shortcuts und unkonventionellen Lösungen."
+      },
+      {
+        "h": "Spielerische Dynamik",
+        "p": "Nutzt kreative Hacks und Challenges, um starre Routinen aufzubrechen und Bewegung zu erzeugen."
+      },
+      {
+        "h": "Visionäre Offenheit",
+        "p": "Erkennt während der Exploration ständig neue Potenziale und verknüpft sie mit dem aktuellen Ziel."
+      },
+      {
+        "h": "Mut zum Unkonventionellen",
+        "p": "Kombiniert die Lust am „Einfach machen\" mit der Fähigkeit, den Standardweg radikal neuzudenken."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten (z. B. am Familienmorgen) will dein Explorer einfach nur in Bewegung kommen und alles weitere unterwegs regeln. Dein Zweitheld Innovator versucht gleichzeitig, den Aufbruch durch eine spontane Idee, ein Spiel oder einen kreativen Hack („Wer zuerst im Auto ist\") zu beschleunigen. Du willst, dass es leicht und spielerisch geht, und suchst ständig nach einem Weg, die Routine interessanter zu machen.",
+        "risk": "Wenn du zu viele Hacks gleichzeitig einführst oder die Methode ständig wechselst, entsteht Chaos statt Tempo. Die Aufmerksamkeit wandert vom eigentlichen Ziel (Pünktlichkeit) zur Innovation. Basics (Schlüssel, Brotbox) werden vergessen, was bei Komplikationen zu plötzlicher Ungeduld führt.",
+        "goal": "Erhalt der Leichtigkeit durch die Begrenzung auf wenige, effektive kreative Interventionen und stabile Basics.",
+        "exName": "„2 Fixpunkte + 1 Hack\"",
+        "ex": "Definiere zwei Dinge, die absolut sicher sein müssen (z. B. Schlüssel und Rucksack). Erlaube dir für den Aufbruch genau eine neue Idee oder ein Spiel. Frage dich: „Kann dieser Hack fünfmal funktionieren?\" (Repeatability Check). Wenn nein, bleib beim Standard."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Eine Entscheidung steht an. Dein Explorer neigt zum schnellen „Kriegen wir hin\" und will sofort ins Machen kommen. Der Zweitheld Innovator sucht währenddessen nach einem „Creative Deal\" oder einem Shortcut, um das Ziel noch smarter zu erreichen. Du steckst fest zwischen dem Drang, einfach loszulegen, und der Versuchung, noch eine bessere, innovativere Option zu finden.",
+        "risk": "Du gibst oft zu schnelle Zusagen, ohne die langfristige Absicherung zu prüfen. Die Richtung verwässert durch zu viele kreative Alternativen, was dich unzuverlässig wirken lassen kann, da das eigentliche Commitment im „Ideen-Dschungel\" untergeht.",
+        "goal": "Erhöhung der Verbindlichkeit durch schnelles Filtern und die Konzentration auf den wirksamsten Hebel.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir maximal 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist absolut nicht verhandelbar? 3. Wo liegt der eigentliche Engpass? Triff danach eine Entscheidung und dokumentiere sie in drei Bulletpoints."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer liebt es, in dieser Phase schnelle Test-Loops zu drehen. Plötzlich sieht dein Zweitheld Innovator eine Möglichkeit, das Ergebnis kurz vor Schluss noch einmal massiv zu verbessern oder einen Prozess neu zu bauen. Du willst den Sack zumachen, kannst aber der Versuchung nicht widerstehen, das Ganze auf ein neues Level zu heben.",
+        "risk": "Der Fokus leidet unter „Scope-Sprüngen\". Späte Optimierungswünsche verunsichern das Team und gefährden die termingerechte Lieferung. Die Explorer-Energie wird durch zu viel „Neudenken\" zerstreut, statt sie für den finalen Endspurt zu nutzen.",
+        "goal": "Projektsicherheit durch die Trennung von Experimentier- und reinen Ausführungsphasen.",
+        "exName": "„Timeboxed loops\"",
+        "ex": "Erlaube dir maximal zwei Stunden, um eine neue Idee zu testen. Wenn sie in dieser Zeit nicht signifikant zündet, kehre kompromisslos zur reinen Ausführung (Execution) zurück. Nutze ein „One outcome board\": Sichtbar ist nur ein Ziel und drei Meilensteine."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Explorer möchte das Gespräch locker, motivational und leicht halten. Dein Zweitheld Innovator spricht dabei lieber über „Potenziale\" und zukünftige Möglichkeiten, statt das Problem beim Namen zu nennen. Du versuchst, die Kritik in eine visionäre Rolle umzudeuten, um die gute Stimmung nicht zu gefährden.",
+        "risk": "Das Feedback bleibt vage. Dein Gegenüber hört zwar spannende Visionen, versteht aber nicht die Dringlichkeit der Verhaltensänderung. Die notwendige Korrektur wird in „Potenzial-Sprech\" weichgezeichnet, wodurch keine echte Konsequenz oder Verbindlichkeit entsteht.",
+        "goal": "Verbindung von inspirierender Vision mit unmissverständlicher, messbarer Klarheit.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Signalisiere Vertrauen („Ich will, dass du erfolgreich bist\"). 2. Cut: Benenne glasklar den kritischen Punkt mit zwei konkreten Beispielen. 3. Coach: Vereinbare ein 10-tägiges Experiment für das neue Verhalten mit festem Review-Termin. Benenne die Konsequenz ruhig: „Wenn X nicht passiert, hat das Wirkung Y.\""
+      }
+    ]
+  },
+  "explorer_sage": {
+    "name": "Der <span class=\"accent\">Purpose Explorer</span>",
+    "initials": [
+      "E",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Explorer</span> will Freiheit, Bewegung und eigene Wege – dein <span class=\"z\">Sage</span> bringt Klarheit und Erkenntnis hinein und lebt von Analyse, Logik und dem tiefen Verständnis der Welt. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Sinnzentrierte Exploration",
+        "p": "Verbindet die Lust am Abenteuer mit der Suche nach tieferer Bedeutung und persönlicher Wahrheit."
+      },
+      {
+        "h": "Reflektierte Spontaneität",
+        "p": "Nutzt Erlebnisse und Entdeckungen als Material für tiefere Erkenntnisse und persönliches Wachstum."
+      },
+      {
+        "h": "Wertebasierte Flexibilität",
+        "p": "Bleibt in der Sache beweglich, orientiert sich dabei aber an einem unbestechlichen inneren Kompass."
+      },
+      {
+        "h": "Authentischer Aufbruch",
+        "p": "Sucht nicht nur den oberflächlichen Kick, sondern Wege, die mit der eigenen Integrität im Einklang stehen."
+      },
+      {
+        "h": "Ganzheitliches Lernen",
+        "p": "Verknüpft das „Einfach machen\" mit der Fähigkeit, das Erlebte klug einzuordnen und daraus Prinzipien zu bilden."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) will dein Explorer einfach nur in Bewegung kommen und alles weitere unterwegs regeln („Komm -- raus hier, unterwegs regeln wir's\"). Dein Zweitheld Sage schaltet sich jedoch ein und fordert eine bestimmte Qualität in der Haltung und im Ton („Wie machen wir das respektvoll -- ohne Stress?\"). Du bist innerlich zerrissen zwischen dem Drang nach Tempo und dem Anspruch, dabei nicht die Beziehungsqualität oder deine inneren Werte zu opfern.",
+        "risk": "Du fühlst dich durch den Sage gebremst und hältst im schlimmsten Fall „Prinzipienreden\", während die Zeit davonläuft. Dein Umfeld reagiert genervt auf die moralisierende Art („So macht man das nicht\"), was bei dir wiederum Widerstand und Hektik auslöst.",
+        "goal": "Erhalt der Explorer-Leichtigkeit durch radikale Verkürzung der Sinnvermittlung in Stressphasen.",
+        "exName": "„One-line principle\"",
+        "ex": "Reduziere dein Prinzip auf genau einen Satz (z. B. „Klarheit ohne Härte.\"). Sage diesen Satz, atme einmal tief durch und handle dann sofort. Die Reflexion über den Morgen findet erst am Abend statt."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck kommt, eine schnelle Zusage zu geben, neigt der Explorer zum schnellen „Kriegen wir hin\", um die Freiheit der Bewegung zu behalten. Dein Zweitheld Sage mahnt jedoch zur Integrität: Er will nichts versprechen, was nicht der Wahrheit entspricht oder fachlich nicht haltbar ist. Du steckst fest zwischen dem Drang, den Weg frei zu machen, und der Sorge, durch ein zu schnelles „Ja\" deine Glaubwürdigkeit zu verlieren.",
+        "risk": "Entweder gibst du eine Zusage, die sich später „unwahr\" anfühlt, was deinen Fluchtimpuls triggert, oder du blockierst die Entscheidung durch eine zu komplexe Argumentation (Prinzip-Blockade), was dich unentschlossen wirken lässt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die Definition von klaren Trade-offs zwischen Vision und Realität.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist absolut nicht verhandelbar (Wahrheitskern)? 3. Wo liegt der Engpass? Dokumentiere die Zusage in maximal drei Bulletpoints (Outcome/Scope/Risiko)."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer liebt es, in dieser Phase schnelle Test-Loops zu drehen. Plötzlich erkennt dein Zweitheld Sage jedoch eine fachliche Unschärfe oder einen Widerspruch zur ursprünglichen Logik. Du schwankst zwischen dem Schutz des Zeitplans (Explorer-Drive) und dem Drang, das Ganze kurz vor Schluss noch einmal „richtig\" zu stellen, um die Qualität und Wahrheit des Ergebnisses zu schützen.",
+        "risk": "Der Fokus leidet massiv. Entweder springt der Scope durch neue Ideen ständig hin und her, oder der Prozess wird durch späte Korrekturen („Late corrections\") gelähmt. Das Risiko besteht darin, entweder „Quatsch\" abzuliefern oder die Deadline durch Überanalyse zu reißen.",
+        "goal": "Sicherung des Projekterfolgs durch die Definition von „wahr genug für Version 1.0\".",
+        "exName": "„Timeboxed loops (2h)\"",
+        "ex": "Erlaube dir maximal zwei Stunden für einen letzten Test oder eine Korrektur. Danach wird die Richtung kompromisslos eingefroren (Freeze window). Nutze die „Definition of Done\" mit 3 klaren Kriterien und 2 No-Gos."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Explorer möchte die Situation leicht und motivierend halten, um die gute Stimmung nicht zu gefährden. Dein Zweitheld Sage möchte jedoch die „volle Wahrheit\" aussprechen und die moralische oder fachliche Haltung thematisieren. Es prallt der Wunsch nach Leichtigkeit auf den Drang nach einer tiefgehenden, oft ernsten Auseinandersetzung mit dem Fehler.",
+        "risk": "Das Feedback wird entweder zu weich verpackt (die Botschaft geht verloren) oder es wird durch die Schwere des Sage zu einer moralischen Standpauke, die den Mitarbeiter eher demotiviert als zur Veränderung anregt.",
+        "goal": "Kombination von motivierender Offenheit mit einer unbestreitbaren, ehrlichen Klarheit.",
+        "exName": "„Care + Truth + Next\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass wir erfolgreich sind\"). 2. Wahrheit: Benenne den kritischen Punkt mit maximal zwei Beispielen glasklar (Sage-Klarheit). 3. Next step: Vereinbare eine 10-tägige Übungsphase mit festem Review-Termin. Benenne die Konsequenz ruhig: „Wenn X nicht passiert, hat das Wirkung Y.\""
+      }
+    ]
+  },
+  "explorer_strategist": {
+    "name": "Der <span class=\"accent\">Smart Adventurer</span>",
+    "initials": [
+      "E",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Explorer</span> will Freiheit, Bewegung und eigene Wege – dein <span class=\"z\">Strategist</span> bringt Struktur und Exzellenz hinein und lebt von Präzision, Logik und methodische Stärke. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Strukturierte Beweglichkeit",
+        "p": "Verbindet die Spontaneität des Entdeckers mit der vorausschauenden Planung des Strategen."
+      },
+      {
+        "h": "Effiziente Erfahrung",
+        "p": "Verwandelt Erlebnisse und „Learning by Doing\" systematisch in bewährte Muster und Prozesse."
+      },
+      {
+        "h": "Methodischer Vorwärtsdrang",
+        "p": "Nutzt Struktur nicht als Bremse, sondern als Anker, um sicherer und schneller zu improvisieren."
+      },
+      {
+        "h": "Priorisierte Flexibilität",
+        "p": "Erkennt instinktiv den nächsten logischen Schritt, um unnötige Umwege bei der Exploration zu vermeiden."
+      },
+      {
+        "h": "Adaptive Planung",
+        "p": "Entwickelt Konzepte, die robust genug für die Realität und flexibel genug für spontane Chancen sind."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten will dein Explorer einfach nur in Bewegung kommen und alles Weitere unterwegs regeln. Dein Zweitheld Strategist fordert jedoch eine klare Reihenfolge und das Identifizieren von Engpässen, um den Ablauf stabil zu machen. Du fühlst dich zerrissen zwischen dem Drang nach freier Bewegung und dem Bedürfnis nach einer sauberen methodischen Sequenz.",
+        "risk": "Du fühlst dich durch die notwendigen Schritte oft „eingeengt\". Wenn du versuchst, Abkürzungen zu nehmen, reagiert der Strategist-Teil in dir genervt, da die fehlende Ordnung als Risiko wahrgenommen wird.",
+        "goal": "Erhalt der Flexibilität durch die Definition minimaler struktureller Ankerpunkte.",
+        "exName": "„2 Fixpunkte + Reihenfolge\"",
+        "ex": "Lege genau zwei Pflicht-Checks fest (z. B. erst Schlüssel, dann Brotbox), bevor du losgehst. Löse einen Engpass dauerhaft durch eine kleine organisatorische Maßnahme (z. B. einen festen Korb an der Tür)."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn schnelle Ergebnisse gefordert sind, will der Explorer sofort liefern und ins Machen kommen. Der Zweitheld Strategist mahnt jedoch zur Vorsicht und verlangt eine Klärung der Trade-offs und Prioritäten. Du schwankst zwischen einem schnellen „Ja\" zur Beschleunigung und dem späten Blockieren aus Sorge vor unsauberen Prozessen.",
+        "risk": "Es besteht das Risiko eines zu schnellen Commitments, das später aufgrund mangelnder Priorisierung zu Stress führt oder den Prozess mitten in der Umsetzung stoppt.",
+        "goal": "Schnelle Entscheidungsfindung durch ein kurzes, fokussiertes Assessment des kritischen Engpasses.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir maximal 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist absolut nicht verhandelbar? 3. Wo liegt der eigentliche Engpass?. Gib erst danach eine Zusage."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer möchte schnelle Test-Loops drehen und im Tun optimieren. Der Zweitheld Strategist schaltet in den Schutzmodus für den „kritischen Pfad\" und will jede Verzettelung vermeiden.",
+        "risk": "Der Fokus leidet unter sogenannten „Scope-Sprüngen\". Neue Ideen für kleine Schleifen gefährden die Einhaltung der Deadline, da die methodische Strenge durch den Drang nach Abwechslung verwässert wird.",
+        "goal": "Sicherung der Projektstabilität durch zeitlich streng begrenzte Experimentierfenster.",
+        "exName": "„Timeboxed loops\"",
+        "ex": "Erlaube dir maximal 2 Stunden für Tests oder Optimierungen. Danach kehrst du zwingend zur reinen Ausführung (Execution) zurück. Nutze ein Board, auf dem nur das eine Hauptziel und drei Meilensteine sichtbar sind."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Explorer möchte die Situation leicht, locker und motivierend halten. Der Zweitheld Strategist verlangt jedoch nach Klarheit, Messbarkeit und einem konkreten Plan. Du schwankst zwischen einem kumpelhaften Ton und einer fast technischen Kühle.",
+        "risk": "Das Feedback wird oft entweder zu weich verpackt (die Botschaft geht verloren) oder wirkt durch zu viele technische Details demotivierend auf das Gegenüber.",
+        "goal": "Kombination von motivierender Offenheit mit einem präzisen, ausführbaren Entwicklungsplan.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass du erfolgreich bist\"). 2. Cut: Benenne den kritischen Punkt glasklar mit zwei Beispielen. 3. Coach: Vereinbare einen 10-Tage-Plan mit festem Review-Termin. Benenne die Konsequenz ruhig: „Wenn X nicht passiert, hat das Wirkung Y\"."
+      }
+    ]
+  },
+  "guardian_commander": {
+    "name": "Der <span class=\"accent\">Firm Protector</span>",
+    "initials": [
+      "G",
+      "C"
+    ],
+    "hook": "Dein <span class=\"b\">Guardian</span> will Verbindung, Fürsorge und Zusammenhalt – dein <span class=\"z\">Commander</span> bringt Umsetzung hinein und lebt von Tatkraft, klare Prioritäten und entschlossenes Handeln. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Schützende Entschlossenheit",
+        "p": "Verbindet menschliche Fürsorge mit einer klaren Kante in Bezug auf Grenzen und Standards."
+      },
+      {
+        "h": "Verantwortungsvolle Führung",
+        "p": "Übernimmt in Krisen sofort das Steuer, um das Team vor Chaos und Fehlentscheidungen zu bewahren."
+      },
+      {
+        "h": "Konsequente Loyalität",
+        "p": "Bleibt hart in der Sache (Qualitätssicherung), aber zutiefst loyal und unterstützend gegenüber den Menschen."
+      },
+      {
+        "h": "Strukturiertes Momentum",
+        "p": "Bringt Projekte durch klare Ansagen pünktlich ins Ziel, ohne die soziale Stabilität zu opfern."
+      },
+      {
+        "h": "Pragmatische Fürsorge",
+        "p": "Nutzt Führung als Werkzeug, um für das Team Sicherheit, Verlässlichkeit und klare Orientierung zu schaffen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) prallen zwei Bedürfnisse aufeinander: Dein Guardian möchte alles ordentlich, sicher und richtig machen, um später keinen Stress durch Vergessenes zu haben. Dein Zweitheld Commander hingegen drückt massiv auf das Tempo und fordert sofortigen Aufbruch („Wir müssen jetzt los\"). Du fühlst dich verpflichtet, den Ablauf zu retten, und versuchst, die Situation durch strikte Führung und Detail-Korrekturen unter Kontrolle zu bringen.",
+        "risk": "Du wirst sehr strukturierend und gibst extrem viele Anweisungen („Jacke zu, Helm auf!\"). Wenn Widerstand kommt, steigt deine Schärfe im Ton massiv an. Dein Umfeld fühlt sich durch diesen „Befehlston\" bevormundet oder unter Druck gesetzt, was die Stimmung belastet und oft zu Trotzreaktionen führt.",
+        "goal": "Erhalt der Umsetzungsgeschwindigkeit durch die bewusste Wahl des passenden Modus (Tempo vs. Qualität), ohne die Mitmenschen durch Härte zu belasten.",
+        "exName": "„Tempo vs. Qualität (Modus)\"",
+        "ex": "Entscheide vorab: Gilt heute der Tempo-Modus (pünktliches Loskommen ist wichtiger als perfekte Ordnung) oder der Qualitäts-Modus? Nutze den Standardsatz: „Heute ist Tempo-Modus -- gut genug reicht.\" So wissen alle, dass du heute auf Detail-Korrekturen verzichtest."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Druck von oben / Entscheidungssituationen",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, gerätst du in einen Zwiespalt. Dein Zweitheld Commander möchte sofort „Ja\" sagen, die Verantwortung übernehmen und Tatkraft demonstrieren. Dein Guardian hingegen spürt sofort, dass dies das Team überfordern könnte oder die Qualität leidet. Du steckst fest zwischen dem Drang, als starker Macher aufzutreten, und dem Bedürfnis, die Harmonie und Belastbarkeit des Systems zu schützen.",
+        "risk": "Du gibst oft ein zu schnelles „Ja\", woraufhin „unten die Hütte brennt\", weil die Ressourcen nicht reichen. Alternativ blockierst du Entscheidungen aus Sorge um das Team, was dich nach oben hin unentschlossen wirken lässt. Beides führt zu hohem inneren Stress und einem Gefühl der Zerrissenheit.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die klare Kommunikation von Bedingungen und notwendigen Priorisierungen.",
+        "exName": "„Conditional Yes\"",
+        "ex": "Gib keine bedingungslose Zusage. Nutze die Formel: „Ja, wir können liefern, wennwir dafür Projekt X stoppen oder Ressource Y erhalten.\" Stelle ein „2-Pfad-Angebot\" auf: Entweder schnell mit Risiko oder sauber mit mehr Zeit."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Guardian bekommt kurz vor Schluss eine „Qualitätspanik\": Er will alles noch einmal prüfen und absichern, um nichts „Halbgares\" abzuliefern. Dein Zweitheld Commander will jedoch den Sack zumachen und treibt die „Execution\" mit aller Kraft voran. Es prallt der Wunsch nach lückenloser Absicherung auf den harten Drang zum finalen Durchziehen.",
+        "risk": "Es entstehen späte Review-Schleifen oder Mikromanagement in der Endphase. Du versuchst, gleichzeitig die Geschwindigkeit zu erhöhen und jeden Fehler auszuschließen, was das Team verunsichert und gehetzt wirken lässt. Die notwendige Verbindlichkeit leidet unter späten Korrekturwünschen.",
+        "goal": "Sicherung des Projekterfolgs durch striktes Einfrieren von Prüfprozessen und Fokus auf die reine Fertigstellung.",
+        "exName": "„Freeze Window\"",
+        "ex": "Lege fest, dass ab T-10 (10 Tage vor Deadline) keine neuen Anforderungen mehr zugelassen werden. Nutze feste „Review-Fenster\" (z. B. 30 Min. täglich), statt den Prozess permanent zu unterbrechen. Definiere eine „Definition of Done\" mit 3 klaren Kriterien, bei deren Erreichen das Projekt als geliefert gilt."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Guardian möchte dabei absolut fair sein, die Standards des Teams schützen und sammelt unzählige Belege, um die Kritik hieb- und stichfest zu beweisen. Dein Zweitheld Commander will jedoch keine Zeit verlieren und die Fakten direkt und unmissverständlich benennen. Es entsteht eine Dynamik zwischen sehr sachlicher Direktheit und einer fast moralisierenden Beweisführung.",
+        "risk": "Das Feedback wird oft zu hart oder belehrend im Ton. Dein Gegenüber fühlt sich durch die Menge an Beispielen „erdrückt\" oder persönlich angegriffen, wodurch die Bereitschaft zur Veränderung sinkt. Die eigentlich schützende Absicht des Guardians wird als Angriff wahrgenommen.",
+        "goal": "Kombination von unmissverständlicher, direkter Klarheit mit einer wertschätzenden Haltung, die an das Potenzial des Gegenübers glaubt.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Beginne mit einem Wertschätzungssatz („Du bist wichtig für das Team\"). 2. Cut: Benenne glasklar den kritischen Punkt mit maximal zwei konkreten Beispielen (nicht sieben!). 3. Coach: Vereinbare genau einen messbaren Schritt für die nächsten 10 Tage und lege sofort ein Review-Datum fest. Bleibe ruhig, kurz und konkret."
+      }
+    ]
+  },
+  "guardian_explorer": {
+    "name": "Der <span class=\"accent\">Safe Adventurer</span>",
+    "initials": [
+      "G",
+      "E"
+    ],
+    "hook": "Dein <span class=\"b\">Guardian</span> will Verbindung, Fürsorge und Zusammenhalt – dein <span class=\"z\">Explorer</span> bringt Freiheit hinein und lebt von Neugier, Spontaneität und dem Entdecken neuer Wege. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Sicherer Komfortzonen-Austritt",
+        "p": "Ermöglicht Wachstum und neue Erfahrungen, indem die wesentlichen Essentials stets im Griff behalten werden."
+      },
+      {
+        "h": "Pragmatische Verlässlichkeit",
+        "p": "Nutzt das Explorer-Tempo, um Guardian-Routinen effizienter zu gestalten, ohne die Sorgfalt zu verlieren."
+      },
+      {
+        "h": "Flexibler Schutz",
+        "p": "Bleibt offen für spontane Lösungen, achtet dabei aber sensibel auf die Stabilität und Sicherheit des Umfelds."
+      },
+      {
+        "h": "Kontrolliertes Loslassen",
+        "p": "Findet die Balance zwischen dem Bedürfnis nach lückenloser Absicherung und dem Vertrauen in die eigene Improvisationskraft."
+      },
+      {
+        "h": "Nachhaltige Neugier",
+        "p": "Erkundet unbekanntes Terrain mit einem stabilen Sicherheitsnetz, das vor Überforderung und Leichtsinn schützt."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Familienmorgen) möchte dein Guardian alles ordentlich, sicher und richtig machen, um jeden potenziellen Fehler oder Stressfaktor im Keim zu ersticken („nichts vergessen\"). Dein Zweitheld Explorer hingegen spürt den Drang zur Bewegung und möchte einfach losgehen, im Vertrauen darauf, dass sich Details unterwegs regeln lassen. Es entsteht ein innerer Konflikt zwischen der Sorge vor Nachlässigkeit und dem Wunsch nach pragmatischer Leichtigkeit.",
+        "risk": "Du fühlst dich innerlich unsicher oder „schlampig\", wenn du den Plan abkürzt. Oft vergisst du durch das höhere Tempo tatsächlich Kleinigkeiten, was dazu führt, dass du später in einen übermäßigen Kontrollmodus oder Ärger verfällst, um die gefühlte Ordnung wiederherzustellen.",
+        "goal": "Den Fokus auf das Handeln legen und akzeptieren, dass „gut genug\" in Stressphasen ausreicht, um pünktlich und handlungsfähig zu bleiben.",
+        "exName": "„2 Fixpunkte + Reset\"",
+        "ex": "Definiere genau zwei Dinge (z. B. Schlüssel und Brotbox), die absolut sicher sein müssen. Alles andere bleibt flexibel. Nutze das „Departure Kit\" an der Tür. Verpflichte dich erst nach der Ankunft zu einem 2-minütigen „Reset\": Was fehlt wirklich? Was ist heute wichtig?"
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck kommt, schnell zu liefern, möchte dein Explorer sofort ins Machen kommen und die Dynamik nutzen. Dein Guardian schaltet sich jedoch mahnend ein: Er sorgt sich um die Belastbarkeit des Teams, die Qualität der Umsetzung oder darum, jemanden durch ein zu schnelles „Ja\" zu enttäuschen. Du steckst fest zwischen dem Drang zum Vorwärtsgehen und der Angst, das Team oder die Standards zu verbrennen.",
+        "risk": "Du gibst entweder ein zu schnelles Versprechen ab, das dich später einengt und überfordert, oder du blockierst die Entscheidung aus einer vagen Sorge heraus komplett, was dich nach außen unentschlossen wirken lässt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch klare Priorisierung und die Kommunikation von notwendigen Bedingungen (Trade-offs).",
+        "exName": "„Conditional Yes\"",
+        "ex": "Gib keine bedingungslose Zusage. Nutze die Formel: „Ja, wir können liefern, wenn wir dafür Projekt X priorisieren oder Bedingung Y klären.\" Nutze das „2-Pfad-Angebot\": Schnell (mit Risiko) vs. Sauber (mit mehr Zeit)."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer liebt es, in dieser Phase schnelle Test-Loops zu drehen und im Tun zu optimieren. Dein Guardian hingegen bekommt kurz vor Schluss eine „Qualitätspanik\": Er will alles noch einmal prüfen und absichern, um Überraschungen oder Fehler zu vermeiden. Du schwankst zwischen dem Drang zum spielerischen Ausprobieren und der Sorge vor einer unsauberen Übergabe.",
+        "risk": "Der Fokus leidet massiv unter „Scope-Sprüngen\". Späte Review-Schleifen oder neue Ideen verunsichern das Team und gefährden die Deadline. Die mangelnde Verbindlichkeit im Endspurt lässt das Ergebnis für andere unberechenbar wirken.",
+        "goal": "Sicherung der Umsetzungsdisziplin durch radikales Einfrieren von Anforderungen und Prüfprozessen.",
+        "exName": "„Definition of Done & Freeze\"",
+        "ex": "Definiere 3 klare Kriterien und 2 No-Gos für das Projektende. Erlaube dir maximal 2-stündige „Timeboxed Loops\" für Tests. Ab T-10 (10 Tage vor Deadline) wird kein neuer Umfang (Scope) mehr zugelassen."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Explorer möchte das Gespräch locker, motivational und leicht halten, um die gute Stimmung nicht zu gefährden. Dein Guardian möchte dabei absolut fair sein, sammelt unzählige Beispiele und will die Kritik moralisch hieb- und stichfest belegen. Es prallt der Wunsch nach Leichtigkeit auf den Drang nach einer (oft zu) sorgfältigen Beweisführung.",
+        "risk": "Das Feedback wird entweder zu weich verpackt (die Botschaft kommt nicht an) oder es wird durch die Menge an Guardian-Beispielen so schwer und moralisierend, dass das Gegenüber eher demotiviert als zur Veränderung angeregt wird.",
+        "goal": "Kombination von motivierender Offenheit mit einer prägnanten, sachlichen und unmissverständlichen Klarheit.",
+        "exName": "„Care + Beobachtung + Erwartung\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass wir erfolgreich sind\"). 2. Beobachtung: Nenne maximal 2 konkrete Beispiele (nicht 7!). 3. Erwartung: Formuliere ein klares Ziel für die nächsten 10 Tage. 4. Review: Lege sofort ein Datum fest, an dem ihr den Fortschritt kurz prüft."
+      }
+    ]
+  },
+  "guardian_innovator": {
+    "name": "Der <span class=\"accent\">Modernizer</span>",
+    "initials": [
+      "G",
+      "I"
+    ],
+    "hook": "Dein <span class=\"b\">Guardian</span> will Verbindung, Fürsorge und Zusammenhalt – dein <span class=\"z\">Innovator</span> bringt Möglichkeiten hinein und lebt von Zukunftsvisionen, kreativer Neuerfindung und dem Mut, das Bekannte radikal infrage zu stellen. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Stabilisierte Erneuerung",
+        "p": "Erneuert bestehende Systeme schrittweise, ohne das Fundament an Sicherheit und Vertrauen zu gefährden."
+      },
+      {
+        "h": "Verantwortungsbewusste Kreativität",
+        "p": "Findet neue Wege, die nicht nur originell, sondern auch verlässlich und tragfähig für das Team sind."
+      },
+      {
+        "h": "Methodische Leichtigkeit",
+        "p": "Nutzt kreative Hacks und spielerische Elemente, um starre Routinen aufzubrechen und Stress zu reduzieren."
+      },
+      {
+        "h": "Sicherheitsorientierte Vision",
+        "p": "Entwickelt zukunftsgerichtete Lösungen, die ein stabiles Sicherheitsnetz für alle Beteiligten beinhalten."
+      },
+      {
+        "h": "Empathische Optimierung",
+        "p": "Verbessert Prozesse mit dem Ziel, die Belastung für Menschen zu senken und die Lebensqualität im System zu erhöhen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Guardian alles ordentlich, sicher und richtig machen, um jeden Fehler oder Stressfaktor abzusichern („nichts vergessen\"). Dein Zweitheld Innovator versucht gleichzeitig, den Druck durch eine spontane Idee, ein Spiel oder einen kreativen Hack („Wer knackt den Zeit-Rekord?\") aufzulösen. Du schwankst zwischen dem Bedürfnis nach lückenloser Kontrolle der Basics und dem Reiz, den Ablauf durch eine smarte, neue Methode spielerischer zu gestalten.",
+        "risk": "Oft vertraust du deinem eigenen „Hack\" nicht vollends und kontrollierst trotz der neuen Methode verbissen nach. Das erzeugt Unruhe: Der Innovator-Teil will Leichtigkeit, der Guardian-Teil erzeugt durch Nachkontrolle neuen Stress. Das Umfeld reagiert genervt auf die Mischung aus „Spielangebot\" und „Kontrollzwang\".",
+        "goal": "Erhöhung der Effizienz durch Vertrauen in ausgewählte Innovationen bei gleichzeitiger Sicherung der Kern-Basics.",
+        "exName": "„2 Fixpunkte + 1 Hack\"",
+        "ex": "Definiere zwei Dinge, die absolut sicher sein müssen (z. B. Schlüssel und Brotbox). Erlaube dir für den Aufbruch genau eine neue Idee oder ein Spiel. Nutze den „Repeatability Check\": „Kann dieser Hack 5x funktionieren?\" Wenn ja, wird er zur neuen, leichten Routine."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, gerätst du in einen Zwiespalt. Dein Guardian sorgt sich sofort um die Belastung des Teams und die Qualität der Umsetzung („Können wir das sicher leisten?\"). Dein Zweitheld Innovator sieht jedoch sofort einen kreativen Shortcut oder eine technologische Lösung, mit der man das Ziel viel smarter erreichen könnte. Du steckst fest zwischen der Schutzfunktion für das Team und dem Drang, einen innovativen Hebel umzulegen.",
+        "risk": "Du gibst entweder ein zu schnelles „Ja\", weil der Innovator an den Shortcut glaubt, und bekommst dann „Guardian-Panik\", ob das Team das schafft. Oder du blockierst die Entscheidung aus Sorge um die Sicherheit, was dich nach außen hin wenig dynamisch wirken lässt.",
+        "goal": "Handlungsfähigkeit durch kleine, risikoarme Testphasen für neue Ideen gewinnen.",
+        "exName": "„Pilot first\"",
+        "ex": "Gib keine endgültige Zusage für das Riesenprojekt. Schlage einen 48-stündigen Mini-Test für den innovativen Weg vor. Nur wenn dieser „Pilot\" die Guardian-Sicherheitskriterien erfüllt, erfolgt das volle Commitment. Frage dich: „Tempo oder Sicherheit -- was ist in diesem speziellen Fall wichtiger?\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Guardian will jetzt absolute Absicherung, Review-Schleifen und Fehlerfreiheit, um nichts „Halbgares\" abzuliefern. Dein Zweitheld Innovator sieht jedoch kurz vor Schluss eine Möglichkeit, den Prozess noch einmal zu optimieren oder ein besseres Tool einzuführen. Du schwankst zwischen dem Drang nach lückenloser Qualitätssicherung und der Versuchung, das Ergebnis durch eine Last-Minute-Verbesserung „perfekt\" zu machen.",
+        "risk": "Es entsteht ein gefährlicher „Scope-Creep\". Späte Optimierungswünsche verunsichern das Team und die Guardian-Energie führt zu einer gleichzeitigen „Quality-Panik\". Das Ergebnis ist ein erschöpftes Team und eine Deadline, die trotz (oder wegen) der vielen guten Ideen wackelt.",
+        "goal": "Sicherung der Umsetzungsdisziplin durch strikte Trennung von „Besser machen\" und „Fertig machen\".",
+        "exName": "„Innovation Slot\"",
+        "ex": "Ab T-10 (10 Tage vor Deadline) sind keine neuen Grundsatz-Ideen oder Tools mehr erlaubt. Reserviere dir täglich maximal 30 Minuten für kleine, kreative Optimierungen („Innovation Slot\"). Die restliche Zeit gehört der kompromisslosen Abarbeitung der „Definition of Done\" (3 klare Kriterien)."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Guardian möchte dabei absolut fair sein, die Team-Standards schützen und sammelt viele Beispiele, um die Kritik korrekt zu belegen. Dein Zweitheld Innovator möchte jedoch motivieren, „Potenziale\" aufzeigen und inspirieren („Stell dir vor, wenn wir das so lösen würden\\...\"). Das Gespräch schwankt zwischen einer belegten Mängelliste und visionärem Zukunftstalk.",
+        "risk": "Das Feedback wirkt entweder zu schwer (durch zu viele Guardian-Beispiele) oder es wird durch den „Potenzial-Talk\" des Innovators so sehr weichgezeichnet, dass die Dringlichkeit der Veränderung beim Gegenüber nicht ankommt. Es fehlt die klare Brücke zwischen „Was ist falsch\" und „Was ist die neue Lösung\".",
+        "goal": "Kombination von fairer, unmissverständlicher Klarheit mit einer motivierenden, neuen Verhaltensoption.",
+        "exName": "„Care + Beobachtung + Experiment\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass du im Team erfolgreich bist\"). 2. Beobachtung: Nenne maximal 2 konkrete Beispiele (Guardian-Fairness). 3. Erwartung: Formuliere ein klares Ziel. 4. Experiment: Vereinbare ein 10-tägiges „Innovations-Experiment\" für das neue Verhalten. Lege sofort ein Datum für den gemeinsamen Check-in fest."
+      }
+    ]
+  },
+  "guardian_sage": {
+    "name": "Der <span class=\"accent\">Compassionate Stabilizer</span>",
+    "initials": [
+      "G",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Guardian</span> will Verbindung, Fürsorge und Zusammenhalt – dein <span class=\"z\">Sage</span> bringt Klarheit und Erkenntnis hinein und lebt von Analyse, Logik und dem tiefen Verständnis der Welt. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Sinnstiftende Fürsorge",
+        "p": "Verbindet praktische Unterstützung mit emotionaler Tiefe und echtem Verständnis für die Bedürfnisse anderer."
+      },
+      {
+        "h": "Reflektierte Stabilität",
+        "p": "Schafft Sicherheit, die nicht nur auf Regeln, sondern auf innerer Klarheit und gemeinsamen Werten basiert."
+      },
+      {
+        "h": "Empathische Souveränität",
+        "p": "Bleibt auch in Krisen besonnen und bietet anderen durch Sachlichkeit und Mitgefühl einen sicheren Halt."
+      },
+      {
+        "h": "Integrität in der Gemeinschaft",
+        "p": "Achtet penibel darauf, dass das Handeln im Team stets mit dem moralischen Kompass im Einklang steht."
+      },
+      {
+        "h": "Behutsame Entwicklung",
+        "p": "Begleitet Veränderungsprozesse durch kluge Einordnung und das Bewahren menschlicher Würde."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Guardian alles ordentlich, sicher und richtig machen, um Fehler zu vermeiden. Dein Zweitheld Sage bringt zusätzlich die Ebene von Haltung und Sinn ein. Du willst nicht nur pünktlich loskommen, sondern dabei absolut respektvoll bleiben und sicherstellen, dass die „Warum\"-Frage geklärt ist.",
+        "risk": "Du hältst „Prinzipienreden\" oder wirst moralisch belehrend („So macht man das nicht\"), während die Uhr tickt. Das verlangsamt den Aufbruch massiv und erzeugt bei anderen Widerstand, statt Kooperation. Die Energie verpufft in der Theorie, während die Praxis im Chaos versinkt.",
+        "goal": "Erhalt der Stabilität durch radikale Verkürzung der Sinnvermittlung in Stressphasen.",
+        "exName": "„One-line principle\"",
+        "ex": "Reduziere dein Prinzip auf genau einen Satz (z. B. „Klarheit ohne Härte.\"). Sage diesen Satz, atme tief durch und handle sofort. Verschiebe jede pädagogische Reflexion konsequent auf einen ruhigen Moment am Abend („Repair statt Predigt\")."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, will dein Guardian die Teamstabilität schützen. Dein Zweitheld Sage mahnt zusätzlich zur Integrität: Du willst nichts versprechen, was nicht der Wahrheit entspricht oder unfair gegenüber den Ressourcen des Teams ist. Du steckst fest zwischen der Loyalität zum Auftraggeber und der Aufrichtigkeit gegenüber deinem System.",
+        "risk": "Du blockierst Entscheidungen aus Sorge um die Fairness oder weil die Lösung für dich fachlich noch nicht „wahr\" genug ist. Das führt zu einer Prinzip-Blockade, die dich unentschlossen wirken lässt und den Druck auf das Team paradoxerweise erhöht, da keine Richtung vorgegeben wird.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die klare Kommunikation von Trade-offs und Bedingungen.",
+        "exName": "„3-Bulletpoint-Zusage\"",
+        "ex": "Gib eine Zusage nur schriftlich mit drei Punkten ab: 1. Was ist das Ergebnis? 2. Welcher Teil des ursprünglichen Umfangs wird dafür reduziert? 3. Welches Risiko gehen wir ein? Dies schützt dich vor „Unwahrheiten\" und das Team vor Überlastung."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Guardian will jetzt absolute Absicherung und Review-Schleifen, um nichts „Halbgares\" abzuliefern. Dein Zweitheld Sage entdeckt kurz vor Schluss noch eine fachliche Unschärfe oder einen Widerspruch zur Logik. Du schwankst zwischen dem Schutz der pünktlichen Lieferung und dem Drang nach einer fachlich perfekten, lückenlosen Lösung.",
+        "risk": "Es kommt zu späten Review-Schleifen oder einer Perfektionsspirale. Der Versuch, in letzter Minute noch absolute Wahrheit oder Fehlerfreiheit zu erzwingen, gefährdet die Deadline massiv und erzeugt im Team das Gefühl, dass ihre bisherige Arbeit nicht „gut genug\" war.",
+        "goal": "Sicherung der Umsetzungsdisziplin durch die Definition von „wahr genug für Version 1.0\".",
+        "exName": "„Definition of Done & Freeze\"",
+        "ex": "Definiere 3 klare Kriterien und 2 No-Gos für den Projektabschluss. Erlaube dir feste Review-Fenster (max. 30 Min täglich), statt permanent nachzukontrollieren. Ab T-10 (10 Tage vor Deadline) wird der Umfang (Scope) unwiderruflich eingefroren."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Guardian möchte dabei absolut fair sein und sammelt unzählige Beispiele, um die Kritik korrekt zu belegen. Dein Zweitheld Sage möchte gleichzeitig die „volle Wahrheit\" und das dahinterliegende Prinzip klären. Du willst ehrlich sein und den Mitarbeiter zum Nachdenken anregen, ohne ihn zu beschämen.",
+        "risk": "Das Feedback wird oft zu lang, zu moralisch schwer beladen oder zu ernst. Der Mitarbeiter fühlt sich durch die Menge an Beispielen erdrückt oder durch die philosophische Tiefe belehrt, was die Bereitschaft zur Veränderung eher mindert und die Beziehung belasten kann.",
+        "goal": "Kombination von empathischer Klarheit mit einem prägnanten, sachlichen Handlungsplan.",
+        "exName": "„4-Satz-Formel + Support\"",
+        "ex": "1. Beobachtung: Nenne max. 2 Beispiele (Guardian-Fairness). 2. Wirkung: Erkläre sachlich die Folge fürs Team (Sage-Klarheit). 3. Erwartung: Formuliere ein klares Ziel. 4. Support: Frage: „Wie kann ich dich unterstützen?\". Lege sofort ein Datum für den nächsten Kurz-Check fest und halte das Gespräch kurz und konkret."
+      }
+    ]
+  },
+  "guardian_strategist": {
+    "name": "Der <span class=\"accent\">Process Anchor</span>",
+    "initials": [
+      "G",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Guardian</span> will Verbindung, Fürsorge und Zusammenhalt – dein <span class=\"z\">Strategist</span> bringt Struktur und Exzellenz hinein und lebt von Präzision, Logik und methodische Stärke. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Systematische Verlässlichkeit",
+        "p": "Verbindet menschliche Fürsorge mit stabilen, logisch durchdachten Abläufen."
+      },
+      {
+        "h": "Präventive Struktur",
+        "p": "Reduziert Stress im Team, indem er Engpässe frühzeitig erkennt und Prozesse statt „Feuerwehr-Aktionen\" etabliert."
+      },
+      {
+        "h": "Methodische Sorgfalt",
+        "p": "Sichert die Qualität durch klare Standards und eine exzellente Priorisierung der Aufgaben ab."
+      },
+      {
+        "h": "Vorausschauende Stabilität",
+        "p": "Schafft Sicherheit durch kluge Szenarioplanung und das Verhandeln notwendiger Trade-offs."
+      },
+      {
+        "h": "Effiziente Routine",
+        "p": "Verwandelt wiederkehrende Aufgaben in hocheffiziente Systeme, die dem gesamten Team Halt geben."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Guardian alles ordentlich, sicher und richtig machen, um jeden Fehler oder Stressfaktor zu vermeiden („nichts vergessen\"). Dein Zweitheld Strategist schaltet sofort in das „Bottleneck-Denken\": Er analysiert die Reihenfolge, identifiziert den Engpass (z. B. die Suche nach den Schuhen) und delegiert klare Rollen („Du machst X, ich Y\"). Du willst, dass der Morgen nicht nur klappt, sondern als stabiler, logischer Prozess abläuft.",
+        "risk": "Du wirst oft zu rigide in deinen Vorgaben. Wenn andere dem (in deinem Kopf optimierten) Ablauf nicht folgen, reagierst du ungeduldig oder sogar kühl-fordernd. Der Versuch, die Situation methodisch zu beherrschen, kann sich für dein Umfeld wie ein „Militärplan\" anfühlen, was die Leichtigkeit und Harmonie raubt.",
+        "goal": "Erhalt der Stabilität durch die Lösung einzelner Engpässe bei gleichzeitiger Wahrung der menschlichen Flexibilität.",
+        "exName": "„Bottleneck-Fix\"",
+        "ex": "Identifiziere genau einen Engpass dauerhaft (z. B. ein fester Schuhkorb an der Tür). Im akuten Stress nutze die „2 Fixpunkte + Flex\"-Regel: Definiere zwei Pflicht-Checks (z. B. Schlüssel und Brotbox), aber lass beim Rest bewusst Flexibilität zu, um den Druck zu senken."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, sorgt sich dein Guardian um die Belastung des Teams und die Qualität der Umsetzung („Können wir das sicher leisten?\"). Dein Zweitheld Strategist beginnt sofort mit der Verhandlung von Bedingungen: Er sucht nach Trade-offs, um die Stabilität des Systems zu wahren. Du steckst fest zwischen dem loyalen Wunsch, den Auftrag zu erfüllen, und der Sorge, dass das Team „brennt\", wenn die Priorisierung nicht messerscharf ist.",
+        "risk": "Du neigst zum „stillen Schlucken\" der Mehrarbeit oder blockierst Entscheidungen durch zu komplexe Risikoanalysen (Prinzip-Blockade). Beides führt zu hohem inneren Stress, da du dich entweder für die Überlastung des Teams oder für eine unsaubere Lösung verantwortlich fühlst.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die klare Kommunikation von Bedingungen und logischen Konsequenzen.",
+        "exName": "„2-Pfad-Angebot\"",
+        "ex": "Präsentiere aktiv zwei Optionen: Pfad A (Schnell mit Risiko/Qualitätsverlust) vs. Pfad B (Sauber mit mehr Zeit/Ressourcen). Nutze die „Downstream-Übersetzung\": „Wir können Y liefern, müssen dafür aber X stoppen, damit das Team stabil bleibt.\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Guardian will jetzt absolute Absicherung, Review-Schleifen und Fehlerfreiheit, um Überraschungen zu vermeiden. Dein Zweitheld Strategist fokussiert sich gleichzeitig radikal auf den „kritischen Pfad\". Er will sicherstellen, dass das Timing perfekt ist und keine methodischen Fehler passieren. Du schwankst zwischen dem Drang nach lückenloser Qualitätskontrolle und der Notwendigkeit, das Projekt logisch ins Ziel zu bringen.",
+        "risk": "Es entstehen späte Review-Schleifen und ein „Scope-Creep\" (nachträgliche Änderungen). Der Versuch, in letzter Sekunde noch alles methodisch zu perfektionieren, erzeugt massiven Stress im Team und gefährdet paradoxerweise die Sicherheit der pünktlichen Lieferung.",
+        "goal": "Sicherung der Umsetzungsdisziplin durch radikales Einfrieren von Anforderungen und Prüfprozessen.",
+        "exName": "„Definition of Done & Freeze\"",
+        "ex": "Definiere 3 klare Kriterien und 2 No-Gos für das Projektende. Lege feste „Review-Fenster\" fest (z. B. täglich 30 Min.), statt permanent nachzukontrollieren. Ab T-10 (10 Tage vor Deadline) wird kein neuer Umfang (Scope) mehr zugelassen, ab T-5 werden nur noch kritische Fehler (Bugfixes) behoben."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Guardian möchte dabei absolut fair sein, die Standards des Teams schützen und sammelt unzählige Beispiele, um die Kritik korrekt zu belegen. Dein Zweitheld Strategist möchte dem Gegenüber jedoch sofort einen messbaren Plan und ein „Development-Playbook\" an die Hand geben. Du willst, dass das Gespräch nicht nur klärt, was falsch war, sondern wie die Leistung künftig systematisch gesteigert werden kann.",
+        "risk": "Das Feedback wird oft zu lang, zu korrekt und wirkt am Ende fast „technisch\". Die menschliche Ebene und die Wertschätzung gehen unter der Last der Beweisführung und der komplexen Entwicklungspläne verloren. Das Gegenüber fühlt sich eher „verwaltet\" als persönlich gecoacht.",
+        "goal": "Verbindung von fairer Klarheit mit einem einfachen, motivierenden und messbaren Entwicklungsschritt.",
+        "exName": "„Care + Beobachtung + Plan\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass du erfolgreich bist\"). 2. Beobachtung: Nenne maximal 2 konkrete Beispiele (Guardian-Fairness). 3. Erwartung: Formuliere ein klares Ziel. 4. Review: Vereinbare einen 10-Tage-Plan mit festem Termin für den Check-in. Beschränke dich auf genau ein Hauptziel pro Gespräch."
+      }
+    ]
+  },
+  "innovator_commander": {
+    "name": "Der <span class=\"accent\">Vision-Executor</span>",
+    "initials": [
+      "I",
+      "C"
+    ],
+    "hook": "Dein <span class=\"b\">Innovator</span> will Neues, Möglichkeiten und Zukunft – dein <span class=\"z\">Commander</span> bringt Umsetzung hinein und lebt von Tatkraft, klare Prioritäten und entschlossenes Handeln. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Visionäre Tatkraft",
+        "p": "Verbindet das „Großdenken\" und neue Ansätze mit einer harten, konsequenten Umsetzung."
+      },
+      {
+        "h": "Entscheidungsfreudige Neuerung",
+        "p": "Nutzt Führung und Verantwortung, um unkonventionelle Visionen in die Realität zu bringen."
+      },
+      {
+        "h": "Fokussierte Inspiration",
+        "p": "Schafft einen klaren Cut zwischen kreativer Ideenfindung und der disziplinierten Lieferung von Ergebnissen."
+      },
+      {
+        "h": "Durchsetzungsstarker Weitblick",
+        "p": "Führt Teams mutig durch Veränderungsprozesse und hält auch in komplexem Gelände den Kurs."
+      },
+      {
+        "h": "Ergebnisorientierte Agilität",
+        "p": "Nutzt kreative Freiheit als Basis für schnelles Handeln und klare Meilensteine."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Morgen mit der Familie) startest du oft kreativ mit einer Spiel-Idee oder einer Challenge. Sobald du merkst, dass die Zeit knapp wird, schaltest du abrupt auf deinen Zweithelden Commander um. Du forderst plötzlich Gehorsam, machst scharfe Ansagen und drückst massiv auf das Tempo, um den Aufbruch zu retten.",
+        "risk": "Dein Umfeld erlebt einen „Stimmungsbruch\" -- erst locker und spielerisch, dann plötzlich streng und fordernd. Dies führt oft zu emotionalem Widerstand oder Verwirrung bei Partnern und Kindern, da der Wechsel zu unvermittelt kommt.",
+        "goal": "Den Übergang vom kreativen Spielmodus in den disziplinierten Umsetzungsmodus weich und transparent gestalten.",
+        "exName": "„Spiel mit Exit-Rule\"",
+        "ex": "Lege vorab fest: „Wir spielen 3 Minuten -- wenn es dann nicht läuft, schalten wir auf den Plan.\" Nutze ein „Commander-Startsignal\" (z. B. „Okay Team, jetzt Tempo-Modus\"), um den Moduswechsel für alle hörbar einzuleiten."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck entsteht, eine schnelle Zusage zu geben, will dein Innovator neue Möglichkeiten eröffnen. Dein Zweitheld Commander möchte gleichzeitig Stärke zeigen und sofort Verantwortung übernehmen. Du neigst dazu, sehr schnell „Ja\" zu sagen, ohne vorher die notwendigen Bedingungen oder Trade-offs für die kreative Umsetzung zu prüfen.",
+        "risk": "Du gibst oft Zusagen, die später zu massiver Überlastung führen oder die Qualität deiner Vision verwässern. Da der Commander sofort ins Commitment geht, fehlt dem Innovator oft der Raum, die Machbarkeit der Idee kritisch zu hinterfragen.",
+        "goal": "Gewinn von Handlungsfähigkeit durch ein kurzes, strukturiertes Innehalten vor der endgültigen Zusage.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir bei Drucksituationen 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist absolut nicht verhandelbar? 3. Wo liegt der eigentliche Engpass? Triff erst danach die Entscheidung."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Ende. Dein Innovator sieht jetzt erst die richtig guten Möglichkeiten zur Verbesserung oder möchte einen Pivot machen. Dein Zweitheld Commander will jedoch liefern und den „Sack zumachen\". Es prallt der Drang nach Last-minute-Optimierung auf den harten Willen zum Projektabschluss.",
+        "risk": "Es droht Chaos durch zu späte Änderungen oder ein zu starres Festhalten an einem Plan, der vielleicht eine kleine Anpassung bräuchte. Oft erzeugst du durch den „letzten genialen Einfall\" unnötigen Stress im Team, während du gleichzeitig Gehorsam für die Lieferung einforderst.",
+        "goal": "Sicherung der Lieferung durch einen unumstößlichen Cut und definierte Verbesserungs-Slots.",
+        "exName": "„Freeze window\"",
+        "ex": "Lege fest, dass ab T-10 (10 Tage vor Deadline) absolut keine neuen Tools oder Prozesse mehr eingeführt werden. Reserviere täglich maximal 45 Minuten als „Innovation Slot\" für Optimierungen; die restliche Zeit gehört der kompromisslosen Execution."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Innovator spricht begeistert über „Potenziale\" und eine große Vision für die Zukunft. Dein Zweitheld Commander schiebt jedoch direkt harte Forderungen und klare Standards nach. Das Feedback wird dadurch oft „zu viel\" -- eine Mischung aus hohem Druck und visionärer Erwartung, die das Gegenüber überfordern kann.",
+        "risk": "Das Feedback wirkt entweder zu direkt (ohne Warm-up) oder die Kritik geht in der großen Vision unter. Der Mitarbeiter spürt zwar den Druck, weiß aber oft nicht, welchen konkreten ersten Schritt er in der Realität gehen soll.",
+        "goal": "Kombination von inspirierender Vision mit einem menschlichen Einstieg und einem sehr einfachen, messbaren Plan.",
+        "exName": "„Warm → Clear → Plan\"",
+        "ex": "1. Warm: „Ich will, dass du erfolgreich bist.\" 2. Clear: Benenne den kritischen Punkt mit maximal zwei Beispielen. 3. Plan: Vereinbare einen 10-Tage-Plan mit genau einem Entwicklungsziel und biete konkreten Support (Shadowing/Templates) an. Lege sofort ein Review-Datum fest."
+      }
+    ]
+  },
+  "innovator_explorer": {
+    "name": "Der <span class=\"accent\">Field Tester</span>",
+    "initials": [
+      "I",
+      "E"
+    ],
+    "hook": "Dein <span class=\"b\">Innovator</span> will Neues, Möglichkeiten und Zukunft – dein <span class=\"z\">Explorer</span> bringt Freiheit hinein und lebt von Neugier, Spontaneität und dem Entdecken neuer Wege. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Pragmatische Neugier",
+        "p": "Verbindet innovative Ideen direkt mit dem Drang, sie in der Realität auszuprobieren."
+      },
+      {
+        "h": "Schnelles Feedback-Looping",
+        "p": "Lernt am liebsten durch direktes Tun in der echten Welt statt durch theoretische Analyse."
+      },
+      {
+        "h": "Improvisationsstarke Umsetzung",
+        "p": "Findet kreative Lösungen oft spontan während des Gehens („Learning by Doing\")."
+      },
+      {
+        "h": "Dynamische Beweglichkeit",
+        "p": "Passt Visionen blitzschnell an neue Erfahrungen und Realitätsfeedback an."
+      },
+      {
+        "h": "Ergebnisorientierter Realitätscheck",
+        "p": "Validiert neue Konzepte durch mutiges Handeln und unmittelbares Erleben."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Familienmorgen) startest du als Innovator oft kreativ mit einer Spiel-Idee oder einem Hack. Dein Zweitheld Explorer macht daraus sofort Bewegung und Improvisation: Du willst einfach raus aus dem Haus, nach dem Motto „Hauptsache in Bewegung, den Rest regeln wir unterwegs\". Du tolerierst dabei weniger Perfektion zugunsten des Tempos.",
+        "risk": "Da der Fokus auf dem schnellen Aufbruch liegt, werden oft Basics (Brotbox, Schlüssel, Wechselklamotten) vergessen. Dies führt später am Tag zu „Folgestress\". Zudem fühlen sich Mitmenschen oft gehetzt oder emotional überfahren, da die Struktur zugunsten der Dynamik aufgegeben wird.",
+        "goal": "Den Fokus auf das Momentum legen, aber durch minimale Sicherheitsanker den späteren Stress vermeiden.",
+        "exName": "„2 Fixpunkte + Reset\"",
+        "ex": "Definiere genau zwei Dinge (z. B. Schlüssel und Brotbox), die absolut sitzen müssen. Nutze ein „Departure Kit\" (Korb an der Tür) für Essentials. Mache nach der Ankunft am Ziel einen 2-minütigen „Reset\": Was fehlt jetzt wirklich? Was ist heute wichtig?"
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck kommt, schnell Ergebnisse zu liefern, neigt dein Innovator zu einem schnellen „Kriegen wir hin\" und sucht gleichzeitig nach einem smarten Shortcut oder einem „Creative Deal\". Du willst die Dynamik nutzen und sofort ins Handeln kommen, ohne dich lange mit theoretischen Bedenken aufzuhalten.",
+        "risk": "Du gibst oft zu schnelle Zusagen, ohne die langfristige Absicherung oder Ressourcen zu prüfen. Da du dich während der Umsetzung oft noch umentscheidest (Explorer-Flexibilität), wirkt die Richtung für andere manchmal verwässert oder unzuverlässig.",
+        "goal": "Erhöhung der Verbindlichkeit durch schnelles, aber strukturiertes Filtern der Machbarkeit.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir bei Drucksituationen 30 Minuten Zeit für drei Fragen: 1. Was ist das Ziel? 2. Was ist absolut nicht verhandelbar? 3. Wo liegt der eigentliche Engpass? Gib erst danach eine Zusage, idealerweise mit einer klaren Bedingung (Conditional Yes)."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Innovator sieht jetzt noch Optimierungspotenzial, und dein Explorer will schnelle „Field-Loops\" drehen, um direkt mit Kunden oder Stakeholdern zu testen. Du willst durch Bewegung und schnelle Iterationen das Ergebnis verbessern, während die Zeit für die eigentliche Fertigstellung knapp wird.",
+        "risk": "Der Fokus leidet unter „Scope-Sprüngen\". Ständig kommen neue Test-Ideen dazu, was das Team verunsichert und die notwendige Verbindlichkeit im Endspurt schwächt. Das Risiko ist, dass viel ausprobiert, aber am Ende nichts fertig „geshippt\" wird.",
+        "goal": "Sicherung der Lieferung durch zeitlich streng begrenzte Testphasen und einen klaren Fokus auf das Endergebnis.",
+        "exName": "„Timeboxed field loops\"",
+        "ex": "Erlaube dir maximal 2 Stunden für einen schnellen Test oder Prototyp. Danach kehrst du zwingend zur reinen Ausführung (Execution) zurück. Nutze ein „One outcome board\": Sichtbar ist nur 1 Ziel und 3 Meilensteine."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Innovator spricht begeistert über „Potenziale\" und Möglichkeiten. Dein Zweitheld Explorer hält die Situation locker, humorvoll und motivational („Das kriegen wir easy hin\"), um die gute Stimmung und die kumpelhafte Beziehung nicht zu gefährden.",
+        "risk": "Die Kritik wird oft zu weich oder zu vage verpackt. Dein Gegenüber nimmt die Dringlichkeit der Veränderung nicht ernst, da die lockere Explorer-Art die notwendige Konsequenz überlagert. Es gibt zwar gute Stimmung im Gespräch, aber keine messbare Verhaltensänderung danach.",
+        "goal": "Kombination von inspirierender Motivation mit einer unmissverständlichen, messbaren Klarheit.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Signalisiere Vertrauen („Ich will, dass du erfolgreich bist\"). 2. Cut: Benenne glasklar den kritischen Punkt mit 2 Beispielen. 3. Coach: Vereinbare ein 10-tägiges „Explorer-Experiment\" für die neue Arbeitsweise. Lege sofort ein Review-Datum fest und benenne ruhig die Konsequenz bei Nicht-Einhaltung."
+      }
+    ]
+  },
+  "innovator_guardian": {
+    "name": "Der <span class=\"accent\">Safe Innovator</span>",
+    "initials": [
+      "I",
+      "G"
+    ],
+    "hook": "Dein <span class=\"b\">Innovator</span> will Neues, Möglichkeiten und Zukunft – dein <span class=\"z\">Guardian</span> bringt Nähe und Verlässlichkeit hinein und lebt von Empathie, Harmonie und der Sorge um das Wohl der Gemeinschaft. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Stabilisierte Erneuerung",
+        "p": "Erneuert bestehende Systeme schrittweise, ohne das Fundament an Sicherheit und Vertrauen zu gefährden."
+      },
+      {
+        "h": "Verantwortungsbewusste Kreativität",
+        "p": "Findet neue Wege, die nicht nur originell, sondern auch verlässlich und tragfähig für das Team sind."
+      },
+      {
+        "h": "Methodische Leichtigkeit",
+        "p": "Nutzt kreative Hacks und spielerische Elemente, um starre Routinen aufzubrechen und Stress zu reduzieren."
+      },
+      {
+        "h": "Sicherheitsorientierte Vision",
+        "p": "Entwickelt zukunftsgerichtete Lösungen, die ein stabiles Sicherheitsnetz für alle Beteiligten beinhalten."
+      },
+      {
+        "h": "Empathische Optimierung",
+        "p": "Verbessert Prozesse mit dem Ziel, die Belastung für Menschen zu senken und die Lebensqualität im System zu erhöhen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Morgen mit der Familie) startest du als Innovator oft locker-kreativ mit einer neuen Idee oder einem spielerischen Ansatz, um den Aufbruch zu beleben. Doch mitten im Prozess zieht dich dein Zweitheld Guardian in die absolute Sorgfalt und Absicherung. Du willst sicherstellen, dass alles ordentlich und richtig dabei ist (Jacke, Brotbox, Regeln). Es entsteht ein innerer Konflikt: Einerseits willst du Spaß und Leichtigkeit, andererseits fühlst du dich „gebremst\" oder verlierst dich in kontrollierenden Details.",
+        "risk": "Du wirst ungeduldig, wenn andere deine Sorgfalts-Standards nicht teilen, oder du kippst unter Stress in einen kleinteiligen Kontrollmodus („Wo ist...? Hast du...?\"), was die ursprüngliche Leichtigkeit zerstört.",
+        "goal": "Erhalt der Innovationsfreude durch klare Begrenzung der Sicherheits-Checks.",
+        "exName": "„2 Fixpunkte + 1 Bonus\"",
+        "ex": "Definiere vorab genau zwei Pflichtchecks (z. B. Schlüssel + Brotbox) und maximal einen Bonus (z. B. Mütze). Alles andere lässt du bewusst los, um den Fokus auf dem spielerischen Vorankommen zu halten."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, gerätst du in einen Zwiespalt. Dein Innovator sieht sofort neue Wege und Möglichkeiten, um die Erwartungen kreativ zu übertreffen. Gleichzeitig meldet sich der Guardian und sorgt sich um die Belastung des Teams oder die fachliche Korrektheit der Umsetzung. Du steckst fest zwischen dem Drang, etwas Neues zu wagen, und der Sorge, durch ein zu schnelles „Ja\" die Stabilität oder die Menschen zu gefährden.",
+        "risk": "Du gibst entweder ein zu schnelles Versprechen ab und bekommst dann „Guardian-Panik\", wie das sauber umsetzbar ist, oder du blockierst die Entscheidung aus Sorge um die Sicherheit komplett, was dich nach außen wenig dynamisch wirken lässt.",
+        "goal": "Handlungsfähigkeit durch das Verhandeln von Prioritäten und Trade-offs.",
+        "exName": "„Downstream-Übersetzung\"",
+        "ex": "Wenn eine neue Aufgabe kommt, kommuniziere klar die Bedingung: „Wir setzen Priorität Y um -- dafür stoppen wir Projekt Z.\" Nutze ein „2-Pfad-Angebot\" (Schnell/Risiko vs. Sauber/Zeit), um die Entscheidung über die Qualitätsebene zurückzugeben."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Innovator sieht jetzt erst die richtig guten Möglichkeiten zur Verbesserung oder möchte den Prozess noch einmal optimieren. Dein Zweitheld Guardian will jedoch absolute Absicherung, Review-Schleifen und eine fehlerfreie Übergabe. Es prallt der Wunsch nach dem „letzten Schliff\" auf den Drang zur lückenlosen Qualitätssicherung.",
+        "risk": "Es entsteht ein gefährlicher „Scope-Creep\" durch späte Änderungswünsche. Die Review-Schleifen verzögern den eigentlichen Abschluss, was im Team zu Frust und einer späten „Quality-Panik\" führen kann.",
+        "goal": "Sicherung der Lieferung durch strikte Trennung von Optimierung und reiner Ausführung.",
+        "exName": "„Freeze Window & Slots\"",
+        "ex": "Lege fest, dass ab T-10 (10 Tage vor Deadline) keine neuen Ideen mehr zugelassen werden. Nutze feste „Review-Fenster\" (z. B. täglich um 16:00 Uhr) fürs Prüfen. Wähle aktiv eine Qualitätsstufe (MVP / Level 2 / Perfekt) und bleibe dabei."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Mitarbeitergespräch steht an. Dein Innovator möchte inspirieren und neue Entwicklungsmöglichkeiten aufzeigen. Dein Zweitheld Guardian möchte jedoch absolut fair sein, die Team-Standards schützen und sammelt unzählige Beispiele, um die Kritik moralisch und sachlich zu belegen. Das Gespräch schwankt zwischen „ visionärem Potenzial-Talk\" und einer schweren Beweisführung über Vergangenes.",
+        "risk": "Das Feedback wird oft zu lang oder wirkt moralisierend („das macht man nicht\"). Das Gegenüber fühlt sich durch die Menge an Beispielen erdrückt oder die eigentliche Botschaft geht in den vielen Möglichkeiten verloren.",
+        "goal": "Kombination von unmissverständlicher Klarheit mit einem wertschätzenden Rahmen.",
+        "exName": "„4-Satz-Formel + Warm-up\"",
+        "ex": "1. Warm-up: „Ich spreche das an, weil du wichtig bist.\" 2. Beobachtung: Nenne max. 2 konkrete Beispiele (nicht 7!). 3. Wirkung: Erkläre die Folge fürs Team. 4. Erwartung & Support: Formuliere ein klares Ziel und biete Hilfe an. Halte das Gespräch kurz und sachlich."
+      }
+    ]
+  },
+  "innovator_sage": {
+    "name": "Der <span class=\"accent\">Meaning Maker</span>",
+    "initials": [
+      "I",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Innovator</span> will Neues, Möglichkeiten und Zukunft – dein <span class=\"z\">Sage</span> bringt Klarheit und Erkenntnis hinein und lebt von Analyse, Logik und dem tiefen Verständnis der Welt. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Inspirierende Substanz",
+        "p": "Verbindet kreative Visionen mit intellektuellem Tiefgang und fundierter Logik."
+      },
+      {
+        "h": "Reflektierte Erneuerung",
+        "p": "Hinterfragt den Status quo nicht nur, um anders zu sein, sondern um eine tiefere Wahrheit oder einen Sinn zu finden."
+      },
+      {
+        "h": "Wertebasierte Vision",
+        "p": "Entwickelt Ideen, die nicht nur neuartig, sondern ethisch fundiert und langfristig stimmig sind."
+      },
+      {
+        "h": "Analytische Kreativität",
+        "p": "Nutzt messerscharfe Mustererkennung, um aus komplexen Informationen völlig neue Konzepte zu formen."
+      },
+      {
+        "h": "Sinnstiftende Innovation",
+        "p": "Erklärt und verankert das Neue so, dass es für andere eine klare Orientierung und Bedeutung bietet."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) startest du als Innovator oft locker-kreativ mit einer neuen Idee oder einem spielerischen Ansatz, um den Aufbruch zu beleben. Doch mitten im Prozess schaltet sich dein Zweitheld Sage ein. Er möchte sicherstellen, dass nicht nur die Zeitplanung stimmt, sondern auch die Haltung und die Werte (z. B. Respekt, Ruhe). Du hast das Bedürfnis, mitten in der Hektik den Kern der Situation zu erklären oder eine pädagogische Grundsatzdiskussion darüber zu führen, warum Pünktlichkeit ein Zeichen von Wertschätzung ist.",
+        "risk": "Du wechselst abrupt von locker zu „pädagogisch\" und hältst kurze Grundsatzreden, während die Uhr unaufhörlich tickt. Dein Umfeld reagiert genervt auf diese moralisierende Schwere in einem eigentlich praktischen Moment. Das Ergebnis ist oft, dass ihr trotz (oder wegen) der „guten Lehre\" am Ende doch zu spät kommt und die Stimmung im Keller ist.",
+        "goal": "Erhalt der Leichtigkeit durch radikale Verkürzung der Sinnvermittlung in Stressphasen.",
+        "exName": "„Principle in one line\"",
+        "ex": "Reduziere dein Prinzip auf genau einen Satz (z. B. „Zeit ist Respekt -- jetzt Schuhe an.\"). Handle danach sofort. Jede tiefere Reflexion oder Erklärung bekommt abends 5 Minuten Zeit, aber niemals morgens im Zeitdruck."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, eine schnelle Zusage zu geben, neigt dein Innovator zu einem schnellen „Kriegen wir hin\" und sieht sofort die neuen Möglichkeiten. Dein Zweitheld Sage mahnt jedoch zur Integrität: Er will nichts versprechen, was fachlich nicht haltbar ist oder was sich wie eine „Lüge\" gegenüber den tatsächlichen Ressourcen anfühlt. Du steckst fest zwischen dem Drang, den Weg visionär frei zu machen, und dem Bedürfnis nach absoluter gedanklicher Ehrlichkeit.",
+        "risk": "Entweder gibst du eine Zusage, die sich später „unwahr\" anfühlt (was deinen Fluchtimpuls triggert), oder du blockierst die Entscheidung durch eine zu komplexe Argumentation über die fachliche Integrität. Das lässt dich für Vorgesetzte unentschlossen wirken, da die „Wahrheitssuche\" des Sage den Vorwärtsdrang des Innovators lähmt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die Definition von „wahr genug\" für den aktuellen Moment.",
+        "exName": "„Write it down (3 Bulletpoints)\"",
+        "ex": "Gib Zusagen nur in 3 klaren Bulletpoints ab (Outcome / Scope / Risiko). Das befriedigt den Sage (Wahrheit ist dokumentiert) und lässt dem Innovator den Raum für die Umsetzung. Nutze den Satz: „Ich schütze mit dieser Klarheit das Ergebnis.\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Innovator sieht jetzt erst die richtig guten Möglichkeiten zur Verbesserung. Gleichzeitig meldet sich der Sage und verlangt, dass das Ergebnis absolut „sauber\" und korrekt ist („wir shippen keinen Quatsch\"). Du willst kurz vor Schluss noch einmal die Grundlogik ändern oder fachliche Korrekturen vornehmen, weil du dich nicht selbst belügen willst, falls das Ergebnis nicht perfekt durchdacht ist.",
+        "risk": "Es kommt zu gefährlichen „Late Corrections\" oder späten Perfektionsschleifen. Dein Versuch, die fachliche Wahrheit kurz vor der Deadline zu retten, gefährdet die pünktliche Lieferung massiv. Das Team ist erschöpft, weil du die Spielregeln änderst, um dein Gewissen (den Sage) zu beruhigen.",
+        "goal": "Sicherung der Lieferung durch die Akzeptanz von Iterationen (Version 1.0 vs. absolute Wahrheit).",
+        "exName": "„Truth Gate früh (T-14)\"",
+        "ex": "Installiere einen verbindlichen Qualitäts- und Logikcheck genau 14 Tage vor der Deadline. Danach sind keine grundlegenden Änderungen an der Logik mehr erlaubt. Definiere 3 Kriterien für „wahr genug\" in Version 1.0 und bleibe dabei."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Ein kritisches Gespräch steht an. Dein Innovator möchte inspirieren und spricht über „Potenziale\" und visionäre Entwicklungsmöglichkeiten. Dein Zweitheld Sage möchte jedoch die „volle Wahrheit\" aussprechen und über Haltung und Prinzipien reden. Das Gespräch schwankt zwischen „du könntest so viel mehr sein\" und einer moralisch schweren Analyse des Fehlverhaltens.",
+        "risk": "Das Feedback wird oft zu philosophisch oder zu moralisch aufgeladen statt konkret. Der Mitarbeiter fühlt sich zwar irgendwie „erkannt\", weiß aber am Ende des Gesprächs nicht, was er am nächsten Morgen praktisch anders machen soll. Die notwendige Verhaltensänderung geht in der Tiefe der Argumentation verloren.",
+        "goal": "Kombination von inspirierender Vision mit unmissverständlicher, kurzer Klarheit.",
+        "exName": "„Behavior → Principle → Choice\"",
+        "ex": "1. Behavior: Benenne das Verhalten (max. 2 Beispiele). 2. Principle: Erkläre in maximal 60 Sekunden das Prinzip dahinter (Sage kurz halten!). 3. Choice: Gib dem Gegenüber eine klare Wahl und vereinbare einen nächsten Schritt bis zum Ende der Woche. Frage am Ende: „Was ist dein nächster Schritt bis Freitag?\""
+      }
+    ]
+  },
+  "innovator_strategist": {
+    "name": "Der <span class=\"accent\">System-Designer</span>",
+    "initials": [
+      "I",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Innovator</span> will Neues, Möglichkeiten und Zukunft – dein <span class=\"z\">Strategist</span> bringt Struktur und Exzellenz hinein und lebt von Präzision, Logik und methodische Stärke. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Strukturierte Vision",
+        "p": "Verbindet kreative Ideen mit einer belastbaren Architektur und klaren Prioritäten."
+      },
+      {
+        "h": "Systematische Innovation",
+        "p": "Verwandelt unkonventionelle Sprünge in skalierbare und wiederholbare Prozesse."
+      },
+      {
+        "h": "Analytische Hebelkraft",
+        "p": "Identifiziert präzise die entscheidenden Engpässe, um Visionen effizient umzusetzen."
+      },
+      {
+        "h": "Methodische Planung",
+        "p": "Baut stabile Pfade für neue Konzepte durch Szenarioplanung und Logik."
+      },
+      {
+        "h": "Logische Optimierung",
+        "p": "Verbessert Abläufe kontinuierlich, ohne den Blick für das große Ganze zu verlieren."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Morgen mit der Familie) startest du als Innovator oft kreativ mit einer Spiel-Idee oder einem Hack. Doch dein Zweitheld Strategist zieht dich sofort in das „Bottleneck-Denken\": Er analysiert die Reihenfolge, identifiziert den Engpass und delegiert klare Rollen. Du willst, dass der Morgen nicht nur klappt, sondern als stabiler, logischer Prozess abläuft. Du schwankst zwischen dem spielerischen Impuls und dem Drang, die Sequenz (erst anziehen, dann Frühstück) perfekt zu optimieren.",
+        "risk": "Du wirst ungeduldig, wenn der Plan nicht eingehalten wird. Oft optimierst du so viel an der Struktur herum, dass ihr den Moment zum eigentlichen Losgehen verpasst. Das Umfeld reagiert genervt auf die Mischung aus „kreativem Spielangebot\" und „prozessualer Strenge\".",
+        "goal": "Erhöhung der Effizienz durch die Lösung eines einzigen Engpasses bei gleichzeitiger Wahrung der Flexibilität.",
+        "exName": "„Bottleneck fixen\"",
+        "ex": "Identifiziere genau einen Engpass (z. B. Schuhe suchen) und löse nur diesen (z. B. durch einen festen Platz). Nutze einen minimalen 2-Schritt-Plan für den Ablauf und verbiete dir im akuten Stress jede weitere Optimierung des Systems."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, neigt dein Innovator zu einem schnellen „Kriegen wir hin\" und sieht sofort neue Möglichkeiten. Dein Zweitheld Strategist mahnt jedoch zur Klärung der Abhängigkeiten. Du willst den „besten Hebel\" finden und spielst verschiedene Szenarien durch. Du steckst fest zwischen dem Drang, visionär voranzugehen, und dem Bedürfnis, die strategisch klügste Wahl zu treffen, die das System stabilisiert.",
+        "risk": "Es droht eine „Hebel-Blockade\". Der Versuch, die perfekte taktische Positionierung und alle Abhängigkeiten vorab zu klären, bremst den Vorwärtsdrang. Du lieferst oft zu viele Optionen oder Szenarien, was dich für Vorgesetzte unentschlossen oder zu komplex wirken lässt.",
+        "goal": "Schnelle Entschlossenheit durch Fokus auf den kritischen Pfad und Akzeptanz von Trade-offs.",
+        "exName": "„3 Zeilen nach oben\"",
+        "ex": "Reduziere die Entscheidungsvorlage auf drei Punkte: 1. Gewünschtes Outcome, 2. Der entscheidende Engpass, 3. Die notwendige Entscheidung. Nutze den Scope Swap: „Ja zu A, wenn wir dafür B stoppen.\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Innovator sieht jetzt erst die richtig guten Möglichkeiten zur Verbesserung. Dein Zweitheld Strategist schaltet jedoch in den Schutzmodus für den „kritischen Pfad\". Er will sicherstellen, dass das Timing perfekt ist und keine methodischen Fehler passieren. Du schwankst zwischen der Lust auf eine Last-Minute-Innovation und dem Drang, die Abläufe kurz vor Schluss noch einmal radikal zu straffen.",
+        "risk": "Es kommt zu gefährlichen Änderungen kurz vor der Deadline oder zu einem „Plan-Overkill\", der das Team lähmt. Dein Versuch, das Ganze methodisch zu perfektionieren oder umzustellen, erzeugt Unruhe und gefährdet die eigentliche Ausführung (Execution).",
+        "goal": "Sicherung der Lieferung durch striktes Einfrieren von Prozessen und Fokus auf reine Erledigung.",
+        "exName": "„Freeze dates & Innovation Slot\"",
+        "ex": "Lege unumstößliche Termine fest. Ab Datum X werden keine Scope-Änderungen mehr zugelassen. Reserviere täglich einen festen Innovation Slot (z. B. 30 Min.) für kleine Optimierungen; die restliche Zeit gehört kompromisslos dem Critical Path Board (nur 5--7 Kernaufgaben sichtbar)."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Innovator inspiriert und spricht über „große Potenziale\". Dein Zweitheld Strategist möchte dem Gegenüber jedoch sofort einen strukturierten Entwicklungsweg und ein „Development-Playbook\" an die Hand geben. Das Gespräch schwankt zwischen visionärem Zukunftstalk und einer sehr taktischen Karriere-Planung.",
+        "risk": "Das Feedback wird oft zu komplex. Der Mitarbeiter bekommt zwar viele Frameworks und Ideen, vermisst aber den klaren Text darüber, was aktuell falsch läuft. Die menschliche Ebene geht unter der Last der strukturierten Entwicklungsplanung verloren.",
+        "goal": "Kombination von inspirierender Vision mit unmissverständlicher Klarheit und messbaren Schritten.",
+        "exName": "„Now / Next / Path\"",
+        "ex": "1. Now: Benenne den aktuellen Gap mit 2 Beispielen. 2. Next: Definiere genau ein Verhalten für die Zukunft (Klartext!). 3. Path: Vereinbare einen 2-Wochen-Plan mit Review. Schreibe gemeinsam eine Definition of Great (3 Bulletpoints), um den Erfolg für beide Seiten messbar zu machen."
+      }
+    ]
+  },
+  "sage_commander": {
+    "name": "Der <span class=\"accent\">Guiding Authority</span>",
+    "initials": [
+      "S",
+      "C"
+    ],
+    "hook": "Dein <span class=\"b\">Sage</span> will Verstehen, Tiefe und Sinn – dein <span class=\"z\">Commander</span> bringt Umsetzung hinein und lebt von Tatkraft, klare Prioritäten und entschlossenes Handeln. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Fundierte Entscheidungskraft",
+        "p": "Verbindet tiefes, logisches Abwägen mit der Fähigkeit, im entscheidenden Moment konsequent Position zu beziehen."
+      },
+      {
+        "h": "Wertebasierte Führung",
+        "p": "Setzt klare Ziele und Richtlinien, die auf einem festen Fundament aus Sinnhaftigkeit und Integrität stehen."
+      },
+      {
+        "h": "Reflektierte Souveränität",
+        "p": "Bleibt auch unter Druck besonnen, kommt aber schneller aus dem Grübeln in eine sichtbare, leitende Rolle."
+      },
+      {
+        "h": "Integrität in Aktion",
+        "p": "Garantiert Ergebnisse, die sowohl fachlich wahr als auch praktisch wirksam und umgesetzt sind."
+      },
+      {
+        "h": "Klarheit durch Tiefe",
+        "p": "Schafft Orientierung für andere, indem er komplexe Zusammenhänge in einfache, entschlossene Handlungsschritte übersetzt."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Sage den tieferen Sinn von Regeln klären oder pädagogisch wertvoll einwirken („Warum ist Pünktlichkeit ein Zeichen von Respekt?\"). Dein Zweitheld Commander hingegen spürt die tickende Uhr und drängt auf sofortige Handlung und klare Ansagen. Es entsteht ein innerer Konflikt zwischen dem Wunsch, die Situation „richtig zu erklären\", und der Notwendigkeit, einfach nur loszukommen.",
+        "risk": "Du wirkst oft abrupt streng, weil der Commander die Führung übernimmt, um das Ziel (Pünktlichkeit) zu retten. Gleichzeitig fühlst du dich innerlich „unsauber\", weil keine Zeit für eine ordentliche Erklärung war. Das Umfeld erlebt dich als unvermittelt autoritär, was den Stresspegel für alle erhöht.",
+        "goal": "Den Fokus radikal auf die Handlung legen und akzeptieren, dass Erklärungen erst in einem ruhigen Moment wirksam sind.",
+        "exName": "„One-line principle + Action\"",
+        "ex": "Reduziere das Prinzip auf genau einen Satz (z. B. „Zeit ist Respekt -- jetzt Schuhe an.\"). Handle danach sofort ohne weitere Diskussion. Nutze „Teaching later\": Jede Reflexion wird konsequent auf den Abend verschoben."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von außen Druck entsteht, eine schnelle Zusage zu geben, will dein Sage erst alle Perspektiven prüfen und sicherstellen, dass nichts „Unwahres\" versprochen wird. Dein Zweitheld Commander möchte jedoch Handlungsfähigkeit demonstrieren und Verantwortung übernehmen. Du steckst fest zwischen der Angst vor einer voreiligen, „unwahren\" Entscheidung und dem Drang, als starker Entscheider aufzutreten.",
+        "risk": "Entweder verlierst du dich in einer zu komplexen Argumentation, die andere als zögerlich wahrnehmen, oder du gibst ein schnelles Commitment ab, das du später innerlich bereust, weil es nicht tief genug durchdacht war (Prinzip-Blockade).",
+        "goal": "Gewinn von Handlungsfähigkeit durch das Aushandeln von klaren Bedingungen und Trade-offs.",
+        "exName": "„Truth Sandwich\"",
+        "ex": "Starte mit dem Willen zum Ergebnis (Commander), benenne dann die fachliche Einschränkung (Sage) und schließe mit einem bedingten Commitment ab. Nutze das „2-Pfad-Angebot\": „Wir können es schnell machen (mit Risiko X) oder sauber (mit mehr Zeit). Was wählen wir?\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Sage will absolute fachliche Korrektheit und möchte kurz vor Schluss noch Logikfehler ausräumen, da das Ergebnis sonst für ihn „wertlos\" ist. Dein Zweitheld Commanderwill jedoch liefern („shippen\") und fordert den Abschluss. Es prallt der fachliche Perfektionismus auf den harten Willen zur Fertigstellung.",
+        "risk": "Es kommt zu gefährlichen späten Korrekturen („Late Corrections\"), die das Team überfordern und massiven Stress erzeugen. Der Versuch, die Wahrheit in letzter Sekunde zu retten, gefährdet die pünktliche Lieferung und die Stimmung im Team.",
+        "goal": "Sicherung der Lieferung durch die Definition von „wahr genug\" für die aktuelle Version.",
+        "exName": "„Truth Gate früh (T-14)\"",
+        "ex": "Installiere einen verbindlichen Qualitätscheck genau 14 Tage vor der Deadline. Danach sind keine grundlegenden Änderungen an der Logik oder am Scope mehr erlaubt. Nutze das „Error Budget\": Was ist eine tolerierbare Unschärfe, die den Go-live nicht behindert?"
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Sage möchte über Haltung, Sinn und Prinzipien sprechen, damit das Gegenüber die „Wahrheit\" wirklich versteht. Dein Zweitheld Commander will jedoch klare Erwartungen setzen und eine Verhaltensänderung erzwingen. Das Gespräch schwankt zwischen philosophischer Schwere und hartem Leistungsdruck.",
+        "risk": "Das Feedback wird oft zu moralisch oder zu ernst. Der Mitarbeiter fühlt sich moralisch bewertet statt professionell korrigiert. Die eigentliche Botschaft geht in der Tiefe der Argumentation verloren oder wird als zu harter Angriff wahrgenommen.",
+        "goal": "Kombination von ehrlicher Klarheit in der Sache mit einem einfachen, ausführbaren Plan.",
+        "exName": "„Behavior → Principle → Plan\"",
+        "ex": "1. Behavior: Benenne das Verhalten (max. 2 Beispiele). 2. Principle: Erkläre in maximal 60 Sekunden das Prinzip dahinter (Sage kurz halten!). 3. Plan: Vereinbare einen 10-Tage-Plan mit festem Review-Termin. Steige wertschätzend ein: „Ich spreche das an, weil du wichtig für uns bist.\""
+      }
+    ]
+  },
+  "sage_explorer": {
+    "name": "Der <span class=\"accent\">Experiential Sage</span>",
+    "initials": [
+      "S",
+      "E"
+    ],
+    "hook": "Dein <span class=\"b\">Sage</span> will Verstehen, Tiefe und Sinn – dein <span class=\"z\">Explorer</span> bringt Freiheit hinein und lebt von Neugier, Spontaneität und dem Entdecken neuer Wege. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Geerdete Erkenntnis",
+        "p": "Verknüpft tiefe Reflexion und Sinnsuche mit realen Erfahrungen und praktischem Ausprobieren."
+      },
+      {
+        "h": "Pragmatische Klarheit",
+        "p": "Nutzt Bewegung und Handeln, um aus dem rein Theoretischen in die wirksame Umsetzung zu kommen."
+      },
+      {
+        "h": "Bewegliche Wahrheit",
+        "p": "Bleibt fachlich und moralisch integer, ist aber flexibel genug, um Lösungen im Tun anzupassen."
+      },
+      {
+        "h": "Authentische Neugier",
+        "p": "Sucht nach Bedeutung nicht nur in der Analyse, sondern im aktiven Erleben und Erproben der Welt."
+      },
+      {
+        "h": "Souveräne Improvisation",
+        "p": "Vertraut darauf, dass sich tiefere Einsichten oft erst im Prozess des Gehens und durch Realitätsfeedback erschließen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Sage den Sinn von Regeln klären oder pädagogisch einwirken. Dein Zweitheld Explorer zieht dich jedoch in die Bewegung und den Pragmatismus („Komm -- raus hier, den Rest regeln wir unterwegs\"). Du bist zerrissen zwischen dem Bedürfnis nach gedanklicher Klarheit und dem Drang, einfach nur loszugehen.",
+        "risk": "Du fühlst dich innerlich oft „unsauber\", weil die Struktur oder die Erklärung fehlt. Wenn dann unterwegs tatsächlich Dinge vergessen werden, kippt die Stimmung und du wirst nachträglich streng oder verfällst in Grübelei, was den Stress für alle erhöht.",
+        "goal": "Erhalt der Handlungsfähigkeit durch die Erkenntnis, dass Tun oft mehr Ruhe bringt als theoretisches Erklären.",
+        "exName": "„2 Fixpunkte + Reset\"",
+        "ex": "Definiere genau zwei Pflichtchecks (z. B. Schlüssel + Brotbox). Nutze das „One-line principle\": Ein Satz zum Sinn (z. B. „Zeit ist Respekt\"), dann sofort losgehen. Mache erst nach der Ankunft einen 2-minütigen „Reset\": Was fehlt wirklich? Was ist jetzt wichtig?"
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell zu liefern, will dein Explorer sofort ins Machen kommen und die Freiheit der Bewegung nutzen. Dein Sage mahnt jedoch zur Integrität: Er will nichts versprechen, was fachlich nicht haltbar ist oder sich „unwahr\" anfühlt. Du steckst fest zwischen dem Drang, den Weg frei zu machen, und der Sorge, deine Glaubwürdigkeit zu verlieren.",
+        "risk": "Entweder gibst du ein zu schnelles „Ja\", um den Druck loszuwerden (was dich später innerlich belastet), oder du blockierst die Entscheidung durch eine zu komplexe Analyse der moralischen/fachlichen Bedenken. Beides schwächt deine Position als verlässlicher Entscheider.",
+        "goal": "Gewinn von Handlungsfähigkeit durch ein schnelles Assessment und das Aushandeln von Trade-offs.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Nimm dir bei Druck 30 Minuten Zeit für: 1. Ziel? 2. Was ist nicht verhandelbar? 3. Wo ist der Engpass? Gib danach eine Zusage in maximal 3 Bulletpoints (Outcome/Scope/Risiko) ab, um die „Wahrheit\" für den Sage zu dokumentieren."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Explorer liebt es, in dieser Phase schnelle Test-Loops zu drehen und im Tun zu optimieren. Dein Sage will jedoch absolute Korrektheit und keine „unsauberen\" Lösungen abliefern. Es prallt der Drang nach spielerischem Ausprobieren auf den Anspruch, fachlich integer zu bleiben.",
+        "risk": "Der Fokus leidet unter „Scope-Sprüngen\" oder späten Korrekturen. Du versuchst, das Ergebnis in letzter Sekunde noch „wahrer\" oder „besser\" zu machen, was das Team verunsichert und die pünktliche Lieferung gefährdet.",
+        "goal": "Sicherung des Projekterfolgs durch die Akzeptanz von „wahr genug\" für die aktuelle Version.",
+        "exName": "„Timeboxed loops & Done\"",
+        "ex": "Erlaube dir maximal 2 Stunden für einen letzten Test. Danach kehrst du zur Execution zurück. Nutze die „Definition of Done\" mit 3 klaren Kriterien und 2 No-Gos. Änderungen am Scope sind nur in fest definierten Zeitfenstern erlaubt."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Explorer möchte die Situation locker, kumpelhaft und motivational halten. Dein Sage möchte jedoch die volle Wahrheit ansprechen und über Haltung und Prinzipien reden. Das Gespräch schwankt zwischen „ist doch alles nicht so wild\" und einer moralisch schweren Analyse des Fehlers.",
+        "risk": "Das Feedback wird oft zu vage verpackt (die Botschaft kommt nicht an) oder es wird durch die Schwere des Sage zu ernst und belehrend. Der Mitarbeiter weiß am Ende oft nicht, ob er jetzt ermutigt oder gerügt wurde.",
+        "goal": "Kombination von motivierender Offenheit mit einer unbestechlichen, ehrlichen Klarheit.",
+        "exName": "„Care + Truth + Next\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Du bist wichtig für uns\"). 2. Wahrheit: Benenne den kritischen Punkt mit maximal zwei Beispielen glasklar. 3. Next step: Vereinbare ein 10-tägiges Experiment für das neue Verhalten mit festem Review-Datum. Bleibe ruhig und konkret."
+      }
+    ]
+  },
+  "sage_guardian": {
+    "name": "Der <span class=\"accent\">Steady Mentor</span>",
+    "initials": [
+      "S",
+      "G"
+    ],
+    "hook": "Dein <span class=\"b\">Sage</span> will Verstehen, Tiefe und Sinn – dein <span class=\"z\">Guardian</span> bringt Nähe und Verlässlichkeit hinein und lebt von Empathie, Harmonie und der Sorge um das Wohl der Gemeinschaft. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Empathische Führung",
+        "p": "Verbindet tiefes menschliches Verständnis und Reflexion mit praktischer Fürsorge und Verlässlichkeit."
+      },
+      {
+        "h": "Souveräne Stabilität",
+        "p": "Schafft in unsicheren Zeiten einen ruhigen, sicheren Raum, in dem sich Menschen gestärkt und orientiert fühlen."
+      },
+      {
+        "h": "Sinnstiftende Verlässlichkeit",
+        "p": "Bietet Orientierung, die nicht nur auf Logik basiert, sondern auch auf stabilen Werten und sozialer Sicherheit."
+      },
+      {
+        "h": "Behutsame Begleitung",
+        "p": "Führt Menschen durch Veränderungsprozesse, ohne sie zu drängen, und achtet dabei penibel auf deren Belastungsgrenzen."
+      },
+      {
+        "h": "Qualitätsorientierte Fürsorge",
+        "p": "Sichert Ergebnisse ab, indem er sowohl fachliche Wahrheit als auch die Stabilität der Beziehungen im Blick behält."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Sage den Sinn von Regeln klären oder pädagogisch wertvoll einwirken. Dein Zweitheld Guardian verlangt gleichzeitig nach Absicherung und Sorgfalt („nichts vergessen\"). Du willst, dass alles ordentlich, richtig und sicher abläuft.",
+        "risk": "Du wirst langsam durch das Verweilen in Details oder wirst streng, wenn Regeln verletzt werden („so geht das nicht\"). Der Versuch, mitten im Zeitdruck Prinzipien zu vermitteln, erzeugt eher Stress und Widerstand bei anderen, statt die gewünschte Ruhe zu bringen.",
+        "goal": "Erhalt der Handlungsfähigkeit durch Reduktion der Komplexität und Fokus auf das Wesentliche.",
+        "exName": "„2 Fixpunkte + 1 Bonus\"",
+        "ex": "Definiere genau zwei Pflichtchecks (z. B. Schlüssel + Brotbox) und maximal einen Bonus. Nutze das One-line principle: „Sicherheit zuerst -- dann Tempo.\" (Ein Satz, dann handeln). Nutze den Vorabend-Guardian: Bereite Taschen und Kleidung abends für 5 Min. vor, um morgens weniger kontrollieren zu müssen."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell zu liefern, gerätst du in einen Zwiespalt. Dein Sage braucht fachliche Wahrheit und Logik, während dein Zweitheld Guardian die Teamstabilität und die Belastbarkeit der Menschen schützen will. Du hast Angst, durch ein zu schnelles „Ja\" entweder die Wahrheit zu verbiegen oder das Team zu „verbrennen\".",
+        "risk": "Du neigst dazu, zu spät zu blockieren oder ein „stilles Ja\" zu geben, bei dem am Ende die Qualität leidet oder das Team überlastet wird. Dies führt zu hohem innerem Stress und gefährdet langfristig die Verlässlichkeit.",
+        "goal": "Gewinn von Handlungsfähigkeit durch die klare Kommunikation von Bedingungen und Konsequenzen.",
+        "exName": "„Conditional Yes\"",
+        "ex": "Gib eine Zusage nur unter Bedingungen ab („Ja, wenn Priorität X oder Ressource Y geklärt ist\"). Nutze die Downstream-Übersetzung: „Wir stoppen Projekt A, damit Projekt B stabil geliefert werden kann.\" Verkaufe das Aufzeigen von Risiken als Risiko-Service: „Damit das stabil bleibt, brauche ich eine Entscheidung zu...\"."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Sage will fachliche Korrektheit und keine „unsauberen\" Lösungen. Dein Zweitheld Guardian fordert zusätzliche Absicherung, Review-Schleifen und lückenlose Qualität, um Überraschungen zu vermeiden.",
+        "risk": "Es entstehen endlose Review-Schleifen und ein gefährlicher „Scope-Creep\" kurz vor Schluss. Der Versuch, alles perfekt und gleichzeitig sicher zu machen, verzögert die Lieferung und überfordert das Team in der kritischen Phase.",
+        "goal": "Sicherung der Lieferung durch striktes Einfrieren von Anforderungen und definierte Prüf-Fenster.",
+        "exName": "„Definition of Done & Freeze\"",
+        "ex": "Definiere 3 klare Kriterien und 2 No-Gos für den Abschluss. Nutze feste Review-Fenster (Slots), statt den Prozess permanent durch Prüfungen zu unterbrechen. Wähle aktiv eine Qualitätsstufe (MVP / Level 2 / Perfekt) und bleibe konsequent dabei."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Sage möchte über Wahrheit und Prinzipien sprechen, während dein Zweitheld Guardian fair bleiben will und unzählige Beispiele sammelt, um die Kritik moralisch hieb- und stichfest zu belegen.",
+        "risk": "Das Feedback wird oft zu lang, zu moralisch aufgeladen oder wirkt durch die Menge an Beispielen erdrückend. Das Gegenüber fühlt sich eher belehrt als unterstützt, was die Bereitschaft zur Veränderung eher mindert.",
+        "goal": "Kombination von empathischer Klarheit mit einem kurzen, wirksamen Handlungsplan.",
+        "exName": "„4-Satz-Formel + Warm-up\"",
+        "ex": "1. Warm-up: „Ich spreche das an, weil du wichtig bist.\" 2. Beobachtung: Nenne max. 2 konkrete Beispiele (nicht 7!). 3. Wirkung: „Das führt dazu, dass...\" 4. Erwartung & Support: „Ich erwarte künftig... Wie kann ich dich unterstützen?\". Halte das Gespräch ruhig, kurz und konkret."
+      }
+    ]
+  },
+  "sage_innovator": {
+    "name": "Der <span class=\"accent\">Insight Innovator</span>",
+    "initials": [
+      "S",
+      "I"
+    ],
+    "hook": "Dein <span class=\"b\">Sage</span> will Verstehen, Tiefe und Sinn – dein <span class=\"z\">Innovator</span> bringt Möglichkeiten hinein und lebt von Zukunftsvisionen, kreativer Neuerfindung und dem Mut, das Bekannte radikal infrage zu stellen. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Inspirierende Substanz",
+        "p": "Verbindet kreative Visionen mit intellektuellem Tiefgang und fundierter Logik."
+      },
+      {
+        "h": "Reflektierte Erneuerung",
+        "p": "Hinterfragt den Status quo nicht nur, um anders zu sein, sondern um eine tiefere Wahrheit oder einen Sinn zu finden."
+      },
+      {
+        "h": "Wertebasierte Vision",
+        "p": "Entwickelt Ideen, die nicht nur neuartig, sondern ethisch fundiert und langfristig stimmig sind."
+      },
+      {
+        "h": "Analytische Kreativität",
+        "p": "Nutzt messerscharfe Mustererkennung, um aus komplexen Informationen völlig neue Konzepte zu formen."
+      },
+      {
+        "h": "Sinnstiftende Innovation",
+        "p": "Erklärt und verankert das Neue so, dass es für andere eine klare Orientierung und Bedeutung bietet."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Sage den Kern der Situation klären oder pädagogisch einwirken. Dein Zweitheld Innovator versucht gleichzeitig, den Druck durch eine spielerische Idee oder einen kreativen Hack aufzulösen. Du schwankst zwischen dem Bedürfnis, Prinzipien sauber zu vermitteln, und dem Reiz, die Situation durch eine smarte, neue Methode leichter zu machen.",
+        "risk": "Du wechselst zwischen „pädagogisch\" und „spielerisch\", was auf andere unberechenbar wirkt. Oft hältst du mitten im Chaos noch eine Sinn-Erklärung oder eine Grundsatzrede, während die Zeit wegläuft. Das Ergebnis ist oft, dass die Leichtigkeit verloren geht und ihr trotzdem zu spät kommt.",
+        "goal": "Erhalt der Handlungsfähigkeit durch radikale Verkürzung der Sinnvermittlung und klare Trennung von Spiel und Ernst.",
+        "exName": "„Principle + Play\"",
+        "ex": "Nutze die Formel: Genau ein Satz Prinzip, dann sofort das Spiel/die Aktion (z. B. „Zeit ist Respekt -- wer knackt die 2-Minuten-Schuh-Challenge?\"). Jede tiefere Erklärung bekommt abends 5 Minuten Zeit, aber niemals im Zeitdruck."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, gerätst du in einen Zwiespalt. Dein Sagebraucht fachliche Wahrheit und logische Durchdringung. Dein Zweitheld Innovator sieht jedoch sofort einen kreativen Shortcut oder eine technologische Lösung, mit der man das Ziel viel smarter erreichen könnte. Du steckst fest zwischen dem Drang, visionär voranzugehen, und der Sorge, durch ein zu schnelles „Ja\" die fachliche Integrität zu gefährden.",
+        "risk": "Du blockierst die Entscheidung oft durch eine zu komplexe Analyse der moralischen oder fachlichen Bedenken. Dies lässt dich nach außen hin wenig dynamisch wirken, da die „Wahrheitssuche\" des Sage den Innovationsgeist des Innovators lähmt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch kleine, risikoarme Testphasen und klare Trade-offs.",
+        "exName": "„Truth Sandwich / Pilot first\"",
+        "ex": "Beginne mit dem Willen zum Ergebnis, benenne die fachliche Grenze und schlage dann einen 48-stündigen Mini-Test (Pilot) für den innovativen Weg vor. Nur wenn dieser Test die Logik-Kriterien des Sage erfüllt, erfolgt das volle Commitment."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Sage will fachliche Korrektheit und keine „unsauberen\" Lösungen abliefern. Dein Zweitheld Innovator sieht jedoch kurz vor Schluss eine Möglichkeit, den Prozess noch einmal massiv zu optimieren. Es prallt der Drang nach einer fachlich perfekten Lösung auf die Versuchung einer Last-Minute-Innovation.",
+        "risk": "Es kommt zu gefährlichen späten Korrekturen oder der Einführung neuer Tools kurz vor Schluss („Perfektionismus + Last-minute-Idee\"). Das gefährdet die pünktliche Lieferung massiv und erzeugt im Team das Gefühl, dass ihre bisherige Arbeit nicht gut genug war oder die Regeln ständig geändert werden.",
+        "goal": "Sicherung der Lieferung durch die Akzeptanz von Iterationen und einen klaren „Truth Gate\".",
+        "exName": "„Truth gate früh (T-14)\"",
+        "ex": "Installiere einen verbindlichen Qualitätscheck genau 14 Tage vor der Deadline. Danach sind keine grundlegenden Änderungen an der Logik oder neue Tools (No-new-tools window ab T-10) mehr erlaubt. Definiere 3 Kriterien für „wahr genug\" in Version 1.0."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Sage möchte über Wahrheit und Prinzipien sprechen, während dein Zweitheld Innovator inspirieren und neue Entwicklungsmöglichkeiten aufzeigen möchte. Das Gespräch schwankt zwischen einer moralisch schweren Analyse des Fehlers und visionärem Zukunftstalk.",
+        "risk": "Das Feedback wird oft zu philosophisch oder zu „visionär\" ohne konkrete Erwartung. Der Mitarbeiter fühlt sich zwar irgendwie „erkannt\", weiß aber am Ende des Gesprächs nicht, was er am nächsten Morgen praktisch anders machen soll. Die notwendige Korrektur geht in der Tiefe der Argumentation verloren.",
+        "goal": "Kombination von inspirierender Vision mit unmissverständlicher Klarheit und einem messbaren Experiment.",
+        "exName": "„Behavior → Principle → Experiment\"",
+        "ex": "1. Beobachtung: Nenne max. 2 konkrete Beispiele. 2. Prinzip: Erkläre in max. 60 Sekunden den Sinn dahinter. 3. Experiment: Vereinbare ein 10-tägiges Experiment für das neue Verhalten mit festem Review-Termin. Frage am Ende: „Was ist dein nächster Schritt bis Freitag?\""
+      }
+    ]
+  },
+  "sage_strategist": {
+    "name": "Der <span class=\"accent\">Systems Philosopher</span>",
+    "initials": [
+      "S",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Sage</span> will Verstehen, Tiefe und Sinn – dein <span class=\"z\">Strategist</span> bringt Struktur und Exzellenz hinein und lebt von Präzision, Logik und methodische Stärke. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Strukturierte Erkenntnis",
+        "p": "Übersetzt tiefe Einsichten und Weisheit in belastbare Rahmenwerke und klare Architektur."
+      },
+      {
+        "h": "Analytische Integrität",
+        "p": "Sichert die fachliche Wahrheit durch messerscharfe Logik und methodische Prüfung ab."
+      },
+      {
+        "h": "Vorausschauende Besonnenheit",
+        "p": "Bleibt unter Druck ruhig, weil er Situationen sofort in Modelle und Prioritäten einordnen kann."
+      },
+      {
+        "h": "Logische Sinnstiftung",
+        "p": "Erklärt den „Sinn des Ganzen\" nicht nur philosophisch, sondern macht ihn durch Prozesse greifbar und umsetzbar."
+      },
+      {
+        "h": "Methodische Tiefe",
+        "p": "Verbindet die Suche nach dem Wesentlichen mit der Fähigkeit, den effizientesten Weg dorthin zu entwerfen."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Momenten unter hohem Zeitdruck (z. B. am Morgen mit der Familie) möchte dein Sage den Sinn von Regeln klären oder pädagogisch einwirken. Dein Zweitheld Strategist baut jedoch sofort einen Ablauf und eine Sequenz (Bottleneck-Denken): Er identifiziert den Engpass (z. B. das Suchen der Schuhe) und verteilt Rollen. Du willst, dass der Morgen nicht nur klappt, sondern als stabiler, logischer Prozess ohne unnötiges Drama abläuft.",
+        "risk": "Du wirst oft kühl oder technisch in deinem Ton („Das ist nur ein Prozessproblem\"). Der Versuch, alles methodisch zu perfektionieren, kann dazu führen, dass du zu lange optimierst, statt einfach zu handeln, was bei anderen den Stress eher erhöht als senkt.",
+        "goal": "Erhalt der Ruhe durch minimale strukturelle Anker bei gleichzeitiger Wahrung der menschlichen Wärme.",
+        "exName": "„One-line principle + 2 Schritte\"",
+        "ex": "Formuliere das Prinzip in genau einem Satz (z. B. „Ein guter Ablauf ist Respekt für alle.\"). Nenne danach maximal zwei konkrete Handlungsschritte und verzichte auf jede weitere Diskussion oder Optimierung im akuten Stress."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Entscheidungssituationen / Druck von oben",
+        "what": "Wenn von oben Druck kommt, schnell Ergebnisse zu liefern, will dein Sage fachliche Wahrheit und logische Durchdringung. Dein Zweitheld Strategist beginnt sofort mit der Analyse von Abhängigkeiten und sucht den „besten Hebel\", um das System stabil zu halten. Du steckst fest zwischen dem Drang, die absolut „wahre\" Lösung zu finden, und dem Bedürfnis nach einer strategisch klugen Positionierung.",
+        "risk": "Es droht eine „Analyse-Paralyse\". Der Versuch, die perfekte Logik mit der perfekten Taktik zu verbinden, führt dazu, dass du zu viele Optionen oder Szenarien präsentierst, was dich für Vorgesetzte kompliziert oder entscheidungsschwach wirken lässt.",
+        "goal": "Gewinn von Handlungsfähigkeit durch radikale Reduktion der Komplexität in der Kommunikation.",
+        "exName": "„3 Zeilen nach oben\"",
+        "ex": "Reduziere deine Entscheidungsvorlage auf drei Punkte: 1. Gewünschtes Outcome, 2. Der entscheidende Engpass, 3. Die Entscheidung, die du jetzt brauchst. Nutze den Scope Swap: „Ja zu A, wenn wir dafür B stoppen, um die Qualität zu wahren.\""
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Sage will fachliche Korrektheit und keine „unsauberen\" Lösungen abliefern. Dein Zweitheld Strategist schaltet in den Schutzmodus für den „kritischen Pfad\" und will jede Verzettelung vermeiden. Es prallt der fachliche Perfektionismus auf den Drang, den Plan methodisch rigoros durchzuziehen.",
+        "risk": "Risiko von „Plan-Overkill\" oder zu späten Qualitätsprüfungen. Du versuchst, kurz vor der Deadline noch einmal die Logik zu korrigieren oder das System umzustellen, was das Team lähmt und die pünktliche Lieferung paradoxerweise gefährdet.",
+        "goal": "Sicherung der Lieferung durch die Akzeptanz von „wahr genug\" für Version 1.0.",
+        "exName": "„Truth gate früh (T-14)\"",
+        "ex": "Installiere einen verbindlichen Logik- und Qualitätscheck genau 14 Tage vor der Deadline. Danach sind keine grundlegenden Änderungen am Scope oder an der Logik mehr erlaubt. Nutze das Critical path board: Nur die 5--7 wichtigsten Aufgaben bleiben sichtbar."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Sage möchte über Wahrheit, Haltung und Prinzipien sprechen. Dein Zweitheld Strategist möchte dem Gegenüber einen messbaren Entwicklungsweg und ein strukturiertes Framework an die Hand geben. Das Gespräch schwankt zwischen tiefer Reflexion und einer fast technischen Karriere-Taktik.",
+        "risk": "Das Feedback wird oft zu komplex oder wirkt durch zu viele Frameworks künstlich. Der Mitarbeiter fühlt sich zwar „analysiert\", vermisst aber oft die menschliche Wärme oder echte Klarheit darüber, was jetzt der wichtigste erste Schritt ist.",
+        "goal": "Kombination von ehrlicher Erkenntnis mit einem einfachen, ausführbaren Plan.",
+        "exName": "„Now / Next / Path\"",
+        "ex": "1. Now: Benenne den Gap mit 2 konkreten Beispielen (Wahrheit). 2. Next: Definiere genau ein Zielverhalten (Klarheit). 3. Path: Vereinbare einen 10-Tage-Plan mit festem Review-Termin. Schreibe gemeinsam eine Definition of Great (3 Bulletpoints) auf, um Erfolg messbar zu machen."
+      }
+    ]
+  },
+  "strategist_commander": {
+    "name": "Der <span class=\"accent\">Decisive Strategist</span>",
+    "initials": [
+      "S",
+      "C"
+    ],
+    "hook": "Dein <span class=\"b\">Strategist</span> will Struktur, Klarheit und verlässliche Qualität – dein <span class=\"z\">Commander</span> bringt Umsetzung hinein und lebt von Tatkraft, klare Prioritäten und entschlossenes Handeln. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Strukturierte Tatkraft",
+        "p": "Verbindet methodische Weitsicht mit einer hohen Umsetzungsgeschwindigkeit."
+      },
+      {
+        "h": "Entschlussfreudige Ordnung",
+        "p": "Nutzt präzise Systeme nicht als Selbstzweck, sondern als Basis für schnelle Entscheidungen."
+      },
+      {
+        "h": "Radikaler Ergebnisfokus",
+        "p": "Schneidet durch Komplexität hindurch, um den effizientesten Weg zum Ziel zu finden."
+      },
+      {
+        "h": "Methodische Führung",
+        "p": "Führt Teams durch klare Prozesse, kombiniert mit direkter, unverblümter Kommunikation."
+      },
+      {
+        "h": "Qualitäts-Momentum",
+        "p": "Gewährleistet exzellente Ergebnisse, ohne sich in der Analyse-Falle zu verlieren."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "Es herrscht eine Hochdruck-Situation (z. B. der morgendliche Aufbruch oder eine knappe Frist). Dein Strategist erkennt sofort die Engpässe und möchte den Ablauf perfekt optimieren, um Reibungsverluste zu vermeiden. Gleichzeitig spürt dein Zweitheld Commander die tickende Uhr und verlangt sofortige Aktion und Gehorsam. Es entsteht ein innerer Konflikt: Einerseits willst du den Prozess noch „kurz verbessern\", andererseits willst du das Ergebnis durch reine Willenskraft und klare Ansagen erzwingen.",
+        "risk": "Du wirst ungeduldig und scharf im Ton, wenn Mitmenschen den (in deinem Kopf optimierten) Ablauf stören. Du überspringst die notwendige Kommunikation und kompensierst fehlende Flexibilität mit Härte oder Mikromanagement.",
+        "goal": "Den Wechsel vom Planungs- in den Handlungsmodus bewusst vollziehen, ohne die emotionale Kontrolle oder die Beziehungsqualität zu verlieren.",
+        "exName": "„Plan light + Command cue\"",
+        "ex": "Erstelle einen minimalen 2-Schritte-Plan. Sobald dieser steht, nutze ein inneres oder laut ausgesprochenes Signalwort (z. B. „Tempo-Modus\"), um die Ausführung zu starten. Danach sind keine Prozess-Optimierungen mehr erlaubt, bis das Ziel erreicht ist."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Du stehst vor einer wichtigen Entscheidung mit vielen Variablen. Dein Strategist möchte jedes Risiko ausschalten und wartet auf die letzte Information, um ein absolut fehlerfreies System zu bauen (Analysis Paralysis). Dein Zweitheld Commander hingegen hasst Stillstand und spürt, dass Führung jetzt „Richtung\" bedeutet. Du schwankst zwischen dem Wunsch nach 100%iger Sicherheit und dem Bedürfnis, endlich einen Pflock einzuschlagen und Verantwortung zu übernehmen.",
+        "risk": "Die Entscheidung wird entweder so lange hinausgezögert, bis Chancen verstreichen, oder sie wird schließlich impulsiv und unter hohem inneren Druck getroffen, was das Umfeld überrumpelt.",
+        "goal": "Handlungsfähigkeit durch die bewusste Akzeptanz von Unvollständigkeit (Trade-offs) bei strategisch wichtigen Weichenstellungen.",
+        "exName": "„2-Pfad-Angebot\"",
+        "ex": "Stelle dir oder deinem Team aktiv zwei Optionen gegenüber: Pfad A (Schnell & Risikobehaftet) vs. Pfad B (Sauber & Zeitintensiv). Erzwinge eine bewusste Wahl für einen der Pfade. Dies macht das Risiko kalkulierbar und nutzt die Commander-Energie zur klaren Positionierung."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich dem Abschluss. Dein Strategist ist darauf fixiert, den „kritischen Pfad\" zu schützen und die methodische Korrektheit bis zum Ende zu wahren. Der Zweitheld Commander will nun die PS auf die Straße bringen und die „Execution\" mit aller Macht durchdrücken. In dieser Phase neigst du dazu, entweder den Umfang (Scope) noch einmal strategisch zu hinterfragen oder durch extremen Druck die Fehlerquote im Team zu erhöhen.",
+        "risk": "Es entsteht ein Klima von Mikromanagement. Du greifst tief in die Aufgaben anderer ein, um „letzte Fehler\" zu vermeiden, was die Eigenverantwortung des Teams lähmt und unnötigen Stress erzeugt.",
+        "goal": "Sicherung der Umsetzungsqualität durch radikales Einfrieren von Strukturen und Fokus auf reine Fertigstellung.",
+        "exName": "„Freeze Window\"",
+        "ex": "Lege einen festen Zeitpunkt vor der Deadline fest (z. B. 10 Tage vorher). Ab diesem Moment wird der Projektumfang (Scope) eingefroren. Es werden keine neuen strategischen Ideen mehr zugelassen. Die Commander-Energie wird ausschließlich genutzt, um „Bugfixes\" und die finale Lieferung zu koordinieren."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst eine kritische Rückmeldung geben. Dein Strategist bereitet ein logisch lückenloses, strukturiertes Dossier vor, um die Fehlleistung objektiv zu beweisen. Dein Zweitheld Commander will keine Zeit verlieren und die Defizite direkt und ohne Umschweife ansprechen. Das Gespräch findet in einer Atmosphäre statt, die zwar sachlich korrekt und sehr direkt ist, aber die emotionale Ebene des Gegenübers komplett ausblendet.",
+        "risk": "Das Feedback wirkt „klinisch kalt\" oder unnötig hart. Der Mitarbeiter fühlt sich wie ein defektes Rädchen in einem System bewertet, anstatt als Mensch gesehen zu werden. Dies führt zu innerem Rückzug oder defensiver Aggression beim Gegenüber.",
+        "goal": "Vermittlung von unmissverständlicher, direkter Klarheit bei gleichzeitiger Wahrung der menschlichen Verbundenheit und Unterstützung.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Beginne mit einer ehrlichen Wertschätzung der Person („Du bist ein wichtiger Teil des Teams\"). 2. Cut: Benenne den kritischen Punkt direkt und präzise mit maximal zwei Beispielen (Commander-Direktheit). 3. Coach: Erarbeite sofort einen konkreten 10-Tage-Plan zur Lösung (Strategist-Struktur) und biete Unterstützung an."
+      }
+    ]
+  },
+  "strategist_explorer": {
+    "name": "Der <span class=\"accent\">Adaptive Planner</span>",
+    "initials": [
+      "S",
+      "E"
+    ],
+    "hook": "Dein <span class=\"b\">Strategist</span> will Struktur, Klarheit und verlässliche Qualität – dein <span class=\"z\">Explorer</span> bringt Freiheit hinein und lebt von Neugier, Spontaneität und dem Entdecken neuer Wege. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Adaptive Planung",
+        "p": "Entwickelt fundierte Pläne, die jedoch beweglich bleiben und auf Realitätsfeedback reagieren."
+      },
+      {
+        "h": "Pragmatisches Lernen",
+        "p": "Findet Lösungen oft direkt im Tun („Learning by doing\"), statt sie nur theoretisch zu durchdenken."
+      },
+      {
+        "h": "Experimentierfreude",
+        "p": "Nutzt kurze Testphasen, um Konzepte frühzeitig am Markt oder in der Praxis zu validieren."
+      },
+      {
+        "h": "Dynamische Balance",
+        "p": "Verbindet methodische Logik und Struktur mit flexibler Anpassung an neue Gegebenheiten."
+      },
+      {
+        "h": "Intuitive Agilität",
+        "p": "Erkennt Chancen blitzschnell und integriert sie effizient in bestehende strategische Rahmenwerke."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Momenten (z. B. beim morgendlichen Aufbruch) prallen zwei Welten aufeinander: Dein Strategist will Engpässe identifizieren und die optimale Reihenfolge festlegen, um Fehler zu vermeiden. Dein Zweitheld Explorer hingegen will einfach losgehen und die Details „unterwegs\" regeln. Du fühlst dich innerlich zerrissen zwischen dem Bedürfnis nach einer sauberen Struktur und dem Drang nach pragmatischer Bewegung.",
+        "risk": "Wenn du ohne fertigen Plan losgehst, fühlst du dich innerlich „unsauber\". Du hast Angst, wichtige Dinge zu vergessen. Dies führt oft dazu, dass du nach der Aktion in einen extremen Kontrollmodus verfällst („Nächstes Mal machen wir es wieder nach Plan\"), um die gefühlte Ordnung wiederherzustellen.",
+        "goal": "Den Fokus auf das Handeln legen und die Akzeptanz stärken, dass ein „Plan im Werden\" ebenso effektiv sein kann wie ein vorab fixierter Ablauf.",
+        "exName": "„2 Fixpunkte\"",
+        "ex": "Definiere vor dem Start genau zwei Dinge, die absolut sicher sein müssen (z. B. Schlüssel und Handy). Alles andere bleibt flexibel. Verpflichte dich, erst bei Ankunft am Zielort einen „Reset\" zu machen und dort kurz zu sortieren, was noch fehlt."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Vor einer wichtigen Weichenstellung möchte dein Strategist alle Szenarien und Logiken durchspielen, um das Risiko zu minimieren. Der Zweitheld Explorer drängt jedoch darauf, die Theorie zu verlassen und durch ein schnelles Experiment echte Daten zu sammeln. Du steckst fest zwischen der Angst vor einem unlogischen Schritt und der Neugier, einfach mal zu testen, was in der Realität passiert.",
+        "risk": "Du neigst zum „Overplanning\". Du entwickelst perfekte Konzepte am Reißbrett, die aber den Kontakt zur Realität verlieren können, weil die Explorer-Energie (das Ausprobieren) zu spät zugeschaltet wird.",
+        "goal": "Die Erhöhung der Entscheidungsgeschwindigkeit durch den Wechsel von theoretischer Analyse zu praktischem Realitätsfeedback.",
+        "exName": "„30-Min Rapid Assessment\"",
+        "ex": "Begrenze die Analysezeit auf 30 Minuten. Definiere in dieser Zeit nur: 1. Das Ziel, 2. Das Nicht-Verhandelbare und 3. Den größten Engpass. Triff danach eine vorläufige Entscheidung für einen Testlauf („Conditional Yes\")."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt geht in die heiße Phase. Dein Strategist will den „kritischen Pfad\" schützen und keine Änderungen mehr zulassen. Dein Zweitheld Explorer sieht jedoch plötzlich neue Möglichkeiten oder möchte Abkürzungen nehmen, um das Tempo zu erhöhen. Du schwankst zwischen dem Schutz der methodischen Sauberkeit und der Versuchung, den Scope für eine „bessere Lösung\" spontan aufzubrechen.",
+        "risk": "Der Fokus leidet unter sogenannten „Scope-Sprüngen\". Neue Ideen verwässern die ursprüngliche Planung, was zu Stress im Team führt, da die Explorer-Leichtigkeit die Strategist-Struktur gefährdet.",
+        "goal": "Sicherung der Projektstabilität durch zeitlich begrenzte Experimentierphasen innerhalb eines festen Rahmens.",
+        "exName": "„Timeboxed Loops\"",
+        "ex": "Erlaube dir zwei Stunden, um eine neue Lösung oder Idee zu testen. Wenn sie nach dieser Zeit nicht signifikant besser ist, kehre sofort zum ursprünglichen „Critical Path Board\" zurück und lasse keine weiteren Änderungen am Umfang mehr zu."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Strategist will eine glasklare Analyse und einen verbindlichen Verbesserungsplan präsentieren. Der Zweitheld Explorer möchte das Gespräch jedoch locker, motivational und kumpelhaft führen, um die Beziehung nicht zu belasten. Es entsteht eine Dynamik, in der du versuchst, die Kritik so weich zu verpacken, dass die eigentliche Botschaft verloren geht.",
+        "risk": "Das Feedback wirkt verwässert. Dein Gegenüber nimmt die Dringlichkeit der Veränderung nicht wahr, weil die Explorer-Leichtigkeit die notwendige Strategist-Konsequenz überlagert. Es gibt zwar gute Stimmung, aber keine echten Resultate.",
+        "goal": "Vermittlung von motivierender Offenheit bei gleichzeitiger Sicherstellung von lückenloser Klarheit und Verbindlichkeit.",
+        "exName": "„Care + Cut + Coach\"",
+        "ex": "1. Care: Signalisiere Wertschätzung („Ich will, dass du Erfolg hast\"). 2. Cut: Benenne den kritischen Punkt mit maximal zwei Beispielen glasklar (Strategist-Klarheit). 3. Coach: Vereinbare genau eine Sache, die sich in den nächsten 10 Tagen ändern muss, und definiere die Konsequenz bei Nichteinhaltung."
+      }
+    ]
+  },
+  "strategist_guardian": {
+    "name": "Der <span class=\"accent\">Reliable Builder</span>",
+    "initials": [
+      "S",
+      "G"
+    ],
+    "hook": "Dein <span class=\"b\">Strategist</span> will Struktur, Klarheit und verlässliche Qualität – dein <span class=\"z\">Guardian</span> bringt Nähe und Verlässlichkeit hinein und lebt von Empathie, Harmonie und der Sorge um das Wohl der Gemeinschaft. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Verlässliche Struktur",
+        "p": "Schafft Systeme, die nicht nur logisch, sondern auch für Menschen sicher und tragfähig sind."
+      },
+      {
+        "h": "Methodische Sorgfalt",
+        "p": "Garantiert höchste Ausführungsqualität durch gründliche Absicherung und klare Standards."
+      },
+      {
+        "h": "Stabile Routinen",
+        "p": "Baut Prozesse auf, die dem System langfristig Halt, Sicherheit und Orientierung geben."
+      },
+      {
+        "h": "Präzise Unterstützung",
+        "p": "Verbindet strategische Planung mit einer hohen Dienstleistungsbereitschaft und Loyalität."
+      },
+      {
+        "h": "Harmonische Exzellenz",
+        "p": "Strebt nach fehlerfreien Ergebnissen, die das Vertrauen und den Zusammenhalt im Team stärken."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In hektischen Phasen (z. B. am Familienmorgen) möchte dein Strategist den Ablauf durch perfekte Reihenfolge und das Finden von Engpässen optimieren. Gleichzeitig fordert dein Zweitheld Guardian absolute Gründlichkeit und Ordnung („nichts vergessen\"). Du steckst fest zwischen dem Drang nach Effizienz und dem Bedürfnis nach einer lückenlosen Absicherung jedes Details.",
+        "risk": "Du verlierst wertvolles Tempo durch ständige Detail-Checks. Wenn andere deine hohen Standards reißen oder den geplanten Ablauf stören, reagierst du scharf und ungeduldig („So geht das nicht\"), was das Klima belastet.",
+        "goal": "Bewusste Wahl des Arbeitsmodus (Tempo vs. Qualität) und Reduktion von Kontrollschleifen in Hochdruckphasen.",
+        "exName": "„2 Fixpunkte + 1 Bonus\"",
+        "ex": "Definiere vorab nur zwei Pflicht-Checks, die absolut notwendig sind. Erlaube dir maximal einen Bonus-Check. Danach wechselst du bewusst in den „Execution-Modus\" und lässt weitere Korrekturen erst nach Abschluss der Aktion zu."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Vor einer wichtigen Weichenstellung will dein Strategist alle Risiken und logischen Szenarien durchspielen. Der Zweitheld Guardian drängt jedoch auf zusätzliche Absicherung, Korrektheit und das Einholen von Reviews, um niemanden zu enttäuschen oder Fehler zu machen. Du schwankst zwischen logischer Analyse und dem Wunsch nach absoluter Sicherheit durch Konsens.",
+        "risk": "Entscheidungen werden oft hinausgezögert („Ja, aber erst noch prüfen\"). Das Team erlebt dich als „Bremser\", da du versuchst, jedes Restrisiko durch noch mehr Information oder Absicherung zu eliminieren.",
+        "goal": "Erhöhung der Entscheidungsgeschwindigkeit durch Akzeptanz von kalkulierten Trade-offs und Begrenzung der Review-Schleifen.",
+        "exName": "„2-Pfad-Angebot\"",
+        "ex": "Stelle aktiv zwei Optionen gegenüber: Pfad A (Schnell mit Restrisiko) vs. Pfad B (Sauber mit hohem Zeitaufwand). Triff eine bewusste Entscheidung für einen der Pfade, statt zu versuchen, beides gleichzeitig zu erreichen."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt geht in die finale Phase. Dein Strategist fokussiert sich darauf, den „kritischen Pfad\" zu schützen. Plötzlich bekommt der Zweitheld Guardian eine „Qualitätspanik\": Er will alles noch einmal prüfen und absichern, um nichts „Halbgares\" abzuliefern. Du stehst im Konflikt zwischen dem Zeitplan und dem Drang nach einer perfekten, fehlerfreien Übergabe.",
+        "risk": "Es entstehen späte Review-Schleifen und „Scope-Creep\" durch Last-Minute-Änderungen. Dies erzeugt massiven Stress im Team und gefährdet die Einhaltung der Deadline zugunsten einer (oft übertriebenen) Absicherung.",
+        "goal": "Projektabschluss durch klare Definitionen und das Einfrieren von Qualitätsprüfungen sichern.",
+        "exName": "„Freeze Dates\"",
+        "ex": "Lege feste Daten fest. Ab Zeitpunkt T-10 wird kein neuer Umfang (Scope) mehr zugelassen. Ab Zeitpunkt T-5 sind ausschließlich kritische Korrekturen (Bugfixes) erlaubt. Nutze feste „Review-Fenster\" (z. B. täglich 30 Minuten), statt den Prozess permanent zu unterbrechen."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Strategist bereitet einen messbaren, logischen Plan vor. Der Zweitheld Guardian möchte dabei absolut fair sein, sammelt unzählige Belege und will die menschliche Sicherheit nicht gefährden. Du versuchst, so korrekt und umfassend wie möglich zu sein, um dem Gegenüber keine Angriffsfläche zu bieten.",
+        "risk": "Das Gespräch wird oft zu lang, zu korrekt oder zu formell. Die eigentliche Botschaft geht unter der Last der vielen Belege verloren, und die menschliche Wärme wird durch die kühle „Performance-Review\"-Struktur erstickt.",
+        "goal": "Verbindung von prägnanter, sachlicher Klarheit mit spürbarer menschlicher Wertschätzung.",
+        "exName": "„4-Satz-Formel\"",
+        "ex": "1. Beobachtung: Benenne maximal 2 konkrete Beispiele. 2. Wirkung: Erkläre die sachliche/teamorientierte Folge. 3. Erwartung: Formuliere ein klares Ziel. 4. Support: Biete konkrete Hilfe an. Begrenze dich auf genau ein Hauptziel pro Gespräch."
+      }
+    ]
+  },
+  "strategist_innovator": {
+    "name": "Der <span class=\"accent\">Innovative Analyst</span>",
+    "initials": [
+      "S",
+      "I"
+    ],
+    "hook": "Dein <span class=\"b\">Strategist</span> will Struktur, Klarheit und verlässliche Qualität – dein <span class=\"z\">Innovator</span> bringt Möglichkeiten hinein und lebt von Zukunftsvisionen, kreativer Neuerfindung und dem Mut, das Bekannte radikal infrage zu stellen. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Adaptive Logik",
+        "p": "Verbindet messerscharfe Analyse und Mustererkennung mit kreativen, unkonventionellen Sprüngen."
+      },
+      {
+        "h": "Systematische Kreativität",
+        "p": "Strukturiert neue, visionäre Ideen so um, dass sie in bestehende Rahmenwerke integriert werden können."
+      },
+      {
+        "h": "Erweiterter Möglichkeitsraum",
+        "p": "Findet durch unkonventionelle Hypothesen Lösungen, die jenseits der offensichtlichen Logik liegen."
+      },
+      {
+        "h": "Visionäre Planung",
+        "p": "Entwickelt Strategien, die nicht nur stabil sind, sondern auch zukünftige Trends und radikale Veränderungen antizipieren."
+      },
+      {
+        "h": "Kreativer Shortcut-Fokus",
+        "p": "Nutzt innovative „Hacks\", um komplexe Prozesse zu vereinfachen und die Effizienz durch neue Ansätze zu steigern."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Hochdruck-Momenten (z. B. dem morgendlichen Aufbruch) prallen zwei Antriebe aufeinander: Dein Strategist will den Ablauf durch eine feste Reihenfolge und das Lösen von Engpässen optimieren. Gleichzeitig kommt dein Zweitheld Innovator mit einer spontanen Idee oder einem „Hack\" um die Ecke, um das Ganze spielerischer oder schneller zu gestalten. Du bist zerrissen zwischen der Sicherheit des bewährten Plans und dem Reiz einer neuen, kreativen Methode.",
+        "risk": "Wenn die neue Idee den Ablauf instabil macht oder nicht sofort funktioniert, gerätst du unter Stress. Dein Strategist reagiert dann genervt oder kontrollierend, um die Ordnung wiederherzustellen. Die „gute Idee\" wird zum Störfaktor, der Unruhe ins System bringt, statt Zeit zu sparen.",
+        "goal": "Integration von kreativen Ansätzen, ohne die notwendige Stabilität des Kernablaufs zu gefährden.",
+        "exName": "„Innovation-Slot\"",
+        "ex": "Erlaube dir maximal 2 Minuten für einen kreativen „Hack\" oder ein Experiment. Wenn dieser nicht sofort zündet, kehre ohne Diskussion zum Standardablauf zurück. Verpflichte dich auf die Regel: Nur eine neue Methode pro Woche, um die Wiederholbarkeit zu sichern."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Vor einer wichtigen Entscheidung möchte dein Strategist alle Daten analysieren und logische Muster finden (Analysis Paralysis). Dein Zweitheld Innovator drängt jedoch darauf, den Möglichkeitsraum zu verlassen und eine völlig unkonventionelle Hypothese zu testen. Du steckst fest zwischen dem Bedürfnis nach lückenloser Beweisführung und dem Wunsch, einen radikal neuen Weg einzuschlagen.",
+        "risk": "Entscheidungen werden entweder durch zu viele Optionen verwässert oder so lange hinausgezögert, bis der Moment der Wirksamkeit vorbei ist. Du lieferst dem Umfeld oft „Ideen-Overkill\", statt eine klare, belastbare Richtung vorzugeben.",
+        "goal": "Erhöhung der Entscheidungsgeschwindigkeit durch die Übersetzung visionärer Ideen in messbare Pilot-Tests.",
+        "exName": "„Pilot First\"",
+        "ex": "Führe einen 48-stündigen Mini-Test für eine kreative Idee durch. Nur wenn die Ergebnisse nach dieser Zeit logisch belastbar sind, erfolgt ein volles strategisches Commitment. Nutze die Formel: Outcome / Engpass / Entscheidung."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Ein Projekt nähert sich der Ziellinie. Dein Strategist schützt den „kritischen Pfad\" und will keine Abweichungen mehr. Plötzlich sieht dein Zweitheld Innovator kurz vor Schluss eine Möglichkeit, das Ergebnis massiv zu verbessern oder ein neues Tool einzuführen. Du schwankst zwischen dem Schutz der Planung und dem Drang, das Ganze auf ein „neues Level\" zu heben.",
+        "risk": "Es kommt zu gefährlichen „Last-Minute-Änderungen\" oder einem Plan-Overkill. Dies gefährdet die Deadline und erzeugt massiven Widerstand im Team, da der Fokus verloren geht und der Scope unkontrolliert springt.",
+        "goal": "Projektsicherheit durch strikte Trennung von Optimierungs- und Umsetzungsphasen.",
+        "exName": "„Freeze Window\"",
+        "ex": "Lege fest, dass ab Zeitpunkt T-10 (10 Tage vor Deadline) absolut keine neuen Tools, Prozesse oder Scope-Änderungen mehr erlaubt sind. Reserviere täglich maximal 30 Minuten als „Innovation Slot\" für kleine Korrekturen, während der Rest der Zeit strikt der reinen Execution gehört."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Du musst Kritik äußern. Dein Strategist möchte den Entwicklungsweg präzise strukturieren und messbar machen. Dein Zweitheld Innovator hingegen möchte inspirieren und spricht lieber über „große Potenziale\" und zukünftige Möglichkeiten. Das Gespräch schwankt zwischen kühler Analyse und visionärem Coaching, ohne dass eine klare, schmerzhafte Wahrheit ausgesprochen wird.",
+        "risk": "Das Feedback bleibt vage. Der Mitarbeiter hört zwar viele spannende Ideen für die Zukunft, weiß aber nicht konkret, was er morgen anders machen muss. Die notwendige Verbindlichkeit geht in einem Meer von Möglichkeiten verloren.",
+        "goal": "Kombination von inspirierender Vision mit messbaren, unmissverständlichen nächsten Schritten.",
+        "exName": "„Now / Next / Path\"",
+        "ex": "1. Now: Benenne 2 konkrete Beispiele für das aktuelle Verhalten. 2. Next: Definiere genau ein Verhalten, das sich ändern muss (Klartext). 3. Path: Erstelle einen 10-Tage-Plan mit festem Review-Termin. Konzentriere dich auf nur ein Ziel pro Gespräch."
+      }
+    ]
+  },
+  "strategist_sage": {
+    "name": "Der <span class=\"accent\">Wise Architect</span>",
+    "initials": [
+      "S",
+      "S"
+    ],
+    "hook": "Dein <span class=\"b\">Strategist</span> will Struktur, Klarheit und verlässliche Qualität – dein <span class=\"z\">Sage</span> bringt Klarheit und Erkenntnis hinein und lebt von Analyse, Logik und dem tiefen Verständnis der Welt. Zusammen entsteht dein ganz eigener Stil.",
+    "traits": [
+      {
+        "h": "Stimmige Systeme",
+        "p": "Baut effiziente Strukturen, die nicht nur logisch funktionieren, sondern auch eine tiefe Bedeutung und ethische Basis haben."
+      },
+      {
+        "h": "Logische Tiefe",
+        "p": "Verbindet präzise Ursache-Wirkungs-Modelle mit tiefgehender Reflexion und prinzipienfester Argumentation."
+      },
+      {
+        "h": "Sinnorientierte Optimierung",
+        "p": "Verbessert Prozesse nicht nur für mehr Tempo, sondern für eine höhere Qualität im Ergebnis und im menschlichen Umgang."
+      },
+      {
+        "h": "Präzise Ethik",
+        "p": "Nutzt einen starken inneren Kompass, um sicherzustellen, dass die angewandten Methoden mit höheren Werten übereinstimmen."
+      },
+      {
+        "h": "Reflektierte Souveränität",
+        "p": "Bewahrt auch in komplexen Lagen durch intellektuelle Tiefe und Sachlichkeit einen ruhigen, objektiven Überblick."
+      }
+    ],
+    "mods": [
+      {
+        "tag": "Situation 1",
+        "title": "Alltag unter Zeitdruck",
+        "what": "In Hochdruck-Momenten (z. B. dem morgendlichen Aufbruch) will dein Strategist den Ablauf optimieren und Engpässe beseitigen, um pünktlich zu sein. Dein Zweitheld Sage bringt jedoch plötzlich ein „höheres Prinzip\" ein (z. B. „Respekt\", „Würde bewahren\" oder „nicht beschämen\"). Du bist innerlich zerrissen zwischen dem Drang nach Effizienz (Pünktlichkeit) und dem Anspruch, dabei eine bestimmte moralische oder haltungsbezogene Qualität zu wahren.",
+        "risk": "Du neigst dazu, mitten im Zeitdruck „Prinzipienreden\" zu halten oder wirst übermäßig streng, wenn Regeln missachtet werden. Der Stress steigt, weil du versuchst, gleichzeitig den Prozess und das moralische Klima im Raum zu kontrollieren.",
+        "goal": "Effizientes Handeln im Außen bei gleichzeitiger Wahrung der inneren Ruhe und eines angemessenen Tons.",
+        "exName": "„One-line principle\"",
+        "ex": "Definiere vor dem Start genau einen Satz für die Situation (z. B. „Klarheit ohne Härte\"). Sage dir diesen Satz einmal innerlich auf und handle dann konsequent danach. Analysegespräche über den Prozess werden auf den Abend verschoben."
+      },
+      {
+        "tag": "Situation 2",
+        "title": "Komplexe Entscheidungssituationen",
+        "what": "Vor einer schwierigen Abwägung will der Strategist einen logischen Kompromiss oder Trade-off aushandeln, um voranzukommen. Dein Zweitheld Sage beharrt jedoch auf der „Wahrheit\" und der intellektuellen Integrität der Lösung. Du steckst fest, weil sich ein pragmatischer Mittelweg für dich oft „unwahr\" oder „nicht zu Ende gedacht\" anfühlt.",
+        "risk": "Du blockierst Entscheidungen aufgrund von Prinzipienreiterei oder verlierst dich in so komplexen Argumentationen, dass pragmatische Beteiligte den Faden verlieren. Der Prozess verlangsamt sich massiv durch dein Bedürfnis nach absoluter gedanklicher Kohärenz.",
+        "goal": "Schnelleres Commitment durch Akzeptanz von Trade-offs, die den Kern der Wahrheit dennoch respektieren.",
+        "exName": "„2-Pfad-Angebot\"",
+        "ex": "Kontrastiere aktiv Pfad A (Schnell mit Risiko) vs. Pfad B (Sauber mit Fokus auf Wahrheit/Prinzip). Erzwinge eine bewusste Entscheidung für einen der Pfade, statt nach einer „perfekten\" Synthese zu suchen, die zu viel Zeit kostet."
+      },
+      {
+        "tag": "Situation 3",
+        "title": "Deadline-Phasen in Projekten",
+        "what": "Kurz vor Abschluss eines Projekts schützt der Strategist den „kritischen Pfad\". Dein Zweitheld Sageerkennt jedoch plötzlich einen Fehler in der Logik oder eine Qualitätsmücke, die seinen Prinzipien widerspricht. Du schwankst zwischen dem Schutz des Zeitplans und dem Drang, etwas abzuliefern, das „wirklich richtig\" und fachlich lückenlos geprüft ist.",
+        "risk": "Es kommt zu späten Korrekturen oder Diskussionen über Grundsatzfragen. Der Perfektionismus des Sage überlagert die Umsetzungsdisziplin des Strategist, was die Deadline gefährdet und Unruhe ins Team bringt.",
+        "goal": "Projektsicherheit durch die Definition von „wahr genug für Version 1.0\".",
+        "exName": "„Truth gate (T-14)\"",
+        "ex": "Halte genau 14 Tage vor der Deadline einen letzten „Wahrheits-Check\" ab. Danach sind keine grundlegenden Fragen mehr erlaubt. Die verbleibende Zeit gehört ausschließlich dem kritischen Pfad und der Fertigstellung."
+      },
+      {
+        "tag": "Situation 4",
+        "title": "Schwierige Feedbackgespräche",
+        "what": "Bei einer kritischen Rückmeldung baut der Strategist einen logischen Entwicklungsplan. Der Sagemöchte jedoch das zugrunde liegende Prinzip oder „die Wahrheit\" hinter der Leistung ansprechen. Du riskierst dabei, belehrend oder zu „schwer\" zu wirken, indem du die konkreten nächsten Schritte unter einer Schicht aus philosophischer oder prinzipieller Bewertung begräbst.",
+        "risk": "Das Gespräch wirkt auf das Gegenüber oft wie eine Standpauke. Der Mitarbeiter fühlt sich eher moralisch bewertet als professionell gecoacht. Die „Sinn-Ebene\" wird so komplex, dass die eigentliche Verhaltensänderung unklar bleibt.",
+        "goal": "Kombination von ehrlicher Klarheit in der Sache mit einem einfachen, ausführbaren Plan.",
+        "exName": "„Behavior → Principle (60 Sek) → Plan\"",
+        "ex": "Beschreibe das Verhalten (2 Beispiele), benenne das verletzte Prinzip einmalig (max. 60 Sek.) und widme den Rest der Zeit einem konkreten 10-Tage-Plan mit festem Review-Termin."
+      }
     ]
   }
 };
