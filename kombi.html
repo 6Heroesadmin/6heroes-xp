@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deine Kombination – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
+    --ink:#F4F1E9; --ink-dim:#AEB6C6; --ink-faint:#717C92;
+    --line:rgba(255,255,255,0.07);
+    /* --accent = Basisheld-Farbe (Leitfarbe), --accent2 = Zweitheld-Farbe */
+    --accent:#0B63CE; --accent-soft:rgba(11,99,206,0.10); --accent-line:rgba(11,99,206,0.45);
+    --accent2:#F0672A; --accent2-soft:rgba(240,103,42,0.10); --accent2-line:rgba(240,103,42,0.45);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
+  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
+
+  /* HERO */
+  .hero { text-align:center; padding:40px 0 4px; }
+  .emblem { width:190px; height:190px; margin:0 auto 30px; border-radius:50%; position:relative;
+    background:linear-gradient(135deg,var(--accent-soft),var(--accent2-soft));
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+  .emblem .g1,.emblem .g2 { font-family:'DM Serif Display',serif; font-size:58px; line-height:1; }
+  .emblem .g1 { color:var(--accent); }
+  .emblem .g2 { color:var(--accent2); margin-left:-6px; }
+  .emblem .plus { color:var(--ink-faint); font-size:26px; margin:0 2px 0 4px; align-self:center; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:18px; }
+  .eyebrow .b { color:var(--accent); } .eyebrow .z { color:var(--accent2); }
+  .hero h1 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(44px,11vw,72px); line-height:1.0; letter-spacing:-.015em; margin-bottom:16px; }
+  .hero h1 .accent { color:var(--accent); font-style:italic; }
+  .hero .tagline { font-size:17px; color:var(--ink-dim); }
+
+  /* HOOK = die Brücke */
+  .hook { margin:52px 0 0; text-align:center; }
+  .hook p { font-family:'DM Serif Display',serif; font-size:clamp(23px,5vw,31px); line-height:1.36; color:var(--ink); letter-spacing:-.01em; }
+  .hook .b { color:var(--accent); font-style:italic; }
+  .hook .z { color:var(--accent2); font-style:italic; }
+
+  section { padding-top:64px; scroll-margin-top:70px; }
+  h2 { font-family:'DM Serif Display',serif; font-weight:400; font-size:clamp(28px,7vw,40px); line-height:1.1; letter-spacing:-.01em; margin-bottom:10px; text-align:center; }
+  .sec-sub { text-align:center; color:var(--ink-dim); font-size:16px; max-width:52ch; margin:0 auto 28px; }
+
+  /* 5 Merkmale — als block-Liste mit linkem Akzentstrich (basisheld .block-Sprache) */
+  .traits { display:grid; gap:20px; }
+  .trait { padding-left:22px; border-left:2px solid var(--line); }
+  .trait .label { font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; display:flex; gap:10px; align-items:baseline; }
+  .trait .label .n { font-family:'DM Serif Display',serif; font-size:15px; }
+  .trait h3 { font-size:19px; font-weight:600; margin-bottom:6px; color:var(--ink); }
+  .trait p { font-size:17px; line-height:1.7; color:var(--ink-dim); }
+
+  /* Alltagsmodule — als action-Boxen (basisheld .action-Sprache) */
+  .mods { display:grid; gap:20px; }
+  .mod { padding:30px 30px 26px; border-radius:22px; background:var(--navy-soft); border:1px solid var(--line); }
+  .mod .m-eyebrow { font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:8px; }
+  .mod h3 { font-family:'DM Serif Display',serif; font-weight:400; font-size:24px; line-height:1.25; color:var(--ink); margin-bottom:18px; }
+  .mrow { padding:12px 0; border-top:1px solid var(--line); }
+  .mrow:first-of-type { border-top:none; padding-top:0; }
+  .mrow .k { font-size:12px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:5px; }
+  .mrow.coach .k { color:var(--accent); }
+  .mrow p { font-size:16px; color:var(--ink-dim); line-height:1.7; }
+  .mrow.coach p { color:var(--ink); }
+  .mex { margin-top:18px; padding:20px 22px; border-radius:16px; background:rgba(0,0,0,0.18); }
+  .mex .x-title { font-weight:600; font-size:13px; letter-spacing:.04em; color:var(--accent2); margin-bottom:4px; text-transform:uppercase; }
+  .mex .x-name { font-weight:600; font-size:16px; color:var(--ink); margin-bottom:8px; }
+  .mex p { font-size:16px; color:var(--ink-dim); line-height:1.7; }
+
+  /* Fuß-Brücken zu den Einzelseiten */
+  .links { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:40px; }
+  .link-pill { display:inline-flex; align-items:center; gap:8px; font-size:15px; font-weight:600; text-decoration:none; padding:13px 24px; border-radius:999px; border:1px solid var(--line); color:var(--ink); transition:transform .15s, border-color .15s; }
+  .link-pill:hover { transform:translateY(-1px); }
+  .link-pill.b:hover { border-color:var(--accent-line); }
+  .link-pill.z:hover { border-color:var(--accent2-line); }
+  .link-pill .ac-b { color:var(--accent); } .link-pill .ac-z { color:var(--accent2); }
+
+  @media (max-width:480px){ .emblem{width:150px;height:150px;} .emblem .g1,.emblem .g2{font-size:46px;} .mod{padding:24px 22px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="emblem">
+      <span class="g1" id="embBasis">C</span><span class="plus">+</span><span class="g2" id="embZweit">E</span>
+    </div>
+    <div class="eyebrow">Basisheld <span class="b" id="ebBasis">Commander</span> &nbsp;+&nbsp; Zweitheld <span class="z" id="ebZweit">Explorer</span></div>
+    <h1 id="comboName">Der <span class="accent">Action-Leader</span></h1>
+    <p class="tagline">Wie deine beiden Helden zusammenspielen.</p>
+  </header>
+
+  <div class="hook"><p id="comboHook">…</p></div>
+
+  <section id="merkmale">
+    <h2>Deine fünf Kennzeichen</h2>
+    <p class="sec-sub">Wenn deine beiden Helden zusammenspielen, entstehen fünf wiedererkennbare Stärken.</p>
+    <div class="traits" id="traitList"></div>
+  </section>
+
+  <section id="alltag">
+    <h2>So zeigt sich das im Alltag</h2>
+    <p class="sec-sub">Vier typische Situationen – mit ihrer Stärke, ihrer Falle und einer Übung, die genau hier ansetzt.</p>
+    <div class="mods" id="modList"></div>
+  </section>
+
+  <section id="einzel">
+    <div class="links">
+      <a class="link-pill b" id="lnkBasis" href="#" target="_top">Mehr über deinen <span class="ac-b" id="lpBasis">Basisheld</span> →</a>
+      <a class="link-pill z" id="lnkZweit" href="#" target="_top">Mehr über deinen <span class="ac-z" id="lpZweit">Zweitheld</span> →</a>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// Heldenfarben (identisch zu basisheld/Memory)
+const HERO_COLOR = {
+  commander:"#0B63CE", explorer:"#F0672A", innovator:"#F2B705",
+  guardian:"#1F9D62", sage:"#C0266A", strategist:"#94A3B8"
+};
+const HERO_LABEL = {
+  commander:"Commander", explorer:"Explorer", innovator:"Innovator",
+  guardian:"Guardian", sage:"Sage", strategist:"Strategist"
+};
+
+// Kombi-Daten: Schlüssel "basis_zweit". Prototyp: commander_explorer (echte docx-Daten).
+const COMBO = {
+  commander_explorer: {
+    name:'Der <span class="accent">Action-Leader</span>',
+    initials:["C","E"],
+    hook:'Dein <span class="b">Commander</span> will Richtung, Verantwortung und Ergebnisse – dein <span class="z">Explorer</span> bringt Bewegung, Mut zum Ausprobieren und schnelle Realitätsnähe. Zusammen führst du entschlossen, aber beweglich.',
+    traits:[
+      {h:"Intuitive Entscheidungskraft", p:"Du nutzt den Mut zum Ausprobieren, um auch in unbekannten oder komplexen Lagen sofort handlungsfähig zu sein."},
+      {h:"Pragmatisches Momentum", p:"Du beschleunigst Prozesse durch direkten Kontakt zur Realität – „raus aus dem Kopf, rein ins Tun“."},
+      {h:"Flexible Führung", p:"Du führst durch klare Richtung und Verantwortung, bleibst dabei aber beweglich genug, um Pläne spontan an neue Erfahrungen anzupassen."},
+      {h:"Mut zum Experiment", p:"Du integrierst schnelle Test-Loops und Prototypen, um theoretische Planung durch echtes Erleben und direktes Feedback zu ersetzen."},
+      {h:"Begeisternde Tatkraft", p:"Du motivierst andere durch eine Mischung aus klarer, zielorientierter Ansage und ansteckender, spielerischer Energie."}
+    ],
+    mods:[
+      {tag:"Situation 1", title:"Alltag unter Zeitdruck",
+       what:"Unter hohem Zeitdruck (z. B. morgens mit der Familie) will dein Commander sofort Resultate und klare Prioritäten. Dein Explorer beschleunigt durch radikale Improvisation: Frühstück wird zum „To-go-Event“, Details werden „unterwegs“ geklärt – Bewegung aus der Tür zählt mehr als saubere Ordnung.",
+       risk:"Dein Umfeld fühlt sich hektisch überfahren und emotional nicht mitgenommen. Durch das Tempo werden wichtige Dinge vergessen, was später neuen Stress erzeugt.",
+       goal:"Umsetzungsgeschwindigkeit erhalten – durch kluge, vorbereitete Strukturen, ohne die Mitmenschen durch Hektik zu belasten.",
+       exName:"„Departure Kit“",
+       ex:"Installiere einen festen Korb an der Tür mit allen „Ready-to-go“-Utensilien (Schlüssel, Snacks, Ersatz). Nutze die Explorer-Energie für den schnellen Aufbruch, während das Kit die Commander-Sicherheit garantiert, nichts Wichtiges zu vergessen."},
+      {tag:"Situation 2", title:"Komplexe Entscheidungen",
+       what:"Eine wichtige Entscheidung steht an. Dein Commander will eine klare Richtung vorgeben und Verantwortung übernehmen. Dein Explorer drängt, keine Zeit mit langen Analysen zu verlieren, sondern durch „Trial-and-Error“ sofort Fakten zu schaffen – handeln und die Wirkung spüren, bevor alles zu Ende gedacht ist.",
+       risk:"Du neigst zu impulsiven Entscheidungen ohne strategische Absicherung. Stakeholder fühlen sich übergangen, weil du Risiken durch Ausprobieren managst statt sie vorab einzuordnen.",
+       goal:"Führung durch schnelles Handeln, das auf einem minimalen, aber soliden strategischen Gerüst basiert.",
+       exName:"„30-Min Rapid Assessment“",
+       ex:"Begrenze die Analysezeit radikal. Definiere in 30 Minuten nur: 1. das übergeordnete Ziel, 2. das absolut Nicht-Verhandelbare, 3. die erste konkrete Aktion. Handle danach sofort."},
+      {tag:"Situation 3", title:"Deadline-Phasen in Projekten",
+       what:"Ein Projekt nähert sich der Ziellinie. Dein Commander treibt die Ausführung massiv voran und fordert Ergebnisse. Dein Explorer sucht gleichzeitig nach Abkürzungen, Prototypen und direktem Kundenkontakt – du willst das Ziel erreichen, den Weg aber dynamisch halten.",
+       risk:"Der Fokus leidet unter „Scope-Sprüngen“. Spontane Richtungswechsel verwässern die Planung, verunsichern das Team und schwächen die Verbindlichkeit im Endspurt.",
+       goal:"Projekterfolg sichern durch kontrollierte Experimentierfenster innerhalb einer ansonsten harten Umsetzungsphase.",
+       exName:"„Timeboxed Field Loops“",
+       ex:"Erlaube dir und dem Team definierte Zeitfenster (z. B. 2 Stunden) für einen schnellen Test. Nach Ablauf wird das Ergebnis bewertet, die Richtung eingefroren und die Commander-Energie fließt ausschließlich in die finale Fertigstellung."},
+      {tag:"Situation 4", title:"Schwierige Feedbackgespräche",
+       what:"Ein kritisches Mitarbeitergespräch steht an. Dein Commander will die Fakten direkt und unmissverständlich auf den Tisch legen. Dein Explorer will es locker, humorvoll und motivierend halten („Das kriegen wir easy hin“) – es entsteht eine Dynamik zwischen harter Ansage und kumpelhafter Ermutigung.",
+       risk:"Die notwendige Kritik wird zu vage oder „zu weich“ verpackt. Dein Gegenüber nimmt die Dringlichkeit nicht ernst, weil die lockere Explorer-Art die Commander-Konsequenz überlagert.",
+       goal:"Unmissverständliche, direkte Klarheit mit einer motivierenden Begeisterung für die gemeinsame Weiterentwicklung verbinden.",
+       exName:"„Care + Cut + Coach“",
+       ex:"1. Care: echtes Vertrauen ausdrücken („Ich will, dass du erfolgreich bist“). 2. Cut: glasklar und mit Beispielen benennen, was sich ändern muss. 3. Coach: ein 10-tägiges „Explorer-Experiment“ mit festem Review-Datum vereinbaren."}
+    ]
+  }
+};
+
+function hexToRgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
+
+function render(){
+  const p=new URLSearchParams(location.search);
+  const basis=(p.get("basis")||"commander").toLowerCase();
+  const zweit=(p.get("zweit")||"explorer").toLowerCase();
+  const cB=HERO_COLOR[basis]||"#0B63CE", cZ=HERO_COLOR[zweit]||"#F0672A";
+  const r=document.documentElement.style;
+  r.setProperty("--accent",cB); r.setProperty("--accent-soft",hexToRgba(cB,0.10)); r.setProperty("--accent-line",hexToRgba(cB,0.45));
+  r.setProperty("--accent2",cZ); r.setProperty("--accent2-soft",hexToRgba(cZ,0.10)); r.setProperty("--accent2-line",hexToRgba(cZ,0.45));
+
+  const data=COMBO[basis+"_"+zweit];
+  const lblB=HERO_LABEL[basis]||basis, lblZ=HERO_LABEL[zweit]||zweit;
+  document.getElementById("ebBasis").textContent=lblB;
+  document.getElementById("ebZweit").textContent=lblZ;
+  document.getElementById("embBasis").textContent=(data?data.initials[0]:lblB[0].toUpperCase());
+  document.getElementById("embZweit").textContent=(data?data.initials[1]:lblZ[0].toUpperCase());
+  document.getElementById("lpBasis").textContent=lblB+"held".replace("held",""); // Label unten
+  document.getElementById("lpBasis").textContent="Basisheld";
+  document.getElementById("lpZweit").textContent="Zweitheld";
+
+  // Einzelseiten-Links
+  const base="https://regal-mooncake-d3a250.netlify.app/basisheld.html?hero=";
+  document.getElementById("lnkBasis").href=base+basis;
+  document.getElementById("lnkZweit").href=base+zweit;
+
+  if(!data){
+    document.getElementById("comboName").innerHTML='Deine <span class="accent">Kombination</span>';
+    document.getElementById("comboHook").innerHTML='Die ausführliche Beschreibung für <b>'+lblB+' + '+lblZ+'</b> folgt in Kürze.';
+    document.getElementById("traitList").innerHTML='';
+    document.getElementById("modList").innerHTML='';
+    return;
+  }
+
+  document.getElementById("comboName").innerHTML=data.name;
+  document.getElementById("comboHook").innerHTML=data.hook;
+
+  document.getElementById("traitList").innerHTML=data.traits.map((t,i)=>
+    `<div class="trait"><div class="label"><span class="n">${i+1}</span> Kennzeichen</div><h3>${t.h}</h3><p>${t.p}</p></div>`
+  ).join("");
+
+  document.getElementById("modList").innerHTML=data.mods.map(m=>
+    `<div class="mod">
+       <div class="m-eyebrow">${m.tag}</div>
+       <h3>${m.title}</h3>
+       <div class="mrow"><div class="k">Was passiert</div><p>${m.what}</p></div>
+       <div class="mrow"><div class="k">Die Falle</div><p>${m.risk}</p></div>
+       <div class="mrow coach"><div class="k">Coachingziel</div><p>${m.goal}</p></div>
+       <div class="mex"><div class="x-title">Übung</div><div class="x-name">${m.exName}</div><p>${m.ex}</p></div>
+     </div>`
+  ).join("");
+}
+
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
+window.addEventListener("load",()=>{render();postHeight();});
+window.addEventListener("resize",postHeight);
+if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+</script>
+</body>
+</html>
