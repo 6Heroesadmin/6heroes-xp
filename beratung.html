@@ -317,7 +317,7 @@ async function sendFeedback(tap, btn){
     await fetch(FEEDBACK_WEBHOOK_URL, {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ entryId: currentEntryId, feedback: tap })
+      body: JSON.stringify({ entryId: currentEntryId, tap: tap, detail: '' })
     });
   } catch(e){
     console.warn('Feedback konnte nicht gesendet werden:', e);
