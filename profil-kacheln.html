@@ -153,6 +153,16 @@
     padding: 40px 16px;
     font-size: 14px;
   }
+
+  /* Kombi-Karte: spannt beide Spalten, sitzt unter Basis+Zweit */
+  .tile.combo { grid-column: 1 / -1; }
+  .tile.combo .tile-hero { font-size: 24px; }
+  .tile.combo .combo-roles {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .tile.combo .combo-roles .plus { color: var(--text-muted); opacity: .7; }
 </style>
 </head>
 <body>
@@ -197,11 +207,44 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
       'Strategist': { line: 'Du machst Komplexität beherrschbar – mit Plan und Trade-offs.', q: 'Was ist die beste Option unter aktuellen Bedingungen?' },
     };
 
+    // Kombinationsname pro Basis_Zweit (klein). Fallback: "Eure Kombination".
+    const COMBO_NAME = {
+      'commander_explorer': 'Der Action-Leader',
+    };
+
     function normalizeHero(name) {
       if (!name) return '';
       return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     }
     function lc(name) { return (name || '').toLowerCase(); }
+
+    function comboTileHTML({ base, second, url, locked }) {
+      const bN = normalizeHero(base), zN = normalizeHero(second);
+      const cB = HERO_COLORS[bN] || '#64748B';
+      const cZ = HERO_COLORS[zN] || '#64748B';
+      const comboName = COMBO_NAME[lc(base) + '_' + lc(second)] || 'Eure Kombination';
+      const href = locked ? UPGRADE_URL : url;
+      const lockBadge = locked ? `<div class="lock-badge">${LOCK_ICON}</div>` : '';
+      const cta = locked
+        ? `<div class="unlock-bar">${LOCK_ICON}<span>Jetzt freischalten</span></div>`
+        : `<div class="tile-more">Wie deine Helden zusammenspielen <span class="arrow">&rarr;</span></div>`;
+      return `
+        <a class="tile combo ${locked ? 'locked' : ''}" href="${href}" target="_top">
+          ${lockBadge}
+          <div class="tile-top" style="background:linear-gradient(90deg,${cB},${cZ})"></div>
+          <div class="tile-body">
+            <div class="combo-roles">
+              <span style="color:${cB}">${bN}</span>
+              <span class="plus">+</span>
+              <span style="color:${cZ}">${zN}</span>
+            </div>
+            <div class="tile-hero">${comboName}</div>
+            <div class="tile-desc">Wie sich Basis- und Zweitheld gegenseitig färben – deine gemeinsamen Stärken und typische Alltagssituationen.</div>
+            ${cta}
+          </div>
+        </a>
+      `;
+    }
 
     function tileHTML({ role, hero, url, locked }) {
       const heroNorm = normalizeHero(hero);
@@ -253,7 +296,13 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
         { role: 'Zweitheld', hero: second, url: `${BASE_SITE}/basisheld.html?hero=${lc(second)}`, locked: !isPaid },
       ];
 
-      content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}</div>`;
+      const comboTile = comboTileHTML({
+        base, second,
+        url: `${BASE_SITE}/kombi.html?basis=${lc(base)}&zweit=${lc(second)}`,
+        locked: !isPaid,
+      });
+
+      content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}${comboTile}</div>`;
       postHeight();
     }
 
