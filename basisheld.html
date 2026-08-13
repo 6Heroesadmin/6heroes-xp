@@ -64,6 +64,30 @@
   .bridge span { color:var(--accent); }
 
   @media (max-width:480px){ .hero-img-wrap{width:150px;height:150px;} .action{padding:26px 22px;} }
+
+  /* Kompaktprofil-Module */
+  #module h2 { margin-bottom:30px; }
+  .mod-card { background:var(--navy-soft); border:1px solid var(--line); border-radius:20px; padding:28px 26px; margin-bottom:18px; }
+  .mod-card .m-num { font-family:'DM Serif Display',serif; font-size:14px; color:var(--accent); letter-spacing:.05em; margin-bottom:4px; }
+  .mod-card .m-title { font-family:'DM Serif Display',serif; font-size:24px; line-height:1.2; margin-bottom:3px; }
+  .mod-card .m-sub { font-size:13px; color:var(--ink-faint); letter-spacing:.03em; margin-bottom:16px; }
+  .mod-card .m-beschr { font-size:16px; color:var(--ink-dim); line-height:1.7; margin-bottom:20px; }
+  .m-states { display:grid; gap:10px; margin-bottom:20px; }
+  .m-state { display:grid; grid-template-columns:120px 1fr; gap:14px; align-items:start; }
+  .m-state .s-lab { font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding-top:2px; }
+  .m-state.gesund .s-lab { color:var(--accent); }
+  .m-state.stress .s-lab { color:#D2607A; }
+  .m-state.emo .s-lab { color:var(--ink-faint); }
+  .m-state p { font-size:15px; color:var(--ink-dim); line-height:1.6; }
+  .m-goal { border-left:2px solid var(--accent); padding-left:16px; margin-bottom:18px; }
+  .m-goal .g-lab { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:5px; }
+  .m-goal p { font-size:15px; color:var(--ink); line-height:1.6; }
+  .m-ex { background:rgba(0,0,0,0.18); border-radius:14px; padding:18px 20px; }
+  .m-ex .x-title { font-weight:600; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
+  .m-ex .x-name { font-weight:600; font-size:15px; margin-bottom:8px; }
+  .m-ex p { font-size:15px; color:var(--ink-dim); line-height:1.65; }
+  @media(max-width:480px){ .m-state{grid-template-columns:1fr;gap:3px;} .mod-card{padding:22px 18px;} }
+
 </style>
 </head>
 <body>
@@ -73,28 +97,14 @@
       <!-- BILD HIER EINSETZEN: <img src="..." alt="Guardian"> ersetzt den Platzhalter -->
       <div class="hero-img-placeholder" id="heroInitial">G</div>
     </div>
-    <div class="eyebrow">Dein Basisheld</div>
+    <div class="eyebrow" id="heroRole">Dein Basisheld</div>
     <h1 id="heroName">Der <span class="accent">Guardian</span></h1>
     <p class="tagline" id="heroTagline">Dein Kern. Dein Fundament.</p>
   </header>
 
   <div class="hook"><p id="heroHook">…</p></div>
 
-  <section id="identitaet"><div class="block">
-    <div class="label">Das bist du im Kern</div><p id="txtIdentity">…</p>
-  </div></section>
-
-  <section id="staerke"><div class="block is-accent">
-    <div class="label">Wenn du in deiner Kraft bist</div><p id="txtStrength">…</p>
-  </div></section>
-
-  <section id="muster"><div class="block">
-    <div class="label">Wenn es herausfordernd wird</div><p id="txtPattern">…</p>
-  </div></section>
-
-  <section id="wachstum"><div class="block">
-    <div class="label">Dein Wachstumsfeld</div><p id="txtGrowth">…</p>
-  </div></section>
+  <section id="module"><h2>Die vier Kräfte deines Helden</h2><div id="moduleList"></div></section>
 
   <section id="leben">
     <h2>So zeigt sich das im Alltag</h2>
@@ -102,19 +112,8 @@
   </section>
 
   <section id="aktion">
-    <h2>Was du jetzt damit machst</h2>
-    <div class="action">
-      <h3 id="actionLead">…</h3>
-      <div id="stepList"></div>
-      <div class="exercise">
-        <div class="x-title" id="exTitle">Übung</div>
-        <p id="exText">…</p>
-      </div>
-      <a class="cta-quests" id="ctaQuests" href="#" target="_top">Passende Quests öffnen →</a>
-    </div>
-    <a class="bridge" id="bridge" href="#" target="_blank" rel="noopener">
-      Willst du das ganze Modell verstehen? <span>Mehr dazu auf 6heroes.de →</span>
-    </a>
+    <a class="cta-quests" id="ctaQuests" href="#" target="_top">Passende Quests öffnen →</a>
+    <a class="bridge" id="bridge" href="#" target="_blank" rel="noopener">Willst du das ganze Modell verstehen? <span>Mehr dazu auf 6heroes.de →</span></a>
   </section>
 </div>
 
@@ -127,10 +126,291 @@ const HERO_DATA = {
   explorer:{accent:"#F0672A",initial:"E",name:"Der <span class=\"accent\">Explorer</span>",tagline:"Dein Kern. Dein Fundament.",hook:"Du definierst dich über <span class=\"accent\">Freiheit</span> – über Bewegung und eigene Wege. Dein innerer Motor ist Entdeckung.",identity:"Freiheit, Bewegung und die Möglichkeit, eigene Wege zu entdecken, bilden den Kern deiner Identität. Du fühlst dich lebendig, wenn du wählen, Neues ausprobieren und Erfahrungen unmittelbar selbst machen kannst. Unbekanntes weckt deine Neugier, weil du darin Möglichkeiten siehst, die sich erst zeigen, wenn man tatsächlich losgeht.",strength:"Du findest Handlungsspielräume, wo andere sich festgefahren fühlen. Neue Situationen schrecken dich selten lange ab: Du improvisierst, probierst aus und reagierst flexibel auf das, was tatsächlich passiert. Deine Offenheit für Erfahrungen macht dich zu einem natürlichen Pionier, besonders dort, wo es noch keinen fertigen Weg gibt.",pattern:"Wenn Verpflichtungen eng werden, Routinen sich wiederholen oder andere zu stark kontrollieren, entsteht ein Muster: Abstand fühlt sich plötzlich attraktiver an als Auseinandersetzung. Du öffnest Hintertüren, wechselst das Thema oder suchst die nächste Möglichkeit – nicht unbedingt weil das Alte falsch ist, sondern weil es sich nicht mehr frei anfühlt.",growth:"Freiheit nicht nur darin finden, jederzeit gehen zu können, sondern darin, sich bewusst für etwas zu entscheiden und dieser Entscheidung auch dann treu zu bleiben, wenn sie vorübergehend unbequem wird.",life:[{title:"Wenn du Neuland betrittst",text:"Eine unbekannte Stadt, ein neues Umfeld, eine neue Aufgabe oder eine Situation ohne fertige Anleitung aktiviert häufig deine beste Seite. Während andere zunächst Sicherheit suchen, beginnst du zu erkunden. Du lernst durch Erfahrung, passt dich schnell an und findest häufig Wege, die auf keinem ursprünglichen Plan standen."},{title:"Wenn jeder Tag gleich aussieht",text:"Was für andere angenehm vorhersehbar ist, kann bei dir zunehmend Energie ziehen. Wiederholung, starre Abläufe oder das Gefühl, nur noch dieselben Schritte abzuarbeiten, erzeugen innere Unruhe. Dann wird Veränderung schnell zum Selbstzweck. Dein Wachstumsfeld liegt darin, unterscheiden zu lernen: Brauche ich wirklich einen neuen Weg – oder brauche ich lediglich mehr Spielraum auf dem bestehenden?"},{title:"Wenn andere Verbindlichkeit erwarten",text:"In Beziehungen, Freundschaften oder Teams können feste Erwartungen plötzlich wie eine Einschränkung wirken. Je stärker du das Gefühl bekommst, etwas „zu müssen“, desto größer kann der Wunsch nach Abstand werden. Sagst du nicht, welchen Freiraum du brauchst, erleben andere deine Distanz möglicherweise als Unzuverlässigkeit. Reife Freiheit bedeutet deshalb auch, Bedürfnisse früh auszusprechen, statt erst zu verschwinden, wenn es zu eng wird."},{title:"Wenn plötzlich alles anders kommt",text:"Pläne funktionieren nicht, Bedingungen ändern sich oder eine Situation entwickelt sich völlig anders als erwartet. Hier besitzt du oft einen natürlichen Vorteil: Du hängst weniger am ursprünglichen Weg und findest schnell eine Alternative. Wo andere zunächst den verlorenen Plan betrauern, fragst du bereits: „Okay – was können wir jetzt daraus machen?“"}],actionLead:"Dein Explorer wird stark, wenn du innerhalb von Verbindlichkeit deinen eigenen Spielraum findest. Diese Woche:",steps:["Bemerke eine Situation, in der du am liebsten aussteigen, verschieben oder etwas völlig anderes machen möchtest.","Frage dich: „Welche Wahlmöglichkeiten habe ich innerhalb dieses Rahmens, ohne die Verpflichtung aufzugeben?“","Entscheide dich für einen Weg und bleibe bis zu einem vorher festgelegten Punkt dabei – erst danach entscheidest du neu."],exTitle:"Übung · Der Freiheits-Rahmen",exText:"Wähle eine Verpflichtung, die sich gerade eng oder schwer anfühlt. Schreibe zuerst auf, was daran tatsächlich feststeht und was lediglich wie eine Einschränkung wirkt. Suche anschließend mindestens zwei Möglichkeiten, wie du innerhalb des bestehenden Rahmens selbstbestimmt handeln kannst. Entscheide dich bewusst für eine davon und formuliere: „Ich muss das nicht auf diese Weise tun – ich entscheide mich für diesen Weg.“ Freiheit entsteht damit nicht außerhalb der Verpflichtung, sondern innerhalb deiner eigenen Wahl.",questCategory:"energie",bridge:"https://6heroes.de/helden.html"},
   sage:{accent:"#C0266A",initial:"S",name:"Der <span class=\"accent\">Sage</span>",tagline:"Dein Kern. Dein Fundament.",hook:"Du definierst dich über <span class=\"accent\">Verstehen</span> – über Erkenntnis und innere Klarheit. Dein innerer Motor ist Tiefe.",identity:"Verstehen, Erkenntnis und innere Klarheit bilden den Kern deiner Identität. Du fühlst dich besonders sicher, wenn Zusammenhänge logisch werden, ein Thema Tiefe bekommt und du nicht nur weißt, was passiert, sondern auch warum. Bedeutung entsteht für dich dort, wo aus Informationen ein schlüssiges Gesamtbild wird.",strength:"Du erkennst Muster, Widersprüche und Konsequenzen, die anderen leicht entgehen. Komplexität schreckt dich nicht – im Gegenteil: Du kannst Informationen ordnen, Annahmen prüfen und aus vielen Einzelteilen ein schlüssiges Bild entwickeln. Deine Ruhe und gedankliche Tiefe schaffen Klarheit dort, wo andere vorschnell vereinfachen.",pattern:"Wenn Informationen fehlen, Argumente nicht zusammenpassen oder du unter Zeitdruck entscheiden sollst, entsteht ein Muster: Du suchst nach noch mehr Klarheit. Aus Analyse wird weitere Analyse, aus einer offenen Frage entstehen drei neue – bis das Bedürfnis, richtig zu entscheiden, genau die Entscheidung verhindert.",growth:"Nicht weniger tief denken, sondern früher erkennen, wann genügend verstanden ist: Klarheit wird erst wirksam, wenn aus Erkenntnis irgendwann eine Handlung wird.",life:[{title:"Wenn eine Entscheidung komplex wird",text:"Eine größere Anschaffung, eine berufliche Weichenstellung oder eine strategische Frage hat viele Variablen. Wo andere aus dem Bauch entscheiden, beginnst du Zusammenhänge zu prüfen, Informationen zu vergleichen und Konsequenzen weiterzudenken. Diese Tiefe schützt vor vorschnellen Entscheidungen – solange du erkennst, wann zusätzliche Informationen die Richtung kaum noch verändern."},{title:"Wenn eine Argumentation nicht stimmt",text:"In einem Gespräch klingt etwas zunächst überzeugend, aber eine Annahme passt nicht zur Schlussfolgerung. Solche Brüche fallen dir schnell auf. Du stellst Fragen, differenzierst und bringst Sachlichkeit in die Diskussion. Herausfordernd wird es, wenn dein Wunsch nach Präzision beim Gegenüber als Korrektur oder Belehrung ankommt, obwohl du eigentlich nur verstehen möchtest."},{title:"Wenn jemand vor allem emotional reagiert",text:"Ein Mensch erzählt dir von einem Problem, und du erkennst schnell Ursachen, Widersprüche oder mögliche Lösungen. Dein natürlicher Impuls ist, das Problem gedanklich zu ordnen. Manchmal braucht dein Gegenüber in diesem Moment jedoch weniger Analyse als Resonanz. Dein Wachstum liegt darin, zuerst zu erkennen, was gerade gebraucht wird: eine Lösung – oder ein Mensch, der einfach versteht, wie es sich anfühlt."},{title:"Wenn du entscheiden musst, bevor alles klar ist",text:"Zeitdruck und unvollständige Informationen können besonders unangenehm sein, weil dein Qualitätsmaßstab im Denken nicht vollständig erfüllt werden kann. Dein Reflex kann sein, dich zurückzuziehen oder die Entscheidung aufzuschieben. Dein stärkster Sage zeigt sich dann, wenn du Unsicherheit ausdrücklich benennst, eine begründete Hypothese formulierst und trotzdem handelst: nicht weil du alles weißt, sondern weil du weißt, was für den nächsten Schritt ausreicht."}],actionLead:"Dein Sage wird stark, wenn du zwischen notwendiger Erkenntnis und zusätzlicher Sicherheit unterscheiden kannst. Diese Woche:",steps:["Wähle eine Entscheidung, über die du bereits länger nachdenkst, und notiere die drei Informationen, die wirklich entscheidend sind.","Prüfe ehrlich, welche dieser Informationen bereits ausreichend geklärt sind und welche nur zusätzliche Sicherheit liefern würden.","Triff die Entscheidung, sobald du die Richtung sachlich begründen kannst – auch wenn noch nicht jede Frage beantwortet ist."],exTitle:"Übung · Die 70%-Klarheit",exText:"Nimm ein Thema, das du gerade immer weiter analysierst. Schreibe auf, was du sicher weißt, welche Annahmen du triffst und welche offenen Fragen die Entscheidung tatsächlich verändern könnten. Wenn du ungefähr genug Informationen hast, um eine vernünftige Richtung zu begründen, formuliere eine Entscheidung als vorläufige Hypothese: „Auf Basis dessen, was ich heute weiß, gehe ich diesen Weg.“ Du gibst damit Genauigkeit nicht auf – du akzeptierst, dass manche Erkenntnisse erst durch Handeln entstehen.",questCategory:"wachsen",bridge:"https://6heroes.de/helden.html"}
 };
+
+const KOMPAKT = {
+ "commander": [
+  {
+   "title": "Der Umsetzungskern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Commander fungiert als „Held der Umsetzung\", dessen Energie primär auf Tatkraft, klare Prioritäten und pragmatische Ergebnisse ausgerichtet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Weniger reden -- mehr machen\". Er definiert sich über Wirkung, Kontrolle und Stärke. Psychologisch wird er durch ein Kontroll- und Wirkmuster gesteuert: Er fühlt sich sicher, wenn er handelt und Entscheidungen trifft. In seiner Kernidentität glaubt er, dass Führung eine Pflicht ist, um Chaos zu vermeiden. Er strebt nach Effizienz und dem direkten Einfluss auf das Geschehen.",
+   "gesund": "Diese Konstellation führt zu hoher Führungskompetenz, Klarheit und einem starken Momentum, das Projekte vorantreibt.",
+   "stress": "Das Streben nach Wirkung kann in Härte, Ungeduld und einen „Tunnelblick\" umschlagen. Fehlende Kontrolle führt zu Dominanzgebaren oder explosivem Verhalten.",
+   "emo": "Der Commander reagiert allergisch auf Unentschlossenheit, Langsamkeit oder „Gelaber\"; dies erzeugt bei ihm ein Gefühl von Kontrollverlust und den Drang, das Ruder mit Druck an sich zu reißen.",
+   "ziel": "Das primäre Ziel ist die Dosierung der Stärke und die Entwicklung von Empathie. Der Commander soll lernen, seine Durchsetzungskraft so zu regulieren, dass Führung und die Einbindung des Teams nebeneinander existieren können. Ein wesentlicher Teil des Coachings besteht darin, Geduld gegenüber langsameren Prozessen aufzubauen und die Kontrolle schrittweise abzugeben (Delegation).",
+   "exName": "Der Prioritäten-Check",
+   "exText": "Diese Übung hilft dem Commander, die Energie auf die wirklichen Hebel zu lenken, ohne das Team durch zu viel Druck zu überfordern: - Schritt 1 (Fokus): Notiere drei Bereiche, in denen du gerade die volle Kontrolle behältst. - Schritt 2 (Prüfung): Beantworte für jeden Bereich die Frage: „Muss ich hier wirklich selbst entscheiden, um das Ergebnis zu sichern?\". Wähle einen Bereich zur Abgabe aus. - Schritt 3 (Umsetzung): Definiere für diesen Bereich einen klaren Rahmen und delegiere die Entscheidung explizit an eine andere Person. - Ziel der Übung: Den Drang zur „Alles-selber-entscheiden\"-Kontrolle zu stoppen und Vertrauen in die Umsetzung durch andere zu gewinnen."
+  },
+  {
+   "title": "Kognitive Kraft & Präsenz",
+   "subtitle": "Denken, Stärken & Körper",
+   "beschr": "Der Commander nutzt ein direktes, ergebnisorientiertes Denken. Er bevorzugt Klarheit gegenüber Komplexität und filtert Informationen sofort nach ihrem Nutzen für die nächste Aktion. Diese geistige Entschlossenheit übersetzt sich in eine kraftvolle somatische Energie: Er zeigt eine hohe Präsenz, direkten Blickkontakt und eine feste, raumgreifende Stimme. Sein Auftreten signalisiert: „Ich stehe vorne und übernehme Verantwortung\". Er kommuniziert ohne Umwege und kommt schnell zum Punkt.",
+   "gesund": "Er wirkt als „Motor\" des Systems, der Sicherheit vermittelt und Hindernisse pragmatisch aus dem Weg räumt.",
+   "stress": "Seine Direktheit wird als Härte wahrgenommen. Er überrollt andere mit seiner Meinung und lässt keinen Raum für Zwischentöne oder alternative Sichten.",
+   "emo": "Er empfindet tiefe Frustration bei ineffizienten Meetings oder Detailverliebtheit. Körperlich äußert sich dies in Anspannung und einem hohen inneren Druck, der sich oft in Ungeduld entlädt.",
+   "ziel": "Das Ziel ist die Steigerung der Wahrnehmungsbreite. Der Commander soll lernen, seine Direktheit durch aktives Zuhören zu ergänzen. Er muss die Fähigkeit entwickeln, Komplexität zuzulassen, bevor er in die Entscheidung geht. Ein Fokus liegt auf dem „Loslassen von Druck\", um die eigene Anspannung zu regulieren.",
+   "exName": "Die Warte-Minute",
+   "exText": "- Schritt 1: Höre dir in einem Gespräch einen Vorschlag oder ein Problem vollständig an. - Schritt 2: Warte bewusst 10 Sekunden, bevor du deine Entscheidung oder Meinung äußerst. - Schritt 3: Stelle eine Rückfrage, um sicherzugehen, dass du die Sicht des anderen verstanden hast, anstatt sofort die Richtung vorzugeben. - Ziel der Übung: Den Reflex der „Sofort-Entscheidung\" zu unterbrechen und die Kooperationsbereitschaft im Team zu erhöhen."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Emotionen & Stress",
+   "beschr": "Das emotionale Profil des Commanders ist auf Stabilität und Sicherheit durch Handeln ausgerichtet. Er benötigt das Gefühl von Wirksamkeit, um emotional im Gleichgewicht zu bleiben. Stress entsteht primär durch Inkompetenz anderer, langsame Abläufe oder Fehler im System. In Belastungssituationen aktiviert er Stresspfade: Er kann in den Perfektionismus des Strategisten, das Grübeln des Sage oder -- bei hohem Druck -- in die Fluchttendenzen des Explorers kippen. Sein Schatten zeigt sich in Rücksichtslosigkeit gegenüber den Gefühlen anderer („Der Zweck heiligt die Mittel\").",
+   "gesund": "Enorm belastbar, übernimmt in Krisen das Kommando und schützt sein Team nach außen.",
+   "stress": "Er wird zum „Bulldozer\", der Kritik nicht mehr annimmt und Fehler bei anderen hart sanktioniert. Die Kommunikation wird fordernd und unversöhnlich.",
+   "emo": "Ein Gefühl von Machtlosigkeit führt zu massiver innerer Unruhe und dem Drang, durch noch mehr Druck wieder Kontrolle herzustellen.",
+   "ziel": "Aufbau von Fehlertoleranz und Selbstregulation. Der Commander lernt, Stress-Trigger (wie Fehler anderer) als Teil des Prozesses zu akzeptieren, statt mit Härte zu reagieren. Ziel ist es, die „Schattenreaktion\" der Explosion durch bewusstes Innehalten und Emotionsmanagement zu ersetzen.",
+   "exName": "Die Fehler-Analyse-Pause",
+   "exText": "- Schritt 1: Wenn ein Fehler passiert und der Impuls zur Härte entsteht: Halte kurz inne. - Schritt 2: Atme dreimal tief durch und frage dich: „Welcher sachliche Schritt hilft jetzt wirklich weiter?\" (statt nach Schuldigen zu suchen). - Schritt 3: Kommuniziere die Lösung sachlich und frage das Team: „Was brauchen wir, damit das nicht nochmal passiert?\" - Ziel der Übung: Stressenergie in konstruktive Führung statt in destruktiven Druck umzuwandeln."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Kommunikation & Team",
+   "beschr": "In der Interaktion ist der Commander der „Action-Leader\". Sein Führungsstil ist direkt, fordernd und schützend zugleich. Er führt über klare Ziele und Verantwortlichkeiten. In Teams sorgt er dafür, dass Entscheidungen nicht nur getroffen, sondern auch umgesetzt werden. Er kommuniziert im Imperativ oder in klaren Aussagesätzen („Wir machen das jetzt so\"), was für Orientierung sorgt, aber wenig Raum für Diskussionen lässt.",
+   "gesund": "Er motiviert durch Erfolge, schafft Sicherheit und bringt PS auf die Straße. Er steht loyal vor seinem Team.",
+   "stress": "Er betreibt Mikromanagement aus Misstrauen, übergeht die Expertise anderer und ignoriert die emotionalen Bedürfnisse seiner Mitarbeiter. Konflikte werden durch Machtworte beendet, statt sie zu lösen.",
+   "emo": "Er fühlt sich oft allein gelassen mit der Verantwortung („Alles muss man selber machen\") und verkennt dabei, dass sein eigener Stil andere zur Passivität erzieht.",
+   "ziel": "Entwicklung von Partizipation und Geduld. Der Commander soll lernen, Kommunikation als Dialog zu verstehen und Verantwortung wirklich zu teilen. Ein Fokus liegt auf dem Erlernen von Coaching-Fragen statt Anweisungen, um die Eigenverantwortung des Teams zu stärken.",
+   "exName": "Der Frage-statt-Ansage-Check",
+   "exText": "- Schritt 1: Nimm dir vor, in einem Meeting keine einzige Anweisung zu geben. - Schritt 2: Nutze Best-Practice-Fragen: „Was brauchst du, um zu entscheiden?\" oder „Wie würdest du hier vorgehen?\". - Schritt 3: Akzeptiere den Weg des Teams, auch wenn er nicht 100% dein eigener wäre, solange das Ergebnis stimmt. - Ziel der Übung: Die Lücke zwischen Führung durch Druck und Führung durch Ermächtigung zu schließen."
+  }
+ ],
+ "explorer": [
+  {
+   "title": "Der Entdecker-Kern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Explorer fungiert als „Held der Freiheit\", dessen Energie auf Neugier, Unabhängigkeit und das Erforschen unentdeckter Wege ausgerichtet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Es gibt immer einen anderen Weg\". Er definiert sich über Autonomie, Bewegung und Spontaneität. Psychologisch wird er durch ein Autonomie- und Neugiermuster gesteuert: Er braucht das Gefühl von weitem Raum und neuen Erfahrungen, um Energie zu generieren. In seiner Kernidentität ist er der Pionier, der Türen öffnet, die andere nicht einmal sehen, und er misstraut jeder Form von Einengung oder starren Systemen.",
+   "gesund": "Diese Konstellation führt zu hoher Anpassungsfähigkeit, Wagemut und der Fähigkeit, in komplexen Situationen flexibel zu reagieren. Er ist ein Impulsgeber für Veränderung.",
+   "stress": "Der Drang nach Freiheit schlägt in Unverbindlichkeit, Sprunghaftigkeit oder einen „Abbruch-Reflex\" um. Er neigt dazu, sich der Verantwortung zu entziehen, wenn der Erwartungsdruck zu hoch wird.",
+   "emo": "Der Explorer reagiert allergisch auf Zwang und Einschränkung; dies erzeugt bei ihm ein Gefühl des Erstickens und führt zu einem sofortigen mentalen oder physischen Fluchtimpuls.",
+   "ziel": "Das primäre Ziel ist die Entwicklung von Verbindlichkeit und Konsistenz. Der Explorer soll lernen, dass wahre Freiheit durch Konsequenz und das Einhalten eines gewählten Rahmens entsteht, nicht durch den ständigen Abbruch. Ein wesentlicher Teil des Coachings ist die Stärkung des Fokus und der bewusste Umgang mit Erwartungsdruck, ohne in die Flucht zu gehen.",
+   "exName": "Der Freiheits-Rahmen",
+   "exText": "Diese Übung hilft dem Explorer, Autonomie innerhalb von Verpflichtungen zu finden: - Schritt 1 (Optionen): Notiere eine Aufgabe oder Verpflichtung, die sich gerade „eng\" anfühlt. - Schritt 2 (Reframing): Beantworte die Frage: „Welche zwei unterschiedlichen Wege (Optionen) habe ich innerhalb dieser Aufgabe, um mein Ziel zu erreichen?\". - Schritt 3 (Commitment): Entscheide dich für einen Weg und lege fest, bis wann dieser Schritt abgeschlossen ist, um die eigene Wirksamkeit zu spüren. - Ziel der Übung: Den Fluchtimpuls stoppen und lernen, innerhalb eines Rahmens autonom zu handeln."
+  },
+  {
+   "title": "Kognitive Dynamik & Auftreten",
+   "subtitle": "Denken, Stärken & Körper",
+   "beschr": "Der Explorer nutzt ein „Bewegungsmuster\" im Denken: Er denkt beim Tun und braucht physische oder mentale Dynamik, um Lösungen zu finden. Seine kognitive Stärke liegt in der Intuition und der Fähigkeit, Chancen blitzschnell zu erfassen. Körperlich zeigt sich dies in einer hohen Lebendigkeit, einer agilen Körperhaltung und einer ständigen Bereitschaft zum Aufbruch. Er kommuniziert bildhaft und nutzt oft Metaphern der Reise oder Entdeckung, um seine Begeisterung zu teilen.",
+   "gesund": "Er ist ein Meister der Improvisation und findet spielerisch Lösungen für Probleme, die andere als Sackgassen erleben.",
+   "stress": "Das Denken wird oberflächlich. Er springt von einem Thema zum nächsten (Butterfly-Effekt), ohne in die Tiefe zu gehen, und verliert den roten Faden.",
+   "emo": "Er empfindet Trägheit und Routine als quälend. Körperlich äußert sich dies in Zappeligkeit oder einer inneren Unruhe, die nach einem „Tapetenwechsel\" verlangt.",
+   "ziel": "Das Ziel ist die Steigerung der Priorisierungskompetenz. Der Explorer soll lernen, seine intuitive Kraft auf ein Ziel zu lenken, statt sie in zu vielen parallelen Entdeckungen zu zerstreuen. Fokus liegt auf der „Gedanklichen Tiefe\" und dem Aushalten von Wiederholungen.",
+   "exName": "Der Anker-Check",
+   "exText": "- Schritt 1: Wenn du merkst, dass du gedanklich abschweifst oder eine neue Idee die aktuelle verdrängt: Halte inne. - Schritt 2: Frage dich: „Bringt mich dieser neue Weg meinem eigentlichen Ziel näher oder ist er nur eine Ablenkung vor der Anstrengung?\". - Schritt 3: Notiere die neue Idee für später, aber bleibe für weitere 15 Minuten fokussiert bei der aktuellen Tätigkeit. - Ziel der Übung: Die kognitive Ausdauer trainieren und den Fokus stabilisieren."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Emotionen & Stress",
+   "beschr": "Das emotionale Profil des Explorers ist auf Unabhängigkeit und Optimismus ausgerichtet. Er braucht Leichtigkeit, um resilient zu bleiben. Stress entsteht durch Mikromanagement, starre Regeln oder zu hohe emotionale Nähe/Verpflichtung. In Belastungssituationen aktiviert er Stresspfade: Er kann in die mentale Lähmung des Sage (Sekundärstress) oder in das Ideenchaos des Innovators kippen. Sein Schatten zeigt sich in einer Form von Verantwortungslosigkeit und der Tendenz, Menschen oder Projekte fallen zu lassen, sobald sie „anstrengend\" werden.",
+   "gesund": "Er wirkt inspirierend, ist offen für alles Neue und behält auch in Krisen eine spielerische Leichtigkeit.",
+   "stress": "Er reagiert mit „Stressflucht\" (mentale Emigration oder plötzliches Verschwinden). Die Kommunikation wird vage und unverbindlich, um sich alle Hintertüren offen zu halten.",
+   "emo": "Ein Gefühl von „Eingesperrtsein\" führt zu einer massiven Abwertung der aktuellen Situation oder Umgebung.",
+   "ziel": "Aufbau von Frustrationstoleranz und Standhaftigkeit. Der Explorer lernt, Stressflucht als Muster zu erkennen und stattdessen den „Raum\" aktiv zu gestalten, statt ihn zu verlassen. Ziel ist es, Verantwortung als Werkzeug für echte Freiheit zu begreifen.",
+   "exName": "Die Wahl-Analyse",
+   "exText": "- Schritt 1: Wenn der Drang zur Flucht entsteht: Stopp. - Schritt 2: Schreibe auf: „Ich muss nicht bleiben, ich entscheide mich heute zu bleiben, weil\\...\". - Schritt 3: Benenne einen Vorteil, den das Durchhalten in dieser Situation für deine persönliche Entwicklung hat. - Ziel der Übung: Das Gefühl von Zwang durch das Gefühl von bewusster Wahl zu ersetzen und so die Resilienz zu stärken."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Kommunikation & Team",
+   "beschr": "In der Interaktion ist der Explorer der „Lern-Pionier\". Sein Führungsstil basiert auf Vertrauen und Intuition; er lässt anderen viel Raum und delegiert oft sehr offen. Er führt weniger durch Ansagen, sondern durch das Aufzeigen von Möglichkeiten („Was kann man daraus machen?\"). In Teams bringt er Flexibilität und Humor ein. Seine Kommunikation ist einladend und weniger wertend, was eine Kultur der Offenheit fördert.",
+   "gesund": "Er schafft eine angstfreie Umgebung, in der Experimente erlaubt sind und Menschen sich eigenständig entfalten können.",
+   "stress": "Er wird unzuverlässig, hält Absprachen nicht ein und ändert spontan Prioritäten, ohne das Team mitzunehmen. Konflikte meidet er durch Wegtauchen.",
+   "emo": "Er fühlt sich durch Erwartungen der anderen schnell „belagert\" und reagiert mit defensiver Distanz.",
+   "ziel": "Entwicklung von Klarheit und Verlässlichkeit. Der Explorer soll lernen, Rahmenbedingungen so zu definieren, dass Freiheit für ihn und Struktur für das Team zusammenpassen. Ein Fokus liegt auf der expliziten Kommunikation von Erwartungen und dem Aushalten von Verbindlichkeiten.",
+   "exName": "Der Spielraum-Dialog",
+   "exText": "- Schritt 1: Definiere vor einer Aufgabe für dich und das Team den „Rahmen\" (Was muss unbedingt erfüllt sein?). - Schritt 2: Definiere innerhalb dieses Rahmens den „Spielraum\" (Wo können wir experimentieren?). - Schritt 3: Kommuniziere beides klar und frage das Team: „Ist dieser Rahmen für euch sicher genug, um darin frei zu arbeiten?\". - Ziel der Übung: Führung durch Vertrauen mit der notwendigen Sicherheit durch Struktur zu verbinden."
+  }
+ ],
+ "guardian": [
+  {
+   "title": "Der Verbindungskern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Guardian fungiert als „Held der Nähe\", dessen Energie primär auf Empathie, Fürsorge und Verbundenheit ausgerichtet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Menschen brauchen Menschen\". Er definiert sich über Beziehungen, Zugehörigkeit und Kooperation. Psychologisch wird er durch ein Bindungs- und Harmoniemuster gesteuert: Er fühlt sich sicher, wenn Nähe und Einvernehmen herrschen. In seiner Kernidentität glaubt er, dass er wertvoll ist, wenn es anderen gut geht. Er strebt nach zwischenmenschlicher Stabilität und fungiert als der „soziale Anker\" des Systems.",
+   "gesund": "Diese Konstellation führt zu einer hohen emotionalen Intelligenz, Zuverlässigkeit und der Fähigkeit, tragfähige Gemeinschaften zu bilden.",
+   "stress": "Das Streben nach Harmonie kann in Selbstaufgabe, Überanpassung und Unsicherheit umschlagen. Die Angst, jemanden zu enttäuschen, führt zu einem Verlust der eigenen Bedürfnisse.",
+   "emo": "Der Guardian reagiert allergisch auf Kälte, Ignoranz oder harte Konfrontation; dies erzeugt bei ihm ein tiefes Gefühl von Verunsicherung und emotionalem Stress.",
+   "ziel": "Das primäre Ziel ist die Stärkung des Selbstwerts und das Setzen von Grenzen. Der Guardian soll lernen, dass Selbstfürsorge die Voraussetzung für eine gesunde Fürsorge für andere ist. Ein wesentlicher Teil des Coachings besteht darin, die Unabhängigkeit von der Bestätigung anderer zu fördern und die Fähigkeit zu entwickeln, „Nein\" zu sagen, ohne Schuldgefühle zu empfinden.",
+   "exName": "Die Bedürfnis-Balance",
+   "exText": "Diese Übung hilft dem Guardian, den Fokus von der Fremd- zur Selbstwahrnehmung zu lenken: - Schritt 1 (Wahrnehmung): Notiere eine Situation, in der du dich gerade für jemanden anderen aufopferst. - Schritt 2 (Prüfung): Beantworte die Frage: „Was brauche ich gerade in diesem Moment, um mich sicher und wertgeschätzt zu fühlen?\" - Schritt 3 (Handlung): Formuliere eine Bitte oder eine Grenze, die dein eigenes Bedürfnis schützt. - Ziel der Übung: Das Muster der Selbstaufgabe zu durchbrechen und aktiv für die eigenen Belange einzutreten."
+  },
+  {
+   "title": "Kognitive Empathie & Präsenz",
+   "subtitle": "Wahrnehmung & Körper",
+   "beschr": "Der Guardian nutzt ein intuitives Wahrnehmungsmuster, das auf soziale Signale und Atmosphären spezialisiert ist. Er erkennt Bedürfnisse anderer oft, bevor diese ausgesprochen werden. Diese soziale Intelligenz übersetzt sich in eine sanfte, warme und präsente somatische Energie: Er zeigt eine offene, zuhörende Körperhaltung, einen weichen Blick und eine beruhigende Stimme. Sein Auftreten signalisiert Sicherheit und Annahme. Er kommuniziert wertschätzend und achtet stets auf den emotionalen Unterton.",
+   "gesund": "Er wirkt als „emotionaler Kompass\", der Spannungen im Keim erkennt und durch seine bloße Anwesenheit deeskalierend wirkt.",
+   "stress": "Seine hohe Sensibilität führt dazu, dass er die Emotionen anderer ungefiltert übernimmt. Er fühlt sich für die Stimmung im Raum verantwortlich und verliert seine sachliche Distanz.",
+   "emo": "Er empfindet harte, laute oder dominante Energie (z. B. gestresste Commander-Energie) als physisch belastend. Körperlich äußert sich dies oft in einem Gefühl von Enge oder dem Bedürfnis, sich klein zu machen.",
+   "ziel": "Das Ziel ist die Entwicklung emotionaler Resilienz und Abgrenzung. Der Guardian soll lernen, ein „Beobachter\" der Emotionen zu bleiben, statt sie aufzusaugen. Er muss die Fähigkeit entwickeln, Klarheit und Sachlichkeit zu bewahren, auch wenn die Atmosphäre angespannt ist.",
+   "exName": "Der Innere Schutzraum",
+   "exText": "- Schritt 1: Visualisiere in einer emotional aufgeladenen Situation eine klare, transparente Grenze um dich herum. - Schritt 2: Sage dir innerlich: „Das ist das Gefühl des anderen, das ist nicht mein Gefühl.\" - Schritt 3: Atme ruhig in deinen Bauch und bleibe bei deiner sanften Präsenz, ohne das Problem sofort lösen zu wollen. - Ziel der Übung: Emotionale Stabilität durch Distanzierung zu gewinnen und die eigene Energie zu bewahren."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Harmonie & Stress",
+   "beschr": "Das emotionale Profil des Guardians ist auf Bindung und Loyalität ausgerichtet. Er braucht Zeit und sanfte Klarheit, um resilient zu bleiben. Stress entsteht primär durch Konflikte, Ablehnung oder den Druck, harte Entscheidungen gegen Menschen treffen zu müssen. In Belastungssituationen aktiviert er Stresspfade: Er kann in die Härte des Commanders (Sekundärstress), den Perfektionismus des Strategisten oder den Rückzug des Sage kippen. Sein Schatten zeigt sich in einer passiv-aggressiven Haltung oder totalem Rückzug aus der Verbindung.",
+   "gesund": "Er ist der Klebstoff der Gruppe, pflegt Beziehungen langfristig und bietet in Krisen einen sicheren Hafen.",
+   "stress": "Er vermeidet notwendige Auseinandersetzungen, was zu „verschleppten\" Konflikten führt. In der Kommunikation wird er vage oder übervorsichtig, um niemanden zu verletzen.",
+   "emo": "Ein Gefühl von Einsamkeit oder Undankbarkeit führt zu innerer Bitterkeit, wenn seine Fürsorge nicht erwidert wird.",
+   "ziel": "Aufbau von Konfliktfähigkeit und Verantwortungsabgabe. Der Guardian lernt, dass Reibung zum Wachstum dazugehört und dass er nicht für das Glück aller verantwortlich ist. Ziel ist es, die „sanfte Klarheit\" zu trainieren -- also Sachkritik ohne Beziehungsabbruch zu üben.",
+   "exName": "Der Klarheits-Brief (ungesendet)",
+   "exText": "- Schritt 1: Schreibe auf, was dich an einer Person oder Situation wirklich stört -- ohne Rücksicht auf Harmonie. - Schritt 2: Streiche alle Entschuldigungen („Es tut mir leid, aber\\...\") und Relativierungen aus dem Text. - Schritt 3: Formuliere aus dem Kern des Textes einen einzigen, klaren Satz, den du der Person im Gespräch sagst. - Ziel der Übung: Den Mut zur Wahrheit finden und die eigene Stimme stärken."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Beziehung & Team",
+   "beschr": "In der Interaktion ist der Guardian der „beziehungsorientierte Leader\". Sein Führungsstil basiert auf Vertrauen, Kooperation und flachen Hierarchien. Er führt über Empathie und sorgt dafür, dass sich jeder im Team gesehen und wertgeschätzt fühlt. Er kommuniziert bevorzugt fragend und einladend („Wie geht es euch damit?\"), was eine hohe psychologische Sicherheit schafft, aber manchmal zulasten der Durchschlagskraft geht.",
+   "gesund": "Er schafft eine Kultur der gegenseitigen Unterstützung, in der Loyalität und Teamgeist extrem hoch sind.",
+   "stress": "Er kann keine klaren Ansagen machen, drückt sich vor schwierigen Personalentscheidungen und schützt „Minderleister\" aus falsch verstandener Loyalität. Er wird zur „Mutter/Vater der Kompanie\" und verliert die Ziele aus den Augen.",
+   "emo": "Er leidet unter der Last der Verantwortung für die Stimmung im Team und fühlt sich bei Kritik persönlich angegriffen.",
+   "ziel": "Entwicklung von Entscheidungsstärke und professioneller Distanz. Der Guardian soll lernen, Aufgaben und Rollen klarer von Personen zu trennen. Ein Fokus liegt auf dem Erlernen von Werkzeugen für schwierige Gespräche und dem Aushalten von (kurzfristiger) Unbeliebtheit.",
+   "exName": "Der Rollen-Check",
+   "exText": "- Schritt 1: Trenne auf einem Blatt Papier die „Rolle\" (Aufgabe/Funktion) von der „Person\" (Mensch/Freund). - Schritt 2: Wenn du eine Korrektur aussprechen musst, adressiere ausschließlich die „Rolle\": „Für diese Rolle brauchen wir dieses Ergebnis.\" - Schritt 3: Bestätige danach kurz die Beziehung zur „Person\": „Ich schätze dich als Kollegen sehr.\" - Ziel der Übung: Die Lücke zwischen menschlicher Nähe und sachlicher Führung kompetent zu füllen."
+  }
+ ],
+ "innovator": [
+  {
+   "title": "Der visionäre Kern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Innovator fungiert als „Held der Möglichkeiten\", dessen Energie primär auf Zukunft, kreative Vision und radikale Neuerfindung ausgerichtet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Ich erschaffe Zukunft, indem ich das Bekannte infrage stelle\". Dabei versteht er die Welt als formbar und offen. Psychologisch wird er durch einen „Dopamin-Drive\" gesteuert, der ihn ständig nach Neuem und Unbekanntem suchen lässt, während er starre Traditionen und Normen grundsätzlich misstraut. In seiner Kernidentität priorisiert er Freiheit vor Struktur, Ideen vor Regeln und Exploration vor Sicherheit. Er strebt nach intellektueller Stimulation und Räumen, in denen er durch seine Visionen Bedeutung generieren kann.",
+   "gesund": "Diese Konstellation führt zu unvergleichlicher Kreativität, disruptiver Kraft und der Fähigkeit, als „Trendfrüherkenner\" Räume für neues Denken zu öffnen.",
+   "stress": "Der Drang nach Neuheit kann in eine „Ideenexplosion\" oder Gedankenchaos umschlagen. Fehlende Struktur führt dann zu impulsiven Entscheidungen, Prioritätsverlust und einer chronischen Verzettelung.",
+   "emo": "Der Innovator reagiert allergisch auf Kontrolle, Mikromanagement oder Routine; dies erzeugt bei ihm ein Gefühl des Feststeckens und den unmittelbaren Drang nach Flucht oder Distanzierung.",
+   "ziel": "Das primäre Ziel ist die Etablierung von Entscheidungsstabilität und Umsetzungsfokus. Der Innovator soll lernen, seine expansive Energie so zu regulieren, dass kreative Freiheit und strukturierte Umsetzung handgeschätzt nebeneinander existieren können. Ein wesentlicher Teil des Coachings besteht darin, Frustrationstoleranz gegenüber notwendigen Routinen aufzubauen und Kriterien für die Priorisierung seiner zahlreichen Ideen zu entwickeln.",
+   "exName": "Die Wichtigste-Möglichkeit-Matrix",
+   "exText": "Diese Übung hilft dem Innovator, den Sprung von der reinen Vision (Möglichkeit) zur Wirksamkeit (Schritt) zu vollziehen: - Schritt 1 (Exploration): Notiere drei aktuelle Zukunftsbilder oder Ideen, die dich gerade begeistern. - Schritt 2 (Priorisierung): Beantworte für jede Idee die Frage: „Welche dieser Möglichkeiten hat aktuell die höchste Bedeutung für die Zukunft?\". Wähle nur eine aus. - Schritt 3 (Strukturierung): Definiere für diese eine Idee die „Version 1.0\": Was ist der kleinste, erste konkrete Schritt, der ohne große Umwege sofort umsetzbar ist?. - Ziel der Übung: Den Drang zur „Ideenüberladung\" stoppen und die Energie auf ein greifbares Ergebnis lenken."
+  },
+  {
+   "title": "Kognitive Dynamik & Auftreten",
+   "subtitle": "Denken, Stärken & Körper",
+   "beschr": "Der Innovator nutzt ein netzartiges, assoziatives Denken („Associative Thinking\"), das es ihm erlaubt, in Höchstgeschwindigkeit Verbindungen zwischen völlig verschiedenen Konzepten herzustellen. Er denkt divergent und simuliert ständig alternative Zukunftsszenarien. Diese geistige Agilität übersetzt sich direkt in eine rastlose somatische Energie: Seine Gestik ist lebendig, seine Bewegungen sind schnell und er wirkt physisch oft so, als stünde er unter einer konstanten Spannung, die nach Entladung durch neue Taten sucht. Er ist der „Storyteller\", der komplexe Visionen in bildhafte Sprache übersetzt.",
+   "gesund": "Er agiert als intellektuelles „Raketentriebwerk\" und findet unkonventionelle Lösungen für Probleme, an denen andere scheitern. Er begeistert durch Charisma und visionäres Storytelling.",
+   "stress": "Die kognitive Geschwindigkeit führt zu einer „Komplexitätsfalle\". Er verzettelt sich in Details oder neuen Möglichkeiten, verliert die Prioritäten aus den Augen und überfordert sein Umfeld durch sprunghafte Gedankengänge.",
+   "emo": "Er empfindet eine tiefe Ungeduld gegenüber langsamen Denkprozessen anderer. Körperlich äußert sich dies in Rastlosigkeit oder dem Gefühl, „innerlich zu vibrieren\", wenn Ideen nicht sofort geteilt werden können.",
+   "ziel": "Das Ziel ist die Steigerung der Selektionskompetenz. Der Innovator soll lernen, seine assoziative Kraft zu zügeln, um Klarheit und Einfachheit zu schaffen. Er muss die Fähigkeit entwickeln, Ideen nicht nur zu generieren, sondern sie so zu filtern, dass sie für andere anschlussfähig bleiben. Ein Fokus liegt auf der „Verkörperung von Ruhe\", um die eigene Rastlosigkeit zu regulieren.",
+   "exName": "Das Kreative Reframing der Einfachheit",
+   "exText": "- Schritt 1: Nimm ein komplexes Problem oder eine neue Vision. - Schritt 2: Erkläre die Kernidee in maximal drei Sätzen ohne Metaphern. - Schritt 3: Frage dich: „Wenn ich nur 20% dieser Idee umsetzen dürfte, welche 20% hätten den größten Impact?\" - Ziel der Übung: Den kognitiven Output radikal zu reduzieren, um die Durchschlagskraft zu erhöhen."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Emotionen & Stress",
+   "beschr": "Das emotionale Profil des Innovators ist geprägt von einer hohen Reagibilität auf äußere Reize. Er benötigt „weite Räume\", um sich emotional stabil zu fühlen. Stress entsteht bei ihm primär durch Enge, Mikromanagement oder die Verpflichtung zu monotonen Routinen. In Belastungssituationen aktiviert er spezifische „Stresspfade\": Er kann in die Impulsivität des Commanders, den Perfektionismus des Strategisten oder -- am häufigsten -- in die Fluchttendenzen des Explorers kippen. Sein Schatten zeigt sich in einer Abwertung des Bestehenden zugunsten einer (oft unrealistischen) idealisierten Zukunft.",
+   "gesund": "Hohe Begeisterungsfähigkeit, ansteckender Optimismus und eine resiliente „Alles-ist-möglich\"-Attitüde.",
+   "stress": "Er reagiert mit Rückzug (mentale Emigration), impulsiven Projektumbrüchen oder „Overthinking\". Die Kommunikation wird ungeduldig und bisweilen arrogant gegenüber „Bedenkenträgern\".",
+   "emo": "Ein Gefühl des „Eingesperrtseins\" führt zu einer inneren emotionalen Distanzierung von Projekten oder Teams, was als Unzuverlässigkeit wahrgenommen wird.",
+   "ziel": "Aufbau von Frustrationstoleranz und Selbstregulation. Der Innovator lernt, Trigger (wie Routineaufgaben) frühzeitig zu erkennen und nicht reflexartig mit Flucht oder Chaos zu reagieren. Ziel ist es, die „Schattenreaktionen\" (wie das impulsive „Ich mache es jetzt eben schnell selbst\") durch bewusstes Innehalten zu ersetzen.",
+   "exName": "Die 24-Stunden-Impuls-Sperre",
+   "exText": "- Schritt 1: Wenn unter Stress der Drang entsteht, ein Projekt abzubrechen oder eine radikale Änderung sofort umzusetzen: Stopp. - Schritt 2: Schreibe den Impuls auf, aber unternimm keine Handlung (keine E-Mail, kein Telefonat). - Schritt 3: Prüfe nach 24 Stunden: Ist die Änderung strategisch sinnvoll oder war sie nur ein Fluchtreflex vor der aktuellen Anstrengung? - Ziel der Übung: Emotionale Stabilität durch zeitliche Entkoppelung von Reiz und Reaktion gewinnen."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Kommunikation & Team",
+   "beschr": "In der Interaktion ist der Innovator der „Inspirator\". Sein Führungsstil ist explorativ und wenig hierarchisch; er führt über Visionen und das Aufzeigen von Möglichkeiten statt über Anweisungen. In Teams ist er derjenige, der den Status Quo herausfordert und Räume für die Entfaltung anderer schafft. Er kommuniziert bevorzugt im Konjunktiv („Könnten wir\\...\", „Was wäre, wenn\\...\"), was seine Offenheit unterstreicht, aber manchmal zu Unklarheit über verbindliche Entscheidungen führt.",
+   "gesund": "Er motiviert Teams zu Höchstleistungen und schafft eine Kultur der Innovation, in der Fehler als Lernchancen gesehen werden.",
+   "stress": "Er delegiert unklar, ändert ständig die Richtung und lässt Mitarbeiter durch fehlende Struktur im Vagen stehen. Konflikte werden oft nicht gelöst, sondern durch „positives Reframing\" weggelächelt oder ignoriert.",
+   "emo": "Er fühlt sich schnell unverstanden, wenn sein Umfeld nach Struktur verlangt, und interpretiert dieses Bedürfnis fälschlicherweise als mangelnde Kreativität.",
+   "ziel": "Entwicklung von Verbindlichkeit und Erdung. Der Innovator soll lernen, seine Kommunikation vom „Möglichkeitsraum\" in den „Umsetzungsraum\" zu übersetzen. Ein Fokus liegt auf dem Erwartungsmanagement und dem bewussten Aushalten von (notwendigen) Konflikten, statt diese durch neue Ideen zu überdecken.",
+   "exName": "Der Action-Check für Meetings",
+   "exText": "- Schritt 1: Beende jedes Gespräch oder Meeting mit der Frage: „Was haben wir heute verbindlich entschieden?\" - Schritt 2: Benenne explizit, welche Möglichkeiten wir heute nicht verfolgen (bewusstes Nein-Sagen). - Schritt 3: Formuliere den nächsten Schritt als „Version 1.0\"-Auftrag für das Team. - Ziel der Übung: Die Lücke zwischen inspirierender Vision und konkreter Umsetzung im Team zu schließen."
+  }
+ ],
+ "sage": [
+  {
+   "title": "Der Erkenntnis-Kern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Sage fungiert als „Held der Klarheit\", dessen Energie primär auf Analyse, Logik und das tiefere Verständnis der Welt ausgerichtet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Ich denke tief, damit die Welt klarer wird\". Während andere handeln oder fühlen, konzentriert sich der Sage auf das Durchdringen von Zusammenhängen. Er basiert seine Identität auf Richtigkeit, Wahrheit und Kohärenz. Er fühlt sich erst sicher, wenn alles logisch zusammenpasst und ein inneres „Warum\" geklärt ist. Er ist der Philosoph und Denker, der im System für Sinn und gedankliche Ordnung sorgt.",
+   "gesund": "Diese Konstellation führt zu brillanten Strategien, tiefem Fachwissen und der Fähigkeit, komplexe Muster zu erkennen, bevor sie für andere sichtbar werden.",
+   "stress": "Das Streben nach absoluter Klarheit führt zu „Analysis Paralysis\" (mentaler Lähmung). Er verliert sich in Details, grübelt endlos und findet nicht mehr in die Handlung.",
+   "emo": "Der Sage reagiert allergisch auf Oberflächlichkeit, Unlogik oder Zeitdruck ohne Sinnhaftigkeit; dies erzeugt bei ihm ein Gefühl von geistigem Chaos und führt zu innerem Rückzug oder kühler Distanz.",
+   "ziel": "Das primäre Ziel ist die Entscheidungsfähigkeit und die Entlastung des Kopfes. Der Sage soll lernen, den Übergang vom Verstehen zum Handeln schneller zu vollziehen („Verstehe zuerst -- handle zeitnah\"). Ein wesentlicher Teil des Coachings besteht darin, Imperfektion zu akzeptieren und den Mut zu Fehlern zu entwickeln, um die eigene Handlungsfähigkeit zurückzugewinnen.",
+   "exName": "Die 70%-Entscheidungs-Logik",
+   "exText": "Diese Übung hilft dem Sage, den Analyse-Kreislauf rechtzeitig zu unterbrechen: - Schritt 1 (Analyse): Sammle die wichtigsten Fakten zu einer anstehenden Entscheidung. - Schritt 2 (Bewertung): Frage dich: „Habe ich 70% der notwendigen Informationen, um die Richtung logisch zu begründen?\" - Schritt 3 (Aktion): Wenn ja, triff die Entscheidung sofort, anstatt auf die restlichen 30% der Details zu warten, die nur Zeit kosten, aber die Richtung kaum ändern. - Ziel der Übung: Den Kopf entlasten und die Geschwindigkeit im System erhöhen."
+  },
+  {
+   "title": "Kognitive Tiefe & Präsenz",
+   "subtitle": "Denken, Stärken & Körper",
+   "beschr": "Der Sage nutzt ein systematisches, tiefenorientiertes Denken. Er ist ein Meister der Reflexion und der sachlichen Logik. Seine kognitive Stärke liegt darin, Wesentliches von Unwesentlichem zu trennen und objektive Wahrheiten zu finden. Diese geistige Ruhe spiegelt sich in einer beobachtenden somatischen Energie wider: Er wirkt oft unaufgeregt, konzentriert und körperlich eher zurückhaltend. Seine Gestik ist minimal, seine Sprache präzise und überlegt. Er kommuniziert erst, wenn ein Gedanke zu Ende gedacht ist.",
+   "gesund": "Er ist der objektive Ratgeber, der durch Ruhe und Sachlichkeit Sicherheit vermittelt und intellektuelle Durchbrüche ermöglicht.",
+   "stress": "Er wirkt auf andere als „der Professor\" -- distanziert, belehrend oder zu kritisch. Er überfordert sein Umfeld mit zu viel Komplexität und verliert den Bezug zur pragmatischen Umsetzung.",
+   "emo": "Er empfindet laute, emotionale Ausbrüche als störendes „Rauschen\", das seine Analysefähigkeit blockiert. Körperlich äußert sich dies oft in einer Erstarrung oder dem Bedürfnis nach physischer Stille.",
+   "ziel": "Das Ziel ist die Steigerung der Anschlussfähigkeit. Der Sage soll lernen, seine komplexen Erkenntnisse so zu vereinfachen, dass sie für andere Hero-Typen (wie den Commander oder Innovator) sofort nutzbar sind. Ein Fokus liegt auf der Entwicklung eines „fachlichen Bauchgefühls\" als Ergänzung zur reinen Logik.",
+   "exName": "Der Sinn-Satz-Check",
+   "exText": "- Schritt 1: Nimm ein komplexes Thema, an dem du gerade arbeitest. - Schritt 2: Formuliere das Kern-Ergebnis in nur einem einzigen Satz, den auch ein Laie versteht. - Schritt 3: Frage dich: „Welcher konkrete Nutzen entsteht durch diese Erkenntnis für unser aktuelles Ziel?\" - Ziel der Übung: Gedankenstruktur ordnen und die Relevanz für das Team sicherstellen."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Wahrheit & Stress",
+   "beschr": "Das emotionale Profil des Sage ist auf Kohärenz und Erkenntnis ausgerichtet. Er braucht Zeit und Raum zum Nachdenken, um resilient zu bleiben. Stress entsteht primär durch Druck zur Unlogik, emotionalen Overload oder das Gefühl, nicht „fertig gedacht\" zu haben. In Belastungssituationen aktiviert er Stresspfade: Er kann in die Härte des Commanders (Sekundärstress), den Perfektionismus des Strategisten oder das Ideenchaos des Innovators kippen. Sein Schatten zeigt sich in Arroganz („Ich weiß es besser\") oder emotionaler Kälte.",
+   "gesund": "Enorm belastbar durch geistige Distanz; er behält den Überblick, wenn andere emotional reagieren.",
+   "stress": "Er zieht sich komplett in seinen „Elfenbeinturm\" zurück und verweigert die Kommunikation. Er wird überkritisch und zerlegt die Vorschläge anderer rein logisch, ohne deren Intention zu sehen.",
+   "emo": "Ein Gefühl der Sinnlosigkeit führt zu geistiger Resignation und dem Verlust des Interesses an der Zusammenarbeit.",
+   "ziel": "Aufbau von Emotionsregulation und Stressunterbrechern. Der Sage lernt, den Moment zu erkennen, in dem Analyse in Grübeln umschlägt. Ziel ist es, die „Schattenreaktion\" des Rückzugs durch bewusste Interaktion und das Akzeptieren von Unklarheit zu ersetzen.",
+   "exName": "Das Stopp-Grübel-Protokoll",
+   "exText": "- Schritt 1: Wenn du merkst, dass du dich im Kreis drehst: Stehe physisch auf und wechsle den Raum. - Schritt 2: Notiere die drei Fragen, die dich gerade blockieren. - Schritt 3: Entscheide: „Welche dieser Fragen ist für das Überleben des Projekts wirklich kritisch?\" -- bearbeite nur diese, lass die anderen los. - Ziel der Übung: Den mentalen Kreislauf unterbrechen und zur Klarheit zurückkehren."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Kommunikation & Team",
+   "beschr": "In der Interaktion führt der Sage über Kompetenz, Fachwissen und Logik. Sein Führungsstil ist beratend und reflektiert; er gibt Orientierung durch Sinnhaftigkeit. In Teams ist er derjenige, der die langfristigen Konsequenzen sieht und zur Sachlichkeit mahnt. Er kommuniziert präzise, systematisch und abwägend. Er schätzt es, wenn Kommunikation einem roten Faden folgt und auf Fakten basiert.",
+   "gesund": "Er schafft eine hohe Qualität in den Ergebnissen und sorgt dafür, dass das Team nicht in blinden Aktionismus verfällt.",
+   "stress": "Er bremst Prozesse durch zu lange Prüfschleifen aus. Er wirkt wenig nahbar und verkennt die Bedeutung von Team-Dynamik und Emotionen für den Projekterfolg. Konflikte führt er rein auf der Sachebene, was emotionale Spannungen oft verschärft.",
+   "emo": "Er fühlt sich missverstanden, wenn andere seine logischen Argumente nicht sofort akzeptieren oder „aus dem Bauch\" entscheiden.",
+   "ziel": "Entwicklung von Geschwindigkeit und emotionaler Intelligenz. Der Sage soll lernen, dass „gut genug\" oft besser ist als „perfekt verstanden\". Ein Fokus liegt auf der aktiven Einbindung des Teams und der Anerkennung von „nicht-logischen\" Faktoren als Teil der Realität.",
+   "exName": "Das Bauchgefühl-Experiment",
+   "exText": "- Schritt 1: Nimm in einem Meeting eine Position ein, bevor du alle Daten analysiert hast. - Schritt 2: Vertraue auf deine Erfahrung und formuliere eine Hypothese: „Mein fachliches Bauchgefühl sagt mir, dass\\...\". - Schritt 3: Beobachte, wie das Team darauf reagiert, wenn du dich früher positionierst. - Ziel der Übung: Mut zur Lücke entwickeln und die Führungspräsenz stärken."
+  }
+ ],
+ "strategist": [
+  {
+   "title": "Der Strukturkern",
+   "subtitle": "Identität & Antrieb",
+   "beschr": "Der Strategist fungiert als „Held der Präzision\", dessen Welt strukturiert, klar und geordnet ist. Sein Selbstbild ist geprägt von dem Leitsatz: „Gute Struktur ist die halbe Lösung\". Er definiert sich über Kompetenz, Verlässlichkeit und Exzellenz. Psychologisch wird er durch ein sicherheitsorientiertes Kontrollmuster gesteuert: Er fühlt sich sicher und entspannt, wenn er die Dinge beherrschen und perfekt organisieren kann. In seiner Kernidentität glaubt er, dass Unordnung Gefahr bedeutet und Qualität seinen Wert bestimmt („Ich bin wertvoll, wenn meine Arbeit hochqualitativ ist\"). Er ist der systematische Architekt, der für Ordnung und methodische Sicherheit sorgt.",
+   "gesund": "Diese Konstellation führt zu hoher Disziplin, methodischer Stärke und der Fähigkeit, komplexe Abläufe perfekt zu organisieren und stabil zu halten.",
+   "stress": "Das Bedürfnis nach Kontrolle kann in Rigidität und Detailbesessenheit umschlagen. Innere und äußere Unordnung erzeugen massiven Stress und mindern seine Handlungsfähigkeit.",
+   "emo": "Der Strategist reagiert allergisch auf Unpünktlichkeit, mangelnde Vorbereitung oder Sätze wie „Mach einfach mal spontan\"; dies erzeugt bei ihm Verunsicherung und den Drang nach noch mehr Kontrolle.",
+   "ziel": "Das primäre Ziel ist die Entwicklung von Flexibilität und das Loslassen von Kontrolle. Der Strategist soll lernen, seinen Perfektionismus zu reduzieren und Prioritäten zu vereinfachen. Ein wesentlicher Teil des Coachings besteht darin, die Fehlertoleranz zu erhöhen und zu akzeptieren, dass Ergebnisse auch dann wertvoll sind, wenn sie nicht 100% perfekt, sondern „gut genug\" sind.",
+   "exName": "Der Gut-genug-Check",
+   "exText": "Diese Übung hilft dem Strategist, den Drang zur Perfektion zu regulieren: - Schritt 1 (Definition): Wähle eine Aufgabe und definiere, was „100% perfekt\" wäre. - Schritt 2 (Reduktion): Beantworte die Frage: „Was wäre in diesem Fall \\'gut genug\\' (80%), um das Ziel effektiv zu erreichen?\" - Schritt 3 (Umsetzung): Verpflichte dich, die Arbeit bei Erreichen dieses Niveaus zu stoppen und die gewonnene Zeit für Erholung oder Priorisierung zu nutzen. - Ziel der Übung: Perfektionismus reduzieren und die Effizienz steigern."
+  },
+  {
+   "title": "Kognitive Präzision & Auftreten",
+   "subtitle": "Wahrnehmung & Körper",
+   "beschr": "Der Strategist nutzt ein systematisches, logisches und methodisches Denken. Er ist darauf spezialisiert, Strukturfehler sofort zu erkennen und Prozesse zu optimieren. Seine kognitive Stärke liegt in der Analyse und der strategischen Planung. Diese innere Ordnung spiegelt sich in einer disziplinierten somatischen Energie wider: Er wirkt oft kontrolliert, aufrecht und sehr korrekt in seinem Auftreten. Seine Sprache ist präzise, sachlich und orientiert sich an Fakten und logischen Schritten.",
+   "gesund": "Er findet sofort den nächsten logischen Schritt und schafft durch klare Qualitätskriterien Sicherheit für das gesamte System.",
+   "stress": "Er verliert sich in Detailrigidität und kann das „große Ganze\" aus den Augen verlieren. Er wirkt auf andere dann unflexibel oder blockierend.",
+   "emo": "Er empfindet Chaos oder unstrukturierte Meetings als persönliche Belastung. Körperlich äußert sich dies oft in einer hohen inneren Anspannung, die erst nachlässt, wenn wieder Ordnung herrscht.",
+   "ziel": "Das Ziel ist die Öffnung für kreatives Denken und der Umgang mit Emotionen. Der Strategist soll lernen, dass nicht alles im Leben prozessual erfassbar ist. Ein Fokus liegt darauf, die starre methodische Haltung zugunsten einer dynamischen Balance zwischen Ordnung und Flexibilität zu lockern.",
+   "exName": "Der Logik-Struktur-Dialog",
+   "exText": "- Schritt 1: Wenn du einen Prozess planst, frage dich: „Welche Struktur hilft uns hier am meisten?\" - Schritt 2: Definiere explizit die Qualitätskriterien, die wirklich notwendig sind. - Schritt 3: Frage das Team: „Wo brauchen wir Freiheit, um effektiv zu sein?\" - Ziel der Übung: Die kognitive Stärke für Struktur nutzen, ohne den Spielraum für andere Helden zu ersticken."
+  },
+  {
+   "title": "Resilienz & Schattenseiten",
+   "subtitle": "Exzellenz & Stress",
+   "beschr": "Das emotionale Profil des Strategist ist auf Sicherheit durch Ordnung ausgerichtet. Er braucht klare Methoden und Verlässlichkeit, um resilient zu bleiben. Stress entsteht primär durch den Verlust von Kontrolle, Fehlleistungen oder impulsive Richtungswechsel. In Belastungssituationen aktiviert er Stresspfade: Er kann in die impulsive Härte des Commanders (Sekundärstress), das Ideenchaos des Innovators oder das endlose Grübeln des Sage kippen. Sein Schatten zeigt sich in einer übermäßigen Selbstkritik und der Abwertung von „unsauberer\" Arbeit.",
+   "gesund": "Er ist der Garant für Qualität und Beständigkeit; er liefert Ergebnisse, auf die man sich blind verlassen kann.",
+   "stress": "Er wird zum „Kontroll-Freak\", der alles mikromanagt und keine Abweichungen zulässt. Die Kommunikation wird kritisch, fordernd und bisweilen besserwisserisch.",
+   "emo": "Ein Gefühl von Versagen entsteht sofort, wenn ein Fehler passiert, was zu massiver Unsicherheit führt.",
+   "ziel": "Aufbau von Fehlertoleranz und emotionaler Stabilität. Der Strategist lernt, dass Fehler keine Bedrohung seines Wertes sind, sondern Informationen im Prozess. Ziel ist es, die „Schattenreaktion\" der totalen Kontrolle durch ein bewusstes „Loslassen\" zu ersetzen.",
+   "exName": "Das Experiment der kleinen Unvollkommenheit",
+   "exText": "- Schritt 1: Wähle eine unwichtige Aufgabe (z. B. Formatierung einer internen Notiz). - Schritt 2: Lasse bewusst einen kleinen „Schönheitsfehler\" stehen. - Schritt 3: Beobachte die Reaktion deiner Umgebung -- meist wird es niemandem auffallen. - Ziel der Übung: Die Erfahrung machen, dass Sicherheit auch ohne totale Fehlerfreiheit existiert."
+  },
+  {
+   "title": "Interaktion & Führung",
+   "subtitle": "Ordnung & Team",
+   "beschr": "In der Interaktion führt der Strategist über Systeme und Prozesse. Sein Führungsstil ist sachlich, leistungsorientiert und sehr verlässlich. Er führt über klare Regeln und Erwartungen. In Teams sorgt er dafür, dass Visionen (vom Innovator) oder Tatkraft (vom Commander) in eine nachhaltige Struktur gegossen werden. Er kommuniziert bevorzugt in logischen Abfolgen und legt Wert auf korrekte Abläufe.",
+   "gesund": "Er schafft hocheffiziente Umgebungen, in denen jeder weiß, was zu tun ist, und in denen Qualität der Standard ist.",
+   "stress": "Er wirkt demotivierend auf kreative oder beziehungsorientierte Helden, da er alles durch die Brille der Fehlerfreiheit bewertet. Er unterdrückt Spontaneität und wird als „Bremser\" wahrgenommen.",
+   "emo": "Er fühlt sich in Teams unwohl, in denen es „irgendwie passt\", da er dies als inkompetent und gefährlich einstuft.",
+   "ziel": "Entwicklung von zwischenmenschlicher Wärme und Akzeptanz von Spontaneität. Der Strategist soll lernen, dass Menschen keine Maschinen sind und dass „Effektivität\" manchmal wichtiger ist als „perfekte Methode\". Ein Fokus liegt auf der wertschätzenden Kommunikation auch bei unvollständigen Prozessen.",
+   "exName": "Der Qualitäts-Sinn-Dialog",
+   "exText": "- Schritt 1: Beginne ein Feedback-Gespräch mit dem Satz: „Ich schätze deine Kompetenz in diesem Bereich.\" - Schritt 2: Frage statt einer Kritik: „Welche Struktur würde dir helfen, das Ziel noch effektiver zu erreichen?\" - Schritt 3: Einigt euch auf ein gemeinsames „Gut-Genug\"-Kriterium. - Ziel der Übung: Führung durch Struktur mit menschlicher Akzeptanz verbinden."
+  }
+ ]
+};
 const QUEST_LINKS={wachsen:"https://app.6heroes.de/meine-quests?kategorie=wachsen",stress:"https://app.6heroes.de/meine-quests?kategorie=stress",energie:"https://app.6heroes.de/meine-quests?kategorie=energie"};
 function hexToRgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 function render(){
   const key=(new URLSearchParams(location.search).get("hero")||"guardian").toLowerCase();
+  const rolle=(new URLSearchParams(location.search).get("rolle")||"basis").toLowerCase();
+  document.getElementById("heroRole").textContent = (rolle==="zweit") ? "Dein Zweitheld" : "Dein Basisheld";
   const d=HERO_DATA[key]||HERO_DATA.guardian;
   const r=document.documentElement.style;
   r.setProperty("--accent",d.accent);r.setProperty("--accent-soft",hexToRgba(d.accent,0.10));r.setProperty("--accent-line",hexToRgba(d.accent,0.45));
@@ -138,17 +418,25 @@ function render(){
   document.getElementById("heroName").innerHTML=d.name;
   document.getElementById("heroTagline").textContent=d.tagline;
   document.getElementById("heroHook").innerHTML=d.hook;
-  document.getElementById("txtIdentity").textContent=d.identity;
-  document.getElementById("txtStrength").textContent=d.strength;
-  document.getElementById("txtPattern").textContent=d.pattern;
-  document.getElementById("txtGrowth").textContent=d.growth;
-  document.getElementById("actionLead").textContent=d.actionLead;
-  document.getElementById("exTitle").textContent=d.exTitle;
-  document.getElementById("exText").textContent=d.exText;
   const lifeList=document.getElementById("lifeList");
   if(d.life&&d.life.length){lifeList.innerHTML=d.life.map((it,i)=>`<div class="life-item"><h4><span class="n">${String(i+1).padStart(2,"0")}</span> ${it.title}</h4><p>${it.text}</p></div>`).join("");}
   else{lifeList.innerHTML=`<div class="placeholder-note">Lebenssituationen für „${key}" folgen – hier kommen 3–4 konkrete Alltags- und Arbeitsszenen hin, in denen sich dieser Held zeigt.</div>`;}
-  document.getElementById("stepList").innerHTML=(d.steps||[]).map((s,i)=>`<div class="step"><div class="dot">${i+1}</div><p>${s}</p></div>`).join("");
+  const mods=(KOMPAKT[key]||[]);
+  document.getElementById("moduleList").innerHTML=mods.map((m,i)=>{
+    return '<div class="mod-card">'+
+      '<div class="m-num">Kraft '+(i+1)+'</div>'+
+      '<div class="m-title">'+m.title+'</div>'+
+      '<div class="m-sub">'+m.subtitle+'</div>'+
+      '<p class="m-beschr">'+m.beschr+'</p>'+
+      '<div class="m-states">'+
+        '<div class="m-state gesund"><div class="s-lab">Deine Stärke</div><p>'+m.gesund+'</p></div>'+
+        '<div class="m-state stress"><div class="s-lab">Unter Druck</div><p>'+m.stress+'</p></div>'+
+        '<div class="m-state emo"><div class="s-lab">Dein Trigger</div><p>'+m.emo+'</p></div>'+
+      '</div>'+
+      '<div class="m-goal"><div class="g-lab">Dein Coachingziel</div><p>'+m.ziel+'</p></div>'+
+      '<div class="m-ex"><div class="x-title">Übung</div><div class="x-name">'+m.exName+'</div><p>'+m.exText+'</p></div>'+
+    '</div>';
+  }).join("");
   document.getElementById("ctaQuests").href=QUEST_LINKS[d.questCategory]||"#";
   document.getElementById("bridge").href=d.bridge||"#";
 }

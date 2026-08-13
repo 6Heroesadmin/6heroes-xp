@@ -321,8 +321,8 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
       }
 
       const tiles = [
-        { role: 'Basisheld', hero: base,   url: `${BASE_SITE}/basisheld.html?hero=${lc(base)}`,   locked: false },
-        { role: 'Zweitheld', hero: second, url: `${BASE_SITE}/basisheld.html?hero=${lc(second)}`, locked: !isPaid },
+        { role: 'Basisheld', hero: base,   url: `${BASE_SITE}/basisheld.html?hero=${lc(base)}&rolle=basis`,   locked: false },
+        { role: 'Zweitheld', hero: second, url: `${BASE_SITE}/basisheld.html?hero=${lc(second)}&rolle=zweit`, locked: !isPaid },
       ];
 
       const comboTile = comboTileHTML({
