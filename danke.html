@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Willkommen in deiner Crew – 6Heroes</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#20293A; --navy-soft:#283248; --gold:#F2B705; --gold-dark:#D49E00;
+    --ink:#F4F1E9; --ink-dim:#AEB6C6; --ink-faint:#717C92;
+    --border:rgba(255,255,255,0.08); --card:rgba(255,255,255,0.035);
+    --commander:#0B63CE; --guardian:#1F9D62; --innovator:#F2B705;
+    --explorer:#F0672A; --sage:#C0266A; --strategist:#334155;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--navy);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.65;min-height:100vh;}
+  .wrap{max-width:600px;margin:0 auto;padding:64px 24px 80px;text-align:center;}
+
+  /* Heldenrad-Punkte */
+  .dots{display:flex;gap:9px;justify-content:center;margin-bottom:36px;}
+  .dots span{width:13px;height:13px;border-radius:50%;animation:pulse 3s ease-in-out infinite;}
+  .dots span:nth-child(1){background:var(--commander);animation-delay:0s;}
+  .dots span:nth-child(2){background:var(--guardian);animation-delay:.2s;}
+  .dots span:nth-child(3){background:var(--innovator);animation-delay:.4s;}
+  .dots span:nth-child(4){background:var(--strategist);animation-delay:.6s;}
+  .dots span:nth-child(5){background:var(--sage);animation-delay:.8s;}
+  .dots span:nth-child(6){background:var(--explorer);animation-delay:1s;}
+  @keyframes pulse{0%,80%,100%{transform:scale(1);opacity:.65;}40%{transform:scale(1.35);opacity:1;}}
+
+  .check{width:64px;height:64px;margin:0 auto 28px;border-radius:50%;background:rgba(31,157,98,0.14);border:1.5px solid var(--guardian);display:flex;align-items:center;justify-content:center;}
+  .check svg{width:30px;height:30px;color:var(--guardian);}
+
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+  h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(30px,7vw,46px);line-height:1.1;letter-spacing:-.015em;margin-bottom:18px;}
+  h1 .accent{font-style:italic;color:var(--gold);}
+  .lead{font-size:17px;color:var(--ink-dim);max-width:46ch;margin:0 auto 36px;}
+
+  .info-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 24px;margin:0 auto 34px;max-width:480px;text-align:left;display:flex;gap:15px;align-items:flex-start;}
+  .info-card .ic{flex:none;width:26px;height:26px;color:var(--gold);margin-top:1px;}
+  .info-card p{font-size:14.5px;color:var(--ink-dim);line-height:1.6;}
+  .info-card b{color:var(--ink);font-weight:600;}
+
+  .cta{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:var(--navy);font-weight:700;font-size:17px;padding:16px 34px;border-radius:100px;text-decoration:none;transition:background .2s,transform .15s;box-shadow:0 8px 26px rgba(242,183,5,0.28);}
+  .cta:hover{background:var(--gold-dark);transform:translateY(-2px);}
+  .cta svg{width:19px;height:19px;}
+
+  .sub-note{margin-top:22px;font-size:13.5px;color:var(--ink-faint);line-height:1.6;}
+  .sub-note a{color:var(--ink-dim);}
+
+  .footer{margin-top:56px;padding-top:28px;border-top:1px solid var(--border);font-size:12.5px;color:var(--ink-faint);}
+  .footer a{color:var(--ink-faint);text-decoration:none;margin:0 7px;}
+  .footer a:hover{color:var(--gold);}
+  @media (prefers-reduced-motion:reduce){.dots span{animation:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="check">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+
+  <div class="eyebrow">Zahlung erfolgreich</div>
+  <h1>Willkommen in <span class="accent">deiner Crew</span></h1>
+  <p class="lead">Schön, dass du dabei bist. Dein voller Zugang zu 6Heroes wird gerade freigeschaltet – Coach, Quests und dein komplettes Heldenprofil warten auf dich.</p>
+
+  <div class="info-card">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    <p><b>Dein Zugang wird gerade aktiviert.</b> Das dauert meist nur einen kurzen Moment. Du bekommst zusätzlich eine Bestätigungs-Mail mit deinem persönlichen Login-Link – falls oben noch etwas gesperrt erscheint, warte einen Augenblick und lade die Seite neu.</p>
+  </div>
+
+  <div class="info-card" style="border-color:rgba(242,183,5,0.25);background:rgba(242,183,5,0.06);">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
+    <p><b>Wichtig zum Einloggen:</b> Melde dich mit <b>derselben E-Mail-Adresse</b> an, mit der du dein Heldenprofil erstellt hast. Nur so findet 6Heroes dein Profil und schaltet deine Bereiche frei.</p>
+  </div>
+
+  <a class="cta" href="https://app.6heroes.de" target="_top">
+    Zu deinem Profil
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
+
+  <p class="sub-note">Fragen oder etwas funktioniert nicht?<br>Schreib uns an <a href="mailto:admin@6heroes.de">admin@6heroes.de</a> – wir helfen dir schnell weiter.</p>
+
+  <div class="footer">
+    <a href="https://6heroes.de/impressum.html">Impressum</a>·
+    <a href="https://6heroes.de/datenschutz.html">Datenschutz</a>·
+    <a href="https://6heroes.de/agb.html">AGB</a>·
+    <a href="https://6heroes.de/widerruf.html">Widerruf</a>
+  </div>
+
+</div>
+</body>
+</html>
