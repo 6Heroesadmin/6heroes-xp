@@ -756,6 +756,8 @@
       box-shadow: var(--shadow);
     }
     .benefit-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .benefit-shot.is-screenshot { background: #141d2c; }
+    .benefit-shot.is-screenshot img { object-fit: contain; padding: 10px; }
     .benefit-shot-soon {
       border-top-color: rgba(255,255,255,0.1);
       border-style: dashed;
@@ -1261,6 +1263,38 @@
     }
     .mobile-menu-backdrop.open { display: block; }
 
+    /* ── Sticky Floating CTA (erscheint nach dem Hero) ──────────────────── */
+    .sticky-cta {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 90;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 15px 26px;
+      border-radius: 100px;
+      text-decoration: none;
+      box-shadow: 0 8px 28px rgba(242,183,5,0.34), 0 2px 8px rgba(0,0,0,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(16px);
+      transition: opacity .3s ease, transform .3s ease, visibility .3s;
+    }
+    .sticky-cta.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+    .sticky-cta:hover { background: var(--gold-dark); transform: translateY(-2px); }
+    .sticky-cta svg { width: 18px; height: 18px; }
+    @media (max-width: 768px) {
+      .sticky-cta { right: 16px; bottom: 16px; padding: 13px 22px; font-size: 0.94rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .sticky-cta { transition: opacity .3s ease, visibility .3s; transform: none; }
+      .sticky-cta.is-visible { transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -1401,13 +1435,8 @@
           <p class="benefit-body">6Heroes trennt klar zwischen deinem Kernprofil und deinen automatischen Stressreaktionen. Du lernst deine zwei Stresshelden kennen und erkennst sie früher – bevor sie Entscheidungen, Beziehungen oder deine Gesundheit belasten.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--explorer)">
-            <!-- SCREENSHOT HIER EINSETZEN: Stresshelden-Ansicht -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              <span>Screenshot: Stresshelden-Ansicht</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
+          <div class="benefit-shot is-screenshot" style="--accent: var(--explorer)">
+            <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Stresskurve.png" alt="Deine Stresskurve – Schwelle 1 Alarm, Schwelle 2 Übersteuerung" loading="lazy">
           </div>
         </div>
       </div>
@@ -1416,36 +1445,26 @@
       <div class="benefit-block benefit-rev fade-up">
         <div class="benefit-text">
           <p class="benefit-kicker" style="color: var(--sage)">Dein KI-Coach</p>
-          <h3 class="benefit-title">Ein Coach, der deine Ergebnisse kennt – jeden Tag</h3>
-          <p class="benefit-body">Deine Reflexionen werden mit vollem Kontext deines Heldenprofils analysiert und kommentiert. Kein generischer Ratgeber, sondern Impulse, die auf dich zugeschnitten sind.</p>
+          <h3 class="benefit-title">Dein Trainer für die Situation, die gerade vor dir liegt</h3>
+          <p class="benefit-body">Bring ein, was heute ansteht – ein Gespräch, eine Entscheidung, etwas Unklares. Dein Coach denkt es mit dir durch, mit vollem Kontext deines Heldenprofils. Kein generischer Ratgeber, sondern Impulse, die auf dich zugeschnitten sind.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot" style="--accent: var(--sage)">
-            <!-- SCREENSHOT HIER EINSETZEN: Coaching-Chat -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5z"/></svg>
-              <span>Screenshot: KI-Coaching-Chat</span>
-              <small>4:3 · später hier einsetzen</small>
-            </div>
+          <div class="benefit-shot is-screenshot" style="--accent: var(--sage)">
+            <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Coach.png" alt="Dein KI-Coach – Was steht bei dir an?" loading="lazy">
           </div>
         </div>
       </div>
 
-      <!-- Block 5 — Blog (Bild rechts) — Coming soon -->
+      <!-- Block 5 — Quests (Bild rechts) — Innovator-Gold -->
       <div class="benefit-block fade-up">
         <div class="benefit-text">
-          <p class="benefit-kicker" style="color: var(--explorer)">Wissen &amp; Impulse</p>
-          <h3 class="benefit-title">Fundierte Artikel, die dich weiterbringen<span class="benefit-soon">Coming soon</span></h3>
-          <p class="benefit-body">Regelmäßige Beiträge zu Persönlichkeit, Energie und Wachstum – kuratiert statt beliebig. Der Blog startet in Kürze.</p>
+          <p class="benefit-kicker" style="color: var(--innovator)">Deine Quests</p>
+          <h3 class="benefit-title">Geführte Weiterentwicklung – Schritt für Schritt zu deinen Potenzialen</h3>
+          <p class="benefit-body">Kleine, konkrete Übungen, passend zu deinen Helden und deiner Energie. Während der Coach dich durch akute Situationen begleitet, bringen dich die Quests im Alltag gezielt weiter – wirksam werden, bewusst bremsen, Neues ausprobieren.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot benefit-shot-soon">
-            <!-- MOCKUP HIER EINSETZEN, sobald Blog steht -->
-            <div class="benefit-ph">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
-              <span>Vorschau: Blog</span>
-              <small>bald verfügbar</small>
-            </div>
+          <div class="benefit-shot is-screenshot" style="--accent: var(--innovator)">
+            <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Quests.png" alt="Meine Quests – kleine Übungen passend zu deinen Helden" loading="lazy">
           </div>
         </div>
       </div>
@@ -1491,9 +1510,10 @@
       <a href="/impressum.html">Impressum</a>
       <a href="/datenschutz.html">Datenschutz</a>
       <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
       <a href="mailto:admin@6heroes.de">Kontakt</a>
     </div>
-    <div class="footer-copy">© 2025 Reichert & Rempel GbR · Anna Christina Reichert & Stefan Rempel</div>
+    <div class="footer-copy">© 2026 Reichert & Rempel GbR · Anna Christina Reichert & Stefan Rempel</div>
   </div>
 </footer>
 
@@ -1547,6 +1567,27 @@
       if (e.key === 'Escape') toggle(false);
     });
   })();
+</script><!-- ── Sticky Floating CTA ─────────────────────────────────────────────────── -->
+<a href="https://tally.so/r/J90ZAR" target="_top" class="sticky-cta" id="stickyCta" aria-label="Kostenlos starten">
+  Kostenlos starten
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+</a>
+<script>
+  (function () {
+    var cta = document.getElementById('stickyCta');
+    var hero = document.getElementById('hero');
+    if (!cta || !hero) return;
+    if (!('IntersectionObserver' in window)) { cta.classList.add('is-visible'); return; }
+    // Sticky-CTA einblenden, sobald der Hero-Bereich aus dem Blick gescrollt ist
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) cta.classList.remove('is-visible');
+        else cta.classList.add('is-visible');
+      });
+    }, { rootMargin: '-40% 0px 0px 0px' });
+    io.observe(hero);
+  })();
 </script>
+
 </body>
 </html>
