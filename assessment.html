@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6Heroes Assessment</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <script async src="https://tally.so/widgets/embed.js"></script>
+  <style>
+    :root {
+      --navy: #20293A;
+      --gold: #F2B705;
+      --light: #F5F5F5;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      background: var(--navy);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    /* Kopfzeile */
+    .header {
+      flex: 0 0 auto;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(242, 183, 5, 0.25);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header .brand {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      color: var(--light);
+      letter-spacing: 0.5px;
+    }
+    .header .brand .num { color: var(--gold); }
+    .header .tagline {
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: rgba(245, 245, 245, 0.6);
+      font-weight: 400;
+    }
+    /* Formular-Bereich */
+    .form-wrap {
+      flex: 1 1 auto;
+      position: relative;
+      width: 100%;
+    }
+    .form-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    @media (max-width: 600px) {
+      .header { padding: 14px 18px; }
+      .header .brand { font-size: 1.35rem; }
+      .header .tagline { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <span class="brand"><span class="num">6</span>Heroes</span>
+    <span class="tagline">Dein Heldenprofil</span>
+  </header>
+  <div class="form-wrap">
+    <iframe
+      data-tally-src="https://tally.so/r/J90ZAR?transparentBackground=1"
+      width="100%" height="100%" frameborder="0"
+      marginheight="0" marginwidth="0"
+      title="6Heroes Assessment"></iframe>
+  </div>
+</body>
+</html>
