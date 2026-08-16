@@ -322,15 +322,34 @@ function setStatus(msg, kind){
 function parseWebhookPayload(text){
   if (!text || !text.trim()) return null;
   try { return JSON.parse(text); } catch(_) {}
-  let repaired = text
-    .replace(/:\s*,/g, ': [],')
-    .replace(/:\s*}/g, ': [] }')
-    .replace(/,\s*}/g, ' }')
-    .replace(/,\s*]/g, ' ]');
+  let repaired = repairControlChars(text)
+    .replace(/\\{2,}"/g, '\\"')
+    .replace(/:\s*,/g, ': [],').replace(/:\s*}/g, ': [] }')
+    .replace(/,\s*}/g, ' }').replace(/,\s*]/g, ' ]');
   try { return JSON.parse(repaired); } catch(e){
     console.warn('Beratungs-Payload auch nach Reparatur nicht parsebar:', e);
     return null;
   }
+}
+
+/* Escaped rohe Steuerzeichen nur innerhalb von String-Literalen —
+   Make liefert mehrzeilige Coaching-Texte mit echten Zeilenumbrüchen,
+   die JSON.parse sonst als "Unterminated string" ablehnt. */
+function repairControlChars(text){
+  let out = '', inStr = false, esc = false;
+  for (let i=0; i<text.length; i++){
+    const c = text[i];
+    if (esc){ out += c; esc = false; continue; }
+    if (c === '\\'){ out += c; esc = true; continue; }
+    if (c === '"'){ inStr = !inStr; out += c; continue; }
+    if (inStr){
+      if (c === '\n'){ out += '\\n'; continue; }
+      if (c === '\r'){ out += '\\r'; continue; }
+      if (c === '\t'){ out += '\\t'; continue; }
+    }
+    out += c;
+  }
+  return out;
 }
 
 function updateCharcount(){
