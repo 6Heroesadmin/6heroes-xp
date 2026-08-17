@@ -489,15 +489,14 @@ function render() {
     }
     html += `<div class="energie-more">Mehr über deine Energiebilanz <span class="arrow">&rarr;</span></div>`;
     el.innerHTML = html;
-    // Inhalt in einen Link wickeln → _top, Platzhalter-Ziel bis Energie-Detailseite steht
-    const BASE = 'https://regal-mooncake-d3a250.netlify.app';
+    // Inhalt in einen Link wickeln → _top, Ziel = diese Datei in Vollansicht (compact=0)
     // Detail-URL sauber bauen: Vollansicht erzwingen (compact=0), frame-Param raus
     const dp = new URLSearchParams(location.search);
     dp.set('compact', '0');
     dp.delete('frame');
     const link = document.createElement('a');
     link.className = 'energie-link';
-    link.href = BASE + '/energie-detail.html?' + dp.toString();
+    link.href = '/energie.html?' + dp.toString();
     link.target = '_top';
     while (el.firstChild) link.appendChild(el.firstChild);
     el.appendChild(link);
