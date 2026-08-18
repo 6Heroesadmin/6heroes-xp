@@ -495,7 +495,9 @@ function render() {
     dp.delete('frame');
     const link = document.createElement('a');
     link.className = 'energie-link';
-    link.href = '/energie.html?' + dp.toString();
+    // _top öffnet im obersten Fenster (Noloco), nicht im iFrame → absolute Netlify-URL nötig,
+    // sonst löst root-relativ zu app.6heroes.de/energie.html auf (404).
+    link.href = 'https://regal-mooncake-d3a250.netlify.app/energie.html?' + dp.toString();
     link.target = '_top';
     while (el.firstChild) link.appendChild(el.firstChild);
     el.appendChild(link);
