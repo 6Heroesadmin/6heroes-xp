@@ -1,0 +1,60 @@
+/* 6Heroes – selbst gehostete Schriften (DSGVO-konform, kein Google-Server-Aufruf)
+   Ersetzt den Google-Fonts-<link> auf allen Seiten. Einbinden mit:
+     <link rel="stylesheet" href="/fonts.css">
+   WOFF2-Dateien liegen unter /fonts/ im Repo-Root.
+   Enthält alle im Projekt genutzten Familien:
+     - Inter       (Body auf App-Seiten: dashboard, energie, ...)
+     - Outfit      (Body auf der Landingpage index.html)
+     - DM Serif Display  (Headlines/Logo, normal + italic)
+   Ungenutzte Familien werden pro Seite nicht geladen – der Browser lädt
+   nur, was per font-family tatsächlich referenziert wird. */
+
+/* ---------- Inter (400/500/600/700) ---------- */
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/inter-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('/fonts/inter-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/inter-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('/fonts/inter-700.woff2') format('woff2');
+}
+
+/* ---------- Outfit (300/400/500/600/700) ---------- */
+@font-face {
+  font-family: 'Outfit'; font-style: normal; font-weight: 300; font-display: swap;
+  src: url('/fonts/outfit-300.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/outfit-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('/fonts/outfit-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('/fonts/outfit-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('/fonts/outfit-700.woff2') format('woff2');
+}
+
+/* ---------- DM Serif Display (400 normal + italic) ---------- */
+@font-face {
+  font-family: 'DM Serif Display'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('/fonts/dmserifdisplay-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'DM Serif Display'; font-style: italic; font-weight: 400; font-display: swap;
+  src: url('/fonts/dmserifdisplay-400-italic.woff2') format('woff2');
+}
