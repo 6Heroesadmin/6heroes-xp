@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wie funktioniert 6Heroes?</title>
+<link rel="stylesheet" href="/fonts.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:        #1E293B;
+    --navy-deep:   #0f172a;
+    --card:        rgba(255,255,255,0.04);
+    --border:      rgba(255,255,255,0.10);
+    --text:        #F4F1E9;
+    --text-soft:   #e2e8f0;
+    --muted:       #94a3b8;
+    --gold:        #F2B705;
+    --activate:    #1F9D62;
+    --perform:     #0B63CE;
+    --stop:        #C0266A;
+  }
+
+  html, body {
+    background: var(--navy);
+    color: var(--text-soft);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem; }
+
+  /* ── HERO ── */
+  .hero { text-align: center; padding: 0.5rem 0 2rem; border-bottom: 1px solid var(--border); }
+  .eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(26px, 5.5vw, 38px); font-weight: 400;
+    color: #fff; line-height: 1.15; margin-bottom: 0.8rem;
+  }
+  .hero p { font-size: 15px; color: var(--muted); max-width: 460px; margin: 0 auto; }
+
+  /* ── SCHRITT-BLOCK ── */
+  .step {
+    display: grid; grid-template-columns: 42px 1fr; gap: 1rem;
+    padding: 1.8rem 0; border-bottom: 1px solid var(--border);
+  }
+  .step-num {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif; font-size: 19px; color: var(--gold);
+  }
+  .step h2 {
+    font-family: 'DM Serif Display', serif; font-weight: 400;
+    font-size: clamp(19px, 3.5vw, 24px); color: #fff; margin-bottom: 0.5rem; line-height: 1.2;
+  }
+  .step > div > p { font-size: 15px; color: var(--text-soft); margin-bottom: 0.7rem; }
+  .step > div > p:last-child { margin-bottom: 0; }
+  .step p strong { color: var(--gold); font-weight: 600; }
+
+  /* Quest-Typen mini */
+  .qtypes { display: flex; flex-direction: column; gap: 8px; margin: 0.9rem 0 0.3rem; }
+  .qtype {
+    display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline;
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--muted); border-radius: 0 8px 8px 0;
+    padding: 0.6rem 0.9rem;
+  }
+  .qtype.activate { border-left-color: var(--activate); }
+  .qtype.perform  { border-left-color: var(--perform); }
+  .qtype.stop     { border-left-color: var(--stop); }
+  .qtype b { font-size: 13.5px; color: #fff; white-space: nowrap; }
+  .qtype span { font-size: 13.5px; color: var(--muted); }
+
+  /* Hinweis-Box (Coach-Freischaltung, Fortschritt) */
+  .hint {
+    background: rgba(242,183,5,0.07); border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0; padding: 0.8rem 1rem; margin-top: 0.9rem;
+    font-size: 14px; color: var(--text-soft);
+  }
+
+  /* ── FORTSCHRITT (kompakt) ── */
+  .progress { padding: 1.8rem 0; border-bottom: 1px solid var(--border); }
+  .progress h2 {
+    font-family: 'DM Serif Display', serif; font-weight: 400;
+    font-size: 20px; color: #fff; margin-bottom: 0.8rem;
+  }
+  .progress p { font-size: 15px; color: var(--text-soft); }
+  .progress p strong { color: var(--gold); font-weight: 600; }
+
+  /* ── CTA ── */
+  .cta { margin-top: 2.2rem; text-align: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem 1.5rem; }
+  .cta h2 {
+    font-family: 'DM Serif Display', serif; font-weight: 400;
+    font-size: clamp(20px, 3.5vw, 26px); color: #fff; margin-bottom: 0.7rem;
+  }
+  .cta p { color: var(--muted); font-size: 14.5px; max-width: 400px; margin: 0 auto 1.4rem; }
+  .cta-btn {
+    display: inline-block; background: var(--gold); color: var(--navy-deep);
+    font-size: 15px; font-weight: 700; text-decoration: none;
+    padding: 0.8rem 1.9rem; border-radius: 10px; cursor: pointer; border: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,183,5,0.25); }
+
+  .page-footer { text-align: center; font-size: 11.5px; color: rgba(148,163,184,0.5); padding-top: 2.5rem; }
+  .legal-footer { text-align: center; padding: 1.2rem 1rem 0.5rem; font-size: 12px; }
+  .legal-footer a { color: var(--muted); text-decoration: none; margin: 0 0.75rem; }
+  .legal-footer a:hover { color: var(--gold); }
+
+  @media (max-width: 480px) {
+    .step { grid-template-columns: 1fr; }
+    .step-num { margin-bottom: -0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">6Heroes · Kurzanleitung</div>
+    <h1>So arbeitest du mit 6Heroes</h1>
+    <p>Dein Profil steht. In drei Schritten machst du daraus echte Veränderung im Alltag.</p>
+  </header>
+
+  <!-- SCHRITT 1: PROFIL -->
+  <div class="step">
+    <div class="step-num">1</div>
+    <div>
+      <h2>Mach dich mit deinem Profil vertraut</h2>
+      <p>Öffne <strong>Mein Profil</strong>. Dort siehst du, welche Helden dich führen: dein <strong>Basisheld</strong> und <strong>Zweitheld</strong> im Alltag, deine <strong>Stresshelden</strong> unter Druck.</p>
+      <p>Der Heldenkompass zeigt dein Zusammenspiel auf einen Blick. Die Energiebilanz zeigt, was dich auflädt und was dich Kraft kostet. Nimm dir kurz Zeit, dich hier wiederzuerkennen – das ist die Basis für alles Weitere.</p>
+    </div>
+  </div>
+
+  <!-- SCHRITT 2: QUESTS -->
+  <div class="step">
+    <div class="step-num">2</div>
+    <div>
+      <h2>Trainiere mit Quests</h2>
+      <p>Quests sind kleine Handlungsimpulse – 2 bis 15 Minuten – abgestimmt auf deine Helden. Unter <strong>Meine Quests</strong> wählst du eine, die zur aktuellen Situation passt, führst sie aus und schließt sie mit einem kurzen Check-in ab.</p>
+      <div class="qtypes">
+        <div class="qtype activate"><b>Activate</b><span>Einen Helden bewusst einschalten, der gebraucht wird.</span></div>
+        <div class="qtype perform"><b>Perform</b><span>Einen Helden ins konkrete Tun bringen.</span></div>
+        <div class="qtype stop"><b>Stop / Limit</b><span>Bremsen, wenn ein Held übersteuert.</span></div>
+      </div>
+      <p>Sag bei jedem Abschluss kurz, ob es dir geholfen hat. Genau daraus lernt 6Heroes dich kennen – und die Quests werden mit der Zeit treffsicherer.</p>
+    </div>
+  </div>
+
+  <!-- SCHRITT 3: COACH -->
+  <div class="step">
+    <div class="step-num">3</div>
+    <div>
+      <h2>Hol dir deinen Coach dazu</h2>
+      <p>Unter <strong>Mein Coach</strong> bringst du eine konkrete Situation ein – ein Gespräch, eine Entscheidung, etwas Unklares. Der Coach denkt sie mit dir durch, auf dein Heldenprofil zugeschnitten.</p>
+      <div class="hint">Dein Coach schaltet sich frei, sobald du ein paar Quests abgeschlossen und Rückmeldung gegeben hast. So kennt er dich gut genug, um wirklich hilfreich zu sein.</div>
+    </div>
+  </div>
+
+  <!-- FORTSCHRITT -->
+  <div class="progress">
+    <h2>Dein Fortschritt</h2>
+    <p>Jede abgeschlossene Quest bringt <strong>XP</strong>, baut deine <strong>Streak</strong> auf und schaltet <strong>Badges</strong> frei. Unter <strong>Meine Quest-Einträge</strong> siehst du, was du reflektiert hast und wie dein Coach reagiert hat. Dranbleiben zählt mehr als Perfektion.</p>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Bereit? Fang mit deinem Profil an.</h2>
+    <p>Wirf zuerst einen Blick auf deine Helden – danach ergibt der Rest wie von selbst Sinn.</p>
+    <a class="cta-btn" id="profilBtn" href="#">Mein Profil ansehen</a>
+  </section>
+
+  <div class="page-footer">6Heroes Platform · v60</div>
+  <div class="legal-footer">
+    <a href="https://6heroesadmin.github.io/6heroes-xp/impressum.html" target="_blank">Impressum</a>
+    <a href="https://6heroesadmin.github.io/6heroes-xp/datenschutz.html" target="_blank">Datenschutz</a>
+  </div>
+
+</div>
+
+<script>
+  var PROFIL_URL = 'https://app.6heroes.de/profiles';
+  document.getElementById('profilBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (PROFIL_URL && PROFIL_URL.indexOf('http') === 0) {
+      window.top.location.href = PROFIL_URL;
+    } else {
+      alert('Du findest dein Profil links im Menü unter „Mein Profil".');
+    }
+  });
+
+  function sendHeight() {
+    var h = document.documentElement.scrollHeight;
+    window.parent.postMessage({ iframeHeight: h }, '*');
+    window.parent.postMessage({ type: '6heroes:setHeight', height: h }, '*');
+  }
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+  if (window.ResizeObserver) { new ResizeObserver(sendHeight).observe(document.body); }
+</script>
+
+</body>
+</html>
