@@ -9,403 +9,300 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:         #f8f9fb;
-    --surface:    #ffffff;
-    --surface2:   #f1f3f7;
-    --border:     #e4e7ed;
-    --text:       #1a2030;
-    --muted:      #6b7a99;
-    --accent:     #334155;
+    /* App-Farbwelt (Dashboard / energie) */
+    --navy:        #1E293B;
+    --navy-deep:   #0f172a;
+    --card:        rgba(255,255,255,0.04);
+    --card-hover:  rgba(255,255,255,0.07);
+    --border:      rgba(255,255,255,0.10);
+    --text:        #F4F1E9;
+    --text-soft:   #e2e8f0;
+    --muted:       #94a3b8;
+    --gold:        #F2B705;
+    /* Held-Akzentfarben */
     --commander:  #0B63CE;
     --guardian:   #1F9D62;
     --innovator:  #F2B705;
     --explorer:   #F0672A;
     --sage:       #C0266A;
-    --strategist: #334155;
-    --tabs-h:     48px;
+    --strategist: #64748B;
   }
 
   html, body {
-    height: 100%;
-    overflow: hidden;
+    background: var(--navy);
+    color: var(--text-soft);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.75;
-    display: flex;
-    flex-direction: column;
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3rem;
   }
 
-  /* ── HEADER ─────────────────────────────────────────────────────────── */
-  .page-header {
-    flex-shrink: 0;
-    text-align: center;
-    padding: 1.4rem 1.25rem 1rem;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-  }
+  /* ── HERO ──────────────────────────────────────── */
+  .hero { text-align: center; padding: 1rem 0 2.5rem; border-bottom: 1px solid var(--border); }
   .eyebrow {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 1rem;
   }
-  h1 {
+  .hero h1 {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(20px, 4vw, 27px); font-weight: 400;
-    color: var(--text); line-height: 1.2; margin-bottom: 0.45rem;
+    font-size: clamp(28px, 6vw, 42px); font-weight: 400;
+    color: #fff; line-height: 1.15; letter-spacing: -0.01em;
+    margin-bottom: 1rem;
   }
-  .lead { color: var(--muted); font-size: 13.5px; max-width: 500px; margin: 0 auto; }
-
-  /* ── TABS BAR ────────────────────────────────────────────────────────── */
-  .tabs-bar {
-    flex-shrink: 0;
-    display: flex;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1.25rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabs-bar::-webkit-scrollbar { display: none; }
-
-  .tab-btn {
-    flex-shrink: 0;
-    padding: 0 1rem;
-    height: var(--tabs-h);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-    white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active {
-    color: var(--accent);
-    border-bottom-color: var(--accent);
-    font-weight: 600;
+  .hero-q {
+    font-size: clamp(15px, 2.5vw, 18px); color: var(--muted);
+    max-width: 520px; margin: 0 auto; font-style: italic;
   }
 
-  /* ── TAB CONTENT ─────────────────────────────────────────────────────── */
-  .tabs-content {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
+  /* ── SECTION ───────────────────────────────────── */
+  .section { padding: 2.5rem 0; border-bottom: 1px solid var(--border); }
+  .section:last-of-type { border-bottom: none; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.9rem;
   }
+  .section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(21px, 3.5vw, 27px); font-weight: 400;
+    color: #fff; line-height: 1.25; margin-bottom: 1rem;
+  }
+  .section p { color: var(--text-soft); margin-bottom: 0.9rem; font-size: 15.5px; }
+  .section p:last-child { margin-bottom: 0; }
+  .section p strong { color: var(--gold); font-weight: 600; }
 
-  .tab-panel {
-    position: absolute;
-    inset: 0;
-    overflow-y: auto;
-    padding: 1.2rem 1.25rem 1.5rem;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(5px);
-    transition: opacity 0.18s ease, transform 0.18s ease;
+  /* ── DREI DYNAMIKEN (farbige Blöcke) ───────────── */
+  .dynamics { display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem; }
+  .dyn {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 0 10px 10px 0; padding: 1.1rem 1.3rem;
   }
-  .tab-panel.active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
+  .dyn { border-left-color: var(--gold); }
+  .dyn-q { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 0.35rem; }
+  .dyn-a { font-size: 14.5px; color: var(--muted); }
+  .dyn-a strong { color: var(--text); font-weight: 600; }
 
-  /* ── FOOTER ──────────────────────────────────────────────────────────── */
-  .page-footer {
-    flex-shrink: 0;
-    text-align: center;
-    font-size: 11px;
-    color: #c8d0de;
-    padding: 0.45rem 0 0.5rem;
-    background: var(--bg);
-    border-top: 1px solid var(--border);
-  }
-
-  /* ── CONTENT COMPONENTS ──────────────────────────────────────────────── */
-  .prose {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.1rem 1.25rem;
-    margin-bottom: 0.85rem;
-    font-size: 14.5px;
-  }
-  .prose p + p { margin-top: 0.75rem; }
-
-  .hl-questions { display: flex; flex-direction: column; gap: 7px; }
-  .hl-q {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--border);
-    border-radius: 0 10px 10px 0;
-    padding: 0.75rem 1rem;
-  }
-  .hl-q-title { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-  .hl-q-body  { font-size: 13px; color: var(--muted); }
-  .hl-q:nth-child(1) { border-left-color: var(--commander); }
-  .hl-q:nth-child(2) { border-left-color: var(--guardian); }
-  .hl-q:nth-child(3) { border-left-color: var(--explorer); }
-  .hl-q:nth-child(4) { border-left-color: var(--strategist); }
-
-  /* Hero grid */
-  .section-mini {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted);
-    margin-bottom: 0.6rem;
-  }
+  /* ── SECHS HELDEN (Karten) ─────────────────────── */
   .hero-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px; margin-bottom: 0.85rem;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-top: 1.5rem;
   }
   .hero-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; overflow: hidden; text-align: center;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    display: flex; flex-direction: column;
   }
-  .hero-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
-  .hero-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--surface2); }
-  .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-  .hero-info { padding: 0.5rem 0.4rem 0.55rem; border-top: 1px solid var(--border); }
-  .hero-dot { width: 7px; height: 7px; border-radius: 50%; margin: 0 auto 4px; }
-  .hero-name { font-size: 12px; font-weight: 600; margin-bottom: 1px; }
-  .hero-sub  { font-size: 10.5px; color: var(--muted); }
-
-  .h-commander  .hero-name { color: var(--commander); }  .h-commander  .hero-dot { background: var(--commander); }
-  .h-guardian   .hero-name { color: var(--guardian); }   .h-guardian   .hero-dot { background: var(--guardian); }
-  .h-innovator  .hero-name { color: var(--innovator); }  .h-innovator  .hero-dot { background: var(--innovator); }
-  .h-explorer   .hero-name { color: var(--explorer); }   .h-explorer   .hero-dot { background: var(--explorer); }
-  .h-sage       .hero-name { color: var(--sage); }       .h-sage       .hero-dot { background: var(--sage); }
-  .h-strategist .hero-name { color: var(--strategist); } .h-strategist .hero-dot { background: var(--strategist); }
-
-  .important-note {
-    display: flex; align-items: flex-start; gap: 9px;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 0.75rem 1rem;
-    font-size: 13.5px;
-  }
-  .badge-warn {
-    flex-shrink: 0; font-size: 10px; font-weight: 600;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    padding: 3px 7px; border-radius: 20px;
-    background: #fef9e7; color: #856404; border: 1px solid #f5e07a;
-    white-space: nowrap; margin-top: 1px;
-  }
-
-  .konferenz-prose {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.1rem 1.25rem;
-    margin-bottom: 0.85rem;
-    font-size: 14px;
-  }
-  .konferenz-prose p + p { margin-top: 0.65rem; }
-
-  .img-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 0.85rem;
-  }
-  .img-block img { width: 100%; display: block; }
-  .img-caption {
-    padding: 0.45rem 1rem;
-    font-size: 11.5px; color: var(--muted);
-    text-align: center;
+  .hero-card:hover { transform: translateY(-3px); background: var(--card-hover); border-color: var(--gold); }
+  .hero-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--navy-deep); }
+  .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-info {
+    padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 2px;
     border-top: 1px solid var(--border);
   }
+  .hero-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .hero-sub  { font-size: 11.5px; color: var(--muted); }
+  .h-commander  { --dot: var(--commander); }
+  .h-guardian   { --dot: var(--guardian); }
+  .h-innovator  { --dot: var(--innovator); }
+  .h-explorer   { --dot: var(--explorer); }
+  .h-sage       { --dot: var(--sage); }
+  .h-strategist { --dot: var(--strategist); }
+  .grid-hint { text-align: center; font-size: 12.5px; color: var(--muted); margin-top: 1rem; }
 
-  .img-block-transparent {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 0.85rem;
-    text-align: center;
+  /* ── BILDER ────────────────────────────────────── */
+  .img-block {
+    margin-top: 1.5rem; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; background: var(--card);
   }
-  .img-block-transparent img {
-    width: 100%; max-width: 460px;
-    display: inline-block;
-  }
-  .img-block-transparent .img-caption {
-    font-size: 11.5px; color: var(--muted);
-    padding-top: 0.25rem;
+  .img-block img { width: 100%; display: block; }
+  .img-block.transparent { border: none; background: transparent; }
+  .img-block.transparent img { border-radius: 12px; }
+  .img-caption {
+    font-size: 12.5px; color: var(--muted); text-align: center;
+    padding: 0.7rem 1rem; font-style: italic;
   }
 
-  .callout {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 0.85rem 1rem;
-    font-size: 13.5px; color: var(--text);
+  /* ── WICHTIG-HINWEIS ───────────────────────────── */
+  .note {
+    background: rgba(242,183,5,0.08); border-left: 3px solid var(--gold);
+    border-radius: 0 10px 10px 0; padding: 1.1rem 1.3rem; margin-top: 1.5rem;
   }
+  .note-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .note p { font-size: 14.5px; color: var(--text-soft); margin: 0; }
 
-  /* ── MODAL ───────────────────────────────────────────────────────────── */
+  /* ── ABSCHLUSS / CTA ───────────────────────────── */
+  .cta-block {
+    margin-top: 2.5rem; text-align: center;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2.2rem 1.5rem;
+  }
+  .cta-block h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 4vw, 30px); font-weight: 400;
+    color: #fff; margin-bottom: 0.8rem; line-height: 1.2;
+  }
+  .cta-block p { color: var(--muted); font-size: 15px; max-width: 460px; margin: 0 auto 1.6rem; }
+  .cta-btn {
+    display: inline-block; background: var(--gold); color: var(--navy-deep);
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+    text-decoration: none; padding: 0.85rem 2rem; border-radius: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease; cursor: pointer;
+    border: none;
+  }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(242,183,5,0.25); }
+
+  /* ── FOOTER ────────────────────────────────────── */
+  .page-footer { text-align: center; font-size: 11.5px; color: rgba(148,163,184,0.5); padding-top: 2.5rem; }
+  .legal-footer { text-align: center; padding: 1.2rem 1rem 0.5rem; font-size: 12px; }
+  .legal-footer a { color: var(--muted); text-decoration: none; margin: 0 0.75rem; }
+  .legal-footer a:hover { color: var(--gold); }
+
+  /* ── MODAL ─────────────────────────────────────── */
   .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75); z-index: 9999;
-    align-items: center; justify-content: center; padding: 1.5rem;
+    position: fixed; inset: 0; background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(6px); display: none;
+    align-items: center; justify-content: center; z-index: 100; padding: 1.5rem;
   }
   .modal-overlay.active { display: flex; }
-  .modal-inner { position: relative; max-width: 820px; width: 100%; animation: modalIn 0.2s ease; }
-  .modal-inner img { width: 100%; border-radius: 12px; display: block; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+  .modal-inner { position: relative; max-width: 480px; width: 100%; }
+  .modal-inner img { width: 100%; border-radius: 14px; display: block; }
   .modal-close {
     position: absolute; top: -14px; right: -14px;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #fff; border: none; cursor: pointer;
-    font-size: 18px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); color: #334155;
-  }
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to   { opacity: 1; transform: scale(1); }
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--gold); color: var(--navy-deep); border: none;
+    font-size: 22px; line-height: 1; cursor: pointer; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 560px) {
     .hero-grid { grid-template-columns: repeat(2, 1fr); }
+    .page { padding: 2rem 1.1rem 2.5rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── HEADER ─────────────────────────────────────────── -->
-<div class="page-header">
-  <div class="eyebrow">6Heroes · Willkommen</div>
-  <h1>Herzlich willkommen zu deiner<br>persönlichen Profilanalyse</h1>
-  <p class="lead">Hast du dich schon einmal gefragt, warum dir manche Aufgaben spielend leichtfallen – während andere dich völlig erschöpfen?</p>
-</div>
+<div class="page">
 
-<!-- ── TABS BAR ───────────────────────────────────────── -->
-<div class="tabs-bar">
-  <button class="tab-btn active" data-tab="einleitung">Einleitung</button>
-  <button class="tab-btn" data-tab="modell">Das Modell</button>
-  <button class="tab-btn" data-tab="konferenz">Heldenkonferenz</button>
-</div>
+  <!-- ── HERO ─────────────────────────────────────── -->
+  <header class="hero">
+    <div class="eyebrow">6Heroes · Willkommen</div>
+    <h1>Herzlich willkommen zu deiner persönlichen Profilanalyse</h1>
+    <p class="hero-q">Hast du dich schon einmal gefragt, warum dir manche Aufgaben spielend leichtfallen – während andere dich völlig erschöpfen?</p>
+  </header>
 
-<!-- ── TAB CONTENT ────────────────────────────────────── -->
-<div class="tabs-content">
+  <!-- ── 1. DAS AHA ───────────────────────────────── -->
+  <section class="section">
+    <div class="section-label">Die Idee dahinter</div>
+    <h2>In dir wirkt eine ganze Heldenkonferenz</h2>
+    <p>Die Antwort liegt in deiner <strong>inneren Heldenkonferenz</strong>. Das 6Heroes-Modell basiert auf einer einfachen Erkenntnis: Wir haben nicht nur „eine" feste Persönlichkeit. In jedem von uns wirken sechs archetypische Kräfte – deine <strong>Helden</strong>. Jeder bringt einen eigenen Stil mit, wie er denkt, kommuniziert und Probleme löst.</p>
+    <p>Je nach Situation übernimmt ein anderer Held das Steuer. Genau deshalb fällt dir manches leicht und anderes schwer – es kommt darauf an, welcher Held gerade führt.</p>
+  </section>
 
-  <!-- TAB 1: EINLEITUNG -->
-  <div class="tab-panel active" id="tab-einleitung">
-    <div class="prose">
-      <p>Die Antwort liegt in deiner <strong>„inneren Heldenkonferenz"</strong>. Das 6Heroes-Modell basiert auf der Erkenntnis, dass wir nicht nur „eine" feste Persönlichkeit haben, sondern dass in jedem von uns sechs verschiedene archetypische Kräfte – unsere <strong>Helden</strong> – wirken. Jeder dieser Helden bringt einen eigenen Stil mit, wie er denkt, kommuniziert und Probleme löst.</p>
-      <p>In den nächsten Abschnitten schauen wir uns die grundlegende Logik an, nach der deine Helden zusammenarbeiten.</p>
-    </div>
-    <div class="hl-questions">
-      <div class="hl-q">
-        <div class="hl-q-title">Wer führt dich im Alltag?</div>
-        <div class="hl-q-body">In deinem „Normalzustand" halten meist zwei Helden gemeinsam das Steuer: dein <strong>Basisheld</strong> und dein <strong>Zweitheld</strong>. Sie bestimmen, wie du wahrgenommen wirst und wie du am liebsten arbeitest.</div>
-      </div>
-      <div class="hl-q">
-        <div class="hl-q-title">Was gibt dir Kraft – und was kostet sie dich?</div>
-        <div class="hl-q-body">Jeder Held hat eine bestimmte <strong>Energie-Bilanz</strong>. Manche laden dich auf wie eine Batterie. Andere kosten bewusste Anstrengung – wenn du sie zu lange nutzt, fühlst du dich ausgebrannt.</div>
-      </div>
-      <div class="hl-q">
-        <div class="hl-q-title">Was passiert unter Druck?</div>
-        <div class="hl-q-body">Wenn es stressig wird, schaltet dein System auf einen <strong>Autopiloten</strong> um. Du lernst, wie deine persönlichen Stressstufen aussehen – und warum du in Konflikten manchmal auf eine Weise reagierst, die dich selbst überrascht.</div>
-      </div>
-      <div class="hl-q">
-        <div class="hl-q-title">Das Ziel: bewusste Steuerung</div>
-        <div class="hl-q-body">Wir wollen dir Werkzeuge geben, mit denen du deine Helden bewusst steuern kannst. Am Ende weißt du, welche Hebel du brauchst, um aus dem Stressmodus zurück in deine volle Energie zu finden.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 2: DAS MODELL -->
-  <div class="tab-panel" id="tab-modell">
-    <div class="prose">
-      <p>Das <strong>6Heroes-Modell</strong> gibt eine klare, alltagstaugliche Antwort: In jedem Menschen wirken <strong>sechs innere Kräfte</strong> – und je nach Situation übernimmt ein anderer Held das Steuer.</p>
-      <p>Das Ergebnis: Du verstehst dich selbst (und andere) schneller, kommunizierst leichter und erkennst Stressmuster, bevor sie eskalieren.</p>
-    </div>
-
-    <div class="section-mini">Die sechs Heldenmodi</div>
+  <!-- ── 2. DIE SECHS HELDEN ──────────────────────── -->
+  <section class="section">
+    <div class="section-label">Das Modell</div>
+    <h2>Deine sechs Heldenmodi</h2>
+    <p>Jeder Held steht für eine andere Art, die Welt anzugehen. Tippe auf einen Helden, um mehr über ihn zu erfahren.</p>
     <div class="hero-grid">
       <div class="hero-card h-commander" onclick="openModal('card_commander.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Commander_male.png" alt="Commander" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Commander</div><div class="hero-sub">Der Gestalter</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Commander_male.png" alt="Commander"></div>
+        <div class="hero-info"><div class="hero-name">Commander</div><div class="hero-sub">Der Gestalter</div></div>
       </div>
       <div class="hero-card h-guardian" onclick="openModal('card_guardian.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Guardian_male.png" alt="Guardian" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Guardian</div><div class="hero-sub">Der Bewahrer</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Guardian_male.png" alt="Guardian"></div>
+        <div class="hero-info"><div class="hero-name">Guardian</div><div class="hero-sub">Der Bewahrer</div></div>
       </div>
       <div class="hero-card h-innovator" onclick="openModal('card_innovator.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Innovator_male.png" alt="Innovator" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Innovator</div><div class="hero-sub">Der Visionär</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Innovator_male.png" alt="Innovator"></div>
+        <div class="hero-info"><div class="hero-name">Innovator</div><div class="hero-sub">Der Visionär</div></div>
       </div>
       <div class="hero-card h-explorer" onclick="openModal('card_explorer.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Explorer_male.png" alt="Explorer" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Explorer</div><div class="hero-sub">Der Praktiker</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Explorer_male.png" alt="Explorer"></div>
+        <div class="hero-info"><div class="hero-name">Explorer</div><div class="hero-sub">Der Praktiker</div></div>
       </div>
       <div class="hero-card h-sage" onclick="openModal('card_sage.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Sage_male.png" alt="Sage" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Sage</div><div class="hero-sub">Der Analytiker</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Sage_male.png" alt="Sage"></div>
+        <div class="hero-info"><div class="hero-name">Sage</div><div class="hero-sub">Der Analytiker</div></div>
       </div>
       <div class="hero-card h-strategist" onclick="openModal('card_strategist.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Strategist_male.png" alt="Strategist" loading="lazy"></div>
-        <div class="hero-info"><div class="hero-dot"></div><div class="hero-name">Strategist</div><div class="hero-sub">Der Architekt</div></div>
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Strategist_male.png" alt="Strategist"></div>
+        <div class="hero-info"><div class="hero-name">Strategist</div><div class="hero-sub">Der Architekt</div></div>
       </div>
     </div>
-
-    <div class="important-note">
-      <span class="badge-warn">Wichtig</span>
-      <span>Kein Held ist besser als ein anderer. Jeder hat Stärken – und typische Fallen, wenn er überdreht oder unter Druck gerät.</span>
-    </div>
-  </div>
-
-  <!-- TAB 3: HELDENKONFERENZ -->
-  <div class="tab-panel" id="tab-konferenz">
-    <div class="konferenz-prose">
-      <p>Die 6Heroes sind sechs unterschiedliche Aspekte deiner Persönlichkeit – und je nach Situation übernimmt einer der Heldenmodi die Führung. Es handelt sich dabei um eine Art innerer <strong>Heldenkonferenz</strong>, in der die Helden darüber abstimmen, welcher Held in der aktuellen Situation zum Einsatz kommt.</p>
-      <p>Jeder Heldenmodus hat seinen festen Platz in der Heldenkonferenz.</p>
-    </div>
-
-    <div class="img-block">
-      <img src="https://6heroesadmin.github.io/6heroes-xp/Heldenkonferenz.jpg" alt="Die Heldenkonferenz">
-      <div class="img-caption">Die Heldenkonferenz – alle 6 Helden stimmen ab, wer die Führung übernimmt</div>
-    </div>
-
-    <div class="img-block-transparent">
+    <div class="img-block transparent">
       <img src="https://6heroesadmin.github.io/6heroes-xp/Heldentafel_Heldenrad.png" alt="Das 6Heroes Heldenrad">
       <div class="img-caption">Das 6Heroes-Modell – alle sechs Heldenmodi im Überblick</div>
     </div>
+  </section>
 
-    <div class="callout">
-      Dein persönliches Profil zeigt dir, <strong>welcher Held dich im Alltag führt</strong>, welcher dich unter Druck begleitet – und wo dein größtes Entwicklungspotenzial liegt. Du findest dein Profil unter <strong>Mein Profil</strong>.
+  <!-- ── 3. DIE DREI DYNAMIKEN ────────────────────── -->
+  <section class="section">
+    <div class="section-label">Wie deine Helden zusammenspielen</div>
+    <h2>Drei Dinge bestimmen, wie du tickst</h2>
+    <div class="dynamics">
+      <div class="dyn">
+        <div class="dyn-q">Wer führt dich im Alltag?</div>
+        <div class="dyn-a">In deinem Normalzustand halten meist zwei Helden gemeinsam das Steuer: dein <strong>Basisheld</strong> und dein <strong>Zweitheld</strong>. Sie bestimmen, wie du wahrgenommen wirst und wie du am liebsten arbeitest.</div>
+      </div>
+      <div class="dyn">
+        <div class="dyn-q">Was gibt dir Kraft – und was kostet sie dich?</div>
+        <div class="dyn-a">Jeder Held hat eine eigene <strong>Energie-Bilanz</strong>. Manche laden dich auf wie eine Batterie. Andere kosten bewusste Anstrengung – nutzt du sie zu lange, fühlst du dich ausgebrannt.</div>
+      </div>
+      <div class="dyn">
+        <div class="dyn-q">Was passiert unter Druck?</div>
+        <div class="dyn-a">Wird es stressig, schaltet dein System auf einen <strong>Autopiloten</strong> um. Du lernst, wie deine persönlichen Stressstufen aussehen – und warum du in Konflikten manchmal auf eine Weise reagierst, die dich selbst überrascht.</div>
+      </div>
     </div>
+    <div class="img-block">
+      <img src="https://6heroesadmin.github.io/6heroes-xp/Heldenkonferenz.jpg" alt="Die Heldenkonferenz">
+      <div class="img-caption">Die Heldenkonferenz – alle sechs Helden stimmen ab, wer die Führung übernimmt</div>
+    </div>
+    <div class="note">
+      <div class="note-label">Wichtig</div>
+      <p>Kein Held ist besser als ein anderer. Jeder hat seine Stärken – und typische Fallen, wenn er überdreht oder unter Druck gerät. Es geht nie darum, ein „besserer Typ" zu werden, sondern deine Helden bewusster zu steuern.</p>
+    </div>
+  </section>
+
+  <!-- ── 4. ABSCHLUSS / CTA ───────────────────────── -->
+  <section class="cta-block">
+    <h2>Und jetzt: dein persönliches Profil</h2>
+    <p>Das war die Theorie. Dein Profil zeigt dir, welcher Held dich im Alltag führt, welcher dich unter Druck begleitet – und wo dein größtes Entwicklungspotenzial liegt.</p>
+    <a class="cta-btn" id="profilBtn" href="#">Mein Profil ansehen</a>
+  </section>
+
+  <div class="page-footer">6Heroes Platform · v60</div>
+
+  <div class="legal-footer">
+    <a href="https://6heroesadmin.github.io/6heroes-xp/impressum.html" target="_blank">Impressum</a>
+    <a href="https://6heroesadmin.github.io/6heroes-xp/datenschutz.html" target="_blank">Datenschutz</a>
   </div>
 
 </div>
 
-<!-- ── FOOTER ─────────────────────────────────────────── -->
-<div class="page-footer">6Heroes Platform · v59</div>
-
-<!-- ── MODAL ──────────────────────────────────────────── -->
+<!-- ── MODAL ────────────────────────────────────────── -->
 <div class="modal-overlay" id="heroModal" onclick="closeModal(event)">
   <div class="modal-inner">
-    <button class="modal-close" onclick="document.getElementById('heroModal').classList.remove('active')">×</button>
+    <button class="modal-close" onclick="document.getElementById('heroModal').classList.remove('active')">&times;</button>
     <img id="modalImg" src="" alt="Heldendetail">
   </div>
 </div>
 
 <script>
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    });
-  });
-
-  const BASE = 'https://6heroesadmin.github.io/6heroes-xp/';
+  const IMG_BASE = 'https://6heroesadmin.github.io/6heroes-xp/';
   function openModal(img) {
-    document.getElementById('modalImg').src = BASE + img;
+    document.getElementById('modalImg').src = IMG_BASE + img;
     document.getElementById('heroModal').classList.add('active');
+    sendHeight();
   }
   function closeModal(e) {
     if (e.target === document.getElementById('heroModal'))
@@ -414,45 +311,30 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') document.getElementById('heroModal').classList.remove('active');
   });
-</script>
 
+  /* Profil-Button: öffnet die Noloco-Profil-Seite im obersten Fenster.
+     PROFIL_URL unten auf die echte Noloco-Adresse der "Mein Profil"-Seite setzen. */
+  var PROFIL_URL = 'https://app.6heroes.de/profiles';
+  document.getElementById('profilBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (PROFIL_URL && PROFIL_URL.indexOf('http') === 0) {
+      window.top.location.href = PROFIL_URL;
+    } else {
+      // Fallback, solange keine URL gesetzt ist: Hinweis statt toter Link
+      alert('Du findest dein Profil links im Menü unter „Mein Profil".');
+    }
+  });
 
-<!-- Legal Footer -->
-<style>
-  .heroes-legal-footer {
-    text-align: center;
-    padding: 1.5rem 1rem 1rem;
-    margin-top: 2rem;
-    border-top: 1px solid rgba(0,0,0,0.08);
-    font-size: 12px;
-  }
-  .heroes-legal-footer a {
-    color: #94a3b8;
-    text-decoration: none;
-    margin: 0 0.75rem;
-    font-family: sans-serif;
-  }
-  .heroes-legal-footer a:hover { color: #F2B705; }
-</style>
-<div class="heroes-legal-footer">
-  <a href="https://6heroesadmin.github.io/6heroes-xp/impressum.html" target="_blank">Impressum</a>
-  <a href="https://6heroesadmin.github.io/6heroes-xp/datenschutz.html" target="_blank">Datenschutz</a>
-</div>
-
-<script>
-  // Resize Observer: sendet Höhe an Parent damit Noloco iframe-Höhe anpasst
+  /* Höhe an Noloco-iFrame melden (durchgehender Fluss, kein fixes Layout mehr) */
   function sendHeight() {
-    const h = document.documentElement.scrollHeight;
+    var h = document.documentElement.scrollHeight;
     window.parent.postMessage({ iframeHeight: h }, '*');
+    window.parent.postMessage({ type: '6heroes:setHeight', height: h }, '*');
   }
   window.addEventListener('load', sendHeight);
   window.addEventListener('resize', sendHeight);
-  // Nach Tab-Wechsel auch neu messen
-  document.addEventListener('click', function() {
-    setTimeout(sendHeight, 100);
-  });
-  const ro = new ResizeObserver(sendHeight);
-  ro.observe(document.body);
+  if (window.ResizeObserver) { new ResizeObserver(sendHeight).observe(document.body); }
 </script>
+
 </body>
 </html>
