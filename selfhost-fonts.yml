@@ -1,0 +1,37 @@
+name: Google-Fonts durch selbst gehostete ersetzen
+
+# Läuft NUR manuell (Actions-Tab -> diesen Workflow -> "Run workflow").
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  replace-fonts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo auschecken
+        uses: actions/checkout@v4
+
+      - name: Prüfen, dass fonts.css und /fonts/ vorhanden sind
+        run: |
+          test -f fonts.css || { echo "FEHLER: fonts.css fehlt im Repo-Root. Erst fonts.css + /fonts/ hochladen."; exit 1; }
+          test -d fonts || { echo "FEHLER: Ordner /fonts/ fehlt im Repo-Root."; exit 1; }
+          echo "OK: fonts.css und /fonts/ vorhanden ($(ls fonts/*.woff2 | wc -l) woff2-Dateien)."
+
+      - name: Google-Fonts in allen HTML-Dateien ersetzen
+        run: python3 .github/scripts/replace_fonts.py .
+
+      - name: Änderungen committen
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "Keine Änderungen – schon alles umgestellt."
+          else
+            git add -A
+            git commit -m "Self-host fonts: Google-Fonts-Einbindungen durch /fonts.css ersetzt"
+            git push
+            echo "Commit gepusht. Netlify + GitHub Pages deployen automatisch."
+          fi
