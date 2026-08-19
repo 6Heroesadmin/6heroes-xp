@@ -16,7 +16,8 @@
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
-  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
+  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; opacity:0; transition:opacity .2s ease; }
+  .wrap.ready { opacity:1; }
 
 
   .hero { text-align:center; padding:40px 0 4px; }
@@ -466,7 +467,10 @@ async function render(){
   document.getElementById("bridge").href=d.bridge||"#";
 }
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
-window.addEventListener("load",()=>{render().then(postHeight);});
+window.addEventListener("load",()=>{render().then(()=>{
+  var w=document.querySelector('.wrap'); if(w) w.classList.add('ready');
+  postHeight();
+});});
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
 </script>

@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deine Stressdynamik – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
@@ -16,7 +18,8 @@
   }
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { background:var(--navy); color:var(--ink); font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; line-height:1.65; }
-  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; }
+  .wrap { max-width:680px; margin:0 auto; padding:0 24px 88px; opacity:0; transition:opacity .2s ease; }
+  .wrap.ready { opacity:1; }
 
   /* ---- Kopf ---- */
   .head { text-align:center; padding:40px 0 8px; }
@@ -219,14 +222,43 @@ const CURVE_DESC = {
   Explorer:{s1:'Wird unruhig, f\u00e4ngt viele Dinge gleichzeitig an, redet schneller, sucht Abk\u00fcrzungen aus dem Stressfeld.',s2:'Bricht Projekte oder Beziehungen abrupt ab, rennt weg \u2014 physisch oder durch Verleugnung der Verantwortung.'}
 };
 
+const PROFILE_FN='/.netlify/functions/profile';
 function getParams(){
   const p=new URLSearchParams(location.search);
   const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
   return {
-    s1:cap((p.get('stress1')||'Commander').trim()),
-    s2:cap((p.get('stress2')||'Commander').trim()),
+    s1:cap((p.get('stress1')||'').trim()),
+    s2:cap((p.get('stress2')||'').trim()),
     isPaid: p.get('paid') !== '0',
   };
+}
+
+/* Stress-Helden bestimmen:
+   - ?stress1=…&stress2=… in URL → nehmen (Fallback, Direkt-Einbindung).
+   - sonst ?email=… → per profile.js holen (s1/s2).
+   Rückgabe wie getParams: {s1, s2, isPaid}. */
+async function loadData(){
+  const url=getParams();
+  const p=new URLSearchParams(location.search);
+  const email=(p.get('email')||'').trim();
+  const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
+  if(url.s1 && url.s2) return url;
+  if(email){
+    try{
+      const res=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));
+      if(!res.ok) throw new Error('profile fn '+res.status);
+      const d=await res.json();
+      return {
+        s1:cap(d.s1||url.s1||'Commander'),
+        s2:cap(d.s2||url.s2||'Commander'),
+        isPaid: (typeof d.isPaid==='boolean') ? d.isPaid : url.isPaid,
+      };
+    }catch(e){
+      console.warn('Stress-Profil-Fetch fehlgeschlagen:',e);
+    }
+  }
+  // Fallback: Defaults
+  return { s1:url.s1||'Commander', s2:url.s2||'Commander', isPaid:url.isPaid };
 }
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -260,8 +292,8 @@ function stageBlock(hero, phase){
   + '</div>';
 }
 
-function render(){
-  const P=getParams();
+async function render(){
+  const P=await loadData();
   const same = (P.s1===P.s2);
 
   // SVG + Legende
@@ -316,7 +348,10 @@ function postHeight(){
   if(h===lastH)return; lastH=h;
   parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');
 }
-window.addEventListener('load',render);
+window.addEventListener('load',()=>{render().then(()=>{
+  var w=document.querySelector('.wrap'); if(w) w.classList.add('ready');
+  postHeight();
+});});
 window.addEventListener('resize',postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
 [50,200,500,1000].forEach(t=>setTimeout(postHeight,t));

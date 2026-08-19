@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meine Stresskurve</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -268,11 +269,9 @@ function applyCompact(P){
   // Overlay-CTA fuehrt zur Preisseite. Sonst umginge ein Klick die Paywall.
   if (!P.isPaid) return;
 
-  // TODO: sobald die Stress-Detailseite existiert, hier die echte URL setzen.
-  const BASE = 'https://regal-mooncake-d3a250.netlify.app';
-  const target = BASE + '/stress-detail.html'
-    + '?stress1=' + encodeURIComponent(P.s1.toLowerCase())
-    + '&stress2=' + encodeURIComponent(P.s2.toLowerCase());
+  // Sprung auf die versteckte Noloco-Seite "stressdynamik" — sie lädt
+  // stress-detail.html?email=[@email] und holt s1/s2 selbst per profile.js.
+  const target = 'https://app.6heroes.de/stressdynamik';
   // Chart-Card + Header + more-Hinweis in einen Link wickeln
   const wrap = document.querySelector('.wrap');
   const link = document.createElement('a');
