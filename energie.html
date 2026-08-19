@@ -422,8 +422,54 @@ function getRoleBadge(heroName, basis, zweit, stress1, stress2) {
   return '';
 }
 
-function render() {
-  const { nettos, hasNetto, basis, zweit, stress1, stress2, isPaid } = getParams();
+/* Netlify-Function, die Profil-Daten (Nettos, Rollen, paid) per E-Mail aus
+   Airtable liefert. Gleiche Origin wie diese Seite (beide auf Netlify) →
+   der Fetch ist same-origin; CORS-Header ist zusätzlich gesetzt. */
+const PROFILE_FN = '/.netlify/functions/profile';
+
+/* Entscheidet, woher die Daten kommen:
+   - Vollansicht (neue App-Route): ?email=… ohne Nettos → Fetch auf profile.js.
+   - Compact im Profil-Wrapper / Direktlink: Nettos stehen in der URL → wie bisher.
+   Der URL-Pfad bleibt vollständiger Fallback, damit bestehende Einbindungen
+   (profil.html lädt energie.html mit URL-Nettos) unverändert funktionieren. */
+async function loadData() {
+  const urlData = getParams();
+  const p = new URLSearchParams(location.search);
+  const email = (p.get('email') || '').trim();
+
+  // Nettos schon in der URL? Dann nichts holen — bestehender Weg gewinnt.
+  if (urlData.hasNetto || !email) return urlData;
+
+  // Sonst: per E-Mail aus Airtable holen.
+  try {
+    const res = await fetch(PROFILE_FN + '?email=' + encodeURIComponent(email));
+    if (!res.ok) throw new Error('profile fn ' + res.status);
+    const d = await res.json();
+
+    // Nettos aus der Function ({ni,nc,nst,ns,ng,ne}) in HEROES-Keys übertragen.
+    const nettos = {};
+    let hasNetto = false;
+    HEROES.forEach(h => {
+      const v = d.nettos ? d.nettos[h.nettoKey] : null;
+      nettos[h.key] = (v === null || v === undefined) ? null : v;
+      if (nettos[h.key] !== null) hasNetto = true;
+    });
+    return {
+      nettos, hasNetto,
+      basis:   d.base   || '',
+      zweit:   d.second || '',
+      stress1: d.s1     || '',
+      stress2: d.s2     || '',
+      isPaid:  !!d.isPaid,
+    };
+  } catch (e) {
+    console.warn('Energie-Profil-Fetch fehlgeschlagen:', e);
+    return urlData; // Fallback: was auch immer in der URL stand (i.d.R. leer → no-data)
+  }
+}
+
+async function render() {
+  const { nettos, hasNetto, basis, zweit, stress1, stress2, isPaid } = await loadData();
   const el = document.getElementById('content');
 
   if (!hasNetto) {
@@ -617,7 +663,7 @@ function animate(full) {
   });
 }
 
-render();
+render().then(postHeight);
 
 /* === 6HEROES iframe Auto-Höhe: Sender (robust) === */
 function postHeight(){
