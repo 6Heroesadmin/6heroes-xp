@@ -534,16 +534,13 @@ async function render() {
     }
     html += `<div class="energie-more">Mehr über deine Energiebilanz <span class="arrow">&rarr;</span></div>`;
     el.innerHTML = html;
-    // Inhalt in einen Link wickeln → _top, Ziel = diese Datei in Vollansicht (compact=0)
-    // Detail-URL sauber bauen: Vollansicht erzwingen (compact=0), frame-Param raus
-    const dp = new URLSearchParams(location.search);
-    dp.set('compact', '0');
-    dp.delete('frame');
+    // Inhalt in einen Link wickeln → _top, Ziel = versteckte Noloco-Seite "energie".
+    // Diese lädt energie.html?email=[@email]&compact=0 und holt die Daten per
+    // profile.js selbst — deshalb müssen hier KEINE Params mehr mit (kein compact/frame/Nettos).
     const link = document.createElement('a');
     link.className = 'energie-link';
-    // _top öffnet im obersten Fenster (Noloco), nicht im iFrame → absolute Netlify-URL nötig,
-    // sonst löst root-relativ zu app.6heroes.de/energie.html auf (404).
-    link.href = 'https://regal-mooncake-d3a250.netlify.app/energie.html?' + dp.toString();
+    // _top öffnet im obersten Fenster (Noloco) → App-Route, nicht die nackte Netlify-URL.
+    link.href = 'https://app.6heroes.de/energie';
     link.target = '_top';
     while (el.firstChild) link.appendChild(el.firstChild);
     el.appendChild(link);
