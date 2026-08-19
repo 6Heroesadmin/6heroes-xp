@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dein Basisheld – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
@@ -404,11 +406,36 @@ const KOMPAKT = {
  ]
 };
 const QUEST_LINKS={wachsen:"https://app.6heroes.de/meine-quests?kategorie=wachsen",stress:"https://app.6heroes.de/meine-quests?kategorie=stress",energie:"https://app.6heroes.de/meine-quests?kategorie=energie"};
+const PROFILE_FN='/.netlify/functions/profile';
 function hexToRgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
-function render(){
-  const key=(new URLSearchParams(location.search).get("hero")||"guardian").toLowerCase();
+
+/* Held bestimmen:
+   - ?hero=… in der URL → diesen Helden nehmen (Fallback, z.B. kombi-Sprung).
+   - sonst ?email=… → Profil per profile.js holen; rolle entscheidet base vs. second.
+   Gibt den Hero-Key (lowercase) zurück oder '' wenn nichts ermittelbar. */
+async function resolveHeroKey(rolle){
+  const p=new URLSearchParams(location.search);
+  const heroParam=(p.get("hero")||"").trim().toLowerCase();
+  if(heroParam) return heroParam;
+  const email=(p.get("email")||"").trim();
+  if(!email) return "";
+  try{
+    const res=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));
+    if(!res.ok) throw new Error('profile fn '+res.status);
+    const d=await res.json();
+    const name=(rolle==="zweit") ? (d.second||"") : (d.base||"");
+    return String(name).trim().toLowerCase();
+  }catch(e){
+    console.warn('Basisheld-Profil-Fetch fehlgeschlagen:',e);
+    return "";
+  }
+}
+
+async function render(){
   const rolle=(new URLSearchParams(location.search).get("rolle")||"basis").toLowerCase();
   document.getElementById("heroRole").textContent = (rolle==="zweit") ? "Dein Zweitheld" : "Dein Basisheld";
+  let key=await resolveHeroKey(rolle);
+  if(!key || !HERO_DATA[key]) key="guardian"; // letzter Fallback, falls nichts ermittelbar
   const d=HERO_DATA[key]||HERO_DATA.guardian;
   const r=document.documentElement.style;
   r.setProperty("--accent",d.accent);r.setProperty("--accent-soft",hexToRgba(d.accent,0.10));r.setProperty("--accent-line",hexToRgba(d.accent,0.45));
@@ -439,7 +466,7 @@ function render(){
   document.getElementById("bridge").href=d.bridge||"#";
 }
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
-window.addEventListener("load",()=>{render();postHeight();});
+window.addEventListener("load",()=>{render().then(postHeight);});
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
 </script>

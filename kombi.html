@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deine Kombination – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
@@ -2170,10 +2172,38 @@ const COMBO = {
 
 function hexToRgba(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;}
 
-function render(){
+const PROFILE_FN='/.netlify/functions/profile';
+
+/* basis/zweit bestimmen:
+   - ?basis=…&zweit=… in der URL → nehmen (Fallback für Direkt-Einbindung).
+   - sonst ?email=… → Profil per profile.js holen (base/second).
+   Rückgabe: {basis, zweit} als lowercase-Keys. */
+async function resolveHeroes(){
   const p=new URLSearchParams(location.search);
-  const basis=(p.get("basis")||"commander").toLowerCase();
-  const zweit=(p.get("zweit")||"explorer").toLowerCase();
+  const bParam=(p.get("basis")||"").trim().toLowerCase();
+  const zParam=(p.get("zweit")||"").trim().toLowerCase();
+  if(bParam && zParam) return {basis:bParam, zweit:zParam};
+  const email=(p.get("email")||"").trim();
+  if(email){
+    try{
+      const res=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));
+      if(!res.ok) throw new Error('profile fn '+res.status);
+      const d=await res.json();
+      return {
+        basis:String(d.base||bParam||"commander").trim().toLowerCase(),
+        zweit:String(d.second||zParam||"explorer").trim().toLowerCase(),
+      };
+    }catch(e){
+      console.warn('Kombi-Profil-Fetch fehlgeschlagen:',e);
+    }
+  }
+  return {basis:bParam||"commander", zweit:zParam||"explorer"};
+}
+
+async function render(){
+  const heroes=await resolveHeroes();
+  const basis=heroes.basis;
+  const zweit=heroes.zweit;
   const cB=HERO_COLOR[basis]||"#0B63CE", cZ=HERO_COLOR[zweit]||"#F0672A";
   const r=document.documentElement.style;
   r.setProperty("--accent",cB); r.setProperty("--accent-soft",hexToRgba(cB,0.10)); r.setProperty("--accent-line",hexToRgba(cB,0.45));
@@ -2189,10 +2219,10 @@ function render(){
   document.getElementById("lpBasis").textContent="Basisheld";
   document.getElementById("lpZweit").textContent="Zweitheld";
 
-  // Einzelseiten-Links
-  const base="https://regal-mooncake-d3a250.netlify.app/basisheld.html?hero=";
-  document.getElementById("lnkBasis").href=base+basis;
-  document.getElementById("lnkZweit").href=base+zweit;
+  // Einzelseiten-Links → versteckte Noloco-Seiten (holen sich Held selbst per E-Mail).
+  // Kein ?hero= mehr nötig; die Zielseiten fetchen base/second über profile.js.
+  document.getElementById("lnkBasis").href="https://app.6heroes.de/basisheld";
+  document.getElementById("lnkZweit").href="https://app.6heroes.de/zweitheld";
 
   if(!data){
     document.getElementById("comboName").innerHTML='Deine <span class="accent">Kombination</span>';
@@ -2222,7 +2252,7 @@ function render(){
 }
 
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
-window.addEventListener("load",()=>{render();postHeight();});
+window.addEventListener("load",()=>{render().then(postHeight);});
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
 </script>
