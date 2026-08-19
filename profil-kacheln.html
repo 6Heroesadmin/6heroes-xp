@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mein Heldenprofil – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -319,13 +321,13 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
       }
 
       const tiles = [
-        { role: 'Basisheld', hero: base,   url: `${BASE_SITE}/basisheld.html?hero=${lc(base)}&rolle=basis`,   locked: false },
-        { role: 'Zweitheld', hero: second, url: `${BASE_SITE}/basisheld.html?hero=${lc(second)}&rolle=zweit`, locked: !isPaid },
+        { role: 'Basisheld', hero: base,   url: `https://app.6heroes.de/basisheld`,  locked: false },
+        { role: 'Zweitheld', hero: second, url: `https://app.6heroes.de/zweitheld`,  locked: !isPaid },
       ];
 
       const comboTile = comboTileHTML({
         base, second,
-        url: `${BASE_SITE}/kombi.html?basis=${lc(base)}&zweit=${lc(second)}`,
+        url: `https://app.6heroes.de/kombihelden`,
         locked: !isPaid,
       });
 
