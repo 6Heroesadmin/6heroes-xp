@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Das 6Heroes Heldenrad – erklärt</title>
+  <meta name="description" content="Das Heldenrad erklärt: Basisheld, Zweitheld, Stresshelden und Heldenenergie – wie dein persönliches 6Heroes-Muster zusammenspielt und was du daran abliest." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/fonts.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1E293B; --navy-mid:#2D3F57; --navy-light:#334155;
+      --gold:#F2B705; --gold-dark:#D49E00;
+      --white:#FFFFFF; --off-white:#F8FAFC; --text-muted:#94A3B8; --text-body:#CBD5E1;
+      --commander:#0B63CE; --guardian:#1F9D62; --innovator:#F2B705;
+      --strategist:#475569; --sage:#C0266A; --explorer:#F0672A;
+      --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+      --shadow:0 4px 32px rgba(0,0,0,0.3);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--navy); color:var(--white); line-height:1.65; overflow-x:hidden; }
+    h1,h2,h3,h4 { font-family:'DM Serif Display',serif; line-height:1.2; }
+    a { color:inherit; text-decoration:none; }
+    img { display:block; max-width:100%; }
+    .container { max-width:920px; margin:0 auto; padding:0 24px; }
+
+    /* NAV */
+    nav { display:flex; align-items:center; justify-content:space-between; padding:20px 32px; position:sticky; top:0; z-index:40; background:rgba(30,41,59,.92); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav-logo a { display:flex; align-items:center; gap:10px; font-family:'DM Serif Display',serif; font-size:1.4rem; }
+    .logo-dots { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+    .logo-dots span { width:7px; height:7px; border-radius:50%; }
+    .logo-dots span:nth-child(1){background:var(--commander)} .logo-dots span:nth-child(2){background:var(--guardian)}
+    .logo-dots span:nth-child(3){background:var(--innovator)} .logo-dots span:nth-child(4){background:var(--strategist)}
+    .logo-dots span:nth-child(5){background:var(--sage)} .logo-dots span:nth-child(6){background:var(--explorer)}
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a { color:var(--text-body); font-size:.95rem; transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .btn-nav { background:var(--gold); color:var(--navy)!important; padding:10px 22px; border-radius:999px; font-weight:600; }
+    .btn-nav-mobile { display:none; }
+
+    /* HERO / INTRO */
+    .page-hero { padding:56px 0 20px; text-align:center; }
+    .eyebrow { color:var(--gold); font-family:'Outfit',sans-serif; font-weight:600; letter-spacing:.14em; text-transform:uppercase; font-size:.8rem; margin-bottom:16px; }
+    .page-hero h1 { font-size:2.6rem; margin-bottom:20px; }
+    .page-hero p.lead { color:var(--text-body); font-size:1.12rem; max-width:680px; margin:0 auto; }
+
+    .wheel-figure { margin:40px auto 8px; max-width:560px; }
+    .wheel-figure img { width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow); cursor:zoom-in; }
+    .wheel-cap { text-align:center; color:var(--text-muted); font-size:.85rem; margin-top:12px; }
+
+    /* CONTENT */
+    .content { padding:24px 0 40px; }
+    .content h2 { font-size:1.9rem; margin:52px 0 18px; }
+    .content h3 { font-size:1.3rem; margin:32px 0 10px; }
+    .content p { color:var(--text-body); margin-bottom:16px; }
+    .content strong { color:var(--white); }
+
+    /* Callout / Frage-Antwort */
+    .callout { border-left:3px solid var(--gold); background:rgba(242,183,5,.07); padding:16px 20px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:20px 0; font-size:1.05rem; }
+    .callout.plain { border-left-color:var(--navy-light); background:rgba(255,255,255,.04); }
+    .callout em { color:var(--gold); font-style:normal; font-weight:600; }
+
+    /* Helden-Karten */
+    .hero-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:24px 0; }
+    .hero-box { background:var(--navy-mid); border-radius:var(--radius-md); padding:20px 22px; border-top:3px solid var(--h,#888); }
+    .hero-box h4 { font-size:1.15rem; margin-bottom:6px; }
+    .hero-box p { font-size:.92rem; margin-bottom:10px; color:var(--text-body); }
+    .hero-box .traits { font-size:.85rem; color:var(--text-muted); }
+    .hero-box .traits { font-size:.85rem; color:var(--text-muted); margin-top:10px; }
+    .hero-box .traits.first { margin-top:0; }
+    .hc-commander{--h:var(--commander)} .hc-innovator{--h:var(--innovator)} .hc-strategist{--h:var(--strategist)}
+    .hc-sage{--h:var(--sage)} .hc-guardian{--h:var(--guardian)} .hc-explorer{--h:var(--explorer)}
+
+    /* Rollen-Boxen B/Z/S1/S2 */
+    .roles { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:24px 0; }
+    .role-box { background:var(--navy-mid); border-radius:var(--radius-md); padding:18px 20px; display:flex; gap:14px; align-items:flex-start; }
+    .role-badge { flex-shrink:0; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; font-family:'Outfit',sans-serif; font-size:.95rem; }
+    .rb-b{background:var(--gold);color:var(--navy)} .rb-z{background:var(--explorer);color:#fff}
+    .rb-s1{background:var(--sage);color:#fff} .rb-s2{background:#8B1E4A;color:#fff}
+    .role-box h4 { font-size:1.05rem; margin-bottom:4px; }
+    .role-box p { font-size:.9rem; color:var(--text-body); margin:0; }
+
+    /* Teaser-Box für spätere Seiten */
+    .teaser { background:linear-gradient(135deg, rgba(45,63,87,.8), rgba(30,41,59,.8)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-md); padding:22px 24px; margin:24px 0; }
+    .teaser h4 { font-size:1.1rem; margin-bottom:8px; color:var(--gold); }
+    .teaser p { font-size:.95rem; margin:0; color:var(--text-body); }
+
+    /* CTA */
+    .cta-block { text-align:center; padding:48px 24px 20px; }
+    .cta-block h2 { font-size:1.8rem; margin-bottom:16px; }
+    .btn-primary { display:inline-block; background:var(--gold); color:var(--navy); padding:15px 34px; border-radius:999px; font-weight:600; font-size:1.05rem; }
+    .back-link { display:inline-block; margin:0 0 4px; color:var(--text-muted); font-size:.92rem; }
+    .back-link:hover { color:var(--white); }
+
+    /* FOOTER */
+    footer { border-top:1px solid rgba(255,255,255,.06); padding:36px 0; margin-top:40px; }
+    .footer-inner { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+    .footer-logo { font-family:'DM Serif Display',serif; font-size:1.2rem; }
+    .footer-links { display:flex; flex-wrap:wrap; gap:20px; }
+    .footer-links a { color:var(--text-muted); font-size:.88rem; }
+    .footer-links a:hover { color:var(--white); }
+    .footer-copy { color:var(--text-muted); font-size:.82rem; width:100%; }
+
+    /* Lightbox */
+    .lb { position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; padding:24px; z-index:100; cursor:zoom-out; }
+    .lb.open { display:flex; }
+    .lb img { max-width:100%; max-height:100%; border-radius:12px; }
+
+    @media (max-width:720px){
+      .nav-links { display:none; }
+      .btn-nav-mobile { display:inline-block; background:var(--gold); color:var(--navy)!important; padding:9px 18px; border-radius:999px; font-weight:600; font-size:.9rem; }
+      .page-hero h1 { font-size:2rem; }
+      .hero-grid, .roles { grid-template-columns:1fr; }
+      .content h2 { font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="/index.html">
+      <div class="logo-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      6Heroes
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/helden.html">Die Helden</a></li>
+    <li><a href="/heldenkonferenz.html">Heldenkonferenz</a></li>
+    <li><a href="/problem-und-ablauf.html">Wie es funktioniert</a></li>
+    <li><a href="/preise.html">Preise</a></li>
+    <li><a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a></li>
+  </ul>
+  <a href="https://app.6heroes.de" class="btn-nav-mobile" target="_top">Login →</a>
+</nav>
+
+<div class="container">
+
+  <div class="page-hero">
+    <a href="/index.html" class="back-link">← Zurück zur Startseite</a>
+    <div class="eyebrow">Das Modell im Detail</div>
+    <h1>Das 6Heroes Heldenrad</h1>
+    <p class="lead">Das Heldenrad ist die zentrale Darstellung deines persönlichen 6Heroes-Profils. Es zeigt, welche der sechs Helden in deinem Denken und Verhalten besonders stark sichtbar werden, welche dich im Alltag prägen und wie sich dein Verhalten unter Stress verändern kann.</p>
+  </div>
+
+  <figure class="wheel-figure">
+    <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Heldenrad.png"
+         alt="Beispiel-Heldenrad mit Basisheld (B), Zweitheld (Z) und Stresshelden (S1, S2)"
+         onclick="openLb(this)" loading="eager">
+    <figcaption class="wheel-cap">Ein Beispiel-Heldenrad – mit Basisheld (B), Zweitheld (Z) und den Stresshelden (S1, S2). Antippen zum Vergrößern.</figcaption>
+  </figure>
+
+  <div class="content">
+
+    <p>Dabei geht es nicht darum, dich in einen einzigen Persönlichkeitstyp einzuordnen. Denn bei 6Heroes gilt: <strong>Jeder Mensch trägt alle sechs Helden in sich.</strong></p>
+
+    <div class="callout">
+      Die Frage lautet deshalb nicht: <em>„Welcher Held bin ich?“</em><br>
+      Sondern: <em>„Wie setzt sich mein persönliches Muster aus den sechs Helden zusammen?“</em>
+    </div>
+
+    <p>Genau dieses individuelle Zusammenspiel macht das Heldenrad sichtbar.</p>
+
+    <h2>Die sechs Helden</h2>
+    <p>Das Heldenrad besteht aus sechs Helden. Jeder von ihnen steht für bestimmte Denk- und Verhaltensweisen, Stärken und Bedürfnisse.</p>
+
+    <div class="hero-grid">
+      <div class="hero-box hc-commander">
+        <h4>Commander</h4>
+        <p>Steht für Entschlossenheit, Verantwortung und Umsetzung. Er möchte Dinge voranbringen, Entscheidungen treffen und Ergebnisse erzielen.</p>
+        <div class="traits"><strong>Stärken:</strong> Entscheidungsfreude, Durchsetzungsfähigkeit, Verantwortungsübernahme, Klarheit, Handlungsorientierung.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Ungeduld, Druck auf andere, starkes Kontrollbedürfnis.</div>
+      </div>
+      <div class="hero-box hc-innovator">
+        <h4>Innovator</h4>
+        <p>Steht für Ideen, Veränderung und neue Möglichkeiten. Er denkt gerne darüber nach, wie etwas anders, besser oder völlig neu gemacht werden könnte.</p>
+        <div class="traits"><strong>Stärken:</strong> Kreativität, Offenheit, Zukunftsorientierung, Begeisterungsfähigkeit, Mut, Muster zu hinterfragen.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Sprunghaftigkeit, mangelnde Konsequenz, ständige Suche nach Neuem.</div>
+      </div>
+      <div class="hero-box hc-strategist">
+        <h4>Strategist</h4>
+        <p>Steht für Struktur, Planung und Systematik. Er möchte Zusammenhänge erkennen, Komplexität ordnen und einen guten Weg zum Ziel entwickeln.</p>
+        <div class="traits"><strong>Stärken:</strong> Planung, Organisation, Struktur, Priorisierung, strategisches Denken.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Überplanung, Starrheit, zu großes Kontrollbedürfnis.</div>
+      </div>
+      <div class="hero-box hc-sage">
+        <h4>Sage</h4>
+        <p>Steht für Wissen, Verstehen und Reflexion. Er möchte Dinge durchdringen, Zusammenhänge erkennen und Entscheidungen auf einer guten Informationsbasis treffen.</p>
+        <div class="traits"><strong>Stärken:</strong> analytisches Denken, Reflexionsfähigkeit, Wissensorientierung, Differenziertheit, Tiefgang.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Grübeln, zu langes Abwägen, Entscheidungsvermeidung.</div>
+      </div>
+      <div class="hero-box hc-guardian">
+        <h4>Guardian</h4>
+        <p>Steht für Beziehung, Loyalität, Fürsorge und Stabilität. Er nimmt Menschen und zwischenmenschliche Dynamiken besonders stark wahr.</p>
+        <div class="traits"><strong>Stärken:</strong> Empathie, Loyalität, Verlässlichkeit, Teamorientierung, Fürsorge.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Konfliktvermeidung, Selbstvernachlässigung, zu großes Harmoniebedürfnis.</div>
+      </div>
+      <div class="hero-box hc-explorer">
+        <h4>Explorer</h4>
+        <p>Steht für Freiheit, Neugier und neue Erfahrungen. Er möchte entdecken, ausprobieren und eigene Wege gehen.</p>
+        <div class="traits"><strong>Stärken:</strong> Flexibilität, Offenheit, Mut, Anpassungsfähigkeit, Entdeckergeist.</div>
+        <div class="traits"><strong>Übersteuerung:</strong> Rastlosigkeit, mangelnde Verbindlichkeit, Vermeiden von Einschränkungen.</div>
+      </div>
+    </div>
+
+    <h2>Was bedeutet die Ausprägung eines Helden?</h2>
+    <p>Das Heldenrad zeigt, wie typisch die Verhaltensweisen der einzelnen Helden für dich sind. Je stärker ein Held ausgeprägt ist, desto häufiger und selbstverständlicher greifst du auf die mit ihm verbundenen Denk- und Verhaltensweisen zurück.</p>
+
+    <div class="callout plain">
+      Ein hoher Wert bedeutet: <em>„Diese Seite von mir zeigt sich häufig und fühlt sich für mich natürlich an.“</em><br>
+      Ein niedrigerer Wert bedeutet: <em>„Auf diese Verhaltensweise greife ich weniger automatisch zurück.“</em>
+    </div>
+
+    <p>Dabei ist wichtig: <strong>Hoch bedeutet nicht besser. Niedrig bedeutet nicht schlechter.</strong> Ein niedrigerer Wert bedeutet auch nicht, dass du etwas nicht kannst. Er zeigt lediglich, dass dieses Verhalten vermutlich weniger stark zu deinen natürlichen Mustern gehört.</p>
+
+    <h3>Ein einfaches Beispiel</h3>
+    <p>Angenommen, dein Sage ist besonders stark ausgeprägt. Dann möchtest du Dinge wahrscheinlich häufig erst verstehen, Informationen sammeln und Zusammenhänge erkennen, bevor du handelst. Ist dein Commander weniger stark ausgeprägt, bedeutet das nicht, dass du keine Entscheidungen treffen oder Verantwortung übernehmen kannst. Es bedeutet lediglich: Schnelles Entscheiden und direktes Vorangehen sind wahrscheinlich weniger häufig dein erster natürlicher Impuls.</p>
+
+    <div class="callout">
+      Das Heldenrad zeigt nicht: <em>„Was kannst du?“</em><br>
+      Sondern: <em>„Welche Verhaltensweisen liegen dir besonders nahe – und auf welche greifst du weniger automatisch zurück?“</em>
+    </div>
+
+    <h2>Dein persönliches Heldenmuster</h2>
+    <p>Entscheidend ist nicht nur, welcher einzelne Held besonders stark ausgeprägt ist. Wichtig ist das Zusammenspiel aller sechs Helden. Denn zwei Menschen können denselben stärksten Helden haben und sich trotzdem deutlich voneinander unterscheiden.</p>
+    <p>Ein Commander mit einem starken <strong>Guardian</strong> kann Verantwortung besonders stark über Menschen, Loyalität und Fürsorge leben. Ein Commander mit einem starken <strong>Strategist</strong> kann Verantwortung stärker über Planung, Struktur und Organisation ausdrücken. Und ein Commander mit einem starken <strong>Innovator</strong> kann besonders durch Veränderungswillen, Geschwindigkeit und neue Ideen geprägt sein.</p>
+    <p>Deshalb betrachtet 6Heroes nicht einzelne Helden isoliert. Das gesamte Heldenrad bildet dein persönliches Muster.</p>
+
+    <h2>Die vier Rollen im Heldenrad</h2>
+    <p>Zusätzlich zur reinen Ausprägung macht das Heldenrad vier besondere Rollen sichtbar. Sie geben ihm eine dynamische Ebene.</p>
+
+    <div class="roles">
+      <div class="role-box">
+        <div class="role-badge rb-b">B</div>
+        <div><h4>Basisheld</h4><p>Der Held, der dein natürliches Verhalten besonders stark prägt – deine persönliche Grundhaltung. Er beeinflusst, wie du Situationen wahrnimmst, entscheidest, Probleme angehst und auf andere wirkst.</p></div>
+      </div>
+      <div class="role-box">
+        <div class="role-badge rb-z">Z</div>
+        <div><h4>Zweitheld</h4><p>Er beeinflusst, <em>wie</em> sich dein Basisheld konkret zeigt. Der Basisheld beschreibt „Was prägt mich?“, der Zweitheld ergänzt „Auf welche Art lebe ich diese Seite?“.</p></div>
+      </div>
+      <div class="role-box">
+        <div class="role-badge rb-s1">S1</div>
+        <div><h4>Stressheld 1</h4><p>Das Verhalten, auf das du bei zunehmender Belastung typischerweise zuerst zurückgreifst. Meist eine grundsätzlich sinnvolle Strategie – die unter Stress nur stärker und einseitiger wird.</p></div>
+      </div>
+      <div class="role-box">
+        <div class="role-badge rb-s2">S2</div>
+        <div><h4>Stressheld 2</h4><p>Wenn die Belastung weiter zunimmt und die erste Stressstrategie nicht ausreicht, beschreibt S2 den nächsten Schritt in der Veränderung deines Verhaltens.</p></div>
+      </div>
+    </div>
+
+    <h3>Basisheld und Zweitheld</h3>
+    <p>Gerade die Kombination aus Basisheld und Zweitheld macht das persönliche Profil deutlich individueller als eine einfache Einteilung in sechs Typen. Ein Commander mit Guardian als Zweitheld tritt anders auf als ein Commander mit Strategist als Zweitheld: Der Guardian bewegt ihn stärker in Richtung Beziehung und Fürsorge, der Strategist stärker in Richtung Struktur und Planung.</p>
+    <p>Wichtig: Dein Basisheld beschreibt dich nicht vollständig. Er ist ein wichtiger Teil deines Profils – aber immer eingebettet in das Zusammenspiel mit den anderen fünf Helden. Auch ein weiterer stark ausgeprägter Held kann dein Verhalten deutlich beeinflussen. Das Heldenrad soll deshalb immer als Gesamtbild betrachtet werden.</p>
+
+    <h2>Verhalten unter Stress</h2>
+    <p>Unser Verhalten bleibt nicht in jeder Situation gleich. Unter Zeitdruck, Konflikten, Unsicherheit oder hoher Belastung greifen Menschen häufig auf bestimmte Muster besonders stark zurück. Deshalb bildet 6Heroes nicht nur das typische Alltagsverhalten ab, sondern betrachtet auch, was mit deinem Verhalten passiert, wenn Stress entsteht – über die beiden Rollen <strong>S1</strong> und <strong>S2</strong>.</p>
+    <p>Ein Stressheld ist dabei kein schlechter Held. Die Schwierigkeit entsteht meist erst, wenn ein grundsätzlich sinnvolles Verhalten unter Stress zu stark und einseitig wird:</p>
+    <div class="callout plain">
+      Aus Struktur kann Kontrolle werden. Aus Verantwortung kann Druck entstehen. Aus Reflexion kann Grübeln werden. Aus Fürsorge kann Überfürsorge entstehen. Aus Freiheitsbedürfnis kann Rückzug werden.
+    </div>
+    <p>6Heroes betrachtet Stress damit nicht als einzelnes Verhalten, sondern als möglichen Verlauf:</p>
+    <p style="text-align:center;color:var(--gold);font-weight:600;">normales Verhalten → steigender Stress → S1 → weitere Belastung → S2</p>
+
+    <div class="teaser">
+      <h4>Mehr zum Thema Stress</h4>
+      <p>Wie deine Stressmuster im Detail funktionieren, woran du sie früh erkennst und wie du bewusst gegensteuerst, erfährst du bald auf einer eigenen ausführlichen Seite zum Thema Stress.</p>
+    </div>
+
+    <h2>Ausprägung und Rolle sind nicht dasselbe</h2>
+    <p>Ein wichtiger Unterschied: Die <strong>Ausprägung</strong> zeigt, wie typisch das Verhalten eines Helden grundsätzlich für dich ist. Die <strong>Rolle</strong> zeigt, welche besondere Funktion ein Held innerhalb deines persönlichen Systems übernimmt. Ein Held kann stark ausgeprägt sein, ohne automatisch dein Basisheld oder Zweitheld zu sein. Ebenso beschreiben S1 und S2 nicht einfach deine stärksten Helden, sondern dein Verhalten unter Belastung.</p>
+
+    <h2>Die Heldenenergie</h2>
+    <p>Zusätzlich zum Heldenprofil betrachtet 6Heroes eine zweite Frage: Welche Verhaltensweisen geben dir Energie – und welche kosten dich Energie? Das ist die Heldenenergie. Sie beantwortet eine andere Frage als die Ausprägung.</p>
+    <div class="callout plain">
+      Die Ausprägung fragt: <em>„Wie typisch ist dieses Verhalten für mich?“</em><br>
+      Die Heldenenergie fragt: <em>„Wie fühlt es sich für mich an, wenn ich dieses Verhalten nutze?“</em>
+    </div>
+    <p>Denn etwas kann sehr typisch für dich sein und dich trotzdem viel Energie kosten. Du kannst zum Beispiel sehr gut organisieren, weil du es über Jahre gelernt hast – doch diese Rolle kostet dich vielleicht dauerhaft Kraft. Gleichzeitig kann dir kreatives Entwickeln neuer Ideen viel Energie geben, obwohl du diese Seite bisher weniger nutzt.</p>
+
+    <div class="teaser">
+      <h4>Mehr zum Thema Energie</h4>
+      <p>Wie du deine Energiegeber und Energiekosten erkennst und für deine Entwicklung nutzt, erfährst du bald auf einer eigenen ausführlichen Seite zur Heldenenergie.</p>
+    </div>
+
+    <h2>Kein Held ist besser als ein anderer</h2>
+    <p>Ein zentrales Prinzip von 6Heroes: Es gibt keinen besten Helden. Commander ist nicht besser als Guardian, Strategist nicht besser als Explorer, Sage nicht besser als Innovator. Jeder Held bringt besondere Stärken mit – und jeder kann problematisch werden, wenn seine Verhaltensweisen zu stark, zu einseitig oder in der falschen Situation eingesetzt werden.</p>
+    <p>Persönliche Entwicklung bedeutet deshalb nicht, bei allen Helden möglichst hohe Werte zu erreichen. Das Ziel ist vielmehr, die eigenen Muster besser zu verstehen und immer bewusster entscheiden zu können, welche Seite von dir eine Situation gerade braucht.</p>
+
+    <h2>Vom Heldenrad zur persönlichen Entwicklung</h2>
+    <p>Das Heldenrad ist nicht nur das Ergebnis eines Persönlichkeitstests, sondern der Ausgangspunkt für die weitere Entwicklung mit 6Heroes. Dabei helfen drei Fragen:</p>
+    <div class="roles">
+      <div class="role-box"><div class="role-badge rb-b" style="background:var(--guardian)">A</div><div><h4>Activate</h4><p>Welche Seite von mir könnte ich häufiger nutzen? Vielleicht verlangt eine Situation Fähigkeiten, auf die du bisher weniger automatisch zurückgreifst.</p></div></div>
+      <div class="role-box"><div class="role-badge rb-b" style="background:var(--commander);color:#fff">P</div><div><h4>Perform</h4><p>Welche meiner natürlichen Stärken kann ich noch bewusster einsetzen? Vorhandene Stärken nicht nur besitzen, sondern gezielt nutzen.</p></div></div>
+      <div class="role-box"><div class="role-badge rb-s1" style="background:var(--sage)">L</div><div><h4>Stop / Limit</h4><p>Welche Verhaltensweisen neige ich dazu zu übertreiben? Solche Muster früh zu erkennen und bewusst zu begrenzen, ist ein wichtiger Teil der Entwicklung.</p></div></div>
+      <div class="role-box"><div class="role-badge rb-z" style="background:var(--explorer)">→</div><div><h4>Das Ziel</h4><p>Mehr Verhaltensflexibilität: nicht immer automatisch gleich zu reagieren, sondern bewusst zu wählen, welche deiner sechs Seiten dir jetzt am meisten hilft.</p></div></div>
+    </div>
+
+    <h2>Das Heldenrad als persönliche Landkarte</h2>
+    <p>Am besten lässt sich das Heldenrad als eine persönliche Landkarte deines Verhaltens verstehen. Es zeigt, was typisch für dich ist (die Ausprägung deiner sechs Helden), welche Seite dich besonders prägt (dein Basisheld), wie diese ergänzt wird (dein Zweitheld), welche weiteren Seiten eine wichtige Rolle spielen (dein gesamtes Profil), wie du dich unter Stress veränderst (S1 und S2) und was dir Energie gibt oder kostet (deine Heldenenergie).</p>
+
+    <div class="callout">
+      Das Heldenrad sagt dir am Ende nicht: <em>„Du bist dieser Held.“</em><br>
+      Sondern: <em>„Du trägst alle sechs Helden in dir. Einige ihrer Verhaltensweisen sind besonders typisch für dich. Andere nutzt du weniger automatisch. Unter Stress können sich deine Muster verändern. Und manche Verhaltensweisen geben dir mehr Energie als andere.“</em>
+    </div>
+
+    <p>Denn die eigentliche Stärke liegt nicht darin, einen bestimmten Helden zu sein. Sie liegt darin, zu erkennen, welcher deiner Helden dir in welcher Situation am besten helfen kann. Das ist die zentrale Idee des 6Heroes Heldenrads.</p>
+
+  </div>
+
+  <div class="cta-block">
+    <h2>Entdecke dein eigenes Heldenrad</h2>
+    <p style="color:var(--text-body);margin-bottom:24px;">Ein 10-minütiges Assessment zeigt dir dein persönliches Muster – mit Basisheld, Zweitheld und deinen Stressmustern.</p>
+    <a href="https://6heroes.de/assessment.html" class="btn-primary" target="_top">Heldenprofil entdecken →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-logo">6Heroes</div>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
+      <a href="mailto:admin@6heroes.de">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2026 Reichert &amp; Rempel GbR · Anna Christina Reichert &amp; Stefan Rempel</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" onclick="this.classList.remove('open')"><img id="lbimg" src="" alt=""></div>
+<script>
+  function openLb(el){ document.getElementById('lbimg').src = el.src; document.getElementById('lb').classList.add('open'); }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.getElementById('lb').classList.remove('open'); } });
+</script>
+
+</body>
+</html>
