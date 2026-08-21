@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Die Heldenenergie – erklärt</title>
+  <meta name="description" content="Die Heldenenergie erklärt: Welche deiner sechs Helden dir Energie geben und welche dich Kraft kosten – und warum das etwas anderes ist als Ausprägung." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/fonts.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1E293B; --navy-mid:#2D3F57; --navy-light:#334155;
+      --gold:#F2B705; --gold-dark:#D49E00;
+      --white:#FFFFFF; --off-white:#F8FAFC; --text-muted:#94A3B8; --text-body:#CBD5E1;
+      --commander:#0B63CE; --guardian:#1F9D62; --innovator:#F2B705;
+      --strategist:#475569; --sage:#C0266A; --explorer:#F0672A;
+      --pos:#1F9D62; --neg:#C0266A;
+      --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+      --shadow:0 4px 32px rgba(0,0,0,0.3);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--navy); color:var(--white); line-height:1.65; overflow-x:hidden; }
+    h1,h2,h3,h4 { font-family:'DM Serif Display',serif; line-height:1.2; }
+    a { color:inherit; text-decoration:none; }
+    img { display:block; max-width:100%; }
+    .container { max-width:920px; margin:0 auto; padding:0 24px; }
+
+    nav { display:flex; align-items:center; justify-content:space-between; padding:20px 32px; position:sticky; top:0; z-index:40; background:rgba(30,41,59,.92); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav-logo a { display:flex; align-items:center; gap:10px; font-family:'DM Serif Display',serif; font-size:1.4rem; }
+    .logo-dots { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+    .logo-dots span { width:7px; height:7px; border-radius:50%; }
+    .logo-dots span:nth-child(1){background:var(--commander)} .logo-dots span:nth-child(2){background:var(--guardian)}
+    .logo-dots span:nth-child(3){background:var(--innovator)} .logo-dots span:nth-child(4){background:var(--strategist)}
+    .logo-dots span:nth-child(5){background:var(--sage)} .logo-dots span:nth-child(6){background:var(--explorer)}
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a { color:var(--text-body); font-size:.95rem; transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .btn-nav { background:var(--gold); color:var(--navy)!important; padding:10px 22px; border-radius:999px; font-weight:600; }
+    .btn-nav-mobile { display:none; }
+
+    .page-hero { padding:56px 0 20px; text-align:center; }
+    .eyebrow { color:var(--gold); font-family:'Outfit',sans-serif; font-weight:600; letter-spacing:.14em; text-transform:uppercase; font-size:.8rem; margin-bottom:16px; }
+    .page-hero h1 { font-size:2.6rem; margin-bottom:20px; }
+    .page-hero p.lead { color:var(--text-body); font-size:1.12rem; max-width:680px; margin:0 auto; }
+
+    .wheel-figure { margin:40px auto 8px; max-width:560px; }
+    .wheel-figure img { width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow); cursor:zoom-in; }
+    .wheel-cap { text-align:center; color:var(--text-muted); font-size:.85rem; margin-top:12px; }
+
+    .content { padding:24px 0 40px; }
+    .content h2 { font-size:1.9rem; margin:52px 0 18px; }
+    .content h3 { font-size:1.3rem; margin:32px 0 10px; }
+    .content p { color:var(--text-body); margin-bottom:16px; }
+    .content strong { color:var(--white); }
+
+    .callout { border-left:3px solid var(--gold); background:rgba(242,183,5,.07); padding:16px 20px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:20px 0; font-size:1.05rem; }
+    .callout.plain { border-left-color:var(--navy-light); background:rgba(255,255,255,.04); }
+    .callout em { color:var(--gold); font-style:normal; font-weight:600; }
+
+    /* 2x2 Kombinationen */
+    .combo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin:24px 0; }
+    .combo-box { background:var(--navy-mid); border-radius:var(--radius-md); padding:20px 22px; border-top:3px solid var(--c,#888); }
+    .combo-box .tag { font-size:.78rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
+    .combo-box h4 { font-size:1.05rem; margin-bottom:8px; }
+    .combo-box p { font-size:.9rem; color:var(--text-body); margin:0; }
+    .cb-pp{--c:var(--pos)} .cb-pn{--c:var(--innovator)} .cb-np{--c:var(--commander)} .cb-nn{--c:var(--strategist)}
+
+    .teaser { background:linear-gradient(135deg, rgba(45,63,87,.8), rgba(30,41,59,.8)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-md); padding:22px 24px; margin:24px 0; }
+    .teaser h4 { font-size:1.1rem; margin-bottom:8px; color:var(--gold); }
+    .teaser p { font-size:.95rem; margin:0; color:var(--text-body); }
+
+    .qlist { background:var(--navy-mid); border-radius:var(--radius-md); padding:20px 24px; margin:20px 0; }
+    .qlist li { color:var(--text-body); margin:8px 0 8px 4px; padding-left:20px; position:relative; list-style:none; }
+    .qlist li::before { content:'→'; position:absolute; left:0; color:var(--gold); }
+
+    .cta-block { text-align:center; padding:48px 24px 20px; }
+    .cta-block h2 { font-size:1.8rem; margin-bottom:16px; }
+    .btn-primary { display:inline-block; background:var(--gold); color:var(--navy); padding:15px 34px; border-radius:999px; font-weight:600; font-size:1.05rem; }
+    .back-link { display:inline-block; margin:0 0 4px; color:var(--text-muted); font-size:.92rem; }
+    .back-link:hover { color:var(--white); }
+
+    footer { border-top:1px solid rgba(255,255,255,.06); padding:36px 0; margin-top:40px; }
+    .footer-inner { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+    .footer-logo { font-family:'DM Serif Display',serif; font-size:1.2rem; }
+    .footer-links { display:flex; flex-wrap:wrap; gap:20px; }
+    .footer-links a { color:var(--text-muted); font-size:.88rem; }
+    .footer-links a:hover { color:var(--white); }
+    .footer-copy { color:var(--text-muted); font-size:.82rem; width:100%; }
+
+    .lb { position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; padding:24px; z-index:100; cursor:zoom-out; }
+    .lb.open { display:flex; }
+    .lb img { max-width:100%; max-height:100%; border-radius:12px; }
+
+    @media (max-width:720px){
+      .nav-links { display:none; }
+      .btn-nav-mobile { display:inline-block; background:var(--gold); color:var(--navy)!important; padding:9px 18px; border-radius:999px; font-weight:600; font-size:.9rem; }
+      .page-hero h1 { font-size:2rem; }
+      .combo-grid { grid-template-columns:1fr; }
+      .content h2 { font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="/index.html">
+      <div class="logo-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      6Heroes
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/helden.html">Die Helden</a></li>
+    <li><a href="/heldenkonferenz.html">Heldenkonferenz</a></li>
+    <li><a href="/problem-und-ablauf.html">Wie es funktioniert</a></li>
+    <li><a href="/preise.html">Preise</a></li>
+    <li><a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a></li>
+  </ul>
+  <a href="https://app.6heroes.de" class="btn-nav-mobile" target="_top">Login →</a>
+</nav>
+
+<div class="container">
+
+  <div class="page-hero">
+    <a href="/index.html" class="back-link">← Zurück zur Startseite</a>
+    <div class="eyebrow">Das Modell im Detail</div>
+    <h1>Die Heldenenergie</h1>
+    <p class="lead">Die Heldenenergie zeigt, wie sich die Verhaltensweisen der sechs Helden für dich anfühlen – ob sie dir eher Energie geben, neutral sind oder Energie kosten. Dabei geht es nicht darum, wie gut du etwas kannst oder wie häufig du dich so verhältst.</p>
+  </div>
+
+  <figure class="wheel-figure">
+    <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Energie.png"
+         alt="Beispiel einer Energiebilanz – Netto-Energiewert je Held"
+         onclick="openLb(this)" loading="eager">
+    <figcaption class="wheel-cap">Ein Beispiel einer Energiebilanz – welche Modi dich tragen und welche Kraft kosten. Antippen zum Vergrößern.</figcaption>
+  </figure>
+
+  <div class="content">
+
+    <div class="callout">
+      Die Heldenenergie beantwortet die Frage: <em>„Was passiert mit meiner Energie, wenn ich diese Seite von mir nutze?“</em>
+    </div>
+
+    <p>Das ist ein wichtiger Unterschied zum Heldenrad. Während die <strong>Ausprägung</strong> zeigt, wie typisch ein bestimmtes Verhalten für dich ist, zeigt die <strong>Heldenenergie</strong>, wie dieses Verhalten auf dich wirkt.</p>
+
+    <h2>Was bedeutet eine hohe Heldenenergie?</h2>
+    <div class="callout plain">
+      Eine hohe Heldenenergie bedeutet: <em>„Wenn ich diese Seite von mir nutze, fühlt sich das für mich eher leicht, stimmig oder belebend an.“</em>
+    </div>
+    <p>Du kannst dabei das Gefühl haben, dass dir eine Tätigkeit Energie gibt. Das bedeutet nicht unbedingt, dass sie immer mühelos ist – auch etwas Anspruchsvolles kann dir Energie geben, wenn es gut zu dir passt. Ein hoher Energiewert bedeutet deshalb nicht „Das kann ich besonders gut“, sondern: <strong>„Diese Art zu denken oder zu handeln tut mir eher gut und kann mich energetisieren.“</strong></p>
+
+    <h2>Was bedeutet eine niedrige Heldenenergie?</h2>
+    <div class="callout plain">
+      Eine niedrigere Heldenenergie bedeutet: <em>„Wenn ich diese Seite länger oder intensiver einsetzen muss, kostet mich das eher Energie.“</em>
+    </div>
+    <p>Auch hier gilt: Ein niedriger Wert bedeutet nicht, dass du dieses Verhalten nicht kannst – du kannst darin sogar sehr kompetent sein. Es kann aber sein, dass du dafür mehr innere Anstrengung brauchst und dich danach eher erschöpft fühlst. Ein niedriger Energiewert bedeutet deshalb nicht „Das liegt mir nicht“, sondern eher: <strong>„Diese Art von Verhalten kostet mich auf Dauer mehr Kraft.“</strong></p>
+
+    <h3>Ein einfaches Beispiel</h3>
+    <p>Angenommen, dein <strong>Strategist</strong> ist stark ausgeprägt – du bist also sehr gut darin, zu planen, zu strukturieren und Ordnung in komplexe Situationen zu bringen. Gleichzeitig ist deine Energie beim Strategist eher niedrig. Dann könnte das bedeuten: Du kannst sehr gut strukturieren, aber dauerhaftes Planen, Organisieren und Kontrollieren kostet dich viel Energie. Vielleicht hast du diese Fähigkeit über Jahre entwickelt oder brauchst sie oft im Beruf – das macht sie aber nicht automatisch zu einer Energiequelle.</p>
+    <p>Umgekehrt: Dein <strong>Innovator</strong> ist vielleicht etwas weniger stark ausgeprägt, seine Energie ist bei dir aber sehr hoch. Du arbeitest im Alltag nicht ständig kreativ – aber wenn du die Gelegenheit bekommst, merkst du: „Das macht mir Spaß. Dabei werde ich wach. Das gibt mir Energie.“</p>
+    <div class="callout">
+      Solche Unterschiede sind besonders spannend. Denn sie zeigen: <em>Was ich häufig tue, ist nicht automatisch das, was mir Energie gibt.</em>
+    </div>
+
+    <h2>Ausprägung und Energie sind zwei verschiedene Dinge</h2>
+    <div class="callout plain">
+      Die Ausprägung fragt: <em>„Wie typisch ist dieses Verhalten für mich?“</em><br>
+      Die Energie fragt: <em>„Wie wirkt dieses Verhalten auf mich?“</em>
+    </div>
+    <p>Aus dieser Unterscheidung entstehen vier grundlegende Kombinationen:</p>
+
+    <div class="combo-grid">
+      <div class="combo-box cb-pp">
+        <div class="tag">Hohe Ausprägung + hohe Energie</div>
+        <h4>„Das bin ich – und es tut mir gut.“</h4>
+        <p>Diese Verhaltensweisen liegen dir nahe und geben dir gleichzeitig Energie. Hier können besonders natürliche Stärken liegen.</p>
+      </div>
+      <div class="combo-box cb-pn">
+        <div class="tag">Hohe Ausprägung + niedrige Energie</div>
+        <h4>„Das mache ich häufig – aber es kostet Kraft.“</h4>
+        <p>Stark entwickelt durch Beruf, Verantwortung oder Erfahrung. Dauerhaft eingesetzt können sie dennoch anstrengend sein.</p>
+      </div>
+      <div class="combo-box cb-np">
+        <div class="tag">Niedrige Ausprägung + hohe Energie</div>
+        <h4>„Das nutze ich selten – aber es tut mir gut.“</h4>
+        <p>Hier können interessante Entwicklungsmöglichkeiten liegen: Seiten, die bislang wenig Raum bekommen, obwohl sie dir Energie geben.</p>
+      </div>
+      <div class="combo-box cb-nn">
+        <div class="tag">Niedrige Ausprägung + niedrige Energie</div>
+        <h4>„Weniger typisch – und eher kraftraubend.“</h4>
+        <p>Das heißt nicht, dass du dieses Verhalten vermeiden solltest. Aber ein längerer Einsatz kann für dich besonders anstrengend sein.</p>
+      </div>
+    </div>
+
+    <h2>Energie ist nicht gleich Freude</h2>
+    <p>Heldenenergie bedeutet nicht einfach „Was macht mir Spaß?“. Ein Verhalten kann herausfordernd oder anstrengend sein und dir trotzdem Energie geben. Ein <strong>Explorer</strong> kann große Freude daran haben, sich in eine neue Situation zu begeben – die gleichzeitig Unsicherheit mit sich bringt. Trotzdem kann er danach denken: „Das war intensiv – aber jetzt fühle ich mich lebendiger.“ Umgekehrt können manche Tätigkeiten angenehm erscheinen und trotzdem wenig Energie geben.</p>
+    <div class="callout plain">
+      Heldenenergie beschreibt eher: <em>„Wie wirkt diese Art des Handelns langfristig auf meine innere Energie?“</em>
+    </div>
+
+    <h2>Energie kann vom Alltag beeinflusst werden</h2>
+    <p>Unsere Heldenenergie ist nicht völlig losgelöst von unserer Lebenssituation. Beruf, Familie, Rollen und Gewohnheiten beeinflussen, welche Seiten wir häufig einsetzen. Vielleicht verlangt dein Beruf viel Commander- oder Strategist-Verhalten – du kannst darin erfahren und erfolgreich sein. Wenn diese Verhaltensweisen aber viel Energie kosten, kann eine dauerhafte Überbeanspruchung belastend werden. Umgekehrt bekommen energiegebende Seiten im Alltag oft kaum Raum.</p>
+    <div class="callout">
+      Nicht mit der Botschaft: <em>„Tu nur noch Dinge, die dir Energie geben.“</em><br>
+      Sondern mit der Frage: <em>„Ist mein Alltag so gestaltet, dass meine Energiequellen ausreichend Raum bekommen?“</em>
+    </div>
+
+    <h2>Warum ist die Heldenenergie wichtig?</h2>
+    <p>Die Heldenenergie ergänzt das Heldenrad um eine entscheidende Perspektive. Das Heldenrad zeigt vor allem: <em>So verhalte ich mich typischerweise.</em> Die Heldenenergie zeigt zusätzlich: <em>So wirkt dieses Verhalten auf mich.</em> Dadurch werden Fragen sichtbar wie:</p>
+    <ul class="qlist">
+      <li>Welche Seiten von mir geben mir besonders viel Energie?</li>
+      <li>Welche Verhaltensweisen kosten mich auf Dauer Kraft?</li>
+      <li>Nutze ich meine Energiequellen im Alltag ausreichend?</li>
+      <li>Muss ich im Beruf dauerhaft Verhaltensweisen einsetzen, die mich viel Energie kosten?</li>
+      <li>Gibt es Seiten von mir, denen ich mehr Raum geben sollte?</li>
+    </ul>
+
+    <h2>Heldenenergie ist keine Bewertung</h2>
+    <p>Auch hier gilt: Ein hoher Wert ist nicht besser als ein niedriger. Ein niedriger Energiewert ist kein Defizit – manche Verhaltensweisen kosten uns schlicht mehr Energie als andere, das ist normal. Auch im Leben können wir nicht ausschließlich Dinge tun, die uns Energie geben. Manchmal müssen wir organisieren, entscheiden, analysieren oder Verantwortung übernehmen, obwohl es uns Kraft kostet.</p>
+    <div class="callout">
+      Der entscheidende Punkt ist nicht: <em>„Wie vermeide ich alles, was Energie kostet?“</em><br>
+      Sondern: <em>„Wie bewusst gehe ich mit meiner Energie um?“</em>
+    </div>
+
+    <h2>Das Ziel: deine persönliche Energiebalance verstehen</h2>
+    <p>Die Heldenenergie schreibt dir nicht vor, wie du dein Leben gestalten musst. Sie hilft dir zu verstehen, warum bestimmte Tätigkeiten unterschiedlich auf dich wirken. Vielleicht gibt es Aufgaben, die du hervorragend meisterst und die dich trotzdem erschöpfen. Und vielleicht andere, denen du bisher wenig Bedeutung gegeben hast, bei denen du aber merkst: „Davon hätte ich gerne mehr.“ Genau diese Unterschiede macht die Heldenenergie sichtbar.</p>
+
+    <div class="callout">
+      Die Kernidee: <em>„Welche meiner sechs Seiten geben mir Energie – und welche kosten mich Energie?“</em> Die Ausprägung zeigt, wie typisch ein Verhalten für dich ist. Die Heldenenergie zeigt, wie es auf dich wirkt. Beides zusammen ergibt ein deutlich vollständigeres Bild.
+    </div>
+
+    <div class="teaser">
+      <h4>Passt zusammen mit dem Heldenrad</h4>
+      <p>Die Heldenenergie ergänzt dein Heldenprofil. Wie dein grundsätzliches Muster aus Basisheld, Zweitheld und Stresshelden aufgebaut ist, liest du auf der Seite <a href="/heldenrad-erklaert.html" style="color:var(--gold);text-decoration:underline;">Das Heldenrad</a>.</p>
+    </div>
+
+  </div>
+
+  <div class="cta-block">
+    <h2>Entdecke deine eigene Energiebilanz</h2>
+    <p style="color:var(--text-body);margin-bottom:24px;">Ein 10-minütiges Assessment zeigt dir, welche deiner Modi dich tragen – und welche dich Kraft kosten.</p>
+    <a href="https://6heroes.de/assessment.html" class="btn-primary" target="_top">Heldenprofil entdecken →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-logo">6Heroes</div>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
+      <a href="mailto:admin@6heroes.de">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2026 Reichert &amp; Rempel GbR · Anna Christina Reichert &amp; Stefan Rempel</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" onclick="this.classList.remove('open')"><img id="lbimg" src="" alt=""></div>
+<script>
+  function openLb(el){ document.getElementById('lbimg').src = el.src; document.getElementById('lb').classList.add('open'); }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.getElementById('lb').classList.remove('open'); } });
+</script>
+
+</body>
+</html>
