@@ -99,8 +99,16 @@
     display: flex; flex-direction: column;
   }
   .hero-card:hover { transform: translateY(-3px); background: var(--card-hover); border-color: var(--gold); }
-  .hero-img-wrap { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: var(--navy-deep); }
+  .hero-img-wrap { width: 100%; aspect-ratio: 1/1; overflow: hidden; background: #000; position: relative; }
   .hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-img-wrap .zoom-hint {
+    position: absolute; bottom: 8px; right: 8px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.7; pointer-events: none;
+  }
+  .hero-img-wrap .zoom-hint svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2; }
   .hero-info {
     padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 2px;
     border-top: 1px solid var(--border);
@@ -212,30 +220,30 @@
   <section class="section">
     <div class="section-label">Das Modell</div>
     <h2>Deine sechs Heldenmodi</h2>
-    <p>Jeder Held steht für eine andere Art, die Welt anzugehen. Tippe auf einen Helden, um mehr über ihn zu erfahren.</p>
+    <p>Jeder Held steht für eine andere Art, die Welt anzugehen. Tippe auf eine Karte, um sie vergrößert zu sehen.</p>
     <div class="hero-grid">
-      <div class="hero-card h-commander" onclick="openModal('card_commander.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Commander_male.png" alt="Commander"></div>
+      <div class="hero-card h-commander" onclick="openModal('helden/commander.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/commander.png" alt="Commander"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Commander</div><div class="hero-sub">Der Gestalter</div></div>
       </div>
-      <div class="hero-card h-guardian" onclick="openModal('card_guardian.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Guardian_male.png" alt="Guardian"></div>
+      <div class="hero-card h-guardian" onclick="openModal('helden/guardian.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/guardian.png" alt="Guardian"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Guardian</div><div class="hero-sub">Der Bewahrer</div></div>
       </div>
-      <div class="hero-card h-innovator" onclick="openModal('card_innovator.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Innovator_male.png" alt="Innovator"></div>
+      <div class="hero-card h-innovator" onclick="openModal('helden/innovator.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/innovator.png" alt="Innovator"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Innovator</div><div class="hero-sub">Der Visionär</div></div>
       </div>
-      <div class="hero-card h-explorer" onclick="openModal('card_explorer.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Explorer_male.png" alt="Explorer"></div>
+      <div class="hero-card h-explorer" onclick="openModal('helden/explorer.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/explorer.png" alt="Explorer"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Explorer</div><div class="hero-sub">Der Praktiker</div></div>
       </div>
-      <div class="hero-card h-sage" onclick="openModal('card_sage.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Sage_male.png" alt="Sage"></div>
+      <div class="hero-card h-sage" onclick="openModal('helden/sage.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/sage.png" alt="Sage"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Sage</div><div class="hero-sub">Der Analytiker</div></div>
       </div>
-      <div class="hero-card h-strategist" onclick="openModal('card_strategist.png')">
-        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/Strategist_male.png" alt="Strategist"></div>
+      <div class="hero-card h-strategist" onclick="openModal('helden/strategist.png')">
+        <div class="hero-img-wrap"><img src="https://6heroesadmin.github.io/6heroes-xp/helden/strategist.png" alt="Strategist"><span class="zoom-hint"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span></div>
         <div class="hero-info"><div class="hero-name">Strategist</div><div class="hero-sub">Der Architekt</div></div>
       </div>
     </div>
