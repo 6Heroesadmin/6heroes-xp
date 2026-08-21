@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dein KI-Coach – erklärt</title>
+  <meta name="description" content="Der 6Heroes KI-Coach erklärt: ein Begleiter für die Situation, die gerade vor dir liegt – mit dem vollen Kontext deines Heldenprofils statt generischer Ratschläge." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/fonts.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1E293B; --navy-mid:#2D3F57; --navy-light:#334155;
+      --gold:#F2B705; --gold-dark:#D49E00;
+      --white:#FFFFFF; --off-white:#F8FAFC; --text-muted:#94A3B8; --text-body:#CBD5E1;
+      --commander:#0B63CE; --guardian:#1F9D62; --innovator:#F2B705;
+      --strategist:#475569; --sage:#C0266A; --explorer:#F0672A;
+      --radius-sm:8px; --radius-md:16px; --radius-lg:24px;
+      --shadow:0 4px 32px rgba(0,0,0,0.3);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--navy); color:var(--white); line-height:1.65; overflow-x:hidden; }
+    h1,h2,h3,h4 { font-family:'DM Serif Display',serif; line-height:1.2; }
+    a { color:inherit; text-decoration:none; }
+    img { display:block; max-width:100%; }
+    .container { max-width:920px; margin:0 auto; padding:0 24px; }
+
+    nav { display:flex; align-items:center; justify-content:space-between; padding:20px 32px; position:sticky; top:0; z-index:40; background:rgba(30,41,59,.92); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav-logo a { display:flex; align-items:center; gap:10px; font-family:'DM Serif Display',serif; font-size:1.4rem; }
+    .logo-dots { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+    .logo-dots span { width:7px; height:7px; border-radius:50%; }
+    .logo-dots span:nth-child(1){background:var(--commander)} .logo-dots span:nth-child(2){background:var(--guardian)}
+    .logo-dots span:nth-child(3){background:var(--innovator)} .logo-dots span:nth-child(4){background:var(--strategist)}
+    .logo-dots span:nth-child(5){background:var(--sage)} .logo-dots span:nth-child(6){background:var(--explorer)}
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a { color:var(--text-body); font-size:.95rem; transition:color .2s; }
+    .nav-links a:hover { color:var(--white); }
+    .btn-nav { background:var(--gold); color:var(--navy)!important; padding:10px 22px; border-radius:999px; font-weight:600; }
+    .btn-nav-mobile { display:none; }
+
+    .page-hero { padding:56px 0 20px; text-align:center; }
+    .eyebrow { color:var(--gold); font-family:'Outfit',sans-serif; font-weight:600; letter-spacing:.14em; text-transform:uppercase; font-size:.8rem; margin-bottom:16px; }
+    .page-hero h1 { font-size:2.6rem; margin-bottom:20px; }
+    .page-hero p.lead { color:var(--text-body); font-size:1.12rem; max-width:680px; margin:0 auto; }
+
+    .wheel-figure { margin:40px auto 8px; max-width:560px; }
+    .wheel-figure img { width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow); cursor:zoom-in; }
+    .wheel-cap { text-align:center; color:var(--text-muted); font-size:.85rem; margin-top:12px; }
+
+    .content { padding:24px 0 40px; }
+    .content h2 { font-size:1.9rem; margin:52px 0 18px; }
+    .content h3 { font-size:1.3rem; margin:32px 0 10px; }
+    .content p { color:var(--text-body); margin-bottom:16px; }
+    .content strong { color:var(--white); }
+
+    .callout { border-left:3px solid var(--gold); background:rgba(242,183,5,.07); padding:16px 20px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:20px 0; font-size:1.05rem; }
+    .callout.plain { border-left-color:var(--navy-light); background:rgba(255,255,255,.04); }
+    .callout em { color:var(--gold); font-style:normal; font-weight:600; }
+
+    /* Ablauf-Schritte */
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:26px 0; }
+    .step-box { background:var(--navy-mid); border-radius:var(--radius-md); padding:22px 20px; text-align:center; }
+    .step-num { width:38px; height:38px; margin:0 auto 12px; border-radius:50%; background:var(--gold); color:var(--navy); font-weight:700; display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; }
+    .step-box h4 { font-size:1.05rem; margin-bottom:6px; }
+    .step-box p { font-size:.88rem; color:var(--text-body); margin:0; }
+
+    /* Vergleich Coach vs generisch */
+    .vs { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+    .vs-box { border-radius:var(--radius-md); padding:20px 22px; }
+    .vs-box h4 { font-size:1.05rem; margin-bottom:10px; }
+    .vs-box ul { list-style:none; }
+    .vs-box li { font-size:.9rem; margin:7px 0 7px 4px; padding-left:20px; position:relative; color:var(--text-body); }
+    .vs-generic { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); }
+    .vs-generic li::before { content:'–'; position:absolute; left:0; color:var(--text-muted); }
+    .vs-coach { background:rgba(242,183,5,.06); border:1px solid rgba(242,183,5,.25); }
+    .vs-coach li::before { content:'✓'; position:absolute; left:0; color:var(--gold); }
+
+    .teaser { background:linear-gradient(135deg, rgba(45,63,87,.8), rgba(30,41,59,.8)); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius-md); padding:22px 24px; margin:24px 0; }
+    .teaser h4 { font-size:1.1rem; margin-bottom:8px; color:var(--gold); }
+    .teaser p { font-size:.95rem; margin:0; color:var(--text-body); }
+
+    .cta-block { text-align:center; padding:48px 24px 20px; }
+    .cta-block h2 { font-size:1.8rem; margin-bottom:16px; }
+    .btn-primary { display:inline-block; background:var(--gold); color:var(--navy); padding:15px 34px; border-radius:999px; font-weight:600; font-size:1.05rem; }
+    .back-link { display:inline-block; margin:0 0 4px; color:var(--text-muted); font-size:.92rem; }
+    .back-link:hover { color:var(--white); }
+
+    footer { border-top:1px solid rgba(255,255,255,.06); padding:36px 0; margin-top:40px; }
+    .footer-inner { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; }
+    .footer-logo { font-family:'DM Serif Display',serif; font-size:1.2rem; }
+    .footer-links { display:flex; flex-wrap:wrap; gap:20px; }
+    .footer-links a { color:var(--text-muted); font-size:.88rem; }
+    .footer-links a:hover { color:var(--white); }
+    .footer-copy { color:var(--text-muted); font-size:.82rem; width:100%; }
+
+    .lb { position:fixed; inset:0; background:rgba(0,0,0,.9); display:none; align-items:center; justify-content:center; padding:24px; z-index:100; cursor:zoom-out; }
+    .lb.open { display:flex; }
+    .lb img { max-width:100%; max-height:100%; border-radius:12px; }
+
+    @media (max-width:720px){
+      .nav-links { display:none; }
+      .btn-nav-mobile { display:inline-block; background:var(--gold); color:var(--navy)!important; padding:9px 18px; border-radius:999px; font-weight:600; font-size:.9rem; }
+      .page-hero h1 { font-size:2rem; }
+      .steps, .vs { grid-template-columns:1fr; }
+      .content h2 { font-size:1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <a href="/index.html">
+      <div class="logo-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      6Heroes
+    </a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="/helden.html">Die Helden</a></li>
+    <li><a href="/heldenkonferenz.html">Heldenkonferenz</a></li>
+    <li><a href="/problem-und-ablauf.html">Wie es funktioniert</a></li>
+    <li><a href="/preise.html">Preise</a></li>
+    <li><a href="https://app.6heroes.de" class="btn-nav" target="_top">Login →</a></li>
+  </ul>
+  <a href="https://app.6heroes.de" class="btn-nav-mobile" target="_top">Login →</a>
+</nav>
+
+<div class="container">
+
+  <div class="page-hero">
+    <a href="/index.html" class="back-link">← Zurück zur Startseite</a>
+    <div class="eyebrow">Das Modell im Detail</div>
+    <h1>Dein KI-Coach</h1>
+    <p class="lead">Der 6Heroes-Coach ist dein Begleiter für die Situation, die gerade vor dir liegt – ein Gespräch, eine Entscheidung, etwas Unklares. Du bringst ein, was ansteht, und der Coach denkt es mit dir durch: mit dem vollen Kontext deines Heldenprofils.</p>
+  </div>
+
+  <figure class="wheel-figure">
+    <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Coach.png"
+         alt="Der 6Heroes-Coach – eine konkrete Situation gemeinsam durchdenken"
+         onclick="openLb(this)" loading="eager">
+    <figcaption class="wheel-cap">Der Coach begleitet dich durch eine konkrete Situation. Antippen zum Vergrößern.</figcaption>
+  </figure>
+
+  <div class="content">
+
+    <div class="callout">
+      Der Coach beantwortet nicht die Frage <em>„Was sagt ein Ratgeber allgemein dazu?“</em>, sondern: <em>„Was hilft genau dir – mit deinem Profil, in dieser konkreten Situation?“</em>
+    </div>
+
+    <h2>Wofür ist der Coach da?</h2>
+    <p>Manche Situationen lassen sich nicht mit einem allgemeinen Tipp lösen. Ein schwieriges Gespräch, eine Entscheidung, bei der du unsicher bist, ein Konflikt, den du nicht recht greifst – hier hilft kein Standardratschlag, sondern jemand, der die Situation mit dir durchdenkt und dabei weiß, wie du tickst.</p>
+    <p>Genau das ist der Coach: ein Gegenüber für den Moment, in dem du nicht weiterkommst. Du beschreibst, was vor dir liegt, in deinen eigenen Worten. Der Coach nimmt diese Situation auf und denkt sie mit dir durch – nicht als fertige Lösung von außen, sondern als Impulse, die zu dir passen.</p>
+
+    <h2>Kein generischer Ratgeber</h2>
+    <p>Der Unterschied liegt im Kontext. Ein allgemeiner Ratgeber kennt dich nicht. Der Coach kennt dein Heldenprofil – deinen Basishelden, deinen Zweithelden, deine Stressmuster und deine Energie. Dadurch sind seine Impulse auf dich zugeschnitten.</p>
+
+    <div class="vs">
+      <div class="vs-box vs-generic">
+        <h4>Generischer Ratgeber</h4>
+        <ul>
+          <li>gibt allgemeine Tipps, die für alle gleich klingen</li>
+          <li>kennt weder dich noch deine Muster</li>
+          <li>sieht nur die Situation, nicht die Person darin</li>
+          <li>bleibt an der Oberfläche</li>
+        </ul>
+      </div>
+      <div class="vs-box vs-coach">
+        <h4>Dein 6Heroes-Coach</h4>
+        <ul>
+          <li>bezieht dein persönliches Heldenprofil ein</li>
+          <li>erkennt, welche deiner Seiten gerade wirkt</li>
+          <li>denkt mit dir – statt dir etwas vorzuschreiben</li>
+          <li>hilft, deine eigenen Muster in der Situation zu sehen</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>So läuft ein Coaching-Moment ab</h2>
+    <div class="steps">
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <h4>Situation einbringen</h4>
+        <p>Du beschreibst, was gerade ansteht – ein Gespräch, eine Entscheidung, etwas Unklares. Ein paar Sätze genügen.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <h4>Gemeinsam durchdenken</h4>
+        <p>Der Coach nimmt deine Situation auf und betrachtet sie mit dem Kontext deines Heldenprofils. Er stellt Fragen und gibt Impulse.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-num">3</div>
+        <h4>Klarer weitergehen</h4>
+        <p>Du gehst mit einem klareren Blick aus der Situation – und mit Impulsen, die zu dir und deinem Muster passen.</p>
+      </div>
+    </div>
+
+    <h2>Warum das Heldenprofil den Unterschied macht</h2>
+    <p>Dein Verhalten in einer schwierigen Situation hängt davon ab, welcher deiner Helden gerade das Steuer hält. Wenn dein Commander unter Druck immer mehr drängt, ist ein anderer Impuls hilfreich, als wenn dein Sage sich in endlose Analyse zurückzieht. Weil der Coach dein Profil kennt, kann er genau hier ansetzen – bei deinem tatsächlichen Muster, nicht bei einem gedachten Durchschnittsmenschen.</p>
+    <div class="callout plain">
+      Der Coach fragt im Kern: <em>„Welche deiner sechs Seiten wirkt hier gerade – und welche würde dir in dieser Situation mehr helfen?“</em>
+    </div>
+
+    <h2>Coach und Quests – zwei verschiedene Wege</h2>
+    <p>Der Coach begleitet dich durch <strong>akute Situationen</strong> – das, was heute oder diese Woche konkret vor dir liegt. Er setzt an, wenn du gerade nicht weiterkommst.</p>
+    <p>Die <strong>Quests</strong> dagegen sind der Weg für die <strong>kontinuierliche Weiterentwicklung</strong>: kleine, konkrete Übungen im Alltag, die dich Schritt für Schritt weiterbringen. Beide ergänzen sich – der Coach für den Moment, die Quests für den langen Weg.</p>
+
+    <div class="teaser">
+      <h4>Mehr zu den Quests</h4>
+      <p>Wie die geführte Weiterentwicklung Schritt für Schritt funktioniert, liest du auf der Seite <a href="/quests-erklaert.html" style="color:var(--gold);text-decoration:underline;">Deine Quests</a>.</p>
+    </div>
+
+    <h2>Was der Coach nicht ist</h2>
+    <p>Der Coach ersetzt keine Therapie und keine medizinische oder psychologische Beratung. Er ist ein Werkzeug zur Selbstreflexion und Entwicklung – ein Gegenüber, das dir hilft, deine eigenen Muster besser zu verstehen und bewusster zu entscheiden. Die Entscheidung bleibt immer bei dir.</p>
+
+  </div>
+
+  <div class="cta-block">
+    <h2>Bring ein, was heute ansteht</h2>
+    <p style="color:var(--text-body);margin-bottom:24px;">Der Coach denkt es mit dir durch – mit dem vollen Kontext deines Heldenprofils.</p>
+    <a href="https://6heroes.de/assessment.html" class="btn-primary" target="_top">Heldenprofil entdecken →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-logo">6Heroes</div>
+    <div class="footer-links">
+      <a href="/impressum.html">Impressum</a>
+      <a href="/datenschutz.html">Datenschutz</a>
+      <a href="/agb.html">AGB</a>
+      <a href="/widerruf.html">Widerruf</a>
+      <a href="mailto:admin@6heroes.de">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2026 Reichert &amp; Rempel GbR · Anna Christina Reichert &amp; Stefan Rempel</div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" onclick="this.classList.remove('open')"><img id="lbimg" src="" alt=""></div>
+<script>
+  function openLb(el){ document.getElementById('lbimg').src = el.src; document.getElementById('lb').classList.add('open'); }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ document.getElementById('lb').classList.remove('open'); } });
+</script>
+
+</body>
+</html>
