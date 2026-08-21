@@ -756,6 +756,18 @@
     .benefit-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .benefit-shot.is-screenshot { background: #141d2c; }
     .benefit-shot.is-screenshot img { object-fit: contain; padding: 10px; }
+
+    a.benefit-shot { text-decoration: none; cursor: pointer; transition: transform .3s, box-shadow .3s; }
+    a.benefit-shot:hover { transform: translateY(-5px); box-shadow: 0 16px 44px rgba(0,0,0,.4); }
+    a.benefit-shot .benefit-more {
+      position: absolute; bottom: 12px; right: 12px; z-index: 2;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+      color: var(--white); font-family: 'Outfit', sans-serif; font-size: .82rem; font-weight: 600;
+      padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,.15);
+      opacity: .9; transition: opacity .2s, background .2s;
+    }
+    a.benefit-shot:hover .benefit-more { opacity: 1; background: var(--gold); color: var(--navy); border-color: transparent; }
     .benefit-shot-soon {
       border-top-color: rgba(255,255,255,0.1);
       border-style: dashed;
@@ -1395,9 +1407,10 @@
           <p class="benefit-body">Ein fundiertes Assessment zeigt deine Stärken über alle sechs Archetypen – visuell auf einen Blick im Heldenrad, mit Basis-Held, Zweit-Held und deinen Stressmustern.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot is-screenshot" style="--accent: var(--commander)">
+          <a class="benefit-shot is-screenshot" style="--accent: var(--commander)" href="/heldenrad-erklaert.html" target="_top">
             <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Heldenrad.png" alt="Dein Heldenrad – Stärken über alle sechs Archetypen" loading="lazy">
-          </div>
+            <span class="benefit-more">Mehr erfahren →</span>
+          </a>
         </div>
       </div>
 
@@ -1409,9 +1422,10 @@
           <p class="benefit-body">Erfasse deine Energiequellen und -fresser. Dein Netto-Energiewert zeigt dir schwarz auf weiß, wohin die Reise geht – und wann du gegensteuern solltest.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot is-screenshot" style="--accent: var(--guardian)">
+          <a class="benefit-shot is-screenshot" style="--accent: var(--guardian)" href="/energie-erklaert.html" target="_top">
             <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Energie.png" alt="Deine Energiebilanz – Netto-Energiewert je Held" loading="lazy">
-          </div>
+            <span class="benefit-more">Mehr erfahren →</span>
+          </a>
         </div>
       </div>
 
@@ -1423,9 +1437,10 @@
           <p class="benefit-body">6Heroes trennt klar zwischen deinem Kernprofil und deinen automatischen Stressreaktionen. Du lernst deine zwei Stresshelden kennen und erkennst sie früher – bevor sie Entscheidungen, Beziehungen oder deine Gesundheit belasten.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot is-screenshot" style="--accent: var(--explorer)">
+          <a class="benefit-shot is-screenshot" style="--accent: var(--explorer)" href="/stress-erklaert.html" target="_top">
             <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Stresskurve.png" alt="Deine Stresskurve – Schwelle 1 Alarm, Schwelle 2 Übersteuerung" loading="lazy">
-          </div>
+            <span class="benefit-more">Mehr erfahren →</span>
+          </a>
         </div>
       </div>
 
@@ -1437,9 +1452,10 @@
           <p class="benefit-body">Bring ein, was heute ansteht – ein Gespräch, eine Entscheidung, etwas Unklares. Dein Coach denkt es mit dir durch, mit vollem Kontext deines Heldenprofils. Kein generischer Ratgeber, sondern Impulse, die auf dich zugeschnitten sind.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot is-screenshot" style="--accent: var(--sage)">
+          <a class="benefit-shot is-screenshot" style="--accent: var(--sage)" href="/coach-erklaert.html" target="_top">
             <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Coach.png" alt="Dein KI-Coach – Was steht bei dir an?" loading="lazy">
-          </div>
+            <span class="benefit-more">Mehr erfahren →</span>
+          </a>
         </div>
       </div>
 
@@ -1451,9 +1467,10 @@
           <p class="benefit-body">Kleine, konkrete Übungen, passend zu deinen Helden und deiner Energie. Während der Coach dich durch akute Situationen begleitet, bringen dich die Quests im Alltag gezielt weiter – wirksam werden, bewusst bremsen, Neues ausprobieren.</p>
         </div>
         <div class="benefit-media">
-          <div class="benefit-shot is-screenshot" style="--accent: var(--innovator)">
+          <a class="benefit-shot is-screenshot" style="--accent: var(--innovator)" href="/quests-erklaert.html" target="_top">
             <img src="https://6heroesadmin.github.io/6heroes-xp/Screenshot_Quests.png" alt="Meine Quests – kleine Übungen passend zu deinen Helden" loading="lazy">
-          </div>
+            <span class="benefit-more">Mehr erfahren →</span>
+          </a>
         </div>
       </div>
 
