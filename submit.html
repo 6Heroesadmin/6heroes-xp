@@ -136,7 +136,7 @@
     <div class="coach-body" id="coachBody">
       <div class="thinking" id="thinking">
         <span class="dots"><span></span><span></span><span></span></span>
-        Dein Coach denkt nach …
+        Dein Coach denkt nach … das dauert 1–3 Minuten. Du kannst auf dieser Seite bleiben.
       </div>
     </div>
     <div class="coach-actions" id="coachActions" hidden>
@@ -167,12 +167,14 @@ const WRITE_WEBHOOK_URL  = 'https://hook.eu1.make.com/xkwbtclbfogop0egbh03yikjhg
 /* Coaching Entries Read – liefert entries[] mit EntryID + AI_CoachingResponse_Display.
    Dieselbe Quelle wie eintraege.html, hier zum Nachverfolgen der frisch erzeugten Antwort. */
 const READ_WEBHOOK_URL   = 'https://hook.eu1.make.com/np1n3s26oesoijxzeo97s9tf1gf2yrvc';
-const LIST_URL = 'https://app.6heroes.de/meine-quest-eintraege';
+const LIST_URL = 'https://app.6heroes.de/quest-eintraege';
 
-/* Polling-Verhalten: alle POLL_INTERVAL ms nachfragen, bis Antwort da ist
-   oder POLL_MAX_TRIES erreicht ist (danach Fallback-Hinweis). */
-const POLL_INTERVAL  = 2500;
-const POLL_MAX_TRIES = 24;   // ~60 s
+/* Polling-Verhalten: gestaffelte Wartezeiten (ms) zwischen den Nachfragen.
+   Anfangs schnell (Antwort könnte früh da sein), dann gemächlich.
+   Summe ≈ 4 Min – der Coaching-Flow (Sleep + gpt-4o) braucht real 2–3 Min. */
+const POLL_STEPS = [3000, 4000, 5000, 8000, 10000, 12000,
+                    15000, 15000, 15000, 15000, 15000, 15000,
+                    15000, 15000, 15000, 15000, 20000, 20000];
 
 /* E_-Präfix vom Read-Webhook (E_rec…) gegen die nackte entryId (rec…) angleichen. */
 function stripPrefix(id){ return (id||'').toString().replace(/^E_/, ''); }
@@ -293,10 +295,9 @@ function startPolling(email, entryId){
   postHeight();
 
   const wantId = stripPrefix(entryId);
-  let tries = 0;
+  let step = 0;
 
   async function tick(){
-    tries++;
     let text = null;
     try {
       const url = READ_WEBHOOK_URL + '?email=' + encodeURIComponent(email) + '&_=' + Date.now();
@@ -319,16 +320,16 @@ function startPolling(email, entryId){
       postHeight();
       return; // fertig
     }
-    if (tries >= POLL_MAX_TRIES){
+    if (step >= POLL_STEPS.length){
       body.innerHTML = '<div class="thinking">Deine Antwort dauert etwas länger. '
         + 'Du findest sie gleich unter <b>Meine Quest-Einträge</b>.</div>';
       actions.hidden = false;
       postHeight();
       return;
     }
-    setTimeout(tick, POLL_INTERVAL);
+    setTimeout(tick, POLL_STEPS[step++]);
   }
-  setTimeout(tick, POLL_INTERVAL);
+  setTimeout(tick, POLL_STEPS[step++]);
 }
 
 /* Cross-Origin-sichere Top-Navigation: window.top.location direkt setzen
