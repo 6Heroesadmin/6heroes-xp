@@ -222,20 +222,43 @@ function renderInfo(q){
   document.getElementById('meta').innerHTML = bits.join('<span style="opacity:.4">·</span>');
 }
 
-/* Toleranter Parser, analog zu quests.html – falls der Webhook doch mal
-   eine leicht kaputte JSON-Antwort liefert, bricht das Laden nicht komplett ab. */
+/* Toleranter Parser, identisch zu eintraege.html/dashboard.html.
+   Wichtigster Fall: rohe Zeilenumbrüche INNERHALB der Coaching-Texte
+   (Bad control character) + doppelt-escapte Anführungszeichen \\" aus Airtable.
+   Ohne repairControlChars scheitert JSON.parse an genau diesen Umbrüchen. */
 function parseWebhookPayload(text){
   if (!text || !text.trim()) return null;
   try { return JSON.parse(text); } catch(_) {}
-  let repaired = text
+  let repaired = repairControlChars(text)
+    .replace(/\\{2,}"/g, '\\"')
     .replace(/:\s*,/g, ': [],')
     .replace(/:\s*}/g, ': [] }')
     .replace(/,\s*}/g, ' }')
     .replace(/,\s*]/g, ' ]');
   try { return JSON.parse(repaired); } catch(e){
-    console.warn('Quest-Payload auch nach Reparatur nicht parsebar:', e);
+    console.warn('[6H-Poll] Payload auch nach Reparatur nicht parsebar:', e);
     return null;
   }
+}
+
+/* Escaped rohe Steuerzeichen (\n \r \t) nur INNERHALB von String-Literalen,
+   damit JSON.parse nicht an unescapten Umbrüchen im Coaching-Text scheitert.
+   Zeichenweise mit einfachem String-/Escape-Tracking. */
+function repairControlChars(text){
+  let out = '', inStr = false, esc = false;
+  for (let i=0; i<text.length; i++){
+    const c = text[i];
+    if (esc){ out += c; esc = false; continue; }
+    if (c === '\\'){ out += c; esc = true; continue; }
+    if (c === '"'){ inStr = !inStr; out += c; continue; }
+    if (inStr){
+      if (c === '\n'){ out += '\\n'; continue; }
+      if (c === '\r'){ out += '\\r'; continue; }
+      if (c === '\t'){ out += '\\t'; continue; }
+    }
+    out += c;
+  }
+  return out;
 }
 
 async function loadQuest(email, qid){
