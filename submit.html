@@ -262,6 +262,7 @@ async function submit(){
   }
   doneBtn.disabled = true;
   setStatus('Wird gespeichert …');
+  console.log('[6H-Submit] entryId aus URL-Param:', P.entryId, '| qid:', P.qid, '| email:', P.email);
   try {
     const res = await fetch(WRITE_WEBHOOK_URL, {
       method:'POST',
@@ -296,6 +297,7 @@ function startPolling(email, entryId){
 
   const wantId = stripPrefix(entryId);
   let step = 0;
+  console.log('[6H-Poll] START — gesuchte entryId (roh):', entryId, '| normalisiert (wantId):', wantId);
 
   async function tick(){
     let text = null;
@@ -305,12 +307,21 @@ function startPolling(email, entryId){
       if (res.ok){
         const data = parseWebhookPayload(await res.text());
         const rows = (data && (data.entries || data.records)) || [];
+        // DIAGNOSE: alle IDs im Webhook-Output zeigen
+        const alleIds = Array.isArray(rows) ? rows.map(r => stripPrefix(r.EntryID || r.entryId)) : [];
         const mine = Array.isArray(rows)
           ? rows.find(r => stripPrefix(r.EntryID || r.entryId) === wantId)
           : null;
+        console.log('[6H-Poll] Versuch', step+1,
+          '| suche:', wantId,
+          '| gefunden:', mine ? 'JA' : 'NEIN',
+          '| erste 5 IDs im Output:', alleIds.slice(0,5),
+          mine ? ('| Text pending? ' + isPending(mine.AI_CoachingResponse_Display || '')) : '');
         if (mine) text = mine.AI_CoachingResponse_Display || mine.coaching || '';
+      } else {
+        console.warn('[6H-Poll] Webhook HTTP', res.status);
       }
-    } catch(e){ console.warn('Polling-Versuch fehlgeschlagen:', e); }
+    } catch(e){ console.warn('[6H-Poll] Versuch fehlgeschlagen:', e); }
 
     if (text && !isPending(text)){
       body.innerHTML = '<div class="eyebrow" style="margin-bottom:8px">Dein Coach</div>'
