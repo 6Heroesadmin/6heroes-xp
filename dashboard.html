@@ -22,12 +22,12 @@
     --done: #1F9D62;
 
     /* Held-Akzente */
-    --commander: #3B8BEB;
-    --strategist:#94A2B5;
+    --commander: #E0764F;
+    --strategist:#4F9DDE;
     --innovator: #F2B705;
-    --sage:      #D93C7E;
-    --guardian:  #2CB574;
-    --explorer:  #F0672A;
+    --sage:      #B98BD9;
+    --guardian:  #4FBE9F;
+    --explorer:  #6FB1E0;
   }
   html, body {
     background: var(--navy);
@@ -909,6 +909,17 @@ async function loadLive(){
       applyHeroes(data.profile);
       const p = (data.profile.paid ?? '').toString().trim().toLowerCase();
       if (p) PAID_STATE = (p === '1' || p === 'true' || p === 'yes');
+
+      // XP / Level echt aus dem profile-Block (überschreibt Demo-Werte).
+      const num = v => { const n = Number(v); return Number.isFinite(n) ? n : null; };
+      const xp   = num(data.profile.xp);
+      const lvl  = num(data.profile.level);
+      const xpN  = num(data.profile.xpNext);
+      const lname= (data.profile.levelName ?? '').toString().trim();
+      if (xp   != null) D.xpNow    = xp;
+      if (lvl  != null) D.level    = lvl;
+      if (xpN  != null && xpN > 0) D.xpNext = xpN;
+      if (lname)        D.levelName = lname;
     }
 
     const rows = (data && (data.entries || data.records)) || [];
