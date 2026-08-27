@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meine Quests</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -73,6 +74,40 @@
   }
   .block-energy { font-size: 13px; color: var(--text-muted); margin: 6px 0 18px; }
   .block-energy strong { color: var(--text-soft); font-weight: 600; }
+
+  /* ---- Heldenrad-Navigation (V124) ---------------------------------- */
+  .wheel-wrap { margin: 4px 0 26px; text-align: center; }
+  .wheel-hint {
+    font-size: 12.5px; color: var(--text-muted); margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .wheel-svg { width: 100%; max-width: 380px; height: auto; display: inline-block; touch-action: manipulation; }
+  .wheel-seg { cursor: pointer; transition: opacity .18s ease, transform .12s ease; transform-origin: 50% 50%; }
+  .wheel-seg:hover { opacity: 0.92; }
+  .wheel-seg.is-brach { opacity: 0.34; }
+  .wheel-seg.is-brach:hover { opacity: 0.48; }
+  .wheel-seg.is-active { opacity: 1; }
+  .wheel-seg .seg-path { transition: stroke-width .12s ease, stroke .12s ease; stroke: transparent; stroke-width: 0; }
+  .wheel-seg.is-active .seg-path { stroke: var(--text); stroke-width: 3; }
+  .wheel-seg:focus-visible { outline: none; }
+  .wheel-seg:focus-visible .seg-path { stroke: var(--gold); stroke-width: 3; }
+  .seg-label { font-size: 13px; font-weight: 700; fill: #fff; pointer-events: none; }
+  .seg-count {
+    font-size: 15px; font-weight: 700; fill: #fff; pointer-events: none;
+  }
+  .seg-count-bg { pointer-events: none; }
+  .wheel-hub-ring { fill: var(--navy); stroke: rgba(255,255,255,0.14); stroke-width: 2; }
+  .wheel-hub-text { font-family: 'DM Serif Display', serif; font-size: 26px; fill: var(--text); pointer-events: none; }
+  .role-badge-rect { rx: 4; }
+  .role-badge-text { font-size: 11px; font-weight: 700; fill: #fff; pointer-events: none; }
+
+  /* Aktiver Held-Block: nur der gewählte ist sichtbar */
+  .hero-panel { display: none; }
+  .hero-panel.is-open { display: block; animation: panelIn .22s ease; }
+  @keyframes panelIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-panel.is-open { animation: none; }
+  }
 
   .typegroup { margin-bottom: 22px; }
   .typegroup:last-child { margin-bottom: 0; }
@@ -518,6 +553,131 @@ function block(roleKey, heroKey, netto, groups, doneSet, focus){
     ${lead}${groups.map(g=>typeGroup(g,doneSet,focus)).join('')}</div>`;
 }
 
+/* ---- Heldenrad-Navigation (V124) -----------------------------------
+   Baut ein SVG-Rad als Navigation vor die bestehenden Held-Blöcke.
+   Sechs Sektoren in Heldenfarbe; Rolle bestimmt Badge + ob gedämpft
+   (brach). Zahl im Segment = offene (nicht erledigte) Quests des Helden.
+   Klick schaltet den zugehörigen .hero-panel-Block sichtbar. Der ganze
+   Render-/Submit-/Teaser-Code darunter bleibt unverändert. */
+
+// Reihenfolge im Uhrzeigersinn ab 12 Uhr, wie im Original-Rad-Bild:
+// Innovator (oben rechts), Commander, Strategist, Sage, Guardian, Explorer.
+const WHEEL_ORDER = ['innovator','commander','strategist','sage','guardian','explorer'];
+const ROLE_BADGE = { basis:'B', zweit:'Z', stress1:'S1', stress2:'S2' };
+
+function polar(cx,cy,r,deg){
+  const a=(deg-90)*Math.PI/180;
+  return [cx+r*Math.cos(a), cy+r*Math.sin(a)];
+}
+function annularSeg(cx,cy,rOuter,rInner,a0,a1){
+  const [ox0,oy0]=polar(cx,cy,rOuter,a0), [ox1,oy1]=polar(cx,cy,rOuter,a1);
+  const [ix1,iy1]=polar(cx,cy,rInner,a1), [ix0,iy0]=polar(cx,cy,rInner,a0);
+  const large = (a1-a0)>180?1:0;
+  return `M${ox0.toFixed(2)},${oy0.toFixed(2)} `
+       + `A${rOuter},${rOuter} 0 ${large} 1 ${ox1.toFixed(2)},${oy1.toFixed(2)} `
+       + `L${ix1.toFixed(2)},${iy1.toFixed(2)} `
+       + `A${rInner},${rInner} 0 ${large} 0 ${ix0.toFixed(2)},${iy0.toFixed(2)} Z`;
+}
+
+/* Liefert je Held: Rolle (oder null=brach), offene Quest-Anzahl.
+   roleByHero kommt aus den zugewiesenen Rollen; offene Zahl aus QUESTS
+   minus doneSet, gefiltert auf die für die Rolle erlaubten Typen. */
+function wheelModel(P, doneSetLocal){
+  const roleByHero = {};
+  [['basis',P.basis],['zweit',P.zweit],['stress1',P.stress1],['stress2',P.stress2]]
+    .forEach(([role,hero])=>{ if(hero) roleByHero[hero]=role; });
+
+  return WHEEL_ORDER.map(hero=>{
+    const role = roleByHero[hero] || null;      // null = brachliegend
+    const allowed = role ? ROLE_TYPES[role] : ['Discover'];
+    // Offene Quests: passender Held, erlaubter Typ, Level ok, nicht erledigt.
+    const open = QUESTS.filter(q =>
+      q.Hero===hero &&
+      allowed.includes(q.Type) &&
+      q.MinLevel<=P.level &&
+      !doneSetLocal.has(q.QuestID)
+    ).length;
+    return { hero, role, open,
+             label:(HEROES.find(h=>h.key===hero)||{}).label||hero,
+             color:heroColor(hero) };
+  });
+}
+
+function heroWheel(model){
+  // Rad-Maße. PAD_X schafft links/rechts Platz für die außen hängenden Badges,
+  // ohne das Rad selbst zu verkleinern (Höhe = Raddurchmesser + kleiner Rand).
+  const D=300, PAD_X=34, PAD_Y=14;
+  const VBW=D+PAD_X*2, VBH=D+PAD_Y*2;
+  const cx=VBW/2, cy=VBH/2, rOuter=140, rInner=64, gap=1.4;
+  const n=model.length, step=360/n;
+  let segs='';
+  model.forEach((m,i)=>{
+    const a0=i*step+gap, a1=(i+1)*step-gap, mid=(a0+a1)/2;
+    const brach = m.role===null;
+    const path = annularSeg(cx,cy,rOuter,rInner,a0,a1);
+    // Label und Zahl vertikal gestapelt auf dem mittleren Radius:
+    // Name oben, Zähl-Chip darunter — überschneidet sich nie, egal wie lang der Name.
+    const rMid=(rOuter+rInner)/2;
+    const [mx,my]=polar(cx,cy,rMid,mid);
+    const labelY = my-9, countY = my+13;
+    // Rollen-Badge knapp außerhalb des Rings (liegt jetzt im PAD_X-Rand).
+    const badge = m.role ? ROLE_BADGE[m.role] : '';
+    const [bx,by]=polar(cx,cy,rOuter+15,mid);
+    const badgeW = badge.length>1?22:16;
+    const badgeColor = (m.role==='stress1'||m.role==='stress2') ? '#B5321F'
+                     : (m.role==='basis') ? '#F2B705'
+                     : (m.role==='zweit') ? '#E06A1E' : '#555';
+    const badgeTextColor = (m.role==='basis') ? '#20293A' : '#fff';
+
+    segs += `
+    <g class="wheel-seg${brach?' is-brach':''}" data-hero="${m.hero}" tabindex="0" role="button"
+       aria-label="${esc(m.label)}${m.role?', '+ROLE_META[m.role].label:''}, ${m.open} offene Quests">
+      <path class="seg-path" d="${path}" fill="${m.color}"></path>
+      <text class="seg-label" x="${mx.toFixed(1)}" y="${labelY.toFixed(1)}"
+            text-anchor="middle" dominant-baseline="middle">${esc(m.label)}</text>
+      <circle class="seg-count-bg" cx="${mx.toFixed(1)}" cy="${countY.toFixed(1)}" r="11"
+              fill="rgba(0,0,0,0.32)"></circle>
+      <text class="seg-count" x="${mx.toFixed(1)}" y="${countY.toFixed(1)}"
+            text-anchor="middle" dominant-baseline="central">${m.open}</text>
+      ${badge ? `<rect class="role-badge-rect" x="${(bx-badgeW/2).toFixed(1)}" y="${(by-9).toFixed(1)}"
+              width="${badgeW}" height="18" rx="4" fill="${badgeColor}"></rect>
+      <text class="role-badge-text" x="${bx.toFixed(1)}" y="${(by+0.5).toFixed(1)}"
+            text-anchor="middle" dominant-baseline="middle" fill="${badgeTextColor}">${badge}</text>` : ''}
+    </g>`;
+  });
+
+  return `
+  <div class="wheel-wrap">
+    <div class="wheel-hint">Tippe auf einen Helden, um seine Quests zu sehen</div>
+    <svg class="wheel-svg" viewBox="0 0 ${VBW} ${VBH}" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Heldenrad – wähle einen Helden">
+      ${segs}
+      <circle class="wheel-hub-ring" cx="${cx}" cy="${cy}" r="${rInner-4}"></circle>
+      <text class="wheel-hub-text" x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle">6H</text>
+    </svg>
+  </div>`;
+}
+
+/* Schaltet sichtbaren Held-Block + aktives Segment um. */
+function activateHero(heroKey){
+  document.querySelectorAll('.hero-panel').forEach(p=>{
+    p.classList.toggle('is-open', p.dataset.hero===heroKey);
+  });
+  document.querySelectorAll('.wheel-seg').forEach(s=>{
+    s.classList.toggle('is-active', s.dataset.hero===heroKey);
+  });
+  postHeight();
+}
+
+function bindWheel(defaultHero){
+  document.querySelectorAll('.wheel-seg').forEach(seg=>{
+    const go=(ev)=>{ if(ev){ev.preventDefault();ev.stopPropagation();}
+      activateHero(seg.dataset.hero); };
+    seg.addEventListener('click',go);
+    seg.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go(e);}});
+  });
+  if (defaultHero) activateHero(defaultHero);
+}
+
 let doneSet;
 function render(){
   const P = withDemoFallback(getParams());
@@ -552,21 +712,38 @@ function render(){
     bindEvents(); postHeight(); return;
   }
   const used = new Set(roleAssign.map(r=>r.hero));
-  let html='';
+
+  // Panels je Held bauen (nach Rolle), in umschaltbare Container gewickelt.
+  // Reihenfolge egal – Sichtbarkeit steuert das Rad. Wir bauen ALLE sechs
+  // Helden, damit jedes Rad-Segment ein Panel zum Aufklappen hat.
+  const panels = {};
   roleAssign.forEach(r=>{
     const netto=P.nettos[r.hero];
     const groups=pickForRole(r.hero,r.roleKey,netto,P.level,P.focus);
-    if (groups.length) html+=block(r.roleKey,r.hero,netto,groups,doneSet,P.focus);
+    if (groups.length) panels[r.hero]=block(r.roleKey,r.hero,netto,groups,doneSet,P.focus);
   });
-  const brach = HEROES.map(h=>h.key)
-    .filter(k=>!used.has(k) && P.nettos[k]!=null && P.nettos[k]>=0.5)
-    .sort((a,b)=>P.nettos[b]-P.nettos[a]);
-  brach.forEach(k=>{
+  // Brachliegende: alle übrigen Helden (unabhängig von Netto-Schwelle, damit
+  // jedes gedämpfte Rad-Segment beim Klick auch Discover-Quests zeigt).
+  HEROES.map(h=>h.key).filter(k=>!used.has(k)).forEach(k=>{
     const groups=pickForBrach(k,P.level,P.focus);
-    if (groups) html+=block('brach',k,P.nettos[k],groups,doneSet,P.focus);
+    if (groups) panels[k]=block('brach',k,(P.nettos[k]!=null?P.nettos[k]:null),groups,doneSet,P.focus);
   });
+
+  // Rad-Modell + Default-Held (Basis, sonst erster zugewiesener).
+  const model = wheelModel(P, doneSet);
+  const defaultHero = P.basis || (roleAssign[0] && roleAssign[0].hero) || WHEEL_ORDER[0];
+
+  let html = heroWheel(model);
+  html += '<div class="hero-panels">';
+  WHEEL_ORDER.forEach(hero=>{
+    if (panels[hero]) html += `<div class="hero-panel" data-hero="${hero}">${panels[hero]}</div>`;
+  });
+  html += '</div>';
+
   el.innerHTML = html;
-  bindEvents(); postHeight();
+  bindEvents();
+  bindWheel(panels[defaultHero] ? defaultHero : Object.keys(panels)[0]);
+  postHeight();
 }
 
 /* Ladeanzeige für die Wartezeit vor der Weiterleitung. Ohne sie wirkt
