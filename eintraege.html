@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meine Coaching-Einträge</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -131,12 +132,37 @@
   .reflection {
     font-size: 14px; color: var(--text-soft); background: rgba(255,255,255,0.025);
     border-radius: 10px; padding: 11px 13px; margin-bottom: 14px; white-space: pre-wrap;
+    border-left: 2px solid var(--type-accent, var(--border-strong));
   }
   .coaching {
     font-size: 14.5px; color: var(--text); line-height: 1.62; margin-bottom: 4px;
   }
   .coaching.pending { color: var(--text-muted); font-style: italic; }
   .coaching b, .coaching strong { color: var(--gold); font-weight: 600; }
+
+  /* Lange Coach-Antworten einklappen: standardmäßig auf ~4 Zeilen begrenzt,
+     per Button aufklappbar. Hält die Liste bei vielen Einträgen scanbar. */
+  .coaching.clamped {
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden; position: relative;
+  }
+  .coach-more {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 8px; font-size: 13px; font-weight: 600;
+    color: var(--type-accent, var(--gold)); background: none; border: none;
+    cursor: pointer; padding: 2px 0; letter-spacing: 0.01em;
+  }
+  .coach-more:hover { text-decoration: underline; }
+  .coach-more .chev {
+    width: 13px; height: 13px; transition: transform .18s ease; flex-shrink: 0;
+  }
+  .coach-wrap.open .coach-more .chev { transform: rotate(180deg); }
+  .coach-wrap.open .coaching.clamped {
+    -webkit-line-clamp: unset; display: block; overflow: visible;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .coach-more .chev { transition: none; }
+  }
 
   /* ---------- Feedback ---------- */
   .fb {
@@ -402,14 +428,24 @@ function renderProgress(entries){
     </div>`).join('');
 
   const peek = document.getElementById('peek');
+  const unlock = document.getElementById('unlock');
 
   if (pr.met){
-    document.getElementById('unlockTitle').textContent = 'Die freie Beratung ist offen';
-    document.getElementById('unlockNote').innerHTML = 'Du hast genug Muster gezeigt — die freie Beratung wartet auf deinem Dashboard.';
+    const withinHint = daysSince(pr.unlockDate) < HINT_VISIBLE_DAYS;
 
-    // Wegweiser aufs Dashboard nur in den ersten HINT_VISIBLE_DAYS Tagen
-    // nach Freischaltung zeigen, danach ausblenden (kein Dauer-Hinweis).
-    if (daysSince(pr.unlockDate) < HINT_VISIBLE_DAYS){
+    if (withinHint){
+      // Kurz nach Freischaltung: Erfolgs-Bestätigung im oberen Banner zeigen.
+      document.getElementById('unlockTitle').textContent = 'Die freie Beratung ist offen';
+      document.getElementById('unlockNote').innerHTML = 'Du hast genug Muster gezeigt — die freie Beratung wartet auf deinem Dashboard.';
+      unlock.style.display = '';
+    } else {
+      // Danach ist das Kennenlern-/Freischalt-Banner erledigt und wird ganz
+      // ausgeblendet — der User braucht den Fortschritts-Hinweis nicht mehr.
+      unlock.style.display = 'none';
+    }
+
+    // Wegweiser aufs Dashboard nur im selben Fenster zeigen, danach ausblenden.
+    if (withinHint){
       peek.style.opacity = '1'; peek.style.borderStyle = 'solid';
       peek.querySelector('.lock').textContent = 'Offen';
       peek.querySelector('.peek-body h3').textContent = 'Die freie Beratung ist freigeschaltet';
@@ -419,6 +455,7 @@ function renderProgress(entries){
     }
   } else {
     // Noch gesperrt: Vorschau-Zustand belassen (aus dem HTML), sichtbar.
+    unlock.style.display = '';
     peek.style.display = '';
   }
 }
@@ -434,9 +471,16 @@ function entryCard(e){
   // AI_CoachingResponse_Display trägt den "wird vorbereitet"-Platzhalter selbst.
   // Ist der Text ein solcher Platzhalter, ruhiger darstellen (kursiv, gedämpft).
   const isPending = /wird gerade vorbereitet|noch nicht viel/i.test(e.coaching || '');
-  const coachingHtml = e.coaching
-    ? `<div class="coaching${isPending?' pending':''}">${renderCoaching(e.coaching)}</div>`
+  // Lange, echte Antworten einklappen (nicht bei Pending/Platzhalter). Schwelle
+  // grob an Zeichenzahl; deckt die typischen Wandtext-Antworten ab.
+  const isLong = !isPending && (e.coaching || '').length > 320;
+  const coachInner = e.coaching
+    ? `<div class="coaching${isPending?' pending':''}${isLong?' clamped':''}">${renderCoaching(e.coaching)}</div>`
     : `<div class="coaching pending">Deine Rückmeldung wird gerade vom Coach gelesen … schau gleich nochmal vorbei.</div>`;
+  const chevSvg = `<svg class="chev" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const coachingHtml = isLong
+    ? `<div class="coach-wrap">${coachInner}<button type="button" class="coach-more" data-act="toggle-coach"><span class="coach-more-label">weiterlesen</span>${chevSvg}</button></div>`
+    : `<div class="coach-wrap">${coachInner}</div>`;
 
   el.innerHTML = `
     <div class="entry-head">
@@ -474,6 +518,16 @@ function entryCard(e){
 
   // ist der Eintrag schon bewertet? -> Ruhezustand
   if (e.fbTap){ applyChosen(el.querySelector('.fb'), e.fbTap, false); }
+
+  // "weiterlesen"/"einklappen" für lange Coach-Antworten
+  const moreBtn = el.querySelector('.coach-more');
+  if (moreBtn){
+    moreBtn.addEventListener('click', () => {
+      const wrap = moreBtn.closest('.coach-wrap');
+      const open = wrap.classList.toggle('open');
+      moreBtn.querySelector('.coach-more-label').textContent = open ? 'einklappen' : 'weiterlesen';
+    });
+  }
 
   wireFeedback(el.querySelector('.fb'));
   return el;
