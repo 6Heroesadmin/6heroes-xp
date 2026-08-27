@@ -579,25 +579,32 @@ function annularSeg(cx,cy,rOuter,rInner,a0,a1){
        + `A${rInner},${rInner} 0 ${large} 0 ${ix0.toFixed(2)},${iy0.toFixed(2)} Z`;
 }
 
-/* Liefert je Held: Rolle (oder null=brach), offene Quest-Anzahl.
-   roleByHero kommt aus den zugewiesenen Rollen; offene Zahl aus QUESTS
-   minus doneSet, gefiltert auf die für die Rolle erlaubten Typen. */
+/* Liefert je Held: alle zugewiesenen Rollen (roles[]), eine primäre Rolle
+   (nach Priorität Basis > Zweit > Stress), und offene Quest-Anzahl.
+   Ein Held kann mehrere Rollen tragen — typischer Fall: Stress1 und Stress2
+   sind derselbe Held. Dann sollen beide Badges (S1 S2) erscheinen. */
+const ROLE_PRIORITY = ['basis','zweit','stress1','stress2'];
 function wheelModel(P, doneSetLocal){
-  const roleByHero = {};
+  const rolesByHero = {};
   [['basis',P.basis],['zweit',P.zweit],['stress1',P.stress1],['stress2',P.stress2]]
-    .forEach(([role,hero])=>{ if(hero) roleByHero[hero]=role; });
+    .forEach(([role,hero])=>{ if(hero){ (rolesByHero[hero]=rolesByHero[hero]||[]).push(role); } });
 
   return WHEEL_ORDER.map(hero=>{
-    const role = roleByHero[hero] || null;      // null = brachliegend
-    const allowed = role ? ROLE_TYPES[role] : ['Discover'];
-    // Offene Quests: passender Held, erlaubter Typ, Level ok, nicht erledigt.
+    const roles = rolesByHero[hero] || [];       // leer = brachliegend
+    // Primäre Rolle nach Priorität; bestimmt Panel, Farbe und erlaubte Typen.
+    const role = ROLE_PRIORITY.find(r=>roles.includes(r)) || null;
+    // Erlaubte Typen = Vereinigung aller Rollen des Helden (bei Doppel-Stress
+    // identisch, aber sauber für künftige Kombis wie Basis+Zweit).
+    const allowed = roles.length
+      ? [...new Set(roles.flatMap(r=>ROLE_TYPES[r]))]
+      : ['Discover'];
     const open = QUESTS.filter(q =>
       q.Hero===hero &&
       allowed.includes(q.Type) &&
       q.MinLevel<=P.level &&
       !doneSetLocal.has(q.QuestID)
     ).length;
-    return { hero, role, open,
+    return { hero, role, roles, open,
              label:(HEROES.find(h=>h.key===hero)||{}).label||hero,
              color:heroColor(hero) };
   });
@@ -606,7 +613,7 @@ function wheelModel(P, doneSetLocal){
 function heroWheel(model){
   // Rad-Maße. PAD_X schafft links/rechts Platz für die außen hängenden Badges,
   // ohne das Rad selbst zu verkleinern (Höhe = Raddurchmesser + kleiner Rand).
-  const D=300, PAD_X=34, PAD_Y=14;
+  const D=300, PAD_X=42, PAD_Y=14;
   const VBW=D+PAD_X*2, VBH=D+PAD_Y*2;
   const cx=VBW/2, cy=VBH/2, rOuter=140, rInner=64, gap=1.4;
   const n=model.length, step=360/n;
@@ -620,18 +627,36 @@ function heroWheel(model){
     const rMid=(rOuter+rInner)/2;
     const [mx,my]=polar(cx,cy,rMid,mid);
     const labelY = my-9, countY = my+13;
-    // Rollen-Badge knapp außerhalb des Rings (liegt jetzt im PAD_X-Rand).
-    const badge = m.role ? ROLE_BADGE[m.role] : '';
+    // Rollen-Badge(s) knapp außerhalb des Rings (im PAD_X-Rand).
+    // Ein Held kann mehrere Rollen tragen (z.B. Stress1+Stress2 = selber Held);
+    // dann als Reihe nebeneinander, horizontal um den Ankerpunkt zentriert.
     const [bx,by]=polar(cx,cy,rOuter+15,mid);
-    const badgeW = badge.length>1?22:16;
-    const badgeColor = (m.role==='stress1'||m.role==='stress2') ? '#B5321F'
-                     : (m.role==='basis') ? '#F2B705'
-                     : (m.role==='zweit') ? '#E06A1E' : '#555';
-    const badgeTextColor = (m.role==='basis') ? '#20293A' : '#fff';
+    const badgeColorFor = (role)=> (role==='stress1'||role==='stress2') ? '#B5321F'
+                     : (role==='basis') ? '#F2B705'
+                     : (role==='zweit') ? '#E06A1E' : '#555';
+    const badgeTextColorFor = (role)=> (role==='basis') ? '#20293A' : '#fff';
+    let badgesSvg='';
+    if (m.roles && m.roles.length){
+      const badges = m.roles.map(r=>({txt:ROLE_BADGE[r], w:ROLE_BADGE[r].length>1?22:16, color:badgeColorFor(r), tc:badgeTextColorFor(r)}));
+      const bgap=3;
+      const totalW = badges.reduce((s,b)=>s+b.w,0) + bgap*(badges.length-1);
+      let curX = bx - totalW/2;
+      badges.forEach(b=>{
+        const cxB = curX + b.w/2;
+        badgesSvg += `<rect class="role-badge-rect" x="${curX.toFixed(1)}" y="${(by-9).toFixed(1)}"
+              width="${b.w}" height="18" rx="4" fill="${b.color}"></rect>
+      <text class="role-badge-text" x="${cxB.toFixed(1)}" y="${(by+0.5).toFixed(1)}"
+            text-anchor="middle" dominant-baseline="middle" fill="${b.tc}">${b.txt}</text>`;
+        curX += b.w + bgap;
+      });
+    }
+    const roleAria = (m.roles && m.roles.length)
+      ? ', ' + m.roles.map(r=>ROLE_META[r].label).join(' und ')
+      : '';
 
     segs += `
     <g class="wheel-seg${brach?' is-brach':''}" data-hero="${m.hero}" tabindex="0" role="button"
-       aria-label="${esc(m.label)}${m.role?', '+ROLE_META[m.role].label:''}, ${m.open} offene Quests">
+       aria-label="${esc(m.label)}${roleAria}, ${m.open} offene Quests">
       <path class="seg-path" d="${path}" fill="${m.color}"></path>
       <text class="seg-label" x="${mx.toFixed(1)}" y="${labelY.toFixed(1)}"
             text-anchor="middle" dominant-baseline="middle">${esc(m.label)}</text>
@@ -639,10 +664,7 @@ function heroWheel(model){
               fill="rgba(0,0,0,0.32)"></circle>
       <text class="seg-count" x="${mx.toFixed(1)}" y="${countY.toFixed(1)}"
             text-anchor="middle" dominant-baseline="central">${m.open}</text>
-      ${badge ? `<rect class="role-badge-rect" x="${(bx-badgeW/2).toFixed(1)}" y="${(by-9).toFixed(1)}"
-              width="${badgeW}" height="18" rx="4" fill="${badgeColor}"></rect>
-      <text class="role-badge-text" x="${bx.toFixed(1)}" y="${(by+0.5).toFixed(1)}"
-            text-anchor="middle" dominant-baseline="middle" fill="${badgeTextColor}">${badge}</text>` : ''}
+      ${badgesSvg}
     </g>`;
   });
 
@@ -702,15 +724,25 @@ function render(){
     return;
   }
 
-  const roleAssign = [
+  const roleAssignRaw = [
     {roleKey:'basis',hero:P.basis},{roleKey:'zweit',hero:P.zweit},
     {roleKey:'stress1',hero:P.stress1},{roleKey:'stress2',hero:P.stress2},
   ].filter(r=>r.hero);
 
-  if (!roleAssign.length){
+  if (!roleAssignRaw.length){
     el.innerHTML = `<div class="empty">Hier erscheinen deine Quests, sobald du den Fragebogen abgeschlossen hast.</div>`;
     bindEvents(); postHeight(); return;
   }
+  // Pro Held nur EIN Eintrag: primäre Rolle nach Priorität (Basis > Zweit >
+  // Stress1 > Stress2). Fängt den Fall ab, dass ein Held mehrere Rollen trägt
+  // (typisch: Stress1 und Stress2 sind derselbe Held) — sonst würde das Panel
+  // doppelt gebaut und mit der zweitrangigen Rolle beschriftet.
+  const roleRank = {basis:0,zweit:1,stress1:2,stress2:3};
+  const byHero = {};
+  roleAssignRaw.forEach(r=>{
+    if (!byHero[r.hero] || roleRank[r.roleKey] < roleRank[byHero[r.hero].roleKey]) byHero[r.hero]=r;
+  });
+  const roleAssign = Object.values(byHero);
   const used = new Set(roleAssign.map(r=>r.hero));
 
   // Panels je Held bauen (nach Rolle), in umschaltbare Container gewickelt.
