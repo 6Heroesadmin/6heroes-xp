@@ -345,7 +345,11 @@ const HERO_PREFIX = {
   EXP:'explorer',
 };
 function heroFromQuestId(qid){
-  const parts = (qid||'').toString().trim().toUpperCase().split('_');
+  // Airtable-Lookups kommen oft als Array (["Q_..._001"]); erst normalisieren.
+  let s = qid;
+  if (Array.isArray(s)) s = s[0];
+  s = (s == null ? '' : s).toString().trim().toUpperCase();
+  const parts = s.split('_');
   // Erwartet Q_<HERO>_... — Held steht an Position 1.
   if (parts.length >= 2 && parts[0] === 'Q'){
     return HERO_PREFIX[parts[1]] || null;
@@ -385,20 +389,22 @@ function mapEntry(r){
     }
     return '';
   };
+  // Airtable-Lookups kommen teils als Array zurück -> ersten Wert nehmen.
+  const flat = (v) => Array.isArray(v) ? (v[0] ?? '') : v;
   // Echte ExerciseEntries-Feldnamen (per CSV bestätigt 30.7.2026).
   // AI_CoachingResponse_Display liefert bereits den "wird vorbereitet"-
   // Platzhalter, falls die Antwort noch fehlt -> kein eigener Pending-Zweig nötig.
-  const questId = pick('Quest_QuestID_LU','QuestID','questId');
-  // Held: bevorzugt ein direktes Feld (falls der Webhook es je liefert),
+  const questId = flat(pick('Quest_QuestID_LU','QuestID','questId'));
+  // Held: bevorzugt ein direktes Feld (Hero / Quest_Hero_LU, evtl. als Array),
   // sonst aus der QuestID abgeleitet (Q_<HERO>_<TYPE>_<NNN>).
-  const heroRaw = pick('Quest_Hero_LU','Hero','hero').toString().trim().toLowerCase();
+  const heroRaw = flat(pick('Quest_Hero_LU','Hero','hero')).toString().trim().toLowerCase();
   const hero = HERO_META[heroRaw] ? heroRaw : heroFromQuestId(questId);
   return {
     entryId:   stripPrefix(pick('EntryID','entryId')),
     questId:   questId,
     hero:      hero,   // Held-Key oder null
     title:     pick('Quest_Title_LU','title') || 'Quest',
-    type:      pick('Quest_Type_LU','QuestType_Frozen','type'),  // LU zuerst, Frozen als Fallback
+    type:      flat(pick('Quest_Type_LU','QuestType_Frozen','type')),  // LU zuerst, Frozen als Fallback
     date:      pick('debug_date','date'),
     reflection:pick('FreeText','reflection') || '',
     coaching:  pick('AI_CoachingResponse_Display','coaching') || '',
@@ -687,6 +693,27 @@ async function loadEntries(email){
   const data = parseWebhookPayload(await res.text());
   // Kandidaten für das Array-Feld – anpassen sobald echtes JSON bekannt
   const rows = (data && (data.entries || data.coaching || data.eintraege || data.records)) || [];
+  // Diagnose: mit ?debug an der URL erscheint oben auf der Seite eine Box mit
+  // dem echten Payload (Top-Level-Keys + erster Eintrag). Zeigt sofort, unter
+  // welchem Schlüssel die Einträge liegen und ob Held/QuestID enthalten sind.
+  if (new URLSearchParams(location.search).has('debug')){
+    try {
+      const box = document.createElement('pre');
+      box.style.cssText = 'position:relative;z-index:9999;background:#0b0f1a;color:#7CFF9B;border:1px solid #2a3550;border-radius:10px;padding:14px;margin:10px 0;font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:340px;overflow:auto';
+      const topKeys = data && typeof data==='object' ? Object.keys(data) : [];
+      const first = Array.isArray(rows) && rows[0] ? rows[0] : null;
+      box.textContent =
+        '[6H DEBUG]\n' +
+        'Top-Level-Keys im Payload: ' + JSON.stringify(topKeys) + '\n' +
+        'Anzahl rows (via bekannte Keys): ' + (Array.isArray(rows)?rows.length:0) + '\n\n' +
+        'Erster Eintrag – Feldnamen:\n' + (first ? JSON.stringify(Object.keys(first),null,0) : '(keine rows gefunden)') + '\n\n' +
+        'Erster Eintrag – Rohdaten:\n' + (first ? JSON.stringify(first,null,2) : '') + '\n\n' +
+        (first ? 'Nach mapEntry:\n' + JSON.stringify(mapEntry(first),null,2) : '') + '\n\n' +
+        'Kompletter Payload (gekürzt):\n' + JSON.stringify(data,null,2).slice(0,1500);
+      document.body.insertBefore(box, document.body.firstChild);
+      console.log('[6H debug] payload:', data);
+    } catch(err){ console.log('[6H debug] Fehler:', err); }
+  }
   // Nur echte Einträge: leere Aggregator-Platzhalter (ohne entryId) rauswerfen,
   // damit weder eine Geisterkarte erscheint noch ein leeres Feedback gesendet werden kann.
   return Array.isArray(rows) ? rows.map(mapEntry).filter(e => e.entryId) : [];
