@@ -150,8 +150,7 @@
     color: #BBF7D0; background: rgba(31,157,98,0.16); border-color: rgba(31,157,98,0.38);
   }
 
-  .quest.optional { opacity: 0.5; cursor: default; }
-  .quest.optional:hover { background: var(--card); border-color: var(--border); }
+  .quest.optional { cursor: pointer; }
 
   .quest.done-card { cursor: default; border-color: rgba(31,157,98,0.28); }
   .quest.done-card:hover { background: var(--card); border-color: rgba(31,157,98,0.28); }
@@ -499,12 +498,14 @@ function questCard(q, doneSet, optional, focus){
   const streak = STREAK[q.QuestID]||0;
   // Erledigte Karten bleiben sichtbar (Habit-Modell), sind aber nicht mehr klickbar:
   // kein erneutes Session-Create für eine heute schon abgeschlossene Quest.
-  const inert = optional || done;
+  // Nur erledigte Quests sind inert (kein erneutes Session-Create).
+  // Optionale sind jetzt vollwertig ausführbar.
+  const inert = done;
 
-  // Sperr-Entscheidung: nur im Teaser (!paid), nur für echte offene Quests.
-  // Die erste solche Quest bleibt frei; jede weitere wird gesperrt.
+  // Sperr-Entscheidung: nur im Teaser (!paid), für jede echte offene Quest –
+  // optionale eingeschlossen. Die erste bleibt frei; jede weitere wird gesperrt.
   let locked = false;
-  if (!TEASER.paid && !optional && !done){
+  if (!TEASER.paid && !done){
     if (!TEASER.freeUsed){ TEASER.freeUsed = true; }
     else { locked = true; }
   }
@@ -512,7 +513,7 @@ function questCard(q, doneSet, optional, focus){
   const cls = 'quest'+(optional?' optional':'')+(done?' done-card':'')+(locked?' locked-card':'');
   const status = locked
     ? `<span class="status locked">Gesperrt</span>`
-    : (optional ? '' : `<span class="status ${done?'done':''}">${done?'Heute erledigt ✓':'Offen'}</span>`);
+    : `<span class="status ${done?'done':''}">${done?'Heute erledigt ✓':'Offen'}</span>`;
   const optNote = optional ? `<div class="opt-note">Optional – nur, wenn du heute Kapazität hast.</div>` : '';
   const streakHtml = streak>0 ? `<span class="streak">${streak} Tage in Folge</span>` : '';
   const match = (!optional && !done && !locked && getContextScores(q,focus)>0) ? `<span class="match">Passt zu deinem Fokus</span>` : '';
@@ -815,7 +816,7 @@ function bindEvents(){
     card.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();goUpgrade(e);}});
   });
 
-  document.querySelectorAll('.quest[data-quest]:not(.optional):not(.done-card):not(.locked-card)').forEach(card=>{
+  document.querySelectorAll('.quest[data-quest]:not(.done-card):not(.locked-card)').forEach(card=>{
     const open=async (ev)=>{
       /* Verhindert, dass ein evtl. vorhandener Noloco-Handler parallel
          navigiert — der landet sonst auf einem Record, den Noloco noch
