@@ -235,6 +235,29 @@
   .empty strong { color: var(--text-soft); display: block; margin-bottom: 6px; font-size: 15px; }
 
   .load { text-align: center; padding: 30px; color: var(--text-muted); font-size: 13px; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    position: relative;
+    font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+    color: var(--text-muted); background: transparent; border: none;
+    padding: 10px 4px; margin-right: 18px; cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color 0.15s ease;
+  }
+  .tab:hover { color: var(--text-soft); }
+  .tab.is-active { color: var(--text); border-bottom-color: var(--gold); }
+  .tab-count {
+    display: inline-block; margin-left: 5px;
+    font-size: 12px; font-weight: 600; color: var(--text-muted);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 1px 8px; vertical-align: 1px;
+  }
+  .tab.is-active .tab-count { color: var(--text-soft); border-color: var(--border-strong); }
 </style>
 </head>
 <body>
@@ -277,6 +300,16 @@
   <div class="section-head">
     <h2>Deine Einträge</h2>
     <span class="count" id="entryCount"></span>
+  </div>
+
+  <!-- Tabs: Quest-Reflexionen vs. Coach-Gespräche -->
+  <div class="tabs" id="tabs" role="tablist" hidden>
+    <button class="tab is-active" id="tabQuests" role="tab" aria-selected="true" data-tab="quests">
+      Quest-Reflexionen <span class="tab-count" id="cntQuests"></span>
+    </button>
+    <button class="tab" id="tabCoaching" role="tab" aria-selected="false" data-tab="coaching">
+      Coach-Gespräche <span class="tab-count" id="cntCoaching"></span>
+    </button>
   </div>
 
   <div id="list"><div class="load">Einträge werden geladen …</div></div>
@@ -411,8 +444,14 @@ function mapEntry(r){
     coaching:  pick('AI_CoachingResponse_Display','coaching') || '',
     fbTap:     (pick('Feedback_Tap','tap') || '').toString().toLowerCase(),
     fbDetail:  pick('Feedback_Detail','detail') || '',
+    source:    flat(pick('Source','source')).toString().trim().toLowerCase(),
   };
 }
+
+/* Ist ein Eintrag eine freie Coach-Beratung (Source=Beratung) oder eine
+   Quest-Reflexion? Tolerant: erkennt "beratung" case-insensitiv; alles
+   andere (inkl. leer) gilt als Quest-Reflexion. */
+function isBeratung(e){ return (e.source || '') === 'beratung'; }
 
 /* ---- Fortschritt berechnen -------------------------------- */
 function computeProgress(entries){
@@ -699,15 +738,64 @@ async function loadEntries(email){
   return Array.isArray(rows) ? rows.map(mapEntry).filter(e => e.entryId) : [];
 }
 
-function renderList(entries){
+/* Alle geladenen Einträge, gehalten für den Tab-Wechsel. */
+let ALL_ENTRIES = [];
+let ACTIVE_TAB = 'quests';
+
+/* Zeichnet die Kacheln des gerade aktiven Tabs. */
+function renderActiveTab(){
   const list = document.getElementById('list');
-  document.getElementById('entryCount').textContent = entries.length ? `${entries.length} Einträge` : '';
+  const quests   = ALL_ENTRIES.filter(e => !isBeratung(e));
+  const coaching = ALL_ENTRIES.filter(e =>  isBeratung(e));
+
+  // Tab-Zähler
+  document.getElementById('cntQuests').textContent   = quests.length   || '';
+  document.getElementById('cntCoaching').textContent = coaching.length || '';
+
+  const shown = ACTIVE_TAB === 'coaching' ? coaching : quests;
+
+  document.getElementById('entryCount').textContent = shown.length ? `${shown.length} Einträge` : '';
   list.innerHTML = '';
-  if (!entries.length){
-    list.innerHTML = `<div class="empty"><strong>Noch keine Einträge</strong>Sobald du eine Quest abschließt, erscheint sie hier — mit der Rückmeldung deines Coachs.</div>`;
+
+  if (!shown.length){
+    const msg = ACTIVE_TAB === 'coaching'
+      ? '<strong>Noch keine Coach-Gespräche</strong>Sobald sich die freie Beratung öffnet und du eine Situation einbringst, erscheint sie hier — mit der Rückmeldung deines Coachs.'
+      : '<strong>Noch keine Quest-Reflexionen</strong>Sobald du eine Quest abschließt, erscheint sie hier — mit der Rückmeldung deines Coachs.';
+    list.innerHTML = `<div class="empty">${msg}</div>`;
     return;
   }
-  entries.forEach(e => list.appendChild(entryCard(e)));
+  shown.forEach(e => list.appendChild(entryCard(e)));
+}
+
+/* Wird aus init() aufgerufen: hält die Einträge, blendet die Tabs ein
+   und zeichnet den aktiven Tab. */
+function renderList(entries){
+  ALL_ENTRIES = Array.isArray(entries) ? entries : [];
+  const tabs = document.getElementById('tabs');
+  if (tabs) tabs.hidden = false;
+  renderActiveTab();
+  wireTabs();
+}
+
+/* Tab-Klicks verdrahten (idempotent – nur einmal binden). */
+let TABS_WIRED = false;
+function wireTabs(){
+  if (TABS_WIRED) return;
+  const tabs = document.getElementById('tabs');
+  if (!tabs) return;
+  tabs.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      ACTIVE_TAB = btn.dataset.tab;
+      tabs.querySelectorAll('.tab').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      renderActiveTab();
+      if (typeof postHeight === 'function') postHeight();
+    });
+  });
+  TABS_WIRED = true;
 }
 
 /* ---- Helpers ---------------------------------------------- */
