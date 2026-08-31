@@ -733,9 +733,12 @@ async function loadEntries(email){
   const data = parseWebhookPayload(await res.text());
   // Kandidaten für das Array-Feld – anpassen sobald echtes JSON bekannt
   const rows = (data && (data.entries || data.coaching || data.eintraege || data.records)) || [];
-  // Nur echte Einträge: leere Aggregator-Platzhalter (ohne entryId) rauswerfen,
-  // damit weder eine Geisterkarte erscheint noch ein leeres Feedback gesendet werden kann.
-  return Array.isArray(rows) ? rows.map(mapEntry).filter(e => e.entryId) : [];
+  // Nur echte Einträge behalten. Quest-Einträge haben eine EntryID.
+  // Freie Beratungen (Source=Beratung) haben KEINE EntryID, aber Inhalt
+  // (Reflexion + Coaching). Beide Fälle durchlassen; nur echte Leerzeilen
+  // (weder ID noch Inhalt) rauswerfen.
+  const isReal = e => e.entryId || e.source === 'beratung' || e.reflection || e.coaching;
+  return Array.isArray(rows) ? rows.map(mapEntry).filter(isReal) : [];
 }
 
 /* Alle geladenen Einträge, gehalten für den Tab-Wechsel. */
