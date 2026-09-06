@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deine Kombination – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --navy:#20293A; --navy-soft:#283248; --gold:#F2B705;
@@ -115,6 +117,8 @@
 </div>
 
 <script>
+/* Frame-Kennung fuer den Profil-Wrapper (Hoehen-Zuordnung) */
+var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
 // Heldenfarben (identisch zu basisheld/Memory)
 const HERO_COLOR = {
   commander:"#0B63CE", explorer:"#F0672A", innovator:"#F2B705",
@@ -2250,13 +2254,15 @@ async function render(){
   ).join("");
 }
 
-function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h},"*");}
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:"6heroes:setHeight",height:h,frame:__FRAME_ID__},"*");}
 window.addEventListener("load",()=>{render().then(()=>{
   var w=document.querySelector('.wrap'); if(w) w.classList.add('ready');
   postHeight();
 });});
 window.addEventListener("resize",postHeight);
 if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
+[50,200,500,1000,1600].forEach(function(t){ setTimeout(postHeight,t); });
 </script>
 </body>
 </html>
