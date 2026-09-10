@@ -441,7 +441,7 @@
   <!-- Kopf -->
   <div class="greeting">
     <div class="eyebrow">Mein Dashboard</div>
-    <h1>Willkommen zurück, <span class="name" id="userName">Stefan</span></h1>
+    <h1 id="greetingLine">Willkommen zurück<span class="name" id="userName"></span></h1>
   </div>
 
   <div style="height:22px"></div>
@@ -759,6 +759,11 @@ applyHeroes({
   stress1: P.get('stress1'),
   stress2: P.get('stress2'),
 });
+
+// Vorname aus URL (?name=...). Nur das erste Wort, sauber dekodiert.
+// Kein Name -> nur "Willkommen zurück" ohne Namen.
+const RAW_NAME = (P.get('name') || '').trim();
+const FIRST_NAME = RAW_NAME ? RAW_NAME.split(/\s+/)[0] : '';
 
 function stripPrefix(id){
   const s = (id||'').toString().trim();
@@ -1103,7 +1108,17 @@ function renderBadges(){
 
 async function init(){
   await loadLive();   // echte Werte aus dem Coaching-Read holen (Fallback: Demo)
-  document.getElementById('userName').textContent = D.name;
+  (function(){
+    var line = document.getElementById('greetingLine');
+    var span = document.getElementById('userName');
+    if (FIRST_NAME) {
+      line.firstChild.textContent = 'Willkommen zurück, ';
+      span.textContent = FIRST_NAME;
+    } else {
+      line.firstChild.textContent = 'Willkommen zurück';
+      span.textContent = '';
+    }
+  })();
 
   if (!PAID_STATE){
     // ---- TEASER-ZUSTAND (Nicht-Zahler) ----
