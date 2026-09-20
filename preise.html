@@ -860,16 +860,86 @@
 
     .pricing-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr;
       gap: 24px;
-      max-width: 780px;
+      max-width: 960px;
       margin: 0 auto;
+      align-items: stretch;
     }
 
     .pricing-card {
       border-radius: var(--radius-lg);
       padding: 40px;
       position: relative;
+    }
+
+    /* Rechte Spalte: Hero-Paket-Karte mit Features (links) + gestapelten Optionen (rechts) */
+    .pc-hero {
+      background: linear-gradient(135deg, rgba(242,183,5,0.15), rgba(11,99,206,0.1));
+      border: 1px solid rgba(242,183,5,0.35);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .hero-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hero-option {
+      position: relative;
+      background: rgba(30,41,59,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .hero-option:hover { border-color: rgba(242,183,5,0.4); background: rgba(30,41,59,0.5); }
+    .hero-option.featured { border-color: rgba(242,183,5,0.55); background: rgba(30,41,59,0.55); }
+
+    .ho-tag {
+      position: absolute;
+      top: -10px; right: 16px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .ho-tag.beliebt   { background: #0B63CE; color: #fff; }
+    .ho-tag.gratis    { background: #1F9D62; color: #fff; }
+
+    .ho-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.1rem;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+    .ho-price span { font-size: 0.95rem; vertical-align: super; font-family: 'Outfit', sans-serif; font-weight: 300; }
+
+    .ho-period {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 4px 0 14px;
+      line-height: 1.4;
+    }
+
+    .hero-features-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hero-features-col .pc-name { margin-bottom: 20px; }
+    .hero-features-col .pc-features { margin-bottom: 0; gap: 16px; }
+    .hero-features-col .pc-features li {
+      font-size: 1rem;
+      color: var(--white);
+      font-weight: 400;
+    }
+    .hero-features-col .pc-features li::before {
+      font-size: 1.05rem;
     }
 
     .pc-free {
@@ -967,71 +1037,16 @@
     }
     .btn-price-ghost:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
 
+    .btn-price-sm {
+      padding: 11px 20px;
+      font-size: 0.88rem;
+    }
+
     .pricing-note {
       text-align: center;
       margin-top: 24px;
       font-size: 0.85rem;
       color: var(--text-muted);
-    }
-
-    /* Plan selector (3-way) */
-    .pricing-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 40px;
-    }
-
-    .plan-selector {
-      display: inline-flex;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 100px;
-      padding: 4px;
-      gap: 2px;
-    }
-
-    .plan-btn {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 22px;
-      border-radius: 100px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-family: 'Outfit', sans-serif;
-      line-height: 1.3;
-      white-space: nowrap;
-    }
-    .plan-btn .plan-name { font-weight: 600; font-size: 0.88rem; }
-    .plan-btn .plan-price-hint { font-size: 0.75rem; opacity: 0.8; margin-top: 1px; }
-
-    .plan-btn.active {
-      background: var(--gold);
-      color: #1a1200;
-    }
-    .plan-btn.active .plan-price-hint { opacity: 0.75; }
-
-    .plan-save-tag {
-      position: absolute;
-      top: -10px;
-      right: 6px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      background: #1F9D62;
-      color: #fff;
-      padding: 2px 7px;
-      border-radius: 100px;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 480px) {
-      .plan-btn { padding: 9px 14px; }
-      .plan-btn .plan-name { font-size: 0.82rem; }
-      .plan-btn .plan-price-hint { font-size: 0.7rem; }
     }
 
     /* ── CTA SECTION ──────────────────────────────────────────────── */
@@ -1169,6 +1184,7 @@
       .steps::before { display: none; }
       .features-grid { grid-template-columns: 1fr; }
       .pricing-grid { grid-template-columns: 1fr; }
+      .pc-hero { grid-template-columns: 1fr; gap: 28px; }
       .nav-links { display: none; }
       .btn-nav-mobile { display: flex; }
       .nav-burger { display: flex !important; }
@@ -1295,25 +1311,6 @@
       <p class="section-sub" style="margin: 0 auto;">Der Test und ein Einblick in dein persönliches Heldenprofil sind immer kostenlos. Upgrade auf Hero für dein volles Heldenprofil, tägliche Übungen und deinen persönlichen Coach.</p>
     </div>
 
-    <div class="pricing-toggle fade-up">
-      <div class="plan-selector">
-        <div class="plan-btn active" id="plan-monthly" onclick="switchPlan('monthly')">
-          <span class="plan-name">Monatlich</span>
-          <span class="plan-price-hint">24,99 € / Monat</span>
-        </div>
-        <div class="plan-btn" id="plan-6months" onclick="switchPlan('6months')">
-          <span class="plan-save-tag" style="background:#0B63CE;">Beliebt</span>
-          <span class="plan-name">6 Monate</span>
-          <span class="plan-price-hint">19,99 € / Monat</span>
-        </div>
-        <div class="plan-btn" id="plan-yearly" onclick="switchPlan('yearly')">
-          <span class="plan-save-tag">4 Monate gratis</span>
-          <span class="plan-name">12 Monate</span>
-          <span class="plan-price-hint">16,99 € / Monat</span>
-        </div>
-      </div>
-    </div>
-
     <div class="pricing-grid">
       <div class="pricing-card pc-free fade-up">
         <div class="pc-name">Entdecker</div>
@@ -1327,20 +1324,43 @@
         <a href="https://6heroes.de/assessment.html" target="_top" class="btn-price btn-price-ghost">Kostenlos starten</a>
       </div>
 
-      <div class="pricing-card pc-paid fade-up" style="transition-delay:0.1s">
-        <div class="pc-badge" id="hero-badge" style="display:none;"></div>
-        <div class="pc-name">Hero</div>
-        <div class="pc-price" id="price-display">24,99 <span>€</span></div>
-        <div class="pc-period" id="period-display">pro Monat · jederzeit kündbar</div>
-        <ul class="pc-features">
-          <li>Alles aus Entdecker</li>
-          <li>Jeden Tag neue Quests (Übungen), passend zu dir</li>
-          <li>Ein persönlicher Coach, der dein ganzes Profil kennt</li>
-          <li>Sammle Punkte und steige durch 10 Level auf</li>
-          <li>Über 50 Auszeichnungen zum Freischalten</li>
-          <li>Bleib am Ball mit Serien und deiner Fortschritts-Übersicht</li>
-        </ul>
-        <a href="https://myablefy.com/s/6heroes/6heroes-monatlich-1d9fb98e/payment" class="btn-price btn-price-primary" target="_top" id="cta-pricing">Jetzt Hero werden</a>
+      <div class="pricing-card pc-hero fade-up" style="transition-delay:0.1s">
+        <div class="hero-features-col">
+          <div class="pc-name">Hero</div>
+          <ul class="pc-features">
+            <li>Alles aus Entdecker</li>
+            <li>Jeden Tag neue Quests (Übungen), passend zu dir</li>
+            <li>Ein persönlicher Coach, der dein ganzes Profil kennt</li>
+            <li>Sammle Punkte und steige durch 10 Level auf</li>
+            <li>Über 50 Auszeichnungen zum Freischalten</li>
+            <li>Bleib am Ball mit Serien und deiner Fortschritts-Übersicht</li>
+          </ul>
+        </div>
+
+        <div class="hero-options">
+          <div class="hero-option">
+            <div class="pc-name">Hero · Monatlich</div>
+            <div class="ho-price">24,99 <span>€</span></div>
+            <div class="ho-period">pro Monat · jederzeit kündbar</div>
+            <a href="https://myablefy.com/s/6heroes/6heroes-monatlich-1d9fb98e/payment" class="btn-price btn-price-primary btn-price-sm" target="_top">Jetzt Hero werden</a>
+          </div>
+
+          <div class="hero-option featured">
+            <span class="ho-tag beliebt">Beliebt</span>
+            <div class="pc-name">Hero · 6 Monate</div>
+            <div class="ho-price">19,99 <span>€</span></div>
+            <div class="ho-period">119,94 € einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit</div>
+            <a href="https://myablefy.com/s/6heroes/6heroes-6-monate-bb1ee3a3/payment" class="btn-price btn-price-primary btn-price-sm" target="_top">Jetzt 6-Monate-Hero werden</a>
+          </div>
+
+          <div class="hero-option">
+            <span class="ho-tag gratis">4 Monate gratis</span>
+            <div class="pc-name">Hero · 12 Monate</div>
+            <div class="ho-price">16,99 <span>€</span></div>
+            <div class="ho-period">203,88 € einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit</div>
+            <a href="https://myablefy.com/s/6heroes/6heroes-12-monate-07336304/payment" class="btn-price btn-price-primary btn-price-sm" target="_top">Jetzt Jahres-Hero werden</a>
+          </div>
+        </div>
       </div>
     </div>
     <p class="pricing-note fade-up">Alle Preise inkl. MwSt. · Zahlung via Ablefy · 6- und 12-Monats-Pakete werden einmalig im Voraus fällig und begründen eine Mindestlaufzeit · Nach Ablauf der Mindestlaufzeit verlängert sich das Abo automatisch monatlich und ist jederzeit kündbar · Keine Kreditkarte für kostenlosen Einstieg nötig</p>
@@ -1365,74 +1385,28 @@
 
 
 <script>
-  // ── PRICING SELECTOR ───────────────────────────────────────────────────────
-  let currentPlan = 'monthly';
-
-  const plans = {
-    monthly: {
-      price:   '24,99 <span>€</span>',
-      period:  'pro Monat · jederzeit kündbar',
-      total:   null,
-      cta:     'Jetzt Hero werden',
-      href:    'https://myablefy.com/s/6heroes/6heroes-monatlich-1d9fb98e/payment'
-    },
-    '6months': {
-      price:   '19,99 <span>€</span>',
-      period:  '119,94 € einmalig · danach monatlich kündbar · 6 Monate Mindestlaufzeit',
-      total:   null,
-      cta:     'Jetzt 6-Monate-Hero werden',
-      href:    'https://myablefy.com/s/6heroes/6heroes-6-monate-bb1ee3a3/payment'
-    },
-    yearly: {
-      price:   '16,99 <span>€</span>',
-      period:  '203,88 € einmalig · danach monatlich kündbar · 12 Monate Mindestlaufzeit',
-      total:   null,
-      cta:     'Jetzt Jahres-Hero werden',
-      href:    'https://myablefy.com/s/6heroes/6heroes-12-monate-07336304/payment'
-    }
-  };
-
-  function switchPlan(plan) {
-    currentPlan = plan;
-    const price  = document.getElementById('price-display');
-    const period = document.getElementById('period-display');
-    const cta    = document.getElementById('cta-pricing');
-    const badge  = document.getElementById('hero-badge');
-    if (!price || !period || !cta || !badge) return;
-
-    ['monthly', '6months', 'yearly'].forEach(p => {
-      const el = document.getElementById('plan-' + p);
-      if (el) el.classList.toggle('active', p === plan);
-    });
-
-    price.innerHTML     = plans[plan].price;
-    period.textContent  = plans[plan].period;
-    cta.textContent     = plans[plan].cta;
-    cta.href            = plans[plan].href;
-
-    badge.classList.remove('badge-beliebt', 'badge-empfohlen');
-    if (plan === 'yearly') {
-      badge.textContent = '4 Monate gratis';
-      badge.classList.add('badge-empfohlen');
-      badge.style.display = 'block';
-    } else if (plan === '6months') {
-      badge.textContent = 'Beliebt';
-      badge.classList.add('badge-beliebt');
-      badge.style.display = 'block';
-    } else {
-      badge.style.display = 'none';
-    }
-  }
-
-  // Deep-Link-Unterstützung: preise.html?plan=yearly|6months|monthly
-  // (genutzt von den App-Teasern / UPGRADE_URL, um direkt aufs Paket zu springen)
+  // ── DEEP-LINK-HIGHLIGHT ─────────────────────────────────────────────────────
+  // Alle drei Hero-Pakete sind gleichzeitig sichtbar. Ein optionaler
+  // ?plan=…-Parameter (von App-Teasern / UPGRADE_URL) hebt die passende
+  // Option hervor und scrollt sie sanft in den Blick.
   (function () {
     try {
       var p = new URLSearchParams(window.location.search).get('plan');
-      var map = { yearly: 'yearly', '12monate': 'yearly', '12': 'yearly',
-                  '6months': '6months', '6monate': '6months', '6': '6months',
-                  monthly: 'monthly', monatlich: 'monthly' };
-      if (p && map[p]) switchPlan(map[p]);
+      if (!p) return;
+      var map = { yearly: 2, '12monate': 2, '12': 2,
+                  '6months': 1, '6monate': 1, '6': 1,
+                  monthly: 0, monatlich: 0 };
+      var idx = map[p];
+      if (idx === undefined) return;
+      var opts = document.querySelectorAll('.hero-option');
+      var target = opts[idx];
+      if (!target) return;
+      target.classList.add('featured');
+      target.style.outline = '2px solid var(--gold)';
+      target.style.outlineOffset = '2px';
+      window.addEventListener('load', function () {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
     } catch (e) { /* Default-Ansicht bleibt bestehen */ }
   })();
 </script>
