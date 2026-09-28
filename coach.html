@@ -72,6 +72,7 @@
   textarea{width:100%;min-height:150px;padding:14px 16px;background:var(--white);border:1px solid var(--line);
     border-radius:14px;font:15px/1.5 'Inter',system-ui,sans-serif;color:var(--navy);resize:vertical}
   textarea:focus{outline:none;border-color:var(--navy)}
+  textarea::placeholder{color:#9AA0AC}
 
   .actions{display:flex;flex-direction:column;gap:10px}
   .btn{min-height:52px;padding:0 16px;background:var(--gold);border:0;border-radius:14px;
@@ -137,10 +138,10 @@
       <div class="progress" data-step="1"></div>
     </div>
     <div class="body">
-      <h1>Worum geht es heute konkret?</h1>
+      <h1 id="step1Title">Worum geht es heute konkret?</h1>
 
       <div id="inputArea" style="display:flex;flex-direction:column;gap:16px;flex:1">
-        <p class="hint">Beschreib die Situation in ein paar Sätzen: Was steht an, wer ist beteiligt, und was beschäftigt dich daran?</p>
+        <p class="hint" id="step1Hint"></p>
         <textarea id="situation" maxlength="1500" aria-label="Deine Situation"></textarea>
         <div class="spacer"></div>
         <div class="actions"><button class="btn" id="sendBtn" disabled>Weiter</button></div>
@@ -207,6 +208,40 @@ const STEP1_WEBHOOK_URL = 'https://hook.eu1.make.com/wlbxbnln6jlq682mqnqphc515is
 const STEP2_WEBHOOK_URL = ''; // Coach_Schritt2 – wird eingetragen, sobald das Szenario steht
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
+
+/* Einstiegsfrage, Hilfe und Beispiel je Kategorie */
+const KATEGORIEN = {
+  Entscheidung: {
+    titel: 'Vor welcher Entscheidung stehst du?',
+    hilfe: 'Zwischen welchen Möglichkeiten schwankst du, bis wann musst du dich entscheiden, und was macht es dir schwer?',
+    beispiel: 'Zum Beispiel: Ich habe ein Jobangebot in Hamburg, meine Familie lebt in München. Bis Freitag muss ich zu- oder absagen.'
+  },
+  Gespraech: {
+    titel: 'Welches Gespräch steht an?',
+    hilfe: 'Mit wem sprichst du, wann, und was willst du erreichen? Was macht dir daran zu schaffen?',
+    beispiel: 'Zum Beispiel: Heute Abend will ich meinen Mitbewohner auf das Geschirr ansprechen, ohne dass es Streit gibt.'
+  },
+  Aufgabe: {
+    titel: 'Welche Aufgabe liegt vor dir?',
+    hilfe: 'Worum geht es, bis wann muss es erledigt sein, und was hält dich gerade davon ab?',
+    beispiel: 'Zum Beispiel: Ich schiebe seit Wochen meine Steuererklärung vor mir her. Die Frist ist Ende Oktober.'
+  },
+  Stress: {
+    titel: 'Was setzt dich gerade unter Druck?',
+    hilfe: 'Was ist los, seit wann geht das so, und woran merkst du es gerade am meisten?',
+    beispiel: 'Zum Beispiel: Diese Woche kommt alles zusammen, Projekt, Umzug, Termine. Ich schlafe schlecht und bin schnell gereizt.'
+  },
+  Fokus: {
+    titel: 'Wobei fällt es dir schwer, dranzubleiben?',
+    hilfe: 'Was willst du schaffen, was lenkt dich ab, und wie viel Zeit hast du heute dafür?',
+    beispiel: 'Zum Beispiel: Ich will heute zwei Stunden an meiner Präsentation arbeiten, lande aber ständig im Postfach.'
+  },
+  Eigenes: {
+    titel: 'Was beschäftigt dich heute?',
+    hilfe: 'Erzähl es so, wie es dir gerade in den Kopf kommt: was los ist, wer beteiligt ist und was dich daran bewegt.',
+    beispiel: 'Schreib einfach los.'
+  }
+};
 
 /* ---------- Zustand ---------- */
 const state = {
@@ -352,6 +387,10 @@ function resetRun(){
 function startRun(kategorie){
   resetRun();
   state.kategorie = kategorie;
+  const k = KATEGORIEN[kategorie] || KATEGORIEN.Eigenes;
+  $('step1Title').textContent = k.titel;
+  $('step1Hint').textContent = k.hilfe;
+  $('situation').placeholder = k.beispiel;
   show('step1');
   setTimeout(() => $('situation').focus(), 50);
 }
