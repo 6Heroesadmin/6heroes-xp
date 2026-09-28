@@ -13,6 +13,7 @@
     --muted:#5A6272; --white:#FFFFFF; --err:#9B2C2C;
   }
   *{box-sizing:border-box}
+  [hidden]{display:none !important}
   html,body{margin:0;min-height:100%;background:var(--bg);color:var(--navy);
     font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
   button{font-family:inherit;color:inherit}
@@ -90,6 +91,27 @@
   .opt:hover{border-color:var(--navy)}
   .opt.sel{border:2px solid var(--navy);padding:11px 15px}
   .opts.locked .opt{cursor:default}
+
+  /* Schritt 3 */
+  .herocard{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);
+    border:1px solid var(--line);border-radius:14px}
+  .herobadge{width:48px;height:48px;flex-shrink:0;border-radius:24px;display:flex;align-items:center;justify-content:center;
+    color:var(--white);font-family:'DM Serif Display',Georgia,serif;font-size:22px}
+  .herotext{display:flex;flex-direction:column;gap:2px}
+  .herotext .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .herotext .txt{font-size:14px;line-height:1.4}
+  .step3 h1{font-size:24px}
+  .opt3{display:flex;flex-direction:column;gap:8px;width:100%;padding:14px 16px;text-align:left;background:var(--white);
+    border:1px solid var(--line);border-radius:14px;cursor:pointer}
+  .opt3:hover{border-color:var(--navy)}
+  .opt3.sel{border:2px solid var(--navy);padding:13px 15px}
+  .opt3 .main{font-size:15px;font-weight:600;line-height:1.4}
+  .opt3 .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .opt3 .sub{font-size:13px;color:var(--muted);line-height:1.4}
+  .opt3 .tag{flex-shrink:0;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700}
+  .opt3 .dot{width:8px;height:8px;border-radius:4px}
+  .waiting{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+  .waiting .typing{padding:0}
 
   .msg{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
   .msg.err{color:var(--err)}
@@ -171,11 +193,31 @@
     </div>
   </section>
 
-  <!-- PLATZHALTER BIS SCHRITT 3 GEBAUT IST -->
+  <!-- SCHRITT 3 -->
+  <section class="screen step3" id="s-step3">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" data-back="step2" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Schritt 3 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="3"></div>
+    </div>
+    <div class="body">
+      <div class="herocard">
+        <div class="herobadge" id="heroBadge"></div>
+        <div class="herotext"><span class="lbl" id="heroLabel"></span><span class="txt" id="heroSatz"></span></div>
+      </div>
+      <h1 id="step3Title"></h1>
+      <div class="opts" id="opts3"></div>
+      <p class="msg" id="step3Msg" hidden></p>
+    </div>
+  </section>
+
+  <!-- PLATZHALTER FÜR DIE NÄCHSTEN SCHRITTE -->
   <section class="screen" id="s-next">
     <div class="body">
       <h1>Deine Wahl ist gespeichert.</h1>
-      <p class="hint">Schritt 3 ist noch im Bau. Hier geht es bald weiter.</p>
+      <p class="hint" id="nextHint">Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.</p>
       <div class="spacer"></div>
       <div class="actions"><button class="btn2" data-back="start">Zum Start</button></div>
     </div>
@@ -206,7 +248,13 @@
 /* ---------- Konfiguration ---------- */
 const STEP1_WEBHOOK_URL = 'https://hook.eu1.make.com/wlbxbnln6jlq682mqnqphc515isgqkaj';
 const STEP2_WEBHOOK_URL = 'https://hook.eu1.make.com/a9gz75yqu86wjj9igeec2794mx74opik';
+const STEP3_WEBHOOK_URL = ''; // Coach_Schritt3 – wird eingetragen, sobald das Szenario steht
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
+/* Heldenfarben: Commander, Guardian, Strategist aus dem Dummy, die übrigen vorläufig */
+const HERO_COLORS = {
+  Commander:'#0B63CE', Guardian:'#1F9D62', Strategist:'#334155',
+  Innovator:'#B4471B', Explorer:'#C98A00', Sage:'#6B4FA8'
+};
 const REQUEST_TIMEOUT_MS = 60000;
 
 /* Einstiegsfrage, Hilfe und Beispiel je Kategorie */
@@ -249,7 +297,9 @@ const state = {
   runId: '', kategorie: '', situation: '',
   coach: null,                // Antwort aus Schritt 1
   tagesfrage: '', umformuliert: false,
-  optionen: []                // [{position, held, text}] in angezeigter Reihenfolge
+  optionen: [],               // [{position, held, text}] in angezeigter Reihenfolge
+  impuls: null,               // gewählte Option aus Schritt 2
+  step3: null                 // Antwort aus KI-Aufruf 2
 };
 
 /* ---------- Hilfsfunktionen ---------- */
@@ -369,11 +419,12 @@ function init(){
 
 function goBack(target){
   if (target === 'start'){ resetRun(); show('start'); }
+  else if (target === 'step2'){ goStep2(); }
   else show(target);
 }
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[] });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -511,6 +562,7 @@ async function chooseImpuls(option, btn){
   if (box.classList.contains('locked')) return;
   box.classList.add('locked');
   if (btn) btn.classList.add('sel');
+  state.impuls = option;
 
   const payload = {
     run_id: state.runId,
@@ -523,25 +575,112 @@ async function chooseImpuls(option, btn){
     impuls_optionen_json: JSON.stringify(state.optionen)
   };
 
-  if (!STEP2_WEBHOOK_URL){
-    console.info('Schritt 2 (noch ohne Webhook):', payload);
-    show('next');
-    return;
-  }
-
   const msg = $('step2Msg');
-  msg.className = 'msg'; msg.textContent = 'Wird gespeichert …'; msg.hidden = false;
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Der Coach schaut sich deine Wahl an …</span>';
+  msg.hidden = false;
+
   let result;
   try { result = await postJson(STEP2_WEBHOOK_URL, payload); }
-  catch(e){ result = { ok:false }; }
+  catch(e){ result = { ok:false, data:null }; }
 
-  if (!result.ok){
+  const d = result.data;
+  if (!result.ok || !d || d.error){
     msg.className = 'msg err';
     msg.textContent = 'Deine Wahl wurde nicht gespeichert. Tippe sie bitte noch einmal an.';
     box.classList.remove('locked');
     if (btn) btn.classList.remove('sel');
     return;
   }
+  msg.hidden = true;
+
+  // Ohne gewählten Helden geht es direkt zur bewussten Heldenwahl (Schritt 4)
+  if (d.skip || !option){
+    $('nextHint').textContent = 'Als Nächstes wählst du bewusst, welche Energie dir heute hilft. Dieser Schritt ist noch im Bau.';
+    show('next');
+    return;
+  }
+  if (!d.staerke || !d.uebertreibung){
+    msg.className = 'msg err';
+    msg.textContent = 'Der nächste Schritt ist nicht angekommen. Tippe deine Wahl bitte noch einmal an.';
+    msg.hidden = false;
+    box.classList.remove('locked');
+    if (btn) btn.classList.remove('sel');
+    return;
+  }
+  state.step3 = d;
+  renderStep3(option.held, d);
+}
+
+/* ---------- Schritt 3 ---------- */
+function renderStep3(held, d){
+  const badge = $('heroBadge');
+  badge.textContent = held.charAt(0);
+  badge.style.background = HERO_COLORS[held] || 'var(--navy)';
+  $('heroLabel').textContent = 'DAS KLINGT NACH ' + held.toUpperCase();
+  $('heroSatz').textContent = d.held_satz || '';
+  $('step3Title').textContent = d.frage || 'Wie wird sich das wahrscheinlich zeigen?';
+
+  const opts = [
+    { wert:'Staerke', text:d.staerke, sub:'Das hilft dir heute', tag:'Stärke', farbe:'#1F9D62' },
+    { wert:'Uebertreibung', text:d.uebertreibung, sub:'Das übernimmt heute zu viel', tag:'Übertreibung', farbe:'#B4471B' },
+    { wert:'Offen', text:'Ich weiß noch nicht, wie es laufen wird.', sub:'Wir schauen es uns gemeinsam an', tag:'Offen', farbe:'#9CA3AF' }
+  ];
+  const box = $('opts3');
+  box.innerHTML = '';
+  box.classList.remove('locked');
+  opts.forEach(o => {
+    const b = el('button', 'opt3');
+    b.appendChild(el('span', 'main', o.text));
+    const meta = el('span', 'meta');
+    meta.appendChild(el('span', 'sub', o.sub));
+    const tag = el('span', 'tag');
+    const dot = el('span', 'dot'); dot.style.background = o.farbe;
+    tag.appendChild(dot); tag.appendChild(document.createTextNode(o.tag));
+    meta.appendChild(tag);
+    b.appendChild(meta);
+    b.addEventListener('click', () => chooseStep3(o, b));
+    box.appendChild(b);
+  });
+  $('step3Msg').hidden = true;
+  show('step3');
+}
+
+async function chooseStep3(option, btn){
+  const box = $('opts3');
+  if (box.classList.contains('locked')) return;
+  box.classList.add('locked');
+  btn.classList.add('sel');
+
+  const payload = {
+    run_id: state.runId,
+    user_id: state.userId,
+    schritt3_antwort: option.wert,
+    schritt3_text: option.text
+  };
+
+  if (!STEP3_WEBHOOK_URL){
+    console.info('Schritt 3 (noch ohne Webhook):', payload);
+    $('nextHint').textContent = 'Schritt 4 ist noch im Bau. Hier geht es bald weiter.';
+    show('next');
+    return;
+  }
+
+  const msg = $('step3Msg');
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Der Coach sucht passende Wege für dich …</span>';
+  msg.hidden = false;
+  let result;
+  try { result = await postJson(STEP3_WEBHOOK_URL, payload); }
+  catch(e){ result = { ok:false }; }
+  if (!result.ok){
+    msg.className = 'msg err';
+    msg.textContent = 'Deine Antwort wurde nicht gespeichert. Tippe sie bitte noch einmal an.';
+    box.classList.remove('locked');
+    btn.classList.remove('sel');
+    return;
+  }
+  $('nextHint').textContent = 'Schritt 4 ist noch im Bau. Hier geht es bald weiter.';
   show('next');
 }
 
