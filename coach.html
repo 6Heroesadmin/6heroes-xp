@@ -141,9 +141,9 @@
       <div class="chips" id="chips">
         <button class="chip" data-kat="Entscheidung">Entscheidung</button>
         <button class="chip" data-kat="Gespraech">Gespräch</button>
-        <button class="chip" data-kat="Aufgabe">Aufgabe</button>
-        <button class="chip" data-kat="Stress">Stress</button>
-        <button class="chip" data-kat="Fokus">Fokus</button>
+        <button class="chip" data-kat="Zusammenarbeit">Zusammenarbeit</button>
+        <button class="chip" data-kat="Prioritaeten">Prioritäten</button>
+        <button class="chip" data-kat="Druck">Druck</button>
         <button class="chip" data-kat="Eigenes">Etwas Eigenes</button>
       </div>
       <p class="msg err" id="startMsg" hidden></p>
@@ -261,28 +261,28 @@ const REQUEST_TIMEOUT_MS = 60000;
 const KATEGORIEN = {
   Entscheidung: {
     titel: 'Vor welcher Entscheidung stehst du?',
-    hilfe: 'Zwischen welchen Möglichkeiten schwankst du, bis wann musst du dich entscheiden, und was macht es dir schwer?',
-    beispiel: 'Zum Beispiel: Ich habe ein Jobangebot in Hamburg, meine Familie lebt in München. Bis Freitag muss ich zu- oder absagen.'
+    hilfe: 'Zwischen welchen Möglichkeiten schwankst du, bis wann musst du entscheiden, und was macht es dir schwer?',
+    beispiel: 'Zum Beispiel: Ich muss entscheiden, ob wir das Projekt stoppen. Das Team hat viel investiert, die Zahlen sprechen dagegen.'
   },
   Gespraech: {
     titel: 'Welches Gespräch steht an?',
     hilfe: 'Mit wem sprichst du, wann, und was willst du erreichen? Was macht dir daran zu schaffen?',
-    beispiel: 'Zum Beispiel: Heute Abend will ich meinen Mitbewohner auf das Geschirr ansprechen, ohne dass es Streit gibt.'
+    beispiel: 'Zum Beispiel: Morgen habe ich ein Feedbackgespräch mit einem Kollegen, dessen Arbeit seit Monaten nachlässt.'
   },
-  Aufgabe: {
-    titel: 'Welche Aufgabe liegt vor dir?',
-    hilfe: 'Worum geht es, bis wann muss es erledigt sein, und was hält dich gerade davon ab?',
-    beispiel: 'Zum Beispiel: Ich schiebe seit Wochen meine Steuererklärung vor mir her. Die Frist ist Ende Oktober.'
+  Zusammenarbeit: {
+    titel: 'Was beschäftigt dich gerade in der Zusammenarbeit mit anderen?',
+    hilfe: 'Wer ist beteiligt, welche Rolle hast du dabei, und was willst du bewegen, mit oder ohne Führungsverantwortung?',
+    beispiel: 'Zum Beispiel: Zwei Kollegen in meinem Projekt arbeiten gegeneinander. Ich habe keine Weisungsbefugnis, bin aber für das Ergebnis verantwortlich.'
   },
-  Stress: {
+  Prioritaeten: {
+    titel: 'Was konkurriert gerade um deine Zeit?',
+    hilfe: 'Was steht alles an, was davon drängt am meisten, und was fällt gerade hinten runter?',
+    beispiel: 'Zum Beispiel: Drei Projekte haben diese Woche Priorität, und zusätzlich soll ich bis Freitag eine Präsentation liefern.'
+  },
+  Druck: {
     titel: 'Was setzt dich gerade unter Druck?',
     hilfe: 'Was ist los, seit wann geht das so, und woran merkst du es gerade am meisten?',
-    beispiel: 'Zum Beispiel: Diese Woche kommt alles zusammen, Projekt, Umzug, Termine. Ich schlafe schlecht und bin schnell gereizt.'
-  },
-  Fokus: {
-    titel: 'Wobei fällt es dir schwer, dranzubleiben?',
-    hilfe: 'Was willst du schaffen, was lenkt dich ab, und wie viel Zeit hast du heute dafür?',
-    beispiel: 'Zum Beispiel: Ich will heute zwei Stunden an meiner Präsentation arbeiten, lande aber ständig im Postfach.'
+    beispiel: 'Zum Beispiel: Seit Wochen arbeite ich bis spät. Ich schlafe schlecht und reagiere im Team gereizt.'
   },
   Eigenes: {
     titel: 'Was beschäftigt dich heute?',
