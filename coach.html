@@ -90,7 +90,8 @@
     border:1px solid var(--line);border-radius:14px;font-size:15px;font-weight:600;line-height:1.35;cursor:pointer}
   .opt:hover{border-color:var(--navy)}
   .opt.sel{border:2px solid var(--navy);padding:11px 15px}
-  .opts.locked .opt{cursor:default}
+  .opts.locked .opt,.opts.locked .opt3{cursor:default}
+  .linkbtn.sel{text-decoration-thickness:3px;text-decoration-color:var(--gold)}
 
   /* Schritt 3 */
   .herocard{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);
@@ -190,6 +191,8 @@
       <div class="opts" id="opts"></div>
       <button class="linkbtn" id="noneBtn">Nichts davon passt genau</button>
       <p class="msg" id="step2Msg" hidden></p>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="step2Next" disabled>Weiter</button></div>
     </div>
   </section>
 
@@ -210,6 +213,8 @@
       <h1 id="step3Title"></h1>
       <div class="opts" id="opts3"></div>
       <p class="msg" id="step3Msg" hidden></p>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="step3Next" disabled>Weiter</button></div>
     </div>
   </section>
 
@@ -386,6 +391,26 @@ function typingBubble(){
   return row;
 }
 
+/* ---------- Auswahl mit Bestätigung ---------- */
+const sel2 = { option:null, btn:null };
+const sel3 = { option:null, btn:null };
+
+function selectStep2(option, btn){
+  if ($('opts').classList.contains('locked')) return;
+  document.querySelectorAll('#opts .opt').forEach(b => b.classList.remove('sel'));
+  $('noneBtn').classList.remove('sel');
+  btn.classList.add('sel');
+  sel2.option = option; sel2.btn = btn;
+  $('step2Next').disabled = false;
+}
+function selectStep3(option, btn){
+  if ($('opts3').classList.contains('locked')) return;
+  document.querySelectorAll('#opts3 .opt3').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  sel3.option = option; sel3.btn = btn;
+  $('step3Next').disabled = false;
+}
+
 /* ---------- Initialisierung ---------- */
 function init(){
   const p = new URLSearchParams(window.location.search);
@@ -414,7 +439,13 @@ function init(){
   const ta = $('situation');
   ta.addEventListener('input', () => { $('sendBtn').disabled = ta.value.trim().length < 15; });
   $('sendBtn').addEventListener('click', sendSituation);
-  $('noneBtn').addEventListener('click', () => chooseImpuls(null));
+  $('noneBtn').addEventListener('click', () => selectStep2(null, $('noneBtn')));
+  $('step2Next').addEventListener('click', () => {
+    if (sel2.btn) chooseImpuls(sel2.option, sel2.btn);
+  });
+  $('step3Next').addEventListener('click', () => {
+    if (sel3.btn) chooseStep3(sel3.option, sel3.btn);
+  });
 }
 
 function goBack(target){
@@ -550,10 +581,13 @@ function goStep2(){
   box.classList.remove('locked');
   state.optionen.forEach(o => {
     const b = el('button', 'opt', o.text);
-    b.addEventListener('click', () => chooseImpuls(o, b));
+    b.addEventListener('click', () => selectStep2(o, b));
     box.appendChild(b);
   });
   $('step2Msg').hidden = true;
+  $('noneBtn').classList.remove('sel');
+  sel2.option = null; sel2.btn = null;
+  $('step2Next').disabled = true;
   show('step2');
 }
 
@@ -561,7 +595,7 @@ async function chooseImpuls(option, btn){
   const box = $('opts');
   if (box.classList.contains('locked')) return;
   box.classList.add('locked');
-  if (btn) btn.classList.add('sel');
+  $('step2Next').disabled = true;
   state.impuls = option;
 
   const payload = {
@@ -587,9 +621,9 @@ async function chooseImpuls(option, btn){
   const d = result.data;
   if (!result.ok || !d || d.error){
     msg.className = 'msg err';
-    msg.textContent = 'Deine Wahl wurde nicht gespeichert. Tippe sie bitte noch einmal an.';
+    msg.textContent = 'Deine Wahl wurde nicht gespeichert. Tippe bitte noch einmal auf Weiter.';
     box.classList.remove('locked');
-    if (btn) btn.classList.remove('sel');
+    $('step2Next').disabled = false;
     return;
   }
   msg.hidden = true;
@@ -602,10 +636,10 @@ async function chooseImpuls(option, btn){
   }
   if (!d.staerke || !d.uebertreibung){
     msg.className = 'msg err';
-    msg.textContent = 'Der nächste Schritt ist nicht angekommen. Tippe deine Wahl bitte noch einmal an.';
+    msg.textContent = 'Der nächste Schritt ist nicht angekommen. Tippe bitte noch einmal auf Weiter.';
     msg.hidden = false;
     box.classList.remove('locked');
-    if (btn) btn.classList.remove('sel');
+    $('step2Next').disabled = false;
     return;
   }
   state.step3 = d;
@@ -619,7 +653,10 @@ function renderStep3(held, d){
   badge.style.background = HERO_COLORS[held] || 'var(--navy)';
   $('heroLabel').textContent = 'DAS KLINGT NACH ' + held.toUpperCase();
   $('heroSatz').textContent = d.held_satz || '';
-  $('step3Title').textContent = d.frage || 'Wie wird sich das wahrscheinlich zeigen?';
+  const kontext = (d.kontext || '').trim();
+  $('step3Title').textContent = kontext
+    ? 'Wie wird sich das ' + kontext + ' wahrscheinlich zeigen?'
+    : (d.frage || 'Wie wird sich das wahrscheinlich zeigen?');
 
   const opts = [
     { wert:'Staerke', text:d.staerke, sub:'Das hilft dir heute', tag:'Stärke', farbe:'#1F9D62' },
@@ -639,10 +676,12 @@ function renderStep3(held, d){
     tag.appendChild(dot); tag.appendChild(document.createTextNode(o.tag));
     meta.appendChild(tag);
     b.appendChild(meta);
-    b.addEventListener('click', () => chooseStep3(o, b));
+    b.addEventListener('click', () => selectStep3(o, b));
     box.appendChild(b);
   });
   $('step3Msg').hidden = true;
+  sel3.option = null; sel3.btn = null;
+  $('step3Next').disabled = true;
   show('step3');
 }
 
@@ -650,7 +689,7 @@ async function chooseStep3(option, btn){
   const box = $('opts3');
   if (box.classList.contains('locked')) return;
   box.classList.add('locked');
-  btn.classList.add('sel');
+  $('step3Next').disabled = true;
 
   const payload = {
     run_id: state.runId,
@@ -675,9 +714,9 @@ async function chooseStep3(option, btn){
   catch(e){ result = { ok:false }; }
   if (!result.ok){
     msg.className = 'msg err';
-    msg.textContent = 'Deine Antwort wurde nicht gespeichert. Tippe sie bitte noch einmal an.';
+    msg.textContent = 'Deine Antwort wurde nicht gespeichert. Tippe bitte noch einmal auf Weiter.';
     box.classList.remove('locked');
-    btn.classList.remove('sel');
+    $('step3Next').disabled = false;
     return;
   }
   $('nextHint').textContent = 'Schritt 4 ist noch im Bau. Hier geht es bald weiter.';
