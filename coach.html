@@ -10,16 +10,16 @@
 <style>
   :root{
     --bg:#F7F5F0; --navy:#20293A; --gold:#F2B705; --line:#E4DFD4;
-    --muted:#5A6272; --white:#FFFFFF; --err:#9B2C2C;
+    --muted:#5A6272; --white:#FFFFFF; --err:#9B2C2C; --puffer:0px;
   }
   *{box-sizing:border-box}
   [hidden]{display:none !important}
-  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--navy);
-    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  button{font-family:inherit;color:inherit}
+  html,body{margin:0;min-height:100%;max-width:100%;overflow-x:hidden;background:var(--bg);color:var(--navy);
+    font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  button{font-family:inherit;color:inherit;touch-action:manipulation}
   :focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 
-  .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+  .app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
   .screen{display:none;flex:1;flex-direction:column}
   .screen.active{display:flex}
 
@@ -70,11 +70,14 @@
   .dayq textarea{min-height:90px;background:rgba(255,255,255,.08);color:var(--white);border-color:rgba(255,255,255,.25)}
 
   textarea{width:100%;min-height:150px;padding:14px 16px;background:var(--white);border:1px solid var(--line);
-    border-radius:14px;font:15px/1.5 'Inter',system-ui,sans-serif;color:var(--navy);resize:vertical}
+    border-radius:14px;font:16px/1.5 'Inter',system-ui,sans-serif;color:var(--navy);resize:vertical}
   textarea:focus{outline:none;border-color:var(--navy)}
   textarea::placeholder{color:#9AA0AC}
 
-  .actions{display:flex;flex-direction:column;gap:10px}
+  /* Buttonleiste bleibt am unteren Rand des sichtbaren Bereichs, auch wenn der Inhalt länger ist */
+  .actions{display:flex;flex-direction:column;gap:10px;position:sticky;bottom:0;z-index:4;
+    margin:0 -24px -28px;padding:14px 24px calc(16px + env(safe-area-inset-bottom,0px) + var(--puffer));
+    background:linear-gradient(to bottom,rgba(247,245,240,0),var(--bg) 24%)}
   .btn{min-height:52px;padding:0 16px;background:var(--gold);border:0;border-radius:14px;
     font-size:16px;font-weight:700;cursor:pointer}
   .btn:disabled{opacity:.45;cursor:default}
@@ -135,10 +138,18 @@
     background:var(--navy);color:var(--white);border-radius:12px;text-decoration:none;font-weight:600;font-size:15px}
   .help a.call span:last-child{color:var(--gold)}
   .help a.web{color:var(--navy);font-weight:600}
+  h1,.bubble-user,.bubble-coach,.opt,.opt3 .main,.said .txt,.dayq .txt{overflow-wrap:anywhere}
+  .opt3 .sub{min-width:0}
+
+  /* Hinweis, wenn Zurück gerade nicht geht */
+  .navhint{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:20;width:min(432px,calc(100% - 32px));
+    padding:11px 14px;background:var(--navy);color:var(--white);border-radius:12px;font-size:14px;line-height:1.4;text-align:center}
+  body.busy .back{opacity:.35}
 </style>
 </head>
 <body>
 <div class="app">
+  <div class="navhint" id="navHint" role="status" aria-live="polite" hidden>Einen Moment, der Coach arbeitet noch.</div>
 
   <!-- START -->
   <section class="screen start active" id="s-start">
@@ -395,6 +406,7 @@ function parsePayload(text){
 async function postJson(url, body){
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+  busy++; document.body.classList.add('busy');
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -406,6 +418,8 @@ async function postJson(url, body){
     return { ok: res.ok, data: parsePayload(text) };
   } finally {
     clearTimeout(timer);
+    busy = Math.max(0, busy - 1);
+    if (busy === 0) document.body.classList.remove('busy');
   }
 }
 
@@ -465,6 +479,10 @@ function init(){
   const p = new URLSearchParams(window.location.search);
   state.userId = (p.get('email') || '').trim();
   state.name = (p.get('name') || '').trim();
+  // Optional zum Abstimmen: ?puffer=90 schiebt die Buttons nach oben, falls die Noloco-Fußzeile sie überdeckt
+  const puf = parseInt(p.get('puffer') || '0', 10);
+  if (puf > 0) document.documentElement.style.setProperty('--puffer', Math.min(puf, 300) + 'px');
+  history.replaceState({ screen:'start', idx:0 }, '');
 
   $('today').textContent = new Date().toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
   const h = new Date().getHours();
@@ -483,7 +501,7 @@ function init(){
   }
 
   document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => startRun(c.dataset.kat)));
-  document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => goBack(b.dataset.back)));
+  document.querySelectorAll('[data-back]').forEach(b => b.addEventListener('click', () => backClick(b.dataset.back)));
 
   const ta = $('situation');
   ta.addEventListener('input', () => { $('sendBtn').disabled = ta.value.trim().length < 15; });
@@ -498,23 +516,87 @@ function init(){
   $('step4Next').addEventListener('click', () => {
     if (sel4.btn) chooseWeg(sel4.option);
   });
-  $('step4Back').addEventListener('click', () => {
-    goBack(state.schritt3 && state.schritt3.wert === 'Keine' ? 'step2' : 'step3');
-  });
+  $('step4Back').addEventListener('click', () => backClick('step4'));
 }
 
-function goBack(target){
-  if (target === 'start'){ resetRun(); show('start'); }
-  else if (target === 'step2'){ goStep2(); }
-  else if (target === 'step3'){
+/* ---------- Navigation mit Browser-Verlauf ---------- */
+/* Jeder Schritt vorwärts legt einen Verlaufseintrag an. Der Zurück-Pfeil und die Zurück-Taste/-Geste von Safari
+   laufen so über denselben Weg (popstate) und landen im vorherigen Coach-Schritt statt auf der Noloco-Seite davor. */
+const nav = { stack:['start'] };
+let busy = 0;               // laufende Anfragen an Make
+let hintTimer = null;
+
+function go(id){
+  nav.stack.push(id);
+  history.pushState({ screen:id, idx:nav.stack.length - 1 }, '');
+  show(id);
+}
+
+function navHint(){
+  const h = $('navHint');
+  h.hidden = false;
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(() => { h.hidden = true; }, 2600);
+}
+
+function backClick(target){
+  if (busy > 0){ navHint(); return; }
+  if (nav.stack.length <= 1){ resetRun(); show('start'); return; }
+  if (target === 'start') history.go(-(nav.stack.length - 1));
+  else history.back();
+}
+
+function screenValid(id){
+  switch (id){
+    case 'start':  return true;
+    case 'step1':  return !!state.kategorie;
+    case 'step2':  return state.optionen.length > 0;
+    case 'step3':  return !!state.step3;
+    case 'step4':  return state.wege.length > 0 && !!state.schritt3;
+    case 'next':   return !!state.weg;
+    case 'crisis': return !!(state.coach && state.coach.krise === true);
+    default:       return false;
+  }
+}
+
+function applyScreen(id){
+  if (id === 'start'){ resetRun(); show('start'); return; }
+  if (id === 'step2'){ renderStep2(); show('step2'); return; }
+  if (id === 'step3'){
     // Wahl in Schritt 3 wieder freigeben, bisherige Auswahl bleibt markiert
     $('opts3').classList.remove('locked');
     $('step3Msg').hidden = true;
     $('step3Next').disabled = !sel3.btn;
     show('step3');
+    return;
   }
-  else show(target);
+  show(id);
 }
+
+window.addEventListener('popstate', e => {
+  const st = e.state;
+  if (busy > 0){
+    // Make läuft noch: Rückschritt rückgängig machen und kurz Bescheid sagen
+    history.pushState({ screen: nav.stack[nav.stack.length - 1], idx: nav.stack.length - 1 }, '');
+    navHint();
+    return;
+  }
+  const idx = st && typeof st.idx === 'number' ? st.idx : 0;
+  const id = st && st.screen ? st.screen : 'start';
+  if (idx < nav.stack.length) nav.stack = nav.stack.slice(0, idx + 1);
+  else nav.stack[idx] = id;
+
+  // Hinter dem Krisen-Screen gibt es nichts zum Weitermachen: weiter zurück zum Start
+  if (id === 'step1' && state.coach && state.coach.krise === true){ history.back(); return; }
+  if (!screenValid(id)){
+    // Verlauf passt nicht mehr zum Zustand (z. B. nach Neuladen): sauber am Start beginnen
+    nav.stack = ['start'];
+    history.replaceState({ screen:'start', idx:0 }, '');
+    resetRun(); show('start');
+    return;
+  }
+  applyScreen(id);
+});
 
 function resetRun(){
   Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null });
@@ -542,8 +624,8 @@ function startRun(kategorie){
   $('step1Title').textContent = k.titel;
   $('step1Hint').textContent = k.hilfe;
   $('situation').placeholder = k.beispiel;
-  show('step1');
-  setTimeout(() => $('situation').focus(), 50);
+  go('step1');
+  setTimeout(() => $('situation').focus({ preventScroll:true }), 50);
 }
 
 async function sendSituation(){
@@ -576,7 +658,7 @@ async function sendSituation(){
 
   if (d.krise === true){
     $('crisisText').textContent = d.coach_antwort;
-    show('crisis');
+    go('crisis');
     return;
   }
   renderStep1(d);
@@ -637,6 +719,11 @@ function renderStep1(d){
 
 /* ---------- Schritt 2 ---------- */
 function goStep2(){
+  renderStep2();
+  go('step2');
+}
+
+function renderStep2(){
   const d = state.coach || {};
   const aussagen = d.aussagen || {};
   $('impulsTitle').textContent = d.impuls_ueberschrift || 'Was würdest du am liebsten sofort tun?';
@@ -657,7 +744,6 @@ function goStep2(){
   $('noneBtn').classList.remove('sel');
   sel2.option = null; sel2.btn = null;
   $('step2Next').disabled = true;
-  show('step2');
 }
 
 async function chooseImpuls(option, btn){
@@ -716,6 +802,7 @@ async function chooseImpuls(option, btn){
   }
   state.step3 = d;
   renderStep3(option.held, d);
+  go('step3');
 }
 
 /* ---------- Schritt 3 ---------- */
@@ -754,7 +841,6 @@ function renderStep3(held, d){
   $('step3Msg').hidden = true;
   sel3.option = null; sel3.btn = null;
   $('step3Next').disabled = true;
-  show('step3');
 }
 
 async function chooseStep3(option, btn){
@@ -841,7 +927,7 @@ function renderStep4(){
   $('step4Msg').hidden = true;
   sel4.option = null; sel4.btn = null;
   $('step4Next').disabled = true;
-  show('step4');
+  go('step4');
 }
 
 function chooseWeg(weg){
@@ -850,7 +936,7 @@ function chooseWeg(weg){
   console.info('Schritt 4 gewählt:', { run_id: state.runId, weg: weg });
   $('nextTitle').textContent = 'Dein Weg für heute steht.';
   $('nextHint').textContent = 'Als Nächstes machen wir daraus deine Heldentat. Dieser Schritt ist noch im Bau.';
-  show('next');
+  go('next');
 }
 
 init();
