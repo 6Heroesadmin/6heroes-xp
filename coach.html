@@ -650,6 +650,11 @@ async function sendSituation(){
   typing.remove();
 
   const d = result.data;
+  // Eingabe ohne erkennbares Anliegen (Test, Zeichenfolge, Begrüßung): Coach kommentiert, es geht nicht weiter
+  if (result.ok && d && !d.error && d.krise !== true && d.eingabe === 'kein_anliegen' && (d.rueckmeldung || '').trim()){
+    showStep1Hinweis(d.rueckmeldung.trim());
+    return;
+  }
   if (!result.ok || !d || d.error || !d.coach_antwort){
     showStep1Error();
     return;
@@ -662,6 +667,22 @@ async function sendSituation(){
     return;
   }
   renderStep1(d);
+}
+
+function showStep1Hinweis(text){
+  const chat = $('chat');
+  chat.appendChild(coachBubble(text));
+  const acts = $('step1Actions');
+  acts.innerHTML = '';
+  const edit = el('button', 'btn', 'Text ändern');
+  edit.addEventListener('click', () => {
+    acts.hidden = true; chat.hidden = true; chat.innerHTML = '';
+    $('inputArea').style.display = 'flex';
+    $('sendBtn').disabled = true;          // wieder aktiv, sobald der Text bearbeitet wird
+    $('situation').focus({ preventScroll:true });
+  });
+  acts.appendChild(edit);
+  acts.hidden = false;
 }
 
 function showStep1Error(){
