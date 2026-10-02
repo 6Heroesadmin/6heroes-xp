@@ -912,12 +912,21 @@ async function loadWege(antwort, msg){
   state.wege = shuffle(wege).map((w, i) => ({
     position: i + 1,
     handlung: w.handlung.trim(),
-    bezug: (w.bezug || '').trim().replace(/[.]+$/, ''),
+    bezug: stripPraefix(w.bezug).replace(/[.]+$/, ''),
     held: w.held,
     modus: (w.modus || '').trim().toLowerCase()
   }));
   renderStep4();
   return true;
+}
+
+// Entfernt ein von der KI mitgeschriebenes Praefix (auch doppelt) vor dem Bezug,
+// da die Oberflaeche das Praefix selbst davorsetzt (STEP4_TEXTE.praefix).
+function stripPraefix(t){
+  let x = String(t || '').trim();
+  const re = /^(Gegen|Baut auf|Bereitet vor auf|Hilft bei)\s*:\s*/i;
+  while (re.test(x)) x = x.replace(re, '');
+  return x.trim();
 }
 
 function renderStep4(){
