@@ -911,13 +911,19 @@ async function loadWege(antwort, msg){
   // Zufällige Reihenfolge, angezeigte Position wird mitgespeichert
   state.wege = shuffle(wege).map((w, i) => ({
     position: i + 1,
-    handlung: w.handlung.trim(),
+    handlung: endPunkt(w.handlung),
     bezug: stripPraefix(w.bezug).replace(/[.]+$/, ''),
     held: w.held,
     modus: (w.modus || '').trim().toLowerCase()
   }));
   renderStep4();
   return true;
+}
+
+// Setzt einen Punkt ans Ende der Handlung, falls die KI keinen Satzschluss geliefert hat.
+function endPunkt(t){
+  const x = String(t || '').trim();
+  return /[.!?\u2026]$/.test(x) ? x : x + '.';
 }
 
 // Entfernt ein von der KI mitgeschriebenes Praefix (auch doppelt) vor dem Bezug,
