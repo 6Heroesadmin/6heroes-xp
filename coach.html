@@ -129,6 +129,31 @@
   .msg{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
   .msg.err{color:var(--err)}
 
+  /* Schritt 5 */
+  .stufen{display:flex;flex-direction:column}
+  .stufe{display:flex;gap:12px}
+  .stufe .rail{display:flex;flex-direction:column;align-items:center;width:22px;flex-shrink:0}
+  .stufe .kreis{width:20px;height:20px;margin-top:15px;flex-shrink:0;border-radius:50%;border:2px solid var(--line);background:var(--white)}
+  .stufe .kreis.on{background:var(--navy);border-color:var(--navy)}
+  .stufe .linie{flex:1;width:2px;margin-top:4px;background:var(--line)}
+  .stufe .linie.on{background:var(--navy)}
+  .stufe:last-child .linie{display:none}
+  .stufe .karte{flex:1;min-width:0;margin-bottom:10px;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .stufe.sel .karte{border:2px solid var(--navy)}
+  .karte .kopf{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-height:50px;padding:12px 16px;
+    background:none;border:0;text-align:left;font-size:15px;font-weight:700;cursor:pointer}
+  .karte .dauer{font-size:13px;font-weight:500;color:var(--muted)}
+  .karte .detail{display:flex;flex-direction:column;gap:10px;padding:0 16px 16px}
+  .karte .detail p{margin:0}
+  .karte .enthaelt{font-size:13px;color:var(--muted)}
+  .karte .was{font-size:15px;line-height:1.5}
+  .zitat{padding:12px 14px;background:var(--bg);border-left:3px solid var(--gold);border-radius:4px 10px 10px 4px;font-size:15px;line-height:1.5}
+  .luecke{padding:0 3px;background:rgba(242,183,5,.28);border-radius:4px}
+  .infobox{display:flex;flex-direction:column;gap:4px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .infobox .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .infobox .txt{font-size:15px;line-height:1.5}
+  .zitat,.karte .was,.infobox .txt{overflow-wrap:anywhere}
+
   /* Krise */
   .help{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--white);
     border:2px solid var(--navy);border-radius:14px}
@@ -258,6 +283,32 @@
     </div>
   </section>
 
+  <!-- SCHRITT 5 -->
+  <section class="screen" id="s-step5">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" id="step5Back" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Schritt 5 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="5"></div>
+    </div>
+    <div class="body" style="gap:14px">
+      <h1 id="step5Title"></h1>
+      <div class="herocard" id="heroCard5">
+        <div class="herobadge" id="heroBadge5"></div>
+        <div class="herotext"><span class="lbl" id="heroLabel5"></span><span class="txt" id="heroSatz5"></span></div>
+      </div>
+      <p class="hint">Wähle, wie groß deine Heldentat heute sein soll.</p>
+      <div class="stufen" id="stufen"></div>
+      <div id="info5" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn" id="step5Accept">Heldentat annehmen</button>
+        <button class="btn2" id="step5Skip">Heute nicht</button>
+      </div>
+    </div>
+  </section>
+
   <!-- PLATZHALTER FÜR DIE NÄCHSTEN SCHRITTE -->
   <section class="screen" id="s-next">
     <div class="body">
@@ -294,6 +345,8 @@
 const STEP1_WEBHOOK_URL = 'https://hook.eu1.make.com/wlbxbnln6jlq682mqnqphc515isgqkaj';
 const STEP2_WEBHOOK_URL = 'https://hook.eu1.make.com/a9gz75yqu86wjj9igeec2794mx74opik';
 const STEP3_WEBHOOK_URL = 'https://hook.eu1.make.com/91dq4kg7yfffl8g9531otat75631u6fi';
+/* Coach_Schritt4: wird nach der Wegwahl in Schritt 4 aufgerufen und liefert die Heldentat für Schritt 5 */
+const STEP4_WEBHOOK_URL = 'https://hook.eu1.make.com/ev0mo48bgmemfp2a6lkewq11wyfslg7u';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 /* Heldenfarben: Commander, Guardian, Strategist aus dem Dummy, die übrigen vorläufig */
 const HERO_COLORS = {
@@ -355,7 +408,8 @@ const state = {
   step3: null,                // Antwort aus KI-Aufruf 2
   schritt3: null,             // { wert, text } gewählte Antwort in Schritt 3 (wert 'Keine' bei "Nichts passt")
   wege: [],                   // [{position, handlung, bezug, held, modus}] in angezeigter Reihenfolge
-  weg: null                   // gewählter Weg aus Schritt 4
+  weg: null,                  // gewählter Weg aus Schritt 4
+  heldentat: null             // Heldentat aus Coach_Schritt4 (titel, stufen, warum, signal, wenn_dann, energie_satz, quest_basis)
 };
 
 /* ---------- Hilfsfunktionen ---------- */
@@ -517,6 +571,9 @@ function init(){
     if (sel4.btn) chooseWeg(sel4.option);
   });
   $('step4Back').addEventListener('click', () => backClick('step4'));
+  $('step5Back').addEventListener('click', () => backClick('step5'));
+  $('step5Accept').addEventListener('click', acceptHeldentat);
+  $('step5Skip').addEventListener('click', skipHeldentat);
 }
 
 /* ---------- Navigation mit Browser-Verlauf ---------- */
@@ -553,6 +610,7 @@ function screenValid(id){
     case 'step2':  return state.optionen.length > 0;
     case 'step3':  return !!state.step3;
     case 'step4':  return state.wege.length > 0 && !!state.schritt3;
+    case 'step5':  return !!state.heldentat && !!state.weg;
     case 'next':   return !!state.weg;
     case 'crisis': return !!(state.coach && state.coach.krise === true);
     default:       return false;
@@ -568,6 +626,15 @@ function applyScreen(id){
     $('step3Msg').hidden = true;
     $('step3Next').disabled = !sel3.btn;
     show('step3');
+    return;
+  }
+  if (id === 'step4'){
+    // Zurück aus Schritt 5: Wahl wieder freigeben, bisherige Auswahl bleibt markiert
+    state.heldentat = null;
+    $('opts4').classList.remove('locked');
+    $('step4Msg').hidden = true;
+    $('step4Next').disabled = !sel4.btn;
+    show('step4');
     return;
   }
   show(id);
@@ -599,7 +666,7 @@ window.addEventListener('popstate', e => {
 });
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -619,6 +686,7 @@ function resetRun(){
 function startRun(kategorie){
   resetRun();
   $('nextTitle').textContent = 'Deine Wahl ist gespeichert.';
+  $('nextHint').textContent = 'Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.';
   state.kategorie = kategorie;
   const k = KATEGORIEN[kategorie] || KATEGORIEN.Eigenes;
   $('step1Title').textContent = k.titel;
@@ -966,12 +1034,174 @@ function renderStep4(){
   go('step4');
 }
 
-function chooseWeg(weg){
+/* Sendet den gewählten Weg an Coach_Schritt4 und zeigt bei Erfolg die Heldentat (Schritt 5). */
+async function chooseWeg(weg){
+  const box = $('opts4');
+  if (box.classList.contains('locked')) return;
+  box.classList.add('locked');
+  $('step4Next').disabled = true;
   state.weg = weg;
-  // Gespeichert wird der gewählte Weg mit dem Webhook für Schritt 5 (Heldentat), der noch im Bau ist.
-  console.info('Schritt 4 gewählt:', { run_id: state.runId, weg: weg });
-  $('nextTitle').textContent = 'Dein Weg für heute steht.';
-  $('nextHint').textContent = 'Als Nächstes machen wir daraus deine Heldentat. Dieser Schritt ist noch im Bau.';
+
+  const MODI = ['aktivieren', 'begrenzen', 'nutzen'];
+  const payload = {
+    run_id: state.runId,
+    user_id: state.userId,
+    weg_handlung: weg.handlung,
+    weg_bezug: weg.bezug,
+    weg_held: weg.held,
+    weg_modus: MODI.includes(weg.modus) ? weg.modus : 'aktivieren',
+    weg_position: weg.position,
+    schritt3_text: state.schritt3 && state.schritt3.text ? state.schritt3.text : ''
+  };
+
+  const msg = $('step4Msg');
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Der Coach baut deine Heldentat …</span>';
+  msg.hidden = false;
+
+  let result;
+  try { result = await postJson(STEP4_WEBHOOK_URL, payload); }
+  catch(e){ result = { ok:false, data:null }; }
+
+  const h = result.ok ? normalizeHeldentat(result.data) : null;
+  if (!h){
+    msg.className = 'msg err';
+    msg.textContent = 'Die Heldentat ist gerade nicht angekommen. Tippe bitte noch einmal auf Weiter.';
+    msg.hidden = false;
+    state.weg = null;
+    box.classList.remove('locked');
+    $('step4Next').disabled = false;
+    return;
+  }
+  msg.hidden = true;
+  state.heldentat = h;
+  sel5.stufe = stufeVorschlag();
+  renderStep5();
+  go('step5');
+}
+
+/* ---------- Schritt 5 ---------- */
+const STUFEN_INFO = [
+  { name:'Mini', dauer:'bis 5 Min' },
+  { name:'Standard', dauer:'ca. 10 Min' },
+  { name:'Erweitert', dauer:'ca. 15 Min' }
+];
+const sel5 = { stufe:1 };
+
+/* Prüft die Antwort der KI und bringt sie in eine feste Form. Gibt null zurück, wenn etwas Wesentliches fehlt. */
+function normalizeHeldentat(d){
+  if (!d || typeof d !== 'object' || d.error) return null;
+  const arr = Array.isArray(d.stufen) ? d.stufen : [];
+  if (arr.length < 3) return null;
+  const stufen = STUFEN_INFO.map((info, i) => {
+    const m = arr.find(x => x && String(x.stufe || '').trim().toLowerCase() === info.name.toLowerCase()) || arr[i] || {};
+    return { name:info.name, dauer:info.dauer, was:String(m.was || '').trim(), formulierung:String(m.formulierung || '').trim() };
+  });
+  if (stufen.some(x => !x.was)) return null;
+  const t = v => String(v || '').trim();
+  return {
+    titel: t(d.titel) || 'Deine Heldentat',
+    stufen: stufen,
+    warum: t(d.warum),
+    signal: t(d.signal),
+    wenn_dann: t(d.wenn_dann),
+    energie_satz: t(d.energie_satz),
+    quest_basis: t(d.quest_basis)
+  };
+}
+
+/* Vorschlag für die Stufe aus der Belastung, sofern Schritt 1 sie geliefert hat: hoch = Mini, niedrig = Erweitert, sonst Standard */
+function stufeVorschlag(){
+  const b = String((state.coach && state.coach.belastung) || '').trim().toLowerCase();
+  return b === 'hoch' ? 0 : (b === 'niedrig' ? 2 : 1);
+}
+
+/* Setzt Text in ein Element und hebt Lücken in eckigen Klammern hervor */
+function mitLuecken(parent, text){
+  String(text).split(/(\[[^\]]+\])/).forEach(part => {
+    if (!part) return;
+    if (/^\[[^\]]+\]$/.test(part)) parent.appendChild(el('span', 'luecke', part));
+    else parent.appendChild(document.createTextNode(part));
+  });
+}
+
+function infoBox(label, text){
+  const b = el('div', 'infobox');
+  b.appendChild(el('span', 'lbl', label));
+  b.appendChild(el('span', 'txt', text));
+  return b;
+}
+
+function renderStufen(){
+  const h = state.heldentat;
+  const box = $('stufen');
+  box.innerHTML = '';
+  h.stufen.forEach((s, i) => {
+    const row = el('div', 'stufe' + (i === sel5.stufe ? ' sel' : ''));
+    const rail = el('div', 'rail');
+    rail.appendChild(el('span', 'kreis' + (i <= sel5.stufe ? ' on' : '')));
+    rail.appendChild(el('span', 'linie' + (i < sel5.stufe ? ' on' : '')));
+
+    const karte = el('div', 'karte');
+    const kopf = el('button', 'kopf');
+    kopf.type = 'button';
+    kopf.setAttribute('aria-expanded', i === sel5.stufe ? 'true' : 'false');
+    kopf.appendChild(el('span', null, s.name));
+    kopf.appendChild(el('span', 'dauer', s.dauer));
+    kopf.addEventListener('click', () => { sel5.stufe = i; renderStufen(); });
+    karte.appendChild(kopf);
+
+    if (i === sel5.stufe){
+      const det = el('div', 'detail');
+      if (i === 1) det.appendChild(el('p', 'enthaelt', 'Enthält Mini.'));
+      if (i === 2) det.appendChild(el('p', 'enthaelt', 'Enthält Mini und Standard.'));
+      det.appendChild(el('p', 'was', s.was));
+      if (s.formulierung){
+        const z = el('p', 'zitat');
+        mitLuecken(z, s.formulierung);
+        det.appendChild(z);
+      }
+      karte.appendChild(det);
+    }
+    row.append(rail, karte);
+    box.appendChild(row);
+  });
+}
+
+function renderStep5(){
+  const h = state.heldentat, w = state.weg;
+  $('step5Title').textContent = h.titel;
+
+  const badge = $('heroBadge5');
+  badge.textContent = w.held.charAt(0);
+  badge.style.background = HERO_COLORS[w.held] || 'var(--navy)';
+  $('heroLabel5').textContent = (w.held + (w.modus ? ' ' + w.modus : '')).toUpperCase();
+  $('heroSatz5').textContent = h.energie_satz;
+  $('heroCard5').hidden = !h.energie_satz;
+
+  renderStufen();
+
+  const info = $('info5');
+  info.innerHTML = '';
+  if (h.warum) info.appendChild(infoBox('WARUM DAS WIRKT', h.warum));
+  if (h.signal) info.appendChild(infoBox('DEIN SIGNAL', h.signal));
+  if (h.wenn_dann) info.appendChild(infoBox('DEIN WENN-DANN-VORSCHLAG', h.wenn_dann));
+}
+
+function acceptHeldentat(){
+  const stufe = state.heldentat.stufen[sel5.stufe].name;
+  // Gespeichert wird mit dem Webhook für das Festlegen, der noch im Bau ist.
+  console.info('Heldentat angenommen:', { run_id: state.runId, stufe: stufe, titel: state.heldentat.titel });
+  $('nextTitle').textContent = 'Deine Heldentat steht.';
+  $('nextHint').textContent = 'Du hast die Stufe ' + stufe + ' gewählt. Als Nächstes legst du Wenn-dann, Erinnerung und Rückblick fest. Dieser Schritt ist noch im Bau.';
+  go('next');
+}
+
+function skipHeldentat(){
+  // Die Auswahl bei "Heute nicht" folgt mit dem Webhook für das Festlegen.
+  console.info('Heute nicht gewählt:', { run_id: state.runId });
+  $('nextTitle').textContent = 'Alles klar, heute nicht.';
+  $('nextHint').textContent = 'Was danach passiert, ist noch im Bau.';
   go('next');
 }
 
