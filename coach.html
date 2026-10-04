@@ -154,6 +154,46 @@
   .infobox .txt{font-size:15px;line-height:1.5}
   .zitat,.karte .was,.infobox .txt{overflow-wrap:anywhere}
 
+  /* Schritt 5: Festlegen, Bestätigung, Heute nicht */
+  .fgroup{display:flex;flex-direction:column;gap:8px}
+  .flbl{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .fnote{margin:0;font-size:12px;line-height:1.4;color:var(--muted)}
+  .seg{display:flex;gap:8px}
+  .segbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:64px;padding:8px;
+    background:var(--white);border:1px solid var(--line);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer}
+  .segbtn.sel{border:2px solid var(--navy);padding:7px}
+  .dots{display:flex;gap:6px}
+  .dot3{width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:2px solid var(--line);background:var(--white)}
+  .dot3.on{border-color:var(--gold);background:var(--gold)}
+  #wenn{min-height:96px;font-size:16px;line-height:1.45;padding:12px 14px;border-radius:12px;resize:none}
+  .tchips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .tchip{min-height:44px;padding:0 10px;background:var(--white);color:var(--navy);border:1px solid var(--line);
+    border-radius:12px;font-size:14px;font-weight:600;cursor:pointer}
+  .tchip.sel{background:var(--navy);color:var(--white);border-color:var(--navy)}
+  .tchip:disabled{opacity:.4;cursor:default}
+  .dtinput{width:100%;min-height:44px;padding:0 12px;font:16px 'Inter',system-ui,sans-serif;color:var(--navy);
+    background:var(--white);border:1px solid var(--line);border-radius:12px}
+  .rbline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.4}
+  .rbline svg{flex-shrink:0}
+  .rbline .linkbtn{font-size:14px;margin-left:auto}
+  .summary{display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .summary .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .summary .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .summary .txt{font-size:15px;line-height:1.45}
+  .when{display:flex;gap:12px;align-items:flex-start}
+  .when .pt{width:10px;height:10px;margin-top:6px;flex-shrink:0;border-radius:5px;background:var(--gold)}
+  .when .tt{display:flex;flex-direction:column;gap:2px}
+  .when .t1{font-size:15px;font-weight:600}
+  .when .t2{font-size:13px;line-height:1.4;color:var(--muted)}
+  .optcard{display:flex;flex-direction:column;gap:2px;width:100%;min-height:52px;padding:12px 16px;text-align:left;
+    background:var(--white);border:1px solid var(--line);border-radius:14px;cursor:pointer;color:var(--navy)}
+  .optcard .t{font-size:15px;font-weight:600}
+  .optcard .s{font-size:13px;line-height:1.4;color:var(--muted)}
+  .summary .txt,.when .t1,.when .t2,.optcard .s,.optcard .t,.fnote{overflow-wrap:anywhere}
+  @media (hover:hover){
+    .optcard:hover,.segbtn:hover,.tchip:not(:disabled):not(.sel):hover{border-color:var(--navy)}
+  }
+
   /* Krise */
   .help{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--white);
     border:2px solid var(--navy);border-radius:14px}
@@ -309,7 +349,69 @@
     </div>
   </section>
 
-  <!-- PLATZHALTER FÜR DIE NÄCHSTEN SCHRITTE -->
+  <!-- SCHRITT 5: FESTLEGEN -->
+  <section class="screen" id="s-festlegen">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" id="festBack" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Schritt 5 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="5"></div>
+    </div>
+    <div class="body" style="gap:18px">
+      <h1>Mach es verbindlich</h1>
+      <div class="fgroup"><span class="flbl">WELCHE STUFE?</span><div class="seg" id="festStufen"></div></div>
+      <div class="fgroup">
+        <label class="flbl" for="wenn">DEIN WENN-DANN-SATZ</label>
+        <textarea id="wenn" rows="3"></textarea>
+        <p class="fnote">Ein fester Auslöser macht es viel wahrscheinlicher, dass du es wirklich tust.</p>
+      </div>
+      <div class="fgroup">
+        <span class="flbl">ERINNERE MICH</span>
+        <div class="tchips" id="remChips"></div>
+        <input type="datetime-local" class="dtinput" id="remOwn" aria-label="Eigene Zeit für die Erinnerung" hidden>
+        <p class="msg err" id="remMsg" hidden></p>
+      </div>
+      <div class="fgroup">
+        <div class="rbline" id="rbLine"></div>
+        <div class="tchips" id="rbChips" hidden></div>
+      </div>
+      <p class="msg" id="festMsg" hidden></p>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="festGo">Festlegen</button></div>
+    </div>
+  </section>
+
+  <!-- SCHRITT 5: BESTÄTIGUNG -->
+  <section class="screen" id="s-bestaetigung">
+    <div class="body" style="gap:16px;padding-top:44px">
+      <h1 style="font-size:30px">Deine Heldentat steht.</h1>
+      <div class="summary" id="bestSummary"></div>
+      <div class="said" id="bestWenn"></div>
+      <div style="display:flex;flex-direction:column;gap:14px" id="bestWann"></div>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="bestFertig">Fertig</button></div>
+    </div>
+  </section>
+
+  <!-- SCHRITT 5: HEUTE NICHT -->
+  <section class="screen" id="s-heutenicht">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" id="hnBack" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Schritt 5 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="5"></div>
+    </div>
+    <div class="body" style="gap:18px">
+      <h1>Kein Problem. Was passt heute besser?</h1>
+      <div class="coachrow"><div class="avatar">6</div><p class="bubble-coach">Manche Tage sind zu voll. Wir finden eine Version, die heute machbar ist, oder verschieben es.</p></div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="hnCards"></div>
+      <p class="msg" id="hnMsg" hidden></p>
+    </div>
+  </section>
+
+  <!-- ABSCHLUSS OHNE HELDENTAT -->
   <section class="screen" id="s-next">
     <div class="body">
       <h1 id="nextTitle">Deine Wahl ist gespeichert.</h1>
@@ -347,6 +449,8 @@ const STEP2_WEBHOOK_URL = 'https://hook.eu1.make.com/a9gz75yqu86wjj9igeec2794mx7
 const STEP3_WEBHOOK_URL = 'https://hook.eu1.make.com/91dq4kg7yfffl8g9531otat75631u6fi';
 /* Coach_Schritt4: wird nach der Wegwahl in Schritt 4 aufgerufen und liefert die Heldentat für Schritt 5 */
 const STEP4_WEBHOOK_URL = 'https://hook.eu1.make.com/ev0mo48bgmemfp2a6lkewq11wyfslg7u';
+/* Coach_Schritt5: Festlegen und "Heute nicht" (Aktion festlegen bzw. heute_nicht). Webhook-URL nach dem Anlegen in Make hier eintragen. */
+const STEP5_WEBHOOK_URL = 'HIER_WEBHOOK_URL_COACH_SCHRITT5';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 /* Heldenfarben: Commander, Guardian, Strategist aus dem Dummy, die übrigen vorläufig */
 const HERO_COLORS = {
@@ -409,7 +513,9 @@ const state = {
   schritt3: null,             // { wert, text } gewählte Antwort in Schritt 3 (wert 'Keine' bei "Nichts passt")
   wege: [],                   // [{position, handlung, bezug, held, modus}] in angezeigter Reihenfolge
   weg: null,                  // gewählter Weg aus Schritt 4
-  heldentat: null             // Heldentat aus Coach_Schritt4 (titel, stufen, warum, signal, wenn_dann, energie_satz, quest_basis)
+  heldentat: null,            // Heldentat aus Coach_Schritt4 (titel, stufen, warum, signal, wenn_dann, energie_satz, quest_basis)
+  abschluss: null,            // null | 'festgelegt' | 'heute_keine' (danach gibt es kein Zurück in den Lauf)
+  fest: null                  // Stand nach dem Festlegen für die Bestätigung
 };
 
 /* ---------- Hilfsfunktionen ---------- */
@@ -574,6 +680,12 @@ function init(){
   $('step5Back').addEventListener('click', () => backClick('step5'));
   $('step5Accept').addEventListener('click', acceptHeldentat);
   $('step5Skip').addEventListener('click', skipHeldentat);
+  $('festBack').addEventListener('click', () => backClick('festlegen'));
+  $('hnBack').addEventListener('click', () => backClick('heutenicht'));
+  $('festGo').addEventListener('click', sendFestlegen);
+  $('wenn').addEventListener('input', updateFestGo);
+  $('remOwn').addEventListener('change', onRemOwn);
+  $('bestFertig').addEventListener('click', () => backClick('start'));
 }
 
 /* ---------- Navigation mit Browser-Verlauf ---------- */
@@ -610,8 +722,11 @@ function screenValid(id){
     case 'step2':  return state.optionen.length > 0;
     case 'step3':  return !!state.step3;
     case 'step4':  return state.wege.length > 0 && !!state.schritt3;
-    case 'step5':  return !!state.heldentat && !!state.weg;
-    case 'next':   return !!state.weg;
+    case 'step5':  return !!state.heldentat && !!state.weg && !state.abschluss;
+    case 'festlegen': return !!state.heldentat && !!state.weg && !state.abschluss;
+    case 'heutenicht': return !!state.heldentat && !!state.weg && !state.abschluss;
+    case 'bestaetigung': return state.abschluss === 'festgelegt' && !!state.fest;
+    case 'next':   return state.abschluss === 'heute_keine';
     case 'crisis': return !!(state.coach && state.coach.krise === true);
     default:       return false;
   }
@@ -666,7 +781,7 @@ window.addEventListener('popstate', e => {
 });
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -990,7 +1105,8 @@ async function loadWege(antwort, msg){
 
 // Setzt einen Punkt ans Ende der Handlung, falls die KI keinen Satzschluss geliefert hat.
 function endPunkt(t){
-  const x = String(t || '').trim();
+  let x = String(t || '').trim();
+  if (x) x = x.charAt(0).toUpperCase() + x.slice(1);   // erster Buchstabe defensiv groß
   return /[.!?\u2026]$/.test(x) ? x : x + '.';
 }
 
@@ -1181,27 +1297,359 @@ function renderStep5(){
 
   renderStufen();
 
+  // Hintergrund ist eingeklappt und lässt sich bei Bedarf aufklappen. Der Wenn-dann-Vorschlag steht im nächsten Schritt.
   const info = $('info5');
   info.innerHTML = '';
-  if (h.warum) info.appendChild(infoBox('WARUM DAS WIRKT', h.warum));
-  if (h.signal) info.appendChild(infoBox('DEIN SIGNAL', h.signal));
-  if (h.wenn_dann) info.appendChild(infoBox('DEIN WENN-DANN-VORSCHLAG', h.wenn_dann));
+  if (h.warum || h.signal){
+    const MEHR = 'Mehr dazu: Warum das wirkt und dein Signal';
+    const toggle = el('button', 'linkbtn', MEHR);
+    toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', 'false');
+    const wrap = el('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+    wrap.hidden = true;
+    if (h.warum) wrap.appendChild(infoBox('WARUM DAS WIRKT', h.warum));
+    if (h.signal) wrap.appendChild(infoBox('DEIN SIGNAL', h.signal));
+    toggle.addEventListener('click', () => {
+      wrap.hidden = !wrap.hidden;
+      toggle.setAttribute('aria-expanded', String(!wrap.hidden));
+      toggle.textContent = wrap.hidden ? MEHR : 'Weniger anzeigen';
+    });
+    info.append(toggle, wrap);
+  }
+}
+
+/* ---------- Schritt 5: Festlegen ---------- */
+const WOCHENTAGE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const fest = { remOpts:[], rem:null, remArt:'', rb:null, rbEigen:false };
+
+function pad2(n){ return String(n).padStart(2, '0'); }
+function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+function atTime(base, dayOffset, h, m){
+  const d = new Date(base.getTime());
+  d.setDate(d.getDate() + dayOffset);
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+function zeitLabel(d){
+  const now = new Date();
+  let tag;
+  if (sameDay(d, now)) tag = 'Heute';
+  else if (sameDay(d, atTime(now, 1, 0, 0))) tag = 'Morgen';
+  else tag = WOCHENTAGE[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.';
+  return tag + ', ' + d.getHours() + ':' + pad2(d.getMinutes());
+}
+function toLocalInput(d){
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+}
+
+/* Zwei Vorschläge für die Erinnerung aus der Geräte-Zeit */
+function erinnerungOptionen(){
+  const now = new Date();
+  const opts = [];
+  const plus1 = new Date(Math.ceil((now.getTime() + 60 * 60000) / (5 * 60000)) * (5 * 60000));
+  if (plus1.getHours() >= 7 && plus1.getHours() < 21) opts.push({ label:'In 1 Stunde', date:plus1 });
+  const abend = atTime(now, 0, 18, 0);
+  const abstandOk = !opts.length || Math.abs(abend.getTime() - opts[0].date.getTime()) >= 60 * 60000;
+  if (abend.getTime() - now.getTime() > 90 * 60000 && abstandOk) opts.push({ label:'Heute, 18:00', date:abend });
+  opts.push({ label:'Morgen, 8:30', date:atTime(now, 1, 8, 30) });
+  opts.push({ label:'Morgen, 12:00', date:atTime(now, 1, 12, 0) });
+  return opts.slice(0, 2);
+}
+
+/* Rückblick standardmäßig drei Stunden nach der Erinnerung, nicht in der Nacht */
+function rueckblickStandard(rem){
+  const basis = rem || new Date();
+  let rb = new Date(Math.ceil((basis.getTime() + 3 * 3600000) / (30 * 60000)) * (30 * 60000));
+  if (rb.getHours() >= 21) rb = atTime(rb, 1, 12, 0);
+  else if (rb.getHours() < 7) rb = atTime(rb, 0, 12, 0);
+  return rb;
+}
+function rueckblickOptionen(){
+  const now = new Date();
+  return [
+    { label:'Heute Abend, 19:00', date:atTime(now, 0, 19, 0) },
+    { label:'Morgen früh, 8:00', date:atTime(now, 1, 8, 0) },
+    { label:'In 3 Tagen, 8:00', date:atTime(now, 3, 8, 0) }
+  ];
+}
+function rueckblickMin(){
+  return new Date((fest.rem || new Date()).getTime() + 15 * 60000);
+}
+
+const UHR_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+
+function renderFestlegen(){
+  const h = state.heldentat;
+  $('wenn').value = h.wenn_dann || '';
+  fest.remOpts = erinnerungOptionen();
+  fest.rem = fest.remOpts[0].date; fest.remArt = 'chip';
+  fest.rb = rueckblickStandard(fest.rem); fest.rbEigen = false;
+  $('remOwn').hidden = true; $('remOwn').value = '';
+  $('remMsg').hidden = true; $('festMsg').hidden = true;
+  $('rbChips').hidden = true;
+  $('festGo').disabled = false;
+  renderFestStufen(); renderRemChips(); renderRb(); updateFestGo();
+}
+
+function renderFestStufen(){
+  const box = $('festStufen');
+  box.innerHTML = '';
+  state.heldentat.stufen.forEach((s, i) => {
+    const b = el('button', 'segbtn' + (i === sel5.stufe ? ' sel' : ''));
+    b.type = 'button';
+    b.setAttribute('aria-pressed', i === sel5.stufe ? 'true' : 'false');
+    const dots = el('span', 'dots');
+    for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= i ? ' on' : '')));
+    b.appendChild(dots);
+    b.appendChild(el('span', null, s.name));
+    b.addEventListener('click', () => { sel5.stufe = i; renderFestStufen(); });
+    box.appendChild(b);
+  });
+}
+
+function renderRemChips(){
+  const box = $('remChips');
+  box.innerHTML = '';
+  const add = (label, aktiv, onClick) => {
+    const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', aktiv ? 'true' : 'false');
+    b.addEventListener('click', onClick);
+    box.appendChild(b);
+  };
+  fest.remOpts.forEach(o => add(o.label, fest.remArt === 'chip' && fest.rem && fest.rem.getTime() === o.date.getTime(), () => {
+    fest.rem = o.date; fest.remArt = 'chip';
+    $('remOwn').hidden = true; $('remMsg').hidden = true;
+    nachErinnerung();
+  }));
+  add('Andere Zeit', fest.remArt === 'own', () => {
+    fest.remArt = 'own';
+    const inp = $('remOwn');
+    inp.min = toLocalInput(new Date());
+    inp.hidden = false;
+    onRemOwn();
+    try { inp.focus({ preventScroll:true }); } catch(_) {}
+  });
+  add('Keine Erinnerung', fest.remArt === 'none', () => {
+    fest.rem = null; fest.remArt = 'none';
+    $('remOwn').hidden = true; $('remMsg').hidden = true;
+    nachErinnerung();
+  });
+}
+
+function onRemOwn(){
+  const v = $('remOwn').value;
+  const msg = $('remMsg');
+  if (!v){ fest.rem = null; msg.hidden = true; nachErinnerung(); return; }
+  const d = new Date(v);
+  if (isNaN(d.getTime()) || d.getTime() < Date.now() + 60000){
+    fest.rem = null;
+    msg.textContent = 'Wähle bitte eine Zeit in der Zukunft.';
+    msg.hidden = false;
+  } else {
+    fest.rem = d; msg.hidden = true;
+  }
+  nachErinnerung();
+}
+
+/* Nach jeder Änderung der Erinnerung: Rückblick prüfen, damit er danach liegt */
+function nachErinnerung(){
+  if (!fest.rbEigen || fest.rb.getTime() < rueckblickMin().getTime()){
+    fest.rb = rueckblickStandard(fest.rem);
+    fest.rbEigen = false;
+  }
+  renderRemChips(); renderRb(); renderRbChips(); updateFestGo();
+}
+
+function renderRb(){
+  const line = $('rbLine');
+  line.innerHTML = UHR_SVG;
+  const t = el('span', null, 'Rückblick danach: ');
+  t.appendChild(el('b', null, zeitLabel(fest.rb)));
+  line.appendChild(t);
+  const ch = el('button', 'linkbtn', 'Ändern');
+  ch.type = 'button';
+  ch.addEventListener('click', () => { $('rbChips').hidden = !$('rbChips').hidden; renderRbChips(); });
+  line.appendChild(ch);
+}
+
+function renderRbChips(){
+  const box = $('rbChips');
+  box.innerHTML = '';
+  const min = rueckblickMin().getTime();
+  rueckblickOptionen().forEach(o => {
+    const aktiv = fest.rbEigen && fest.rb.getTime() === o.date.getTime();
+    const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), o.label);
+    b.type = 'button';
+    b.disabled = o.date.getTime() < min;
+    b.addEventListener('click', () => {
+      fest.rb = o.date; fest.rbEigen = true;
+      box.hidden = true;
+      renderRb(); renderRbChips();
+    });
+    box.appendChild(b);
+  });
+}
+
+function updateFestGo(){
+  const ok = $('wenn').value.trim().length >= 8 && !(fest.remArt === 'own' && !fest.rem);
+  $('festGo').disabled = !ok;
 }
 
 function acceptHeldentat(){
-  const stufe = state.heldentat.stufen[sel5.stufe].name;
-  // Gespeichert wird mit dem Webhook für das Festlegen, der noch im Bau ist.
-  console.info('Heldentat angenommen:', { run_id: state.runId, stufe: stufe, titel: state.heldentat.titel });
-  $('nextTitle').textContent = 'Deine Heldentat steht.';
-  $('nextHint').textContent = 'Du hast die Stufe ' + stufe + ' gewählt. Als Nächstes legst du Wenn-dann, Erinnerung und Rückblick fest. Dieser Schritt ist noch im Bau.';
-  go('next');
+  renderFestlegen();
+  go('festlegen');
 }
 
+/* Speichert die Festlegung über Coach_Schritt5 und zeigt die Bestätigung */
+async function sendFestlegen(){
+  const wenn = $('wenn').value.trim();
+  if (wenn.length < 8) return;
+  const btn = $('festGo'), msg = $('festMsg');
+  btn.disabled = true;
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Wird festgelegt …</span>';
+  msg.hidden = false;
+
+  const stufe = state.heldentat.stufen[sel5.stufe];
+  const payload = {
+    aktion: 'festlegen',
+    run_id: state.runId,
+    user_id: state.userId,
+    stufe: stufe.name,
+    wenn_dann: wenn,
+    titel: state.heldentat.titel,
+    erinnerung_zeit: fest.rem ? fest.rem.toISOString() : '',
+    rueckblick_zeit: fest.rb.toISOString()
+  };
+
+  let result;
+  try { result = await postJson(STEP5_WEBHOOK_URL, payload); }
+  catch(e){ result = { ok:false, data:null }; }
+
+  if (!(result.ok && result.data && result.data.ok === true)){
+    msg.className = 'msg err';
+    msg.textContent = 'Das Festlegen hat gerade nicht geklappt. Tippe bitte noch einmal auf Festlegen.';
+    msg.hidden = false;
+    btn.disabled = false;
+    return;
+  }
+  msg.hidden = true;
+  state.abschluss = 'festgelegt';
+  state.fest = { stufeIdx: sel5.stufe, wenn: wenn, rem: fest.rem, rb: fest.rb };
+  renderBestaetigung();
+  go('bestaetigung');
+}
+
+function renderBestaetigung(){
+  const f = state.fest, h = state.heldentat, w = state.weg;
+  const s = h.stufen[f.stufeIdx];
+
+  const sum = $('bestSummary');
+  sum.innerHTML = '';
+  const row = el('div', 'row');
+  row.appendChild(el('span', 'lbl', (s.name + ' · ' + w.held + (w.modus ? ' ' + w.modus : '')).toUpperCase()));
+  const dots = el('span', 'dots');
+  for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= f.stufeIdx ? ' on' : '')));
+  row.appendChild(dots);
+  sum.appendChild(row);
+  sum.appendChild(el('span', 'txt', s.was));
+
+  const wenn = $('bestWenn');
+  wenn.innerHTML = '';
+  wenn.appendChild(el('span', 'lbl', 'DEIN WENN-DANN-SATZ'));
+  wenn.appendChild(el('span', 'txt', f.wenn));
+
+  const box = $('bestWann');
+  box.innerHTML = '';
+  box.appendChild(el('span', 'flbl', 'WAS JETZT PASSIERT'));
+  const punkt = (t1, t2) => {
+    const r = el('div', 'when');
+    r.appendChild(el('span', 'pt'));
+    const tt = el('span', 'tt');
+    tt.appendChild(el('span', 't1', t1));
+    tt.appendChild(el('span', 't2', t2));
+    r.appendChild(tt);
+    box.appendChild(r);
+  };
+  if (f.rem) punkt(zeitLabel(f.rem) + ': Erinnerung', 'Per Push-Nachricht, falls erlaubt, sonst per E-Mail.');
+  else punkt('Keine Erinnerung gewählt', 'Du findest deine Heldentat im Coach.');
+  punkt(zeitLabel(f.rb) + ': kurzer Rückblick', 'Dauert etwa eine Minute.');
+  punkt('Bis dahin im Coach sichtbar', 'Deine offene Heldentat steht oben auf dem Start-Screen.');
+}
+
+/* ---------- Schritt 5: Heute nicht ---------- */
 function skipHeldentat(){
-  // Die Auswahl bei "Heute nicht" folgt mit dem Webhook für das Festlegen.
-  console.info('Heute nicht gewählt:', { run_id: state.runId });
-  $('nextTitle').textContent = 'Alles klar, heute nicht.';
-  $('nextHint').textContent = 'Was danach passiert, ist noch im Bau.';
+  renderHeuteNicht();
+  go('heutenicht');
+}
+
+function renderHeuteNicht(){
+  const box = $('hnCards');
+  box.innerHTML = '';
+  $('hnMsg').hidden = true;
+  const mini = state.heldentat.stufen[0];
+  const karten = [
+    { wahl:'kleiner_machen', titel:'Kleiner machen', sub:'Nur die Mini-Stufe: ' + mini.was },
+    { wahl:'anderer_weg', titel:'Anderen Weg wählen', sub:'Zurück zu den drei Wegen.' },
+    { wahl:'heute_keine', titel:'Heute keine Heldentat', sub:'Deine Situation bleibt gespeichert.' }
+  ];
+  karten.forEach(k => {
+    const b = el('button', 'optcard');
+    b.type = 'button';
+    b.appendChild(el('span', 't', k.titel));
+    b.appendChild(el('span', 's', k.sub));
+    b.addEventListener('click', () => chooseHeuteNicht(k.wahl));
+    box.appendChild(b);
+  });
+}
+
+/* Protokolliert die Wahl, ohne den Ablauf zu bremsen (nur für Kleiner machen und Anderen Weg wählen) */
+function logHeuteNicht(wahl){
+  try {
+    fetch(STEP5_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ aktion:'heute_nicht', run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl }),
+      keepalive: true
+    }).catch(() => {});
+  } catch(_) {}
+}
+
+async function chooseHeuteNicht(wahl){
+  if (busy > 0) return;
+  if (wahl === 'kleiner_machen'){
+    logHeuteNicht(wahl);
+    sel5.stufe = 0;
+    renderStep5();
+    history.back();
+    return;
+  }
+  if (wahl === 'anderer_weg'){
+    logHeuteNicht(wahl);
+    history.go(-2);
+    return;
+  }
+  // Heute keine Heldentat: Status heute_nicht, die Situation bleibt gespeichert
+  const msg = $('hnMsg');
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Einen Moment …</span>';
+  msg.hidden = false;
+  let result;
+  try {
+    result = await postJson(STEP5_WEBHOOK_URL, { aktion:'heute_nicht', run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl });
+  } catch(e){ result = { ok:false, data:null }; }
+  if (!(result.ok && result.data && result.data.ok === true)){
+    msg.className = 'msg err';
+    msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+    msg.hidden = false;
+    return;
+  }
+  msg.hidden = true;
+  state.abschluss = 'heute_keine';
+  $('nextTitle').textContent = 'Alles klar.';
+  $('nextHint').textContent = 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
   go('next');
 }
 
