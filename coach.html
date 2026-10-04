@@ -451,6 +451,8 @@ const STEP3_WEBHOOK_URL = 'https://hook.eu1.make.com/91dq4kg7yfffl8g9531otat7563
 const STEP4_WEBHOOK_URL = 'https://hook.eu1.make.com/ev0mo48bgmemfp2a6lkewq11wyfslg7u';
 /* Coach_Schritt5: Festlegen und "Heute nicht" (Aktion festlegen bzw. heute_nicht). Webhook-URL nach dem Anlegen in Make hier eintragen. */
 const STEP5_WEBHOOK_URL = 'https://hook.eu1.make.com/l3l226j4aqqwqgww9aaay1a2t3jawou5';
+/* Gemeinsames Geheimnis für Coach_Schritt5 (muss mit dem Filter in Make übereinstimmen). Steht im Seitenquelltext, hält also Bots und Scanner fern, ersetzt aber keine echte Anmeldung. */
+const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 /* Heldenfarben: Commander, Guardian, Strategist aus dem Dummy, die übrigen vorläufig */
 const HERO_COLORS = {
@@ -1515,6 +1517,7 @@ async function sendFestlegen(){
   const stufe = state.heldentat.stufen[sel5.stufe];
   const payload = {
     aktion: 'festlegen',
+    token: STEP5_TOKEN,
     run_id: state.runId,
     user_id: state.userId,
     stufe: stufe.name,
@@ -1611,7 +1614,7 @@ function logHeuteNicht(wahl){
     fetch(STEP5_WEBHOOK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ aktion:'heute_nicht', run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl }),
+      body: JSON.stringify({ aktion:'heute_nicht', token:STEP5_TOKEN, run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl }),
       keepalive: true
     }).catch(() => {});
   } catch(_) {}
@@ -1638,7 +1641,7 @@ async function chooseHeuteNicht(wahl){
   msg.hidden = false;
   let result;
   try {
-    result = await postJson(STEP5_WEBHOOK_URL, { aktion:'heute_nicht', run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl });
+    result = await postJson(STEP5_WEBHOOK_URL, { aktion:'heute_nicht', token:STEP5_TOKEN, run_id:state.runId, user_id:state.userId, heute_nicht_wahl:wahl });
   } catch(e){ result = { ok:false, data:null }; }
   if (!(result.ok && result.data && result.data.ok === true)){
     msg.className = 'msg err';
