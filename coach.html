@@ -171,8 +171,12 @@
     border-radius:12px;font-size:14px;font-weight:600;cursor:pointer}
   .tchip.sel{background:var(--navy);color:var(--white);border-color:var(--navy)}
   .tchip:disabled{opacity:.4;cursor:default}
-  .dtinput{width:100%;min-height:44px;padding:0 12px;font:16px 'Inter',system-ui,sans-serif;color:var(--navy);
+  .zp{display:flex;gap:6px;align-items:center}
+  .zsel{min-width:0;min-height:44px;padding:0 10px;font:16px 'Inter',system-ui,sans-serif;color:var(--navy);
     background:var(--white);border:1px solid var(--line);border-radius:12px}
+  .zday{flex:1}
+  .zhm{flex:none;width:72px}
+  .zcol{font-weight:700}
   .summary{display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
   .summary .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .summary .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
@@ -383,14 +387,12 @@
       <div class="fgroup">
         <span class="flbl">ERINNERE MICH</span>
         <div class="tchips" id="remChips"></div>
-        <input type="datetime-local" class="dtinput" id="remOwn" aria-label="Eigene Zeit für die Erinnerung" hidden>
-        <p class="msg err" id="remMsg" hidden></p>
+        <div class="zp" id="remPick" hidden></div>
       </div>
       <div class="fgroup">
         <span class="flbl">RÜCKBLICK DANACH</span>
         <div class="tchips" id="rbChips"></div>
-        <input type="datetime-local" class="dtinput" id="rbOwn" aria-label="Eigene Zeit für den Rückblick" hidden>
-        <p class="msg err" id="rbMsg" hidden></p>
+        <div class="zp" id="rbPick" hidden></div>
       </div>
       <p class="msg" id="festMsg" hidden></p>
       <div class="spacer"></div>
@@ -753,8 +755,15 @@ function init(){
   $('hnBack').addEventListener('click', () => backClick('heutenicht'));
   $('festGo').addEventListener('click', sendFestlegen);
   $('wenn').addEventListener('input', updateFestGo);
-  $('remOwn').addEventListener('change', onRemOwn);
-  $('rbOwn').addEventListener('change', onRbOwn);
+  // Auswahl "Andere Zeit": nur Viertelstunden, nur erlaubte Zeiten (kein Hinweistext nötig)
+  fest.remPicker = zeitPicker($('remPick'), () => aufTakt(new Date(Date.now() + 5 * 60000)), d => {
+    if (fest.remArt !== 'own') return;
+    fest.rem = d; nachErinnerung();
+  });
+  fest.rbPicker = zeitPicker($('rbPick'), rueckblickMin, d => {
+    if (fest.rbArt !== 'own') return;
+    fest.rb = d; renderRbChips(); updateFestGo();
+  });
   $('bestFertig').addEventListener('click', () => backClick('start'));
   $('rvBack').addEventListener('click', () => backClick('rueckblick'));
   $('rvGo').addEventListener('click', sendRueckblick);
@@ -1402,7 +1411,7 @@ function renderStep5(){
 
 /* ---------- Schritt 5: Festlegen ---------- */
 const WOCHENTAGE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-const fest = { remOpts:[], rem:null, remArt:'', rbOpts:[], rb:null, rbArt:'' };
+const fest = { remOpts:[], rem:null, remArt:'', rbOpts:[], rb:null, rbArt:'', remPicker:null, rbPicker:null };
 
 function pad2(n){ return String(n).padStart(2, '0'); }
 function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -1420,15 +1429,81 @@ function zeitLabel(d){
   else tag = WOCHENTAGE[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.';
   return tag + ', ' + d.getHours() + ':' + pad2(d.getMinutes());
 }
-function toLocalInput(d){
-  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + 'T' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+function tagLabel(d){
+  const now = new Date();
+  if (sameDay(d, now)) return 'Heute';
+  if (sameDay(d, atTime(now, 1, 0, 0))) return 'Morgen';
+  return WOCHENTAGE[d.getDay()] + ' ' + d.getDate() + '.' + (d.getMonth() + 1) + '.';
+}
+
+/* Zeitauswahl mit festen Viertelstunden: Tag, Stunde, Minute. Angeboten werden nur Zeiten ab getMin() zwischen 6:00 und 22:45,
+   so kann niemand eine ungültige oder nicht passende Zeit wählen. onChange bekommt bei jeder Änderung die gewählte Zeit. */
+function zeitPicker(box, getMin, onChange){
+  const tag = el('select', 'zsel zday'), std = el('select', 'zsel zhm'), mnt = el('select', 'zsel zhm');
+  tag.setAttribute('aria-label', 'Tag'); std.setAttribute('aria-label', 'Stunde'); mnt.setAttribute('aria-label', 'Minute');
+  box.append(tag, std, el('span', 'zcol', ':'), mnt);
+  let wert = null;
+
+  function slotsFuerTag(day, min){
+    const out = [];
+    for (let h = 6; h <= 22; h++) for (let m = 0; m < 60; m += 15){
+      const d = new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0, 0);
+      if (d.getTime() >= min.getTime()) out.push(d);
+    }
+    return out;
+  }
+  function tage(min){
+    const out = [];
+    for (let i = 0; i < 21 && out.length < 14; i++){
+      const day = new Date(min.getFullYear(), min.getMonth(), min.getDate() + i);
+      if (slotsFuerTag(day, min).length) out.push(day);
+    }
+    return out;
+  }
+  function fuell(sel, items, auswahl){
+    sel.innerHTML = '';
+    items.forEach(i => { const o = el('option', null, i.label); o.value = String(i.v); sel.appendChild(o); });
+    sel.value = String(auswahl);
+  }
+  function render(wunsch){
+    const min = getMin();
+    const alle = tage(min);
+    if (!alle.length) return;
+    const ziel = wunsch && wunsch.getTime() >= min.getTime() ? wunsch : null;
+    let idx = ziel ? alle.findIndex(d => sameDay(d, ziel)) : 0;
+    if (idx < 0) idx = 0;
+    const slots = slotsFuerTag(alle[idx], min);
+    let slot = ziel && sameDay(alle[idx], ziel) ? slots.find(x => x.getTime() >= ziel.getTime()) : null;
+    if (!slot) slot = slots[0];
+    wert = slot;
+    fuell(tag, alle.map((d, i) => ({ v:i, label:tagLabel(d) })), idx);
+    const stunden = Array.from(new Set(slots.map(x => x.getHours())));
+    fuell(std, stunden.map(h => ({ v:h, label:pad2(h) })), slot.getHours());
+    const minuten = slots.filter(x => x.getHours() === slot.getHours()).map(x => x.getMinutes());
+    fuell(mnt, minuten.map(m => ({ v:m, label:pad2(m) })), slot.getMinutes());
+  }
+  function lies(){
+    const alle = tage(getMin());
+    const day = alle[Number(tag.value)] || alle[0];
+    return new Date(day.getFullYear(), day.getMonth(), day.getDate(), Number(std.value), Number(mnt.value), 0, 0);
+  }
+  [tag, std, mnt].forEach(sel => sel.addEventListener('change', () => { render(lies()); onChange(wert); }));
+
+  return {
+    show(wunsch){ render(wunsch || null); onChange(wert); },
+    refresh(){ if (box.hidden || !wert) return; render(wert); onChange(wert); }
+  };
 }
 
 /* Zwei Vorschläge für die Erinnerung aus der Geräte-Zeit */
+/* Erinnerungen und Rückblicke werden im 15-Minuten-Takt verschickt (Airtable-Zeitplan), deshalb liegen alle Zeiten auf :00, :15, :30 oder :45 */
+const TAKT_MS = 15 * 60000;
+function aufTakt(d){ return new Date(Math.ceil(d.getTime() / TAKT_MS) * TAKT_MS); }
+
 function erinnerungOptionen(){
   const now = new Date();
   const opts = [];
-  const plus1 = new Date(Math.ceil((now.getTime() + 60 * 60000) / (5 * 60000)) * (5 * 60000));
+  const plus1 = aufTakt(new Date(now.getTime() + 60 * 60000));
   if (plus1.getHours() >= 7 && plus1.getHours() < 21) opts.push({ label:'In 1 Stunde', date:plus1 });
   const abend = atTime(now, 0, 18, 0);
   const abstandOk = !opts.length || Math.abs(abend.getTime() - opts[0].date.getTime()) >= 60 * 60000;
@@ -1441,13 +1516,13 @@ function erinnerungOptionen(){
 /* Rückblick: zwei Vorschläge. Der erste liegt drei Stunden nach der Erinnerung (bzw. nach jetzt), nicht in der Nacht.
    Der zweite ist der nächste feste Zeitpunkt, der mindestens eine Stunde später liegt. */
 function rueckblickStandard(basis){
-  let rb = new Date(Math.ceil((basis.getTime() + 3 * 3600000) / (30 * 60000)) * (30 * 60000));
+  let rb = aufTakt(new Date(basis.getTime() + 3 * 3600000));
   if (rb.getHours() >= 21) rb = atTime(rb, 1, 12, 0);
   else if (rb.getHours() < 7) rb = atTime(rb, 0, 12, 0);
   return rb;
 }
 function rueckblickMin(){
-  return new Date((fest.rem || new Date()).getTime() + 15 * 60000);
+  return aufTakt(new Date((fest.rem || new Date()).getTime() + 15 * 60000));
 }
 function rueckblickOptionen(){
   const now = new Date();
@@ -1467,9 +1542,7 @@ function renderFestlegen(){
   fest.remOpts = erinnerungOptionen();
   fest.rem = fest.remOpts[0].date; fest.remArt = 'chip';
   fest.rbOpts = rueckblickOptionen(); fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
-  $('remOwn').hidden = true; $('remOwn').value = '';
-  $('remMsg').hidden = true; $('festMsg').hidden = true;
-  $('rbOwn').hidden = true; $('rbOwn').value = ''; $('rbMsg').hidden = true;
+  $('remPick').hidden = true; $('rbPick').hidden = true; $('festMsg').hidden = true;
   $('festGo').disabled = false;
   renderFestStufen(); renderRemChips(); renderRbChips(); updateFestGo();
 }
@@ -1502,37 +1575,19 @@ function renderRemChips(){
   };
   fest.remOpts.forEach(o => add(o.label, fest.remArt === 'chip' && fest.rem && fest.rem.getTime() === o.date.getTime(), () => {
     fest.rem = o.date; fest.remArt = 'chip';
-    $('remOwn').hidden = true; $('remMsg').hidden = true;
+    $('remPick').hidden = true;
     nachErinnerung();
   }));
   add('Andere Zeit', fest.remArt === 'own', () => {
     fest.remArt = 'own';
-    const inp = $('remOwn');
-    inp.min = toLocalInput(new Date());
-    inp.hidden = false;
-    onRemOwn();
-    try { inp.focus({ preventScroll:true }); } catch(_) {}
+    $('remPick').hidden = false;
+    fest.remPicker.show(fest.rem || aufTakt(new Date(Date.now() + 60 * 60000)));
   });
   add('Keine Erinnerung', fest.remArt === 'none', () => {
     fest.rem = null; fest.remArt = 'none';
-    $('remOwn').hidden = true; $('remMsg').hidden = true;
+    $('remPick').hidden = true;
     nachErinnerung();
   });
-}
-
-function onRemOwn(){
-  const v = $('remOwn').value;
-  const msg = $('remMsg');
-  if (!v){ fest.rem = null; msg.hidden = true; nachErinnerung(); return; }
-  const d = new Date(v);
-  if (isNaN(d.getTime()) || d.getTime() < Date.now() + 60000){
-    fest.rem = null;
-    msg.textContent = 'Wähle bitte eine Zeit in der Zukunft.';
-    msg.hidden = false;
-  } else {
-    fest.rem = d; msg.hidden = true;
-  }
-  nachErinnerung();
 }
 
 /* Nach jeder Änderung der Erinnerung: Vorschläge neu berechnen, damit der Rückblick danach liegt */
@@ -1541,10 +1596,7 @@ function nachErinnerung(){
   if (fest.rbArt === 'chip'){
     fest.rb = fest.rbOpts[0].date;
   } else if (fest.rbArt === 'own'){
-    if (!fest.rb || fest.rb.getTime() < rueckblickMin().getTime()){
-      fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
-      $('rbOwn').hidden = true; $('rbOwn').value = ''; $('rbMsg').hidden = true;
-    }
+    fest.rbPicker.refresh();   // hält die Auswahl, rückt sie aber bei Bedarf nach hinten (mindestens nach der Erinnerung)
   }
   renderRemChips(); renderRbChips(); updateFestGo();
 }
@@ -1561,37 +1613,19 @@ function renderRbChips(){
   };
   fest.rbOpts.forEach(o => add(o.label, fest.rbArt === 'chip' && fest.rb && fest.rb.getTime() === o.date.getTime(), () => {
     fest.rb = o.date; fest.rbArt = 'chip';
-    $('rbOwn').hidden = true; $('rbMsg').hidden = true;
+    $('rbPick').hidden = true;
     renderRbChips(); updateFestGo();
   }));
   add('Andere Zeit', fest.rbArt === 'own', () => {
     fest.rbArt = 'own';
-    const inp = $('rbOwn');
-    inp.min = toLocalInput(rueckblickMin());
-    inp.hidden = false;
-    onRbOwn();
-    try { inp.focus({ preventScroll:true }); } catch(_) {}
+    $('rbPick').hidden = false;
+    fest.rbPicker.show(fest.rb || fest.rbOpts[0].date);
   });
   add('Kein Rückblick', fest.rbArt === 'none', () => {
     fest.rb = null; fest.rbArt = 'none';
-    $('rbOwn').hidden = true; $('rbMsg').hidden = true;
+    $('rbPick').hidden = true;
     renderRbChips(); updateFestGo();
   });
-}
-
-function onRbOwn(){
-  const v = $('rbOwn').value;
-  const msg = $('rbMsg');
-  if (!v){ fest.rb = null; msg.hidden = true; renderRbChips(); updateFestGo(); return; }
-  const d = new Date(v);
-  if (isNaN(d.getTime()) || d.getTime() < rueckblickMin().getTime()){
-    fest.rb = null;
-    msg.textContent = 'Wähle bitte eine Zeit nach der Erinnerung.';
-    msg.hidden = false;
-  } else {
-    fest.rb = d; msg.hidden = true;
-  }
-  renderRbChips(); updateFestGo();
 }
 
 function updateFestGo(){
