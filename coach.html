@@ -191,6 +191,23 @@
     .optcard:hover,.segbtn:hover,.tchip:not(:disabled):not(.sel):hover{border-color:var(--navy)}
   }
 
+  /* Schritt 6: Rückblick und Coach-Antwort */
+  .optgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .optbtn{display:flex;align-items:center;min-height:52px;padding:12px 16px;text-align:left;background:var(--white);
+    border:1px solid var(--line);border-radius:14px;font-size:15px;font-weight:600;line-height:1.3;color:var(--navy);cursor:pointer}
+  .optbtn.sel{border:2px solid var(--navy);padding:11px 15px}
+  #rvText{min-height:96px;font-size:16px;line-height:1.45;padding:12px 14px;border-radius:12px;resize:none}
+  .answer{display:flex;flex-direction:column;padding:4px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .answer .part{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--line)}
+  .answer .part:first-child{border-top:0}
+  .answer .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .answer .txt{font-size:15px;line-height:1.5;overflow-wrap:anywhere}
+  .first{display:flex;gap:10px;align-items:center;padding:12px 14px;background:var(--navy);border-radius:14px}
+  .first .lbl{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.02em}
+  .first .txt{font-size:14px;color:var(--white)}
+  .crisisbox{margin:0;padding:12px 14px;background:var(--white);border:1px solid var(--line);border-radius:14px;font-size:14px;line-height:1.5}
+  @media (hover:hover){ .optbtn:not(.sel):hover{border-color:var(--navy)} }
+
   /* Krise */
   .help{display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--white);
     border:2px solid var(--navy);border-radius:14px}
@@ -410,6 +427,52 @@
     </div>
   </section>
 
+  <!-- SCHRITT 6: RÜCKBLICK -->
+  <section class="screen" id="s-rueckblick">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" id="rvBack" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Schritt 6 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="6"></div>
+    </div>
+    <div class="body" style="gap:14px">
+      <div class="summary"><span class="lbl">DEINE HELDENTAT</span><span class="txt" id="rvHeld"></span></div>
+      <h1 style="font-size:24px">Kurzer Rückblick: Wie lief deine Heldentat?</h1>
+      <div class="optgrid" id="rvOpts"></div>
+      <div class="coachrow" id="rvFrageRow" hidden><div class="avatar">6</div><p class="bubble-coach" id="rvFrage"></p></div>
+      <div class="tchips" id="rvGruende" hidden></div>
+      <label class="flbl" for="rvText" id="rvTextLbl" hidden>Deine Antwort (optional)</label>
+      <textarea id="rvText" rows="3" hidden maxlength="1200"></textarea>
+      <p class="msg" id="rvMsg" hidden></p>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="rvGo" disabled>Absenden</button></div>
+    </div>
+  </section>
+
+  <!-- SCHRITT 6: COACH-ANTWORT -->
+  <section class="screen" id="s-coachantwort">
+    <div class="top">
+      <div class="toprow">
+        <span style="width:44px"></span>
+        <span class="stepcount">Schritt 6 von 6</span><span style="width:44px"></span>
+      </div>
+      <div class="progress" data-step="6"></div>
+    </div>
+    <div class="body" style="gap:14px">
+      <h1>Das nimmst du mit</h1>
+      <div class="answer">
+        <div class="part"><span class="lbl">WAS DU GETAN HAST</span><span class="txt" id="antGetan"></span></div>
+        <div class="part"><span class="lbl">WAS SICH ZEIGT</span><span class="txt" id="antZeigt"></span></div>
+        <div class="part"><span class="lbl">FÜR DAS NÄCHSTE MAL</span><span class="txt" id="antNaechstes"></span></div>
+      </div>
+      <div class="first" id="antErstmals" hidden><span class="lbl">ERSTMALS</span><span class="txt" id="antErstmalsTxt"></span></div>
+      <p class="crisisbox" id="antKrise" hidden>Wenn es dir gerade nicht gut geht, sprich bitte mit jemandem. Die TelefonSeelsorge ist kostenlos und rund um die Uhr erreichbar: 0800 111 0 111 oder 0800 111 0 222.</p>
+      <div class="spacer"></div>
+      <div class="actions"><button class="btn" id="antFertig">Abschließen</button></div>
+    </div>
+  </section>
+
   <!-- ABSCHLUSS OHNE HELDENTAT -->
   <section class="screen" id="s-next">
     <div class="body">
@@ -451,6 +514,9 @@ const STEP4_WEBHOOK_URL = 'https://hook.eu1.make.com/ev0mo48bgmemfp2a6lkewq11wyf
 /* Coach_Schritt5: Festlegen und "Heute nicht" (Aktion festlegen bzw. heute_nicht). Webhook-URL nach dem Anlegen in Make hier eintragen. */
 const STEP5_WEBHOOK_URL = 'https://hook.eu1.make.com/l3l226j4aqqwqgww9aaay1a2t3jawou5';
 /* Gemeinsames Geheimnis für Coach_Schritt5 (muss mit dem Filter in Make übereinstimmen). Steht im Seitenquelltext, hält also Bots und Scanner fern, ersetzt aber keine echte Anmeldung. */
+/* Coach_Schritt6: Rückblick und Coach-Antwort (Aktion absenden). Webhook-URL nach dem Anlegen in Make eintragen, Token muss mit dem Filter in Make übereinstimmen. */
+const STEP6_WEBHOOK_URL = 'HIER_WEBHOOK_URL_COACH_SCHRITT6';
+const STEP6_TOKEN = '79f05bae09764efb31eb120c82bcd574';
 const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 /* Heldenfarben: Commander, Guardian, Strategist aus dem Dummy, die übrigen vorläufig */
@@ -515,8 +581,10 @@ const state = {
   wege: [],                   // [{position, handlung, bezug, held, modus}] in angezeigter Reihenfolge
   weg: null,                  // gewählter Weg aus Schritt 4
   heldentat: null,            // Heldentat aus Coach_Schritt4 (titel, stufen, warum, signal, wenn_dann, energie_satz, quest_basis)
-  abschluss: null,            // null | 'festgelegt' | 'heute_keine' (danach gibt es kein Zurück in den Lauf)
-  fest: null                  // Stand nach dem Festlegen für die Bestätigung
+  abschluss: null,            // null | 'festgelegt' | 'heute_keine' | 'abgeschlossen' (danach gibt es kein Zurück in den Lauf)
+  fest: null,                 // Stand nach dem Festlegen für die Bestätigung
+  rueck: null,                // Daten für den Rückblick (runId, userId, titel, stufe, was, wennDann, vorschau)
+  antwort: null               // dreiteilige Coach-Antwort nach dem Rückblick
 };
 
 /* ---------- Hilfsfunktionen ---------- */
@@ -688,6 +756,15 @@ function init(){
   $('remOwn').addEventListener('change', onRemOwn);
   $('rbOwn').addEventListener('change', onRbOwn);
   $('bestFertig').addEventListener('click', () => backClick('start'));
+  $('rvBack').addEventListener('click', () => backClick('rueckblick'));
+  $('rvGo').addEventListener('click', sendRueckblick);
+  $('rvText').addEventListener('input', updateRvGo);
+  $('antFertig').addEventListener('click', finishAntwort);
+
+  // Vorschau ohne Make: ?vorschau=rueckblick oder ?vorschau=antwort (nur zum Ansehen und Abstimmen auf dem Handy)
+  const vor = p.get('vorschau');
+  if (vor === 'rueckblick') openRueckblick(RV_DEMO.daten, true);
+  else if (vor === 'antwort') { state.rueck = Object.assign({ vorschau:true }, RV_DEMO.daten); openAntwort(RV_DEMO.antwort); }
 }
 
 /* ---------- Navigation mit Browser-Verlauf ---------- */
@@ -728,7 +805,9 @@ function screenValid(id){
     case 'festlegen': return !!state.heldentat && !!state.weg && !state.abschluss;
     case 'heutenicht': return !!state.heldentat && !!state.weg && !state.abschluss;
     case 'bestaetigung': return state.abschluss === 'festgelegt' && !!state.fest;
-    case 'next':   return state.abschluss === 'heute_keine';
+    case 'rueckblick': return !!state.rueck && !state.antwort;
+    case 'coachantwort': return !!state.antwort && state.abschluss !== 'abgeschlossen';
+    case 'next':   return state.abschluss === 'heute_keine' || state.abschluss === 'abgeschlossen';
     case 'crisis': return !!(state.coach && state.coach.krise === true);
     default:       return false;
   }
@@ -783,7 +862,7 @@ window.addEventListener('popstate', e => {
 });
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null, rueck:null, antwort:null });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -1675,6 +1754,155 @@ async function chooseHeuteNicht(wahl){
   state.abschluss = 'heute_keine';
   $('nextTitle').textContent = 'Alles klar.';
   $('nextHint').textContent = 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
+  go('next');
+}
+
+
+/* ---------- Schritt 6: Rückblick ---------- */
+const RV_DEMO = {
+  daten: {
+    runId:'vorschau', userId:'vorschau', titel:'Dein Fahrplan für das Gespräch', stufe:'Standard',
+    was:'Deinen Anteil offen benennen, sagen, was du schon unternimmst, dann fragen, was deiner Teamleitung jetzt am wichtigsten ist.',
+    wennDann:'Wenn die Teamleitung nach dem Stand fragt, dann benenne ich zuerst meinen Anteil.'
+  },
+  antwort: {
+    getan:'Du hast deinen Anteil offen benannt, statt dich zu rechtfertigen. Das hat die Spannung sofort herausgenommen. Das war mutig.',
+    zeigt:'Am Ende wolltest du schnell zum neuen Termin. Das ist Commanders Impuls, das Unangenehme rasch abzuschließen.',
+    naechstes:'Stell die Frage nach dem, was wichtig ist, bevor ihr über Termine sprecht. Dann sagst du nichts zu, was du später wieder verschieben musst.',
+    erstmals:'Guardian bewusst gewählt', krise:false
+  }
+};
+const RV_STATUS = [
+  { key:'voll',       label:'Voll umgesetzt',     frage:'Was hat dir dabei geholfen?' },
+  { key:'teilweise',  label:'Teilweise umgesetzt', frage:'Was hat dir geholfen, trotzdem anzufangen?' },
+  { key:'nicht',      label:'Nicht umgesetzt',     frage:'Was ist dir dazwischengekommen?', gruende:true },
+  { key:'anders',     label:'Anders gemacht',      frage:'Was hast du stattdessen getan?' }
+];
+const RV_GRUENDE = [
+  { key:'zeit', label:'Zeit' }, { key:'energie', label:'Energie' }, { key:'unklar', label:'Unklar' },
+  { key:'blockade', label:'Blockade' }, { key:'situation_geaendert', label:'Situation geändert' }
+];
+const rv = { status:null, gruende:[] };
+
+/* Einstieg in den Rückblick. daten: { runId, userId, titel, stufe, was, wennDann }.
+   Wird später vom Startzustand bzw. vom Deep-Link aus der Erinnerung aufgerufen. */
+function openRueckblick(daten, vorschau){
+  state.rueck = Object.assign({ vorschau: !!vorschau }, daten);
+  state.antwort = null;
+  renderRueckblick();
+  go('rueckblick');
+}
+
+function renderRueckblick(){
+  rv.status = null; rv.gruende = [];
+  $('rvHeld').textContent = state.rueck.was || state.rueck.titel || '';
+  $('rvText').value = ''; $('rvMsg').hidden = true;
+  ['rvFrageRow','rvGruende','rvTextLbl','rvText'].forEach(id => { $(id).hidden = true; });
+  $('rvGo').disabled = true;
+  renderRvOpts();
+}
+
+function renderRvOpts(){
+  const box = $('rvOpts');
+  box.innerHTML = '';
+  RV_STATUS.forEach(o => {
+    const b = el('button', 'optbtn' + (rv.status === o.key ? ' sel' : ''), o.label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', rv.status === o.key ? 'true' : 'false');
+    b.addEventListener('click', () => chooseRvStatus(o));
+    box.appendChild(b);
+  });
+}
+
+function chooseRvStatus(o){
+  rv.status = o.key;
+  if (!o.gruende) rv.gruende = [];
+  renderRvOpts();
+  $('rvFrage').textContent = o.frage;
+  $('rvFrageRow').hidden = false;
+  $('rvTextLbl').hidden = false; $('rvText').hidden = false;
+  renderRvGruende(!!o.gruende);
+  $('rvMsg').hidden = true;
+  updateRvGo();
+}
+
+function renderRvGruende(zeigen){
+  const box = $('rvGruende');
+  box.hidden = !zeigen;
+  box.innerHTML = '';
+  if (!zeigen) return;
+  RV_GRUENDE.forEach(g => {
+    const aktiv = rv.gruende.includes(g.key);
+    const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), g.label);
+    b.type = 'button';
+    b.setAttribute('aria-pressed', aktiv ? 'true' : 'false');
+    b.addEventListener('click', () => {
+      rv.gruende = aktiv ? rv.gruende.filter(k => k !== g.key) : rv.gruende.concat(g.key);
+      renderRvGruende(true);
+    });
+    box.appendChild(b);
+  });
+}
+
+function updateRvGo(){ $('rvGo').disabled = !rv.status; }
+
+/* Speichert den Rückblick über Coach_Schritt6 und zeigt die dreiteilige Coach-Antwort */
+async function sendRueckblick(){
+  if (!rv.status || busy > 0) return;
+  const btn = $('rvGo'), msg = $('rvMsg');
+  btn.disabled = true;
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Dein Coach schaut sich das an …</span>';
+  msg.hidden = false;
+
+  let result;
+  if (state.rueck.vorschau){
+    await new Promise(r => setTimeout(r, 900));
+    result = { ok:true, data:Object.assign({ ok:true }, RV_DEMO.antwort) };
+  } else {
+    const payload = {
+      aktion: 'absenden',
+      token: STEP6_TOKEN,
+      run_id: state.rueck.runId,
+      user_id: state.rueck.userId,
+      rueckblick_status: rv.status,
+      gruende: rv.gruende.join(','),
+      text: $('rvText').value.trim()
+    };
+    try { result = await postJson(STEP6_WEBHOOK_URL, payload); }
+    catch(e){ result = { ok:false, data:null }; }
+  }
+
+  const d = result.data;
+  if (!(result.ok && d && typeof d === 'object' && d.getan && d.zeigt && d.naechstes)){
+    msg.className = 'msg err';
+    msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal auf Absenden.';
+    msg.hidden = false;
+    btn.disabled = false;
+    return;
+  }
+  msg.hidden = true;
+  openAntwort(d);
+}
+
+function openAntwort(d){
+  state.antwort = {
+    getan: String(d.getan || ''), zeigt: String(d.zeigt || ''), naechstes: String(d.naechstes || ''),
+    erstmals: d.erstmals ? String(d.erstmals) : '', krise: d.krise === true
+  };
+  $('antGetan').textContent = state.antwort.getan;
+  $('antZeigt').textContent = state.antwort.zeigt;
+  $('antNaechstes').textContent = state.antwort.naechstes;
+  $('antErstmals').hidden = !state.antwort.erstmals;
+  $('antErstmalsTxt').textContent = state.antwort.erstmals;
+  $('antKrise').hidden = !state.antwort.krise;
+  go('coachantwort');
+}
+
+function finishAntwort(){
+  state.abschluss = 'abgeschlossen';
+  $('nextTitle').textContent = 'Für heute bist du durch.';
+  $('nextHint').textContent = 'Deine Heldentat ist abgeschlossen. Komm morgen wieder, wenn du magst.';
   go('next');
 }
 
