@@ -173,9 +173,6 @@
   .tchip:disabled{opacity:.4;cursor:default}
   .dtinput{width:100%;min-height:44px;padding:0 12px;font:16px 'Inter',system-ui,sans-serif;color:var(--navy);
     background:var(--white);border:1px solid var(--line);border-radius:12px}
-  .rbline{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px;line-height:1.4}
-  .rbline svg{flex-shrink:0}
-  .rbline .linkbtn{font-size:14px;margin-left:auto}
   .summary{display:flex;flex-direction:column;gap:8px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
   .summary .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
   .summary .lbl{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.02em}
@@ -373,8 +370,10 @@
         <p class="msg err" id="remMsg" hidden></p>
       </div>
       <div class="fgroup">
-        <div class="rbline" id="rbLine"></div>
-        <div class="tchips" id="rbChips" hidden></div>
+        <span class="flbl">RÜCKBLICK DANACH</span>
+        <div class="tchips" id="rbChips"></div>
+        <input type="datetime-local" class="dtinput" id="rbOwn" aria-label="Eigene Zeit für den Rückblick" hidden>
+        <p class="msg err" id="rbMsg" hidden></p>
       </div>
       <p class="msg" id="festMsg" hidden></p>
       <div class="spacer"></div>
@@ -687,6 +686,7 @@ function init(){
   $('festGo').addEventListener('click', sendFestlegen);
   $('wenn').addEventListener('input', updateFestGo);
   $('remOwn').addEventListener('change', onRemOwn);
+  $('rbOwn').addEventListener('change', onRbOwn);
   $('bestFertig').addEventListener('click', () => backClick('start'));
 }
 
@@ -1323,7 +1323,7 @@ function renderStep5(){
 
 /* ---------- Schritt 5: Festlegen ---------- */
 const WOCHENTAGE = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-const fest = { remOpts:[], rem:null, remArt:'', rb:null, rbEigen:false };
+const fest = { remOpts:[], rem:null, remArt:'', rbOpts:[], rb:null, rbArt:'' };
 
 function pad2(n){ return String(n).padStart(2, '0'); }
 function sameDay(a, b){ return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -1359,39 +1359,40 @@ function erinnerungOptionen(){
   return opts.slice(0, 2);
 }
 
-/* Rückblick standardmäßig drei Stunden nach der Erinnerung, nicht in der Nacht */
-function rueckblickStandard(rem){
-  const basis = rem || new Date();
+/* Rückblick: zwei Vorschläge. Der erste liegt drei Stunden nach der Erinnerung (bzw. nach jetzt), nicht in der Nacht.
+   Der zweite ist der nächste feste Zeitpunkt, der mindestens eine Stunde später liegt. */
+function rueckblickStandard(basis){
   let rb = new Date(Math.ceil((basis.getTime() + 3 * 3600000) / (30 * 60000)) * (30 * 60000));
   if (rb.getHours() >= 21) rb = atTime(rb, 1, 12, 0);
   else if (rb.getHours() < 7) rb = atTime(rb, 0, 12, 0);
   return rb;
 }
-function rueckblickOptionen(){
-  const now = new Date();
-  return [
-    { label:'Heute Abend, 19:00', date:atTime(now, 0, 19, 0) },
-    { label:'Morgen früh, 8:00', date:atTime(now, 1, 8, 0) },
-    { label:'In 3 Tagen, 8:00', date:atTime(now, 3, 8, 0) }
-  ];
-}
 function rueckblickMin(){
   return new Date((fest.rem || new Date()).getTime() + 15 * 60000);
 }
-
-const UHR_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+function rueckblickOptionen(){
+  const now = new Date();
+  const basis = fest.rem || now;
+  const erst = rueckblickStandard(basis);
+  const opts = [{ date:erst }];
+  const kandidaten = [atTime(now, 0, 19, 0), atTime(now, 1, 8, 0), atTime(now, 3, 8, 0)];
+  const zweit = kandidaten.find(d => d.getTime() >= erst.getTime() + 60 * 60000);
+  if (zweit) opts.push({ date:zweit });
+  opts.forEach(o => { o.label = zeitLabel(o.date); });
+  return opts;
+}
 
 function renderFestlegen(){
   const h = state.heldentat;
   $('wenn').value = h.wenn_dann || '';
   fest.remOpts = erinnerungOptionen();
   fest.rem = fest.remOpts[0].date; fest.remArt = 'chip';
-  fest.rb = rueckblickStandard(fest.rem); fest.rbEigen = false;
+  fest.rbOpts = rueckblickOptionen(); fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
   $('remOwn').hidden = true; $('remOwn').value = '';
   $('remMsg').hidden = true; $('festMsg').hidden = true;
-  $('rbChips').hidden = true;
+  $('rbOwn').hidden = true; $('rbOwn').value = ''; $('rbMsg').hidden = true;
   $('festGo').disabled = false;
-  renderFestStufen(); renderRemChips(); renderRb(); updateFestGo();
+  renderFestStufen(); renderRemChips(); renderRbChips(); updateFestGo();
 }
 
 function renderFestStufen(){
@@ -1455,47 +1456,67 @@ function onRemOwn(){
   nachErinnerung();
 }
 
-/* Nach jeder Änderung der Erinnerung: Rückblick prüfen, damit er danach liegt */
+/* Nach jeder Änderung der Erinnerung: Vorschläge neu berechnen, damit der Rückblick danach liegt */
 function nachErinnerung(){
-  if (!fest.rbEigen || fest.rb.getTime() < rueckblickMin().getTime()){
-    fest.rb = rueckblickStandard(fest.rem);
-    fest.rbEigen = false;
+  fest.rbOpts = rueckblickOptionen();
+  if (fest.rbArt === 'chip'){
+    fest.rb = fest.rbOpts[0].date;
+  } else if (fest.rbArt === 'own'){
+    if (!fest.rb || fest.rb.getTime() < rueckblickMin().getTime()){
+      fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
+      $('rbOwn').hidden = true; $('rbOwn').value = ''; $('rbMsg').hidden = true;
+    }
   }
-  renderRemChips(); renderRb(); renderRbChips(); updateFestGo();
-}
-
-function renderRb(){
-  const line = $('rbLine');
-  line.innerHTML = UHR_SVG;
-  const t = el('span', null, 'Rückblick danach: ');
-  t.appendChild(el('b', null, zeitLabel(fest.rb)));
-  line.appendChild(t);
-  const ch = el('button', 'linkbtn', 'Ändern');
-  ch.type = 'button';
-  ch.addEventListener('click', () => { $('rbChips').hidden = !$('rbChips').hidden; renderRbChips(); });
-  line.appendChild(ch);
+  renderRemChips(); renderRbChips(); updateFestGo();
 }
 
 function renderRbChips(){
   const box = $('rbChips');
   box.innerHTML = '';
-  const min = rueckblickMin().getTime();
-  rueckblickOptionen().forEach(o => {
-    const aktiv = fest.rbEigen && fest.rb.getTime() === o.date.getTime();
-    const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), o.label);
+  const add = (label, aktiv, onClick) => {
+    const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), label);
     b.type = 'button';
-    b.disabled = o.date.getTime() < min;
-    b.addEventListener('click', () => {
-      fest.rb = o.date; fest.rbEigen = true;
-      box.hidden = true;
-      renderRb(); renderRbChips();
-    });
+    b.setAttribute('aria-pressed', aktiv ? 'true' : 'false');
+    b.addEventListener('click', onClick);
     box.appendChild(b);
+  };
+  fest.rbOpts.forEach(o => add(o.label, fest.rbArt === 'chip' && fest.rb && fest.rb.getTime() === o.date.getTime(), () => {
+    fest.rb = o.date; fest.rbArt = 'chip';
+    $('rbOwn').hidden = true; $('rbMsg').hidden = true;
+    renderRbChips(); updateFestGo();
+  }));
+  add('Andere Zeit', fest.rbArt === 'own', () => {
+    fest.rbArt = 'own';
+    const inp = $('rbOwn');
+    inp.min = toLocalInput(rueckblickMin());
+    inp.hidden = false;
+    onRbOwn();
+    try { inp.focus({ preventScroll:true }); } catch(_) {}
+  });
+  add('Kein Rückblick', fest.rbArt === 'none', () => {
+    fest.rb = null; fest.rbArt = 'none';
+    $('rbOwn').hidden = true; $('rbMsg').hidden = true;
+    renderRbChips(); updateFestGo();
   });
 }
 
+function onRbOwn(){
+  const v = $('rbOwn').value;
+  const msg = $('rbMsg');
+  if (!v){ fest.rb = null; msg.hidden = true; renderRbChips(); updateFestGo(); return; }
+  const d = new Date(v);
+  if (isNaN(d.getTime()) || d.getTime() < rueckblickMin().getTime()){
+    fest.rb = null;
+    msg.textContent = 'Wähle bitte eine Zeit nach der Erinnerung.';
+    msg.hidden = false;
+  } else {
+    fest.rb = d; msg.hidden = true;
+  }
+  renderRbChips(); updateFestGo();
+}
+
 function updateFestGo(){
-  const ok = $('wenn').value.trim().length >= 8 && !(fest.remArt === 'own' && !fest.rem);
+  const ok = $('wenn').value.trim().length >= 8 && !(fest.remArt === 'own' && !fest.rem) && !(fest.rbArt === 'own' && !fest.rb);
   $('festGo').disabled = !ok;
 }
 
@@ -1524,7 +1545,7 @@ async function sendFestlegen(){
     wenn_dann: wenn,
     titel: state.heldentat.titel,
     erinnerung_zeit: fest.rem ? fest.rem.toISOString() : '',
-    rueckblick_zeit: fest.rb.toISOString()
+    rueckblick_zeit: fest.rb ? fest.rb.toISOString() : ''
   };
 
   let result;
@@ -1578,7 +1599,8 @@ function renderBestaetigung(){
   };
   if (f.rem) punkt(zeitLabel(f.rem) + ': Erinnerung', 'Per Push-Nachricht, falls erlaubt, sonst per E-Mail.');
   else punkt('Keine Erinnerung gewählt', 'Du findest deine Heldentat im Coach.');
-  punkt(zeitLabel(f.rb) + ': kurzer Rückblick', 'Dauert etwa eine Minute.');
+  if (f.rb) punkt(zeitLabel(f.rb) + ': kurzer Rückblick', 'Dauert etwa eine Minute.');
+  else punkt('Kein Rückblick geplant', 'Dazu bekommst du keine Nachricht.');
   punkt('Bis dahin im Coach sichtbar', 'Deine offene Heldentat steht oben auf dem Start-Screen.');
 }
 
