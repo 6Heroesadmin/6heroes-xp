@@ -517,7 +517,7 @@ const STEP4_WEBHOOK_URL = 'https://hook.eu1.make.com/ev0mo48bgmemfp2a6lkewq11wyf
 const STEP5_WEBHOOK_URL = 'https://hook.eu1.make.com/l3l226j4aqqwqgww9aaay1a2t3jawou5';
 /* Gemeinsames Geheimnis für Coach_Schritt5 (muss mit dem Filter in Make übereinstimmen). Steht im Seitenquelltext, hält also Bots und Scanner fern, ersetzt aber keine echte Anmeldung. */
 /* Coach_Schritt6: Rückblick und Coach-Antwort (Aktion absenden). Webhook-URL nach dem Anlegen in Make eintragen, Token muss mit dem Filter in Make übereinstimmen. */
-const STEP6_WEBHOOK_URL = 'HIER_WEBHOOK_URL_COACH_SCHRITT6';
+const STEP6_WEBHOOK_URL = 'https://hook.eu1.make.com/xa3bj4whso338zw1etjgfc2yvxft5c6m';
 const STEP6_TOKEN = '79f05bae09764efb31eb120c82bcd574';
 const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
@@ -774,6 +774,10 @@ function init(){
   const vor = p.get('vorschau');
   if (vor === 'rueckblick') openRueckblick(RV_DEMO.daten, true);
   else if (vor === 'antwort') { state.rueck = Object.assign({ vorschau:true }, RV_DEMO.daten); openAntwort(RV_DEMO.antwort); }
+
+  // Test mit echtem Aufruf an Make: ?email=...&rueckblick_test=<Run-ID> (Heldentat-Text optional über &was=...)
+  const rt = (p.get('rueckblick_test') || '').trim();
+  if (rt && state.userId) openRueckblick({ runId:rt, userId:state.userId, titel:'Testlauf', stufe:'', was:(p.get('was') || 'Heldentat aus deinem Durchlauf'), wennDann:'' }, false);
 }
 
 /* ---------- Navigation mit Browser-Verlauf ---------- */
