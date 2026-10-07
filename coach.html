@@ -216,6 +216,18 @@
   h1,.bubble-user,.bubble-coach,.opt,.opt3 .main,.said .txt,.dayq .txt{overflow-wrap:anywhere}
   .opt3 .sub{min-width:0}
 
+  /* Startzustände (Heldentat läuft, Rückblick fällig, erledigt) */
+  .hcard{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--white);border:2px solid var(--navy);border-radius:16px}
+  .hcard .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .hcard .lbl{font-size:12px;font-weight:700;letter-spacing:.02em;color:#1F9D62}
+  .hcard .ttl{font-family:'DM Serif Display',Georgia,serif;font-size:22px;line-height:1.25;overflow-wrap:anywhere}
+  .hcard .sub{font-size:14px;line-height:1.45;color:var(--muted);overflow-wrap:anywhere}
+  .hcard .rb{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600}
+  .btnrow{display:flex;flex-direction:column;gap:10px}
+  .doneicon{width:64px;height:64px;border-radius:32px;background:var(--gold);display:flex;align-items:center;justify-content:center}
+  .startstate{display:flex;flex-direction:column;gap:20px;flex:1}
+  .startnew{display:flex;flex-direction:column;gap:16px}
+
   /* Hinweis, wenn Zurück gerade nicht geht */
   .navhint{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:20;width:min(432px,calc(100% - 32px));
     padding:11px 14px;background:var(--navy);color:var(--white);border-radius:12px;font-size:14px;line-height:1.4;text-align:center}
@@ -230,19 +242,23 @@
   <section class="screen start active" id="s-start">
     <div class="brand"><span class="logo">6Heroes</span><span class="date" id="today"></span></div>
     <div class="body">
-      <div class="greet">
-        <span class="hello" id="hello"></span>
-        <h1>Was schauen wir uns heute gemeinsam an?</h1>
+      <div class="waiting" id="startLoad" hidden><span class="typing"><i></i><i></i><i></i></span><span>Einen Moment …</span></div>
+      <div class="startstate" id="startState" hidden></div>
+      <div class="startnew" id="startNew">
+        <div class="greet">
+          <span class="hello" id="hello"></span>
+          <h1>Was schauen wir uns heute gemeinsam an?</h1>
+        </div>
+        <div class="chips" id="chips">
+          <button class="chip" data-kat="Entscheidung">Entscheidung</button>
+          <button class="chip" data-kat="Gespraech">Gespräch</button>
+          <button class="chip" data-kat="Zusammenarbeit">Zusammenarbeit</button>
+          <button class="chip" data-kat="Prioritaeten">Prioritäten</button>
+          <button class="chip" data-kat="Druck">Druck</button>
+          <button class="chip" data-kat="Eigenes">Etwas Eigenes</button>
+        </div>
+        <p class="msg err" id="startMsg" hidden></p>
       </div>
-      <div class="chips" id="chips">
-        <button class="chip" data-kat="Entscheidung">Entscheidung</button>
-        <button class="chip" data-kat="Gespraech">Gespräch</button>
-        <button class="chip" data-kat="Zusammenarbeit">Zusammenarbeit</button>
-        <button class="chip" data-kat="Prioritaeten">Prioritäten</button>
-        <button class="chip" data-kat="Druck">Druck</button>
-        <button class="chip" data-kat="Eigenes">Etwas Eigenes</button>
-      </div>
-      <p class="msg err" id="startMsg" hidden></p>
     </div>
   </section>
 
@@ -504,6 +520,13 @@ const STEP5_WEBHOOK_URL = 'https://hook.eu1.make.com/l3l226j4aqqwqgww9aaay1a2t3j
 const STEP6_WEBHOOK_URL = 'https://hook.eu1.make.com/xa3bj4whso338zw1etjgfc2yvxft5c6m';
 const STEP6_TOKEN = '79f05bae09764efb31eb120c82bcd574';
 const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
+/* Coach_Laden: liefert beim Öffnen den jüngsten Durchlauf des Nutzers (Aktion laden). Webhook-URL und Token nach dem Anlegen in Make hier eintragen.
+   Solange die URL leer ist, startet der Coach wie bisher bei der Kategorie-Auswahl. */
+const LOAD_WEBHOOK_URL = '';
+const LOAD_TOKEN = '20569c7734eae0c5da881e2d0221959e';
+const LOAD_TIMEOUT_MS = 6000;
+/* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
+const RUECKBLICK_VERFALL_TAGE = 3;
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
 
@@ -697,7 +720,8 @@ function init(){
   $('today').textContent = new Date().toLocaleDateString('de-DE', { weekday:'long', day:'numeric', month:'long' });
   const h = new Date().getHours();
   const gruss = h < 11 ? 'Guten Morgen' : (h < 18 ? 'Hallo' : 'Guten Abend');
-  $('hello').textContent = state.name ? gruss + ', ' + state.name + '.' : gruss + '.';
+  HELLO = state.name ? gruss + ', ' + state.name + '.' : gruss + '.';
+  $('hello').textContent = HELLO;
 
   document.querySelectorAll('.progress').forEach(pr => {
     const n = Number(pr.dataset.step);
@@ -765,6 +789,9 @@ function init(){
 const nav = { stack:['start'] };
 let busy = 0;               // laufende Anfragen an Make
 let hintTimer = null;
+let startInfo = null;        // jüngster Durchlauf (aus Coach_Laden oder aus dieser Sitzung), steuert den Startzustand
+let startOverride = false;   // Nutzer hat \"Später\" oder \"etwas anderes\" gewählt: Kategorien anzeigen
+let HELLO = '';
 
 function go(id){
   nav.stack.push(id);
@@ -781,7 +808,7 @@ function navHint(){
 
 function backClick(target){
   if (busy > 0){ navHint(); return; }
-  if (nav.stack.length <= 1){ resetRun(); show('start'); return; }
+  if (nav.stack.length <= 1){ showStart(); return; }
   if (target === 'start') history.go(-(nav.stack.length - 1));
   else history.back();
 }
@@ -806,7 +833,7 @@ function screenValid(id){
 }
 
 function applyScreen(id){
-  if (id === 'start'){ resetRun(); show('start'); return; }
+  if (id === 'start'){ showStart(); return; }
   if (id === 'step2'){ renderStep2(); show('step2'); return; }
   if (id === 'step3'){
     // Wahl in Schritt 3 wieder freigeben, bisherige Auswahl bleibt markiert
@@ -847,7 +874,7 @@ window.addEventListener('popstate', e => {
     // Verlauf passt nicht mehr zum Zustand (z. B. nach Neuladen): sauber am Start beginnen
     nav.stack = ['start'];
     history.replaceState({ screen:'start', idx:0 }, '');
-    resetRun(); show('start');
+    showStart();
     return;
   }
   applyScreen(id);
@@ -1641,6 +1668,8 @@ async function sendFestlegen(){
   msg.hidden = true;
   state.abschluss = 'festgelegt';
   state.fest = { stufeIdx: sel5.stufe, wenn: wenn, rem: fest.rem, rb: fest.rb };
+  startInfo = { status:'festgelegt', runId:state.runId, titel:state.heldentat.titel, stufe:stufe.name, was:stufe.was, wennDann:wenn,
+                erinnerung:fest.rem, rueckblick:fest.rb, geaendert:new Date(), naechstes:'' };
   renderBestaetigung();
   go('bestaetigung');
 }
@@ -1752,6 +1781,7 @@ async function chooseHeuteNicht(wahl){
   }
   msg.hidden = true;
   state.abschluss = 'heute_keine';
+  startInfo = { status:'heute_nicht', runId:state.runId, titel:'', stufe:'', was:'', wennDann:'', erinnerung:null, rueckblick:null, geaendert:new Date(), naechstes:'' };
   $('nextTitle').textContent = 'Alles klar.';
   $('nextHint').textContent = 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
   go('next');
@@ -1896,6 +1926,7 @@ function openAntwort(d){
   $('antErstmals').hidden = !state.antwort.erstmals;
   $('antErstmalsTxt').textContent = state.antwort.erstmals;
   $('antKrise').hidden = !state.antwort.krise;
+  startInfo = Object.assign({}, startInfo || {}, { status:'abgeschlossen', geaendert:new Date(), naechstes: state.antwort.krise ? '' : state.antwort.naechstes });
   go('coachantwort');
 }
 
@@ -1906,7 +1937,201 @@ function finishAntwort(){
   go('next');
 }
 
+/* ---------- Startzustand ---------- */
+function toDate(v){
+  const t = String(v || '').trim();
+  if (!t) return null;
+  const d = new Date(t);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+/* Antwort von Coach_Laden: Text mit Trenner |||
+   Status|||Run_ID|||Heldentat_Titel|||Stufe|||Wenn_Dann|||Erinnerung_Zeit|||Rueckblick_Zeit|||Geaendert|||Heldentat_JSON|||Antwort_JSON
+   Alles andere (leer, "Accepted") bedeutet: kein Durchlauf gefunden. */
+function parseLaden(text){
+  const p = String(text || '').split('|||');
+  if (p.length < 8) return null;
+  const d = {
+    status: p[0].trim(), runId: p[1].trim(), titel: p[2].trim(), stufe: p[3].trim(), wennDann: p[4].trim(),
+    erinnerung: toDate(p[5]), rueckblick: toDate(p[6]), geaendert: toDate(p[7]), was: '', naechstes: ''
+  };
+  if (!d.status || !d.runId) return null;
+  const hj = parsePayload(p[8] || '');
+  if (hj && Array.isArray(hj.stufen)){
+    const m = hj.stufen.find(x => x && String(x.stufe || '').trim().toLowerCase() === d.stufe.toLowerCase());
+    if (m && m.was) d.was = String(m.was).trim();
+  }
+  const aj = parsePayload(p.slice(9).join('|||'));
+  if (aj && aj.krise !== true && aj.naechstes) d.naechstes = String(aj.naechstes).trim();
+  return d;
+}
+
+async function ladeStart(){
+  if (!LOAD_WEBHOOK_URL || !LOAD_TOKEN || !state.userId) return null;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
+  try {
+    const res = await fetch(LOAD_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ aktion:'laden', token:LOAD_TOKEN, user_id:state.userId }),
+      signal: ctrl.signal
+    });
+    if (!res.ok) return null;
+    return parseLaden(await res.text());
+  } catch(_) { return null; }
+  finally { clearTimeout(timer); }
+}
+
+/* neu | laeuft | faellig | erledigt | heute_nicht
+   Angefangene, nicht festgelegte Durchläufe (impuls, staerke, weg, heldentat) führen vorerst zum normalen Start. */
+function startKind(d){
+  if (!d) return 'neu';
+  const now = new Date();
+  if (d.status === 'festgelegt'){
+    if (!d.rueckblick) return 'laeuft';
+    if (d.rueckblick.getTime() > now.getTime()) return 'laeuft';
+    const tage = (now.getTime() - d.rueckblick.getTime()) / 86400000;
+    return tage > RUECKBLICK_VERFALL_TAGE ? 'neu' : 'faellig';
+  }
+  if (d.status === 'abgeschlossen') return d.geaendert && sameDay(d.geaendert, now) ? 'erledigt' : 'neu';
+  if (d.status === 'heute_nicht')   return d.geaendert && sameDay(d.geaendert, now) ? 'heute_nicht' : 'neu';
+  return 'neu';
+}
+
+function uhrzeit(d){ return d.getHours() + ':' + pad2(d.getMinutes()); }
+
+function stufeIndex(name){
+  const i = STUFEN_INFO.findIndex(x => x.name.toLowerCase() === String(name || '').toLowerCase());
+  return i < 0 ? 1 : i;
+}
+
+function showStart(){
+  resetRun();
+  startOverride = false;
+  renderStart();
+  show('start');
+}
+function showNewStart(){
+  startOverride = true;
+  renderStart();
+  window.scrollTo(0, 0);
+}
+
+function renderStart(){
+  $('startLoad').hidden = true;
+  const kind = startOverride ? 'neu' : startKind(startInfo);
+  const box = $('startState');
+  box.innerHTML = '';
+  if (kind === 'neu'){
+    box.hidden = true;
+    $('startNew').hidden = false;
+    return;
+  }
+  $('startNew').hidden = true;
+  box.hidden = false;
+  const d = startInfo;
+  const greet = (h1) => {
+    const g = el('div', 'greet');
+    g.appendChild(el('span', 'hello', HELLO));
+    g.appendChild(el('h1', null, h1));
+    return g;
+  };
+  const link = (text) => {
+    const b = el('button', 'linkbtn', text);
+    b.type = 'button';
+    b.addEventListener('click', showNewStart);
+    return b;
+  };
+  const rbRow = (text) => {
+    const r = el('div', 'rb');
+    r.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4z"/><path d="M10 21h4"/></svg>';
+    r.appendChild(el('span', null, text));
+    return r;
+  };
+  const heldCard = (label, rbText) => {
+    const c = el('div', 'hcard');
+    const row = el('div', 'row');
+    row.appendChild(el('span', 'lbl', label));
+    const dots = el('span', 'dots');
+    const n = stufeIndex(d.stufe);
+    for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= n ? ' on' : '')));
+    row.appendChild(dots);
+    c.appendChild(row);
+    c.appendChild(el('span', 'ttl', d.titel || 'Deine Heldentat'));
+    if (d.wennDann) c.appendChild(el('span', 'sub', d.wennDann));
+    if (rbText) c.appendChild(rbRow(rbText));
+    return c;
+  };
+  const startRueckblick = () => {
+    openRueckblick({ runId:d.runId, userId:state.userId, titel:d.titel, stufe:d.stufe, was:d.was, wennDann:d.wennDann }, false);
+  };
+  const rbBtn = () => {
+    const b = el('button', 'btn', 'Jetzt zurückblicken');
+    b.addEventListener('click', startRueckblick);
+    return b;
+  };
+
+  if (kind === 'faellig'){
+    box.appendChild(greet('Dein Rückblick ist dran.'));
+    box.appendChild(heldCard('DEINE HELDENTAT', d.rueckblick ? (sameDay(d.rueckblick, new Date()) ? 'Rückblick war für ' + uhrzeit(d.rueckblick) + ' geplant' : 'Rückblick war geplant: ' + zeitLabel(d.rueckblick)) : ''));
+    const rows = el('div', 'btnrow');
+    rows.appendChild(rbBtn());
+    const later = el('button', 'btn2', 'Später');
+    later.addEventListener('click', showNewStart);
+    rows.appendChild(later);
+    box.appendChild(rows);
+    box.appendChild(el('div', 'spacer'));
+    box.appendChild(link('Mich beschäftigt noch etwas anderes'));
+  } else if (kind === 'laeuft'){
+    box.appendChild(greet('Deine Heldentat läuft.'));
+    box.appendChild(heldCard('DEINE OFFENE HELDENTAT', d.rueckblick ? (sameDay(d.rueckblick, new Date()) ? 'Rückblick um ' + uhrzeit(d.rueckblick) : 'Rückblick: ' + zeitLabel(d.rueckblick)) : ''));
+    box.appendChild(rbBtn());
+    box.appendChild(el('div', 'spacer'));
+    box.appendChild(link('Mich beschäftigt noch etwas anderes'));
+  } else {
+    const ic = el('div', 'doneicon');
+    ic.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#20293A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+    box.appendChild(el('div', 'spacer')); box.lastChild.style.flex = '0 0 24px';
+    box.appendChild(ic);
+    if (kind === 'erledigt'){
+      box.appendChild(el('h1', null, state.name ? 'Für heute erledigt, ' + state.name + '.' : 'Für heute erledigt.'));
+      box.appendChild(el('p', 'hint', 'Deine Heldentat ist abgeschlossen. Morgen geht es weiter.'));
+      if (d.naechstes) box.appendChild(infoBox('DEIN IMPULS FÜR DAS NÄCHSTE MAL', d.naechstes));
+    } else {
+      box.appendChild(el('h1', null, state.name ? 'Alles klar, ' + state.name + '.' : 'Alles klar.'));
+      box.appendChild(el('p', 'hint', 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.'));
+    }
+    box.appendChild(el('div', 'spacer'));
+    box.appendChild(link('Noch einen Durchlauf starten'));
+  }
+}
+
+/* Beim Öffnen: jüngsten Durchlauf laden, dann den passenden Startzustand zeigen */
+async function startUp(){
+  const p = new URLSearchParams(window.location.search);
+  // Vorschau ohne Make: ?startdemo=faellig | laeuft | erledigt | heute_nicht
+  const demo = p.get('startdemo');
+  if (demo){
+    const jetzt = Date.now();
+    startInfo = Object.assign({}, { status:'festgelegt', runId:'vorschau', titel:RV_DEMO.daten.titel, stufe:'Standard', was:RV_DEMO.daten.was,
+      wennDann:RV_DEMO.daten.wennDann, erinnerung:new Date(jetzt - 3 * 3600000), rueckblick:new Date(jetzt + 2 * 3600000),
+      geaendert:new Date(), naechstes:RV_DEMO.antwort.naechstes });
+    if (demo === 'faellig') startInfo.rueckblick = new Date(jetzt - 30 * 60000);
+    if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
+    if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
+    renderStart();
+    return;
+  }
+  if (!LOAD_WEBHOOK_URL || !LOAD_TOKEN || !state.userId){ renderStart(); return; }
+  $('startNew').hidden = true;
+  $('startLoad').hidden = false;
+  startInfo = await ladeStart();
+  renderStart();
+}
+
 init();
+startUp();
 </script>
 </body>
 </html>
