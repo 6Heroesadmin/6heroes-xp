@@ -540,7 +540,7 @@ const LOAD_TIMEOUT_MS = 6000;
 /* Zugangssperre vor dem Launch: Szenario Coach_Zugang antwortet ZUGANG oder KEIN_ZUGANG (Freigabeliste in Airtable, Users.Zugang).
    Nur ein ausdrückliches KEIN_ZUGANG zeigt die Sperre. Bei Fehlern oder leerer URL startet der Coach normal, die echte Sperre liegt in Make.
    Beim Launch: URL leeren oder das Szenario ausschalten. */
-const ZUGANG_WEBHOOK_URL = '';
+const ZUGANG_WEBHOOK_URL = 'https://hook.eu1.make.com/83fewk0antfcsyldjd2q68wtci94msk4';
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
