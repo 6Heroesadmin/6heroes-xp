@@ -259,6 +259,7 @@
         </div>
         <p class="msg err" id="startMsg" hidden></p>
       </div>
+      <p id="startDiag" hidden style="font-size:12px;line-height:1.4;color:#5A6272;word-break:break-all;margin-top:12px"></p>
     </div>
   </section>
 
@@ -522,11 +523,13 @@ const STEP6_TOKEN = '79f05bae09764efb31eb120c82bcd574';
 const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
 /* Coach_Laden: liefert beim Öffnen den jüngsten Durchlauf des Nutzers (Aktion laden). Webhook-URL und Token nach dem Anlegen in Make hier eintragen.
    Solange die URL leer ist, startet der Coach wie bisher bei der Kategorie-Auswahl. */
-const LOAD_WEBHOOK_URL = '';
+const LOAD_WEBHOOK_URL = 'https://hook.eu1.make.com/feskuykovt2nbpgehax589zgkgxhprzm';
 const LOAD_TOKEN = '20569c7734eae0c5da881e2d0221959e';
 const LOAD_TIMEOUT_MS = 6000;
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
+const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
+let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
 
@@ -1967,7 +1970,8 @@ function parseLaden(text){
 }
 
 async function ladeStart(){
-  if (!LOAD_WEBHOOK_URL || !LOAD_TOKEN || !state.userId) return null;
+  if (!LOAD_WEBHOOK_URL || !LOAD_TOKEN || !state.userId){ loadDiag = 'Laden nicht konfiguriert (URL, Token oder email fehlt)'; return null; }
+  const t0 = Date.now();
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
   try {
@@ -1977,9 +1981,18 @@ async function ladeStart(){
       body: JSON.stringify({ aktion:'laden', token:LOAD_TOKEN, user_id:state.userId }),
       signal: ctrl.signal
     });
-    if (!res.ok) return null;
-    return parseLaden(await res.text());
-  } catch(_) { return null; }
+    if (!res.ok){ loadDiag = 'HTTP ' + res.status; return null; }
+    const text = await res.text();
+    const d = parseLaden(text);
+    const ms = Date.now() - t0;
+    loadDiag = d
+      ? 'ok nach ' + ms + ' ms: Status ' + d.status + ', Run ' + d.runId.slice(0, 8) + ', Rückblick ' + (d.rueckblick ? d.rueckblick.toISOString() : 'keiner')
+      : 'keine Daten nach ' + ms + ' ms, Antwort: "' + text.slice(0, 60) + '"';
+    return d;
+  } catch(e) {
+    loadDiag = (e && e.name === 'AbortError') ? 'Timeout nach ' + LOAD_TIMEOUT_MS + ' ms' : 'Netzwerk- oder CORS-Fehler: ' + (e && e.message ? e.message : e);
+    return null;
+  }
   finally { clearTimeout(timer); }
 }
 
@@ -2021,6 +2034,7 @@ function showNewStart(){
 function renderStart(){
   $('startLoad').hidden = true;
   const kind = startOverride ? 'neu' : startKind(startInfo);
+  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Laden: ' + loadDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
   if (kind === 'neu'){
