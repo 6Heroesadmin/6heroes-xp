@@ -216,6 +216,14 @@
   h1,.bubble-user,.bubble-coach,.opt,.opt3 .main,.said .txt,.dayq .txt{overflow-wrap:anywhere}
   .opt3 .sub{min-width:0}
 
+  /* Feier: Der Ring schließt sich */
+  .feier{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(247,245,240,.97);opacity:0;pointer-events:none;transition:opacity .25s ease}
+  .feier.on{opacity:1;pointer-events:auto}
+  .feier svg{width:min(68vw,280px);height:auto}
+  .hrow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .antring{flex:0 0 auto;opacity:0;transition:opacity .5s ease}
+  .antring.on{opacity:1}
+
   /* Startzustände (Heldentat läuft, Rückblick fällig, erledigt) */
   .hcard{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--white);border:2px solid var(--navy);border-radius:16px}
   .hcard .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -463,7 +471,7 @@
       <div class="progress" data-step="6"></div>
     </div>
     <div class="body" style="gap:14px">
-      <h1>Das nimmst du mit</h1>
+      <div class="hrow"><h1>Das nimmst du mit</h1><svg id="antRing" class="antring" viewBox="0 0 300 300" width="56" height="56" aria-hidden="true" hidden></svg></div>
       <div class="answer">
         <div class="part"><span class="lbl">WAS DU GETAN HAST</span><span class="txt" id="antGetan"></span></div>
         <div class="part"><span class="lbl">WAS SICH ZEIGT</span><span class="txt" id="antZeigt"></span></div>
@@ -471,6 +479,7 @@
       </div>
       <div class="first" id="antErstmals" hidden><span class="lbl">ERSTMALS</span><span class="txt" id="antErstmalsTxt"></span></div>
       <p class="crisisbox" id="antKrise" hidden>Wenn es dir gerade nicht gut geht, sprich bitte mit jemandem. Die TelefonSeelsorge ist kostenlos und rund um die Uhr erreichbar: 0800 111 0 111 oder 0800 111 0 222.</p>
+      <button class="linkbtn" id="antTon" type="button" hidden>Ton an</button>
       <div class="spacer"></div>
       <div class="actions"><button class="btn" id="antFertig">Abschließen</button></div>
     </div>
@@ -482,7 +491,7 @@
       <h1 id="nextTitle">Deine Wahl ist gespeichert.</h1>
       <p class="hint" id="nextHint">Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.</p>
       <div class="spacer"></div>
-      <div class="actions"><button class="btn2" data-back="start">Zum Start</button></div>
+      <div class="actions"><button class="btn" data-back="start">Zum Start</button></div>
     </div>
   </section>
 
@@ -506,6 +515,8 @@
   </section>
 
 </div>
+
+<div class="feier" id="feier" aria-hidden="true"><svg id="feierSvg" viewBox="0 0 300 300" aria-hidden="true"></svg></div>
 
 <script>
 /* ---------- Konfiguration ---------- */
@@ -715,6 +726,8 @@ function init(){
   const p = new URLSearchParams(window.location.search);
   state.userId = (p.get('email') || '').trim();
   state.name = (p.get('name') || '').trim();
+  if (p.get('ton') === '1') tonSetzen(true);
+  if (p.get('ton') === '0') tonSetzen(false);
   // Optional zum Abstimmen: ?puffer=90 schiebt die Buttons nach oben, falls die Noloco-Fußzeile sie überdeckt
   const puf = parseInt(p.get('puffer') || '0', 10);
   if (puf > 0) document.documentElement.style.setProperty('--puffer', Math.min(puf, 300) + 'px');
@@ -773,13 +786,20 @@ function init(){
   $('bestFertig').addEventListener('click', () => backClick('start'));
   $('rvBack').addEventListener('click', () => backClick('rueckblick'));
   $('rvGo').addEventListener('click', sendRueckblick);
+  $('feier').addEventListener('click', feierEnde);
+  $('antTon').addEventListener('click', () => {
+    const an = !tonAn();
+    tonSetzen(an);
+    $('antTon').textContent = an ? 'Ton aus' : 'Ton an';
+    if (an){ audioFreischalten(); RING_TOENE.forEach((f, i) => ton(f, i * 0.09, 0.4, 0.06)); }
+  });
   $('rvText').addEventListener('input', updateRvGo);
   $('antFertig').addEventListener('click', finishAntwort);
 
   // Vorschau ohne Make: ?vorschau=rueckblick oder ?vorschau=antwort (nur zum Ansehen und Abstimmen auf dem Handy)
   const vor = p.get('vorschau');
   if (vor === 'rueckblick') openRueckblick(RV_DEMO.daten, true);
-  else if (vor === 'antwort') { state.rueck = Object.assign({ vorschau:true }, RV_DEMO.daten); openAntwort(RV_DEMO.antwort); }
+  else if (vor === 'antwort') { state.rueck = Object.assign({ vorschau:true }, RV_DEMO.daten); rv.status = (p.get('feier') || '').trim() || null; openAntwort(RV_DEMO.antwort); }
 
   // Test mit echtem Aufruf an Make: ?email=...&rueckblick_test=<Run-ID> (Heldentat-Text optional über &was=...)
   const rt = (p.get('rueckblick_test') || '').trim();
@@ -1799,9 +1819,9 @@ const RV_DEMO = {
     wennDann:'Wenn die Teamleitung nach dem Stand fragt, dann benenne ich zuerst meinen Anteil.'
   },
   antwort: {
-    getan:'Du hast deinen Anteil offen benannt, statt dich zu rechtfertigen. Das hat die Spannung sofort herausgenommen. Das war mutig.',
-    zeigt:'Am Ende wolltest du schnell zum neuen Termin. Das ist Commanders Impuls, das Unangenehme rasch abzuschließen.',
-    naechstes:'Stell die Frage nach dem, was wichtig ist, bevor ihr über Termine sprecht. Dann sagst du nichts zu, was du später wieder verschieben musst.',
+    getan:'Du hast deinen Anteil offen benannt, und die Stimmung hat sich entspannt. Die Frage am Ende hast du ausgelassen.',
+    zeigt:'Du wolltest am Ende schnell zum neuen Termin.',
+    naechstes:'Notiere dir die Frage vorab, damit sie im Gespräch leichter wieder einfällt.',
     erstmals:'Erste Heldentat abgeschlossen', krise:false
   }
 };
@@ -1882,6 +1902,7 @@ function updateRvGo(){ $('rvGo').disabled = !rv.status; }
 /* Speichert den Rückblick über Coach_Schritt6 und zeigt die dreiteilige Coach-Antwort */
 async function sendRueckblick(){
   if (!rv.status || busy > 0) return;
+  audioFreischalten();
   const btn = $('rvGo'), msg = $('rvMsg');
   btn.disabled = true;
   msg.className = 'msg waiting';
@@ -1930,7 +1951,12 @@ function openAntwort(d){
   $('antErstmalsTxt').textContent = state.antwort.erstmals;
   $('antKrise').hidden = !state.antwort.krise;
   startInfo = Object.assign({}, startInfo || {}, { status:'abgeschlossen', geaendert:new Date(), naechstes: state.antwort.krise ? '' : state.antwort.naechstes });
+  const feier = (!state.antwort.krise && (rv.status === 'voll' || rv.status === 'teilweise')) ? rv.status : null;
+  if (feier) $('antRing').removeAttribute('hidden'); else $('antRing').setAttribute('hidden', '');
+  $('antTon').hidden = !feier;
+  $('antTon').textContent = tonAn() ? 'Ton aus' : 'Ton an';
   go('coachantwort');
+  if (feier) feierStart(feier);
 }
 
 function finishAntwort(){
@@ -1938,6 +1964,99 @@ function finishAntwort(){
   $('nextTitle').textContent = 'Für heute bist du durch.';
   $('nextHint').textContent = 'Deine Heldentat ist abgeschlossen. Komm morgen wieder, wenn du magst.';
   go('next');
+}
+
+/* ---------- Feier: Der Ring schließt sich ---------- */
+/* Farben und Reihenfolge wie im Logo (von oben im Uhrzeigersinn): Innovator, Commander, Strategist, Sage, Guardian, Explorer */
+const RING_FARBEN = ['#F2B705', '#0B63CE', '#334155', '#C0266A', '#1F9D62', '#F0672A'];
+const RING_TOENE = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
+let feierCtx = null;
+let feierTimers = [];
+
+function tonAn(){ try { return localStorage.getItem('6h_ton') === '1'; } catch(_) { return false; } }
+function tonSetzen(an){ try { localStorage.setItem('6h_ton', an ? '1' : '0'); } catch(_) {} }
+
+/* Muss aus einem Klick heraus aufgerufen werden, sonst blockiert iOS den Ton */
+function audioFreischalten(){
+  if (!tonAn()) return;
+  try {
+    const A = window.AudioContext || window.webkitAudioContext;
+    if (!A) return;
+    if (!feierCtx) feierCtx = new A();
+    if (feierCtx.state === 'suspended') feierCtx.resume();
+  } catch(_) {}
+}
+function ton(freq, start, dauer, lautstaerke){
+  if (!feierCtx) return;
+  try {
+    const o = feierCtx.createOscillator(), g = feierCtx.createGain(), n = feierCtx.currentTime + start;
+    o.type = 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, n);
+    g.gain.exponentialRampToValueAtTime(lautstaerke, n + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, n + dauer);
+    o.connect(g); g.connect(feierCtx.destination);
+    o.start(n); o.stop(n + dauer + 0.05);
+  } catch(_) {}
+}
+
+function ringPunkt(a){
+  const t = (a - 90) * Math.PI / 180;
+  return [150 + 103 * Math.cos(t), 150 + 103 * Math.sin(t)];
+}
+/* Zeichnet den Ring (sechs Segmente um die 6). Mit Animation starten die Segmente unsichtbar. */
+function ringBauen(svg, mitAnimation){
+  const NS = 'http://www.w3.org/2000/svg';
+  svg.innerHTML = '';
+  const pfade = [];
+  for (let i = 0; i < 6; i++){
+    const a = ringPunkt(i * 60 + 1.4), b = ringPunkt(i * 60 + 58.6);
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', 'M' + a[0].toFixed(2) + ' ' + a[1].toFixed(2) + ' A103 103 0 0 1 ' + b[0].toFixed(2) + ' ' + b[1].toFixed(2));
+    p.setAttribute('fill', 'none');
+    p.setAttribute('stroke', RING_FARBEN[i]);
+    p.setAttribute('stroke-width', '86');
+    p.setAttribute('pathLength', '1');
+    p.setAttribute('stroke-dasharray', '1');
+    p.setAttribute('stroke-dashoffset', mitAnimation ? '1' : '0');
+    svg.appendChild(p);
+    pfade.push(p);
+  }
+  const t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', '150'); t.setAttribute('y', '176'); t.setAttribute('text-anchor', 'middle');
+  t.setAttribute('style', "font-family:'DM Serif Display',Georgia,serif;font-size:84px;fill:#20293A");
+  t.textContent = '6';
+  svg.appendChild(t);
+  return pfade;
+}
+
+function feierEnde(){
+  feierTimers.forEach(clearTimeout);
+  feierTimers = [];
+  $('feier').classList.remove('on');
+  $('antRing').classList.add('on');
+}
+
+/* status: 'voll' = Ring mit Ton (falls an), 'teilweise' = Ring ohne Ton */
+function feierStart(status){
+  feierTimers.forEach(clearTimeout);
+  feierTimers = [];
+  const klein = $('antRing');
+  klein.classList.remove('on');
+  ringBauen(klein, false);
+  const reduziert = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduziert){ klein.classList.add('on'); return; }
+  const mitTon = status === 'voll' && tonAn();
+  const pfade = ringBauen($('feierSvg'), true);
+  $('feier').classList.add('on');
+  pfade.forEach((p, i) => {
+    feierTimers.push(setTimeout(() => {
+      p.style.transition = 'stroke-dashoffset .28s ease-out';
+      p.setAttribute('stroke-dashoffset', '0');
+      if (mitTon) ton(RING_TOENE[i], 0, 0.55, 0.07);
+    }, 250 + i * 170));
+  });
+  feierTimers.push(setTimeout(feierEnde, 250 + 6 * 170 + 900));
 }
 
 /* ---------- Startzustand ---------- */
