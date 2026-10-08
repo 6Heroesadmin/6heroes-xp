@@ -537,6 +537,10 @@ const STEP5_TOKEN = '06fcb42a7548af8e4abbf2637d03f511';
 const LOAD_WEBHOOK_URL = 'https://hook.eu1.make.com/feskuykovt2nbpgehax589zgkgxhprzm';
 const LOAD_TOKEN = '20569c7734eae0c5da881e2d0221959e';
 const LOAD_TIMEOUT_MS = 6000;
+/* Zugangssperre vor dem Launch: Szenario Coach_Zugang antwortet ZUGANG oder KEIN_ZUGANG (Freigabeliste in Airtable, Users.Zugang).
+   Nur ein ausdrückliches KEIN_ZUGANG zeigt die Sperre. Bei Fehlern oder leerer URL startet der Coach normal, die echte Sperre liegt in Make.
+   Beim Launch: URL leeren oder das Szenario ausschalten. */
+const ZUGANG_WEBHOOK_URL = '';
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
@@ -813,6 +817,7 @@ const nav = { stack:['start'] };
 let busy = 0;               // laufende Anfragen an Make
 let hintTimer = null;
 let startInfo = null;        // jüngster Durchlauf (aus Coach_Laden oder aus dieser Sitzung), steuert den Startzustand
+let zugangStatus = 'unbekannt';   // 'ja' | 'nein' | 'unbekannt'
 let startOverride = false;   // Nutzer hat \"Später\" oder \"etwas anderes\" gewählt: Kategorien anzeigen
 let HELLO = '';
 
@@ -2152,8 +2157,9 @@ function showNewStart(){
 
 function renderStart(){
   $('startLoad').hidden = true;
+  if (zugangStatus === 'nein'){ renderKeinZugang(); return; }
   const kind = startOverride ? 'neu' : startKind(startInfo);
-  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Laden: ' + loadDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
+  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
   if (kind === 'neu'){
@@ -2241,6 +2247,48 @@ function renderStart(){
 }
 
 /* Beim Öffnen: jüngsten Durchlauf laden, dann den passenden Startzustand zeigen */
+/* ---------- Zugangssperre (vor dem Launch) ---------- */
+async function pruefeZugang(){
+  if (!ZUGANG_WEBHOOK_URL || !LOAD_TOKEN || !state.userId) return 'unbekannt';
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), LOAD_TIMEOUT_MS);
+  try {
+    const res = await fetch(ZUGANG_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ aktion:'zugang', token:LOAD_TOKEN, user_id:state.userId }),
+      signal: ctrl.signal
+    });
+    if (!res.ok) return 'unbekannt';
+    const t = (await res.text()).trim();
+    if (t === 'KEIN_ZUGANG') return 'nein';
+    if (t === 'ZUGANG') return 'ja';
+    return 'unbekannt';
+  } catch(_) { return 'unbekannt'; }
+  finally { clearTimeout(timer); }
+}
+
+function renderKeinZugang(){
+  $('startLoad').hidden = true;
+  $('startNew').hidden = true;
+  const box = $('startState');
+  box.hidden = false;
+  box.innerHTML = '';
+  const g = el('div', 'greet');
+  g.appendChild(el('span', 'hello', HELLO));
+  g.appendChild(el('h1', null, 'Dein Zugang ist noch nicht freigeschaltet.'));
+  box.appendChild(g);
+  box.appendChild(el('p', 'hint', 'Der Coach ist aktuell nur für eingeladene Personen geöffnet. Wenn du eine Einladung erwartest, schreib uns kurz.'));
+  const a = el('a', 'btn', 'Zugang anfragen');
+  a.href = 'mailto:admin@6heroes.de?subject=Zugang%206Heroes';
+  a.target = '_top';
+  a.style.display = 'flex';
+  a.style.alignItems = 'center';
+  a.style.justifyContent = 'center';
+  a.style.textDecoration = 'none';
+  box.appendChild(a);
+}
+
 async function startUp(){
   const p = new URLSearchParams(window.location.search);
   // Vorschau ohne Make: ?startdemo=faellig | laeuft | erledigt | heute_nicht
@@ -2253,13 +2301,18 @@ async function startUp(){
     if (demo === 'faellig') startInfo.rueckblick = new Date(jetzt - 30 * 60000);
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
     if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
+    if (demo === 'kein_zugang') zugangStatus = 'nein';
     renderStart();
     return;
   }
-  if (!LOAD_WEBHOOK_URL || !LOAD_TOKEN || !state.userId){ renderStart(); return; }
+  const ladenAn = !!(LOAD_WEBHOOK_URL && LOAD_TOKEN && state.userId);
+  const zugangAn = !!(ZUGANG_WEBHOOK_URL && LOAD_TOKEN && state.userId);
+  if (!ladenAn && !zugangAn){ renderStart(); return; }
   $('startNew').hidden = true;
   $('startLoad').hidden = false;
-  startInfo = await ladeStart();
+  const erg = await Promise.all([zugangAn ? pruefeZugang() : 'unbekannt', ladenAn ? ladeStart() : null]);
+  zugangStatus = erg[0];
+  startInfo = erg[1];
   renderStart();
 }
 
