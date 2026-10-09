@@ -1322,6 +1322,19 @@ const STUFEN_INFO = [
 ];
 const sel5 = { stufe:1 };
 
+/* Fasst Folgen nummerierter Platzhalter ([Argument 1], [Argument 2], [Argument 3]) zu einem einzigen Platzhalter zusammen.
+   Einzelne nummerierte Platzhalter und Platzhalter ohne Nummer bleiben unverändert. */
+function bereinigeLuecken(text){
+  return String(text || '').replace(
+    /\[[^\]\[]*?\s\d\](?:\s*(?:,|und|sowie)\s*\[[^\]\[]*?\s\d\])+/g,
+    '[deine Liste]'
+  );
+}
+function grossStart(t){
+  const x = String(t || '').trim();
+  return x ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+}
+
 /* Prüft die Antwort der KI und bringt sie in eine feste Form. Gibt null zurück, wenn etwas Wesentliches fehlt. */
 function normalizeHeldentat(d){
   if (!d || typeof d !== 'object' || d.error) return null;
@@ -1329,7 +1342,7 @@ function normalizeHeldentat(d){
   if (arr.length < 3) return null;
   const stufen = STUFEN_INFO.map((info, i) => {
     const m = arr.find(x => x && String(x.stufe || '').trim().toLowerCase() === info.name.toLowerCase()) || arr[i] || {};
-    return { name:info.name, dauer:info.dauer, was:String(m.was || '').trim(), formulierung:String(m.formulierung || '').trim() };
+    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)) };
   });
   if (stufen.some(x => !x.was)) return null;
   const t = v => String(v || '').trim();
@@ -2086,7 +2099,7 @@ function parseLaden(text){
   const hj = parsePayload(p[8] || '');
   if (hj && Array.isArray(hj.stufen)){
     const m = hj.stufen.find(x => x && String(x.stufe || '').trim().toLowerCase() === d.stufe.toLowerCase());
-    if (m && m.was) d.was = String(m.was).trim();
+    if (m && m.was) d.was = grossStart(m.was);
   }
   const aj = parsePayload(p.slice(9).join('|||'));
   if (aj && aj.krise !== true && aj.naechstes) d.naechstes = String(aj.naechstes).trim();
