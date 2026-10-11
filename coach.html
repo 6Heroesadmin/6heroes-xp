@@ -1991,8 +1991,17 @@ const RING_TOENE = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
 let feierCtx = null;
 let feierTimers = [];
 
-function tonAn(){ try { return localStorage.getItem('6h_ton') === '1'; } catch(_) { return false; } }
-function tonSetzen(an){ try { localStorage.setItem('6h_ton', an ? '1' : '0'); } catch(_) {} }
+/* Ton ist standardmäßig an. Nur eine ausdrücklich gespeicherte Wahl "aus" ('0') schaltet ihn ab.
+   tonWahl hält die Wahl zusätzlich im Speicher, falls der Browser (z. B. im Iframe) localStorage blockiert. */
+let tonWahl = null;
+function tonAn(){
+  if (tonWahl !== null) return tonWahl;
+  try { return localStorage.getItem('6h_ton') !== '0'; } catch(_) { return true; }
+}
+function tonSetzen(an){
+  tonWahl = !!an;
+  try { localStorage.setItem('6h_ton', an ? '1' : '0'); } catch(_) {}
+}
 
 /* Muss aus einem Klick heraus aufgerufen werden, sonst blockiert iOS den Ton */
 function audioFreischalten(){
