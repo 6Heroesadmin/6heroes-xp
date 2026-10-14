@@ -4,199 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mein Heldenprofil – 6Heroes</title>
-<link rel="stylesheet" href="/fonts.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #20293A;
-    --card-bg: #20293A;        /* warmes Landingpage-Navy */
-    --text-main: #F4F1E9;      /* warmes Off-White */
-    --text-muted: #AEB6C6;
-    --line: rgba(255,255,255,0.07);
-    --accent: #F2B705;
-  }
-
-  html, body { }
-
-  body {
-    background: var(--bg);
-    font-family: 'Inter', system-ui, sans-serif;
-    color: var(--text-main);
-    padding: 4px;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    max-width: 640px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 480px) {
-    .grid { grid-template-columns: 1fr; }
-  }
-
-  .tile {
-    position: relative;
-    background: var(--card-bg);
-    border-radius: 18px;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-    border: 1px solid var(--line);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-    color: inherit;
-  }
-
-  .tile:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.4);
-    border-color: rgba(255,255,255,0.14);
-  }
-
-  .tile-top { height: 4px; }
-
-  .tile-body { padding: 22px 20px 24px; }
-
-
-  .tile-role {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-  }
-
-  .tile-hero {
-    font-family: 'DM Serif Display', serif;
-    font-size: 26px;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.1;
-  }
-
-  .tile-desc {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    line-height: 1.5;
-  }
-
-  .tile-leitfrage {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    margin-top: 12px;
-    line-height: 1.5;
-  }
-  .tile-leitfrage span { color: var(--text-main); font-style: italic; }
-
-  .tile-more {
-    display: flex; align-items: center; gap: 7px;
-    margin-top: 18px;
-    font-size: 13px; font-weight: 600;
-    color: var(--accent);
-  }
-  .tile-more .arrow { transition: transform .12s; }
-  .tile:hover .tile-more .arrow { transform: translateX(3px); }
-
-  /* Locked state – Inhalt bleibt SCHARF lesbar (Name + Teaser sichtbar),
-     nur ein dezentes Sperr-Signal statt Blur. */
-  .tile.locked {
-    border-color: rgba(242, 183, 5, 0.28);
-  }
-  .tile.locked .tile-body {
-    opacity: 0.82;
-  }
-
-  /* Schloss-Badge oben rechts */
-  .lock-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: rgba(15, 20, 33, 0.72);
-    border: 1px solid rgba(242, 183, 5, 0.45);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-  }
-  .lock-badge svg { width: 15px; height: 15px; color: var(--accent); }
-
-  /* Gelbe Freischalten-Zeile am unteren Rand */
-  .unlock-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    padding: 11px 12px;
-    background: rgba(242, 183, 5, 0.10);
-    border-top: 1px solid rgba(242, 183, 5, 0.22);
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--accent);
-  }
-  .unlock-bar svg { width: 13px; height: 13px; }
-
-  .error {
-    text-align: center;
-    color: #f87171;
-    padding: 40px 16px;
-    font-size: 14px;
-  }
-
-  /* Kombi-Karte: spannt beide Spalten, sitzt unter Basis+Zweit */
-  .tile.combo { grid-column: 1 / -1; }
-  .tile.combo .tile-hero { font-size: 24px; }
-  .tile.combo .combo-roles {
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 6px;
-  }
-  .tile.combo .combo-roles .plus { color: var(--text-muted); opacity: .7; }
+:root{--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--gold:#F2B705}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:transparent;font-family:'Inter',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+body{padding:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:680px;margin:0 auto}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.tile{position:relative;display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+.tile:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(32,41,58,.12);border-color:var(--ink)}
+.top{height:4px}
+.body{padding:20px 20px 22px}
+.role{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.name{font-family:'DM Serif Display',Georgia,serif;font-size:26px;line-height:1.1}
+.desc{font-size:14px;line-height:1.55;color:var(--mute);margin-top:8px}
+.q{font-size:13px;line-height:1.5;color:var(--mute);margin-top:10px}
+.q span{color:var(--ink);font-style:italic}
+.more{display:flex;align-items:center;gap:7px;margin-top:16px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.more .ar{transition:transform .12s}.tile:hover .more .ar{transform:translateX(3px)}
+.wide{grid-column:1/-1}
+.roles{display:flex;gap:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.roles .pl{color:var(--mute)}
+.free{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#E6F5EC;color:#1F7A4C;font-size:10.5px;letter-spacing:.04em;vertical-align:middle}
+.tile.locked{border-color:#EBD9A0}
+.tile.locked .body{opacity:.85}
+.badge{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #E5C25A;display:flex;align-items:center;justify-content:center;z-index:2}
+.badge svg{width:15px;height:15px;color:#B88A00}
+.unlock{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;background:#FFF6D6;border-top:1px solid #EBD9A0;font-size:13px;font-weight:700;color:#7A5C00}
+.unlock svg{width:13px;height:13px}
+.stress{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:#F7F5F0}
+.error{text-align:center;color:#B4471B;padding:40px 16px;font-size:14px}
 </style>
 </head>
 <body>
-
-  <div id="content"></div>
-
-  <script>
-/* Frame-Kennung fuer den Profil-Wrapper (Cross-Origin-sichere Hoehen-Zuordnung) */
-var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
-
-    const BASE_SITE = 'https://regal-mooncake-d3a250.netlify.app';
-    const UPGRADE_URL = 'https://6heroes.de/preise.html#pricing';
-
-    const HERO_COLORS = {
-      'Innovator':  '#F2B705',
-      'Commander':  '#0B63CE',
-      'Strategist': '#94A3B8',
-      'Sage':       '#C0266A',
-      'Guardian':   '#1F9D62',
-      'Explorer':   '#F0672A',
-    };
-
-
-
-
-    const LOCK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
-
-    const ROLE_DESCRIPTIONS = {
-      'Basisheld':    'Dein Kernprofil – so trittst du im Alltag auf.',
-      'Zweitheld':    'Deine zweite Kraft – sie verstärkt deinen Basishelden in entscheidenden Momenten.',
-      'Stressheld 1': 'Deine erste Reaktion unter Druck – erkenne das Muster, bevor es dich steuert.',
-      'Stressheld 2': 'Deine zweite Stressreaktion – dein Eskalationsmuster, wenn der Druck am größten ist.',
-    };
-
-    // Verdichtete Kurzbeschreibung pro Held: ein Kernsatz + Leitfrage.
-    const HERO_SHORT = {
+<div id="content"></div>
+<script>
+var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
+const APP='https://app.6heroes.de';
+const HERO_COLORS={'Innovator':'#F2B705','Commander':'#0B63CE','Strategist':'#475569','Sage':'#C0266A','Guardian':'#1F9D62','Explorer':'#F0672A'};
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const HERO_SHORT = {
       'Innovator':  { line: 'Du erzeugst Neues und denkst in Möglichkeiten.',            q: 'Was wäre noch möglich?' },
       'Explorer':   { line: 'Du testest die Realität und lernst durch Erfahrung.',        q: 'Was passiert, wenn wir es ausprobieren?' },
       'Commander':  { line: 'Du lieferst Ergebnisse und bringst Entscheidungen ins Tun.', q: 'Was tun wir jetzt?' },
@@ -204,9 +56,7 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
       'Sage':       { line: 'Du schaffst Verstehen, Klarheit und Orientierung.',          q: 'Was stimmt – und was bedeutet das?' },
       'Strategist': { line: 'Du machst Komplexität beherrschbar – mit Plan und Trade-offs.', q: 'Was ist die beste Option unter aktuellen Bedingungen?' },
     };
-
-    // Kombinationsname pro Basis_Zweit (klein). Fallback: "Eure Kombination".
-    const COMBO_NAME = {
+const COMBO_NAME = {
       'commander_explorer': 'Der Action-Leader',
       'commander_guardian': 'Der Protective Commander',
       'commander_innovator': 'Der Disruptive Leader',
@@ -238,121 +88,62 @@ var __FRAME_ID__ = (new URLSearchParams(location.search)).get('frame') || '';
       'strategist_innovator': 'Der Innovative Analyst',
       'strategist_sage': 'Der Wise Architect',
     };
-
-    function normalizeHero(name) {
-      if (!name) return '';
-      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    }
-    function lc(name) { return (name || '').toLowerCase(); }
-
-    function comboTileHTML({ base, second, url, locked }) {
-      const bN = normalizeHero(base), zN = normalizeHero(second);
-      const cB = HERO_COLORS[bN] || '#64748B';
-      const cZ = HERO_COLORS[zN] || '#64748B';
-      const comboName = COMBO_NAME[lc(base) + '_' + lc(second)] || 'Eure Kombination';
-      const href = locked ? UPGRADE_URL : url;
-      const lockBadge = locked ? `<div class="lock-badge">${LOCK_ICON}</div>` : '';
-      const cta = locked
-        ? `<div class="unlock-bar">${LOCK_ICON}<span>Jetzt freischalten</span></div>`
-        : `<div class="tile-more">Wie deine Helden zusammenspielen <span class="arrow">&rarr;</span></div>`;
-      return `
-        <a class="tile combo ${locked ? 'locked' : ''}" href="${href}" target="_top">
-          ${lockBadge}
-          <div class="tile-top" style="background:linear-gradient(90deg,${cB},${cZ})"></div>
-          <div class="tile-body">
-            <div class="combo-roles">
-              <span style="color:${cB}">${bN}</span>
-              <span class="plus">+</span>
-              <span style="color:${cZ}">${zN}</span>
-            </div>
-            <div class="tile-hero">${comboName}</div>
-            <div class="tile-desc">Wie sich Basis- und Zweitheld gegenseitig färben – deine gemeinsamen Stärken und typische Alltagssituationen.</div>
-            ${cta}
-          </div>
-        </a>
-      `;
-    }
-
-    function tileHTML({ role, hero, url, locked }) {
-      const heroNorm = normalizeHero(hero);
-      const color = HERO_COLORS[heroNorm] || '#64748B';
-      const short = HERO_SHORT[heroNorm] || { line: ROLE_DESCRIPTIONS[role] || '', q: '' };
-      const href = locked ? UPGRADE_URL : url;
-      const lockBadge = locked ? `<div class="lock-badge">${LOCK_ICON}</div>` : '';
-      const cta = locked
-        ? `<div class="unlock-bar">${LOCK_ICON}<span>Jetzt freischalten</span></div>`
-        : `<div class="tile-more">Mehr über deinen ${role} <span class="arrow">&rarr;</span></div>`;
-      const leitfrage = short.q
-        ? `<div class="tile-leitfrage">Leitfrage: <span>„${short.q}"</span></div>`
-        : '';
-
-      return `
-        <a class="tile ${locked ? 'locked' : ''}" href="${href}" target="_top">
-          ${lockBadge}
-          <div class="tile-top" style="background:${color}"></div>
-          <div class="tile-body">
-            <div class="tile-role">${role}</div>
-            <div class="tile-hero" style="color:${color}">${heroNorm}</div>
-            <div class="tile-desc">${short.line}</div>
-            ${leitfrage}
-            ${cta}
-          </div>
-        </a>
-      `;
-    }
-
-    function init() {
-      const params = new URLSearchParams(window.location.search);
-      const base = params.get('basis');
-      const second = params.get('zweit');
-      const s1 = params.get('stress1');
-      const s2 = params.get('stress2');
-      const isPaid = params.get('paid') === '1';
-
-      const content = document.getElementById('content');
-
-      if (!base || !second || !s1 || !s2) {
-        content.className = 'error';
-        content.textContent = 'Profil konnte nicht geladen werden.';
-        postHeight();
-        return;
-      }
-
-      const tiles = [
-        { role: 'Basisheld', hero: base,   url: `https://app.6heroes.de/basisheld`,  locked: false },
-        { role: 'Zweitheld', hero: second, url: `https://app.6heroes.de/zweitheld`,  locked: !isPaid },
-      ];
-
-      const comboTile = comboTileHTML({
-        base, second,
-        url: `https://app.6heroes.de/kombihelden`,
-        locked: !isPaid,
-      });
-
-      content.outerHTML = `<div class="grid">${tiles.map(tileHTML).join('')}${comboTile}</div>`;
-      postHeight();
-    }
-
-    /* === 6HEROES iframe Auto-Höhe: Sender (misst Inhalt, nicht Body) === */
-    function postHeight(){
-      // Höhe des tatsächlichen Inhalts messen (.grid), nicht des gestreckten Body
-      var grid = document.querySelector('.grid') || document.getElementById('content');
-      var h;
-      if(grid){
-        var rect = grid.getBoundingClientRect();
-        h = Math.ceil(rect.bottom + window.scrollY) + 8; // +8 für unteren Rand
-      } else {
-        h = document.documentElement.scrollHeight;
-      }
-      parent.postMessage({type:"6heroes:setHeight",height:h,frame:__FRAME_ID__},"*");
-    }
-    window.addEventListener("load",postHeight);
-    window.addEventListener("resize",postHeight);
-    if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
-    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(postHeight); }
-    [50,200,500,1000].forEach(function(t){ setTimeout(postHeight,t); });
-
-    init();
-  </script>
+const nh=n=>n?n.charAt(0).toUpperCase()+n.slice(1).toLowerCase():'';
+const lc=n=>(n||'').toLowerCase();
+function tile(o){
+  const col=HERO_COLORS[o.hero]||'#64748B',s=HERO_SHORT[o.hero]||{line:'',q:''};
+  const href=o.locked?UPGRADE_URL:o.url;
+  return '<a class="tile'+(o.locked?' locked':'')+'" href="'+href+'" target="_top">'
+   +(o.locked?'<div class="badge">'+LOCK+'</div>':'')
+   +'<div class="top" style="background:'+col+'"></div><div class="body"><div class="role">'+o.role+(o.locked?'':'<span class="free">Frei</span>')+'</div>'
+   +'<div class="name" style="color:'+col+'">'+o.hero+'</div><div class="desc">'+s.line+'</div>'
+   +(s.q?'<div class="q">Leitfrage: <span>„'+s.q+'“</span></div>':'')
+   +(o.locked?'':'<div class="more">Dein '+o.role+' lesen <span class="ar">&rarr;</span></div>')+'</div>'
+   +(o.locked?'<div class="unlock">'+LOCK+'<span>Jetzt freischalten</span></div>':'')+'</a>';
+}
+function comboTile(b,z,locked){
+  const cB=HERO_COLORS[b],cZ=HERO_COLORS[z],name=COMBO_NAME[lc(b)+'_'+lc(z)]||'Eure Kombination';
+  return '<a class="tile wide'+(locked?' locked':'')+'" href="'+(locked?UPGRADE_URL:APP+'/kombihelden')+'" target="_top">'
+   +(locked?'<div class="badge">'+LOCK+'</div>':'')
+   +'<div class="top" style="background:linear-gradient(90deg,'+cB+','+cZ+')"></div><div class="body">'
+   +'<div class="roles"><span style="color:'+cB+'">'+b+'</span><span class="pl">+</span><span style="color:'+cZ+'">'+z+'</span></div>'
+   +'<div class="name">'+name+'</div><div class="desc">Wie Basis- und Zweitheld sich gegenseitig färben – deine fünf Kennzeichen und typische Alltagssituationen.</div>'
+   +(locked?'':'<div class="more">Das Zusammenspiel lesen <span class="ar">&rarr;</span></div>')+'</div>'
+   +(locked?'<div class="unlock">'+LOCK+'<span>Jetzt freischalten</span></div>':'')+'</a>';
+}
+function stressTile(s1,s2,locked){
+  const c1=HERO_COLORS[s1],c2=HERO_COLORS[s2];
+  return '<a class="tile wide'+(locked?' locked':'')+'" href="'+(locked?UPGRADE_URL:APP+'/stresshelden')+'" target="_top">'
+   +(locked?'<div class="badge">'+LOCK+'</div>':'')
+   +'<div class="top" style="background:linear-gradient(90deg,'+c1+','+c2+')"></div><div class="body">'
+   +'<div class="role">Stresshelden</div><div class="name">Wie du unter Druck reagierst</div>'
+   +'<div class="desc">Deine erste und deine zweite Stressreaktion – so zeigst du dich, wenn es eng wird, und wie andere dich dann erleben.</div>'
+   +'<div class="stress"><span class="chip" style="color:'+c1+'">1 · '+s1+'</span><span class="chip" style="color:'+c2+'">2 · '+s2+'</span></div>'
+   +(locked?'':'<div class="more">Deine Stressmuster lesen <span class="ar">&rarr;</span></div>')+'</div>'
+   +(locked?'<div class="unlock">'+LOCK+'<span>Jetzt freischalten</span></div>':'')+'</a>';
+}
+function init(){
+  const p=new URLSearchParams(location.search);
+  const b=nh(p.get('basis')),z=nh(p.get('zweit')),s1=nh(p.get('stress1')),s2=nh(p.get('stress2'));
+  const paid=p.get('paid')==='1';
+  const c=document.getElementById('content');
+  if(!b||!z||!s1||!s2){c.className='error';c.textContent='Profil konnte nicht geladen werden.';postHeight();return;}
+  c.outerHTML='<div class="grid">'
+   +tile({role:'Basisheld',hero:b,url:APP+'/basisheld',locked:false})
+   +tile({role:'Zweitheld',hero:z,url:APP+'/zweitheld',locked:!paid})
+   +comboTile(b,z,!paid)+stressTile(s1,s2,!paid)+'</div>';
+  postHeight();
+}
+function postHeight(){
+  const g=document.querySelector('.grid')||document.getElementById('content');
+  const h=g?Math.ceil(g.getBoundingClientRect().bottom+window.scrollY)+8:document.documentElement.scrollHeight;
+  parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');
+}
+window.addEventListener('load',postHeight);window.addEventListener('resize',postHeight);
+if(window.ResizeObserver)new ResizeObserver(postHeight).observe(document.body);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(postHeight);
+[50,200,500,1000].forEach(t=>setTimeout(postHeight,t));
+init();
+</script>
 </body>
 </html>

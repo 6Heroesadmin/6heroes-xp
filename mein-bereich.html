@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mein Bereich – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--bg:#F7F5F0}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:transparent;color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:8px 20px 28px;opacity:0;transition:opacity .2s}
+.wrap.ready{opacity:1}
+.head{display:flex;align-items:center;justify-content:space-between;min-height:48px}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(30px,8vw,38px);line-height:1.15}
+.gear{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;color:var(--mute);text-decoration:none}
+.gear:hover{background:#ECE8DD;color:var(--ink)}
+.gear svg{width:22px;height:22px}
+.wheel{display:flex;justify-content:center;padding:10px 0 4px}
+.wheel svg{width:100%;max-width:300px;height:auto;display:block}
+.label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:22px 2px 10px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{position:relative;display:flex;align-items:center;gap:16px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:14px;text-decoration:none;color:inherit;min-height:76px;transition:border-color .15s,box-shadow .15s}
+.row:hover{border-color:var(--ink);box-shadow:0 6px 18px rgba(32,41,58,.08)}
+.dot{flex:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
+.txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.eb{font-size:13px;color:var(--mute)}
+.nm{font-size:19px;font-weight:700;line-height:1.3}
+.ds{font-size:14.5px;line-height:1.55;color:var(--mute)}
+.chev{flex:none;width:10px;height:10px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);margin:0 6px 0 2px}
+.row.locked{border-color:#EBD9A0}
+.lk{flex:none;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#7A5C00;background:#FFF6D6;border:1px solid #EBD9A0;border-radius:999px;padding:6px 11px}
+.lk svg{width:13px;height:13px}
+.free{margin-left:8px;padding:2px 8px;border-radius:999px;background:#E6F5EC;color:#1F7A4C;font-size:11px;font-weight:700;vertical-align:middle}
+.error{text-align:center;color:#B4471B;padding:40px 16px;font-size:14px}
+@media(max-width:480px){.wrap{padding:6px 16px 24px}.row{padding:14px;gap:12px}.lk span{display:none}.lk{padding:7px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+const PROFILE_FN='/.netlify/functions/profile';
+const APP='https://app.6heroes.de';
+const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
+/* Zentrale Konfiguration der Ziele. url:null = Eintrag wird noch nicht angezeigt. */
+const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account'};
+const ROUTES=[ /* spaeter: {name:'Langzeitprofil',desc:'...',url:APP+'/langzeitprofil'}, Verlauf, Erfolge */ ];
+const HC={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
+const HL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
+const ORDER=['commander','explorer','innovator','sage','strategist','guardian'];
+const HOOK={"commander": "Du redest nicht lange – du machst. Während andere noch diskutieren, hast du längst entschieden und bist unterwegs. Das ist keine Ungeduld. Das ist Klarheit.", "explorer": "Du brichst auf, wenn andere noch überlegen. Dein inneres Navigationssystem heißt Neugier – und es führt dich dorthin, wo andere gar nicht erst hinschauen. Freiheit ist für dich kein Bonus. Sie ist die Grundbedingung, unter der du dein Bestes gibst.", "guardian": "Du weißt, dass Menschen Halt brauchen – und du gibst ihn. Nicht laut, nicht durch Ansagen, sondern durch deine Verlässlichkeit, deine Präsenz und die Art, wie du für andere da bist. Das ist keine Schwäche. Das ist eine seltene Stärke.", "innovator": "Du siehst Möglichkeiten, wo andere Grenzen sehen. Während andere noch überlegen, ob etwas möglich ist, hast du bereits das nächste Bild im Kopf. Das ist keine Ungeduld. Das ist Vorstellungskraft – und sie ist deine größte Stärke.", "sage": "Du denkst tiefer als andere. Während die meisten weitermachen, hältst du inne und fragst: Was steckt wirklich dahinter? Diese Fähigkeit ist nicht Zögerlichkeit. Sie ist Klarheit – und sie macht dich zu einem der wertvollsten Gesprächspartner, die es gibt.", "strategist": "Du weißt, wie Dinge wirklich funktionieren. Während andere improvisieren, hast du bereits den nächsten Schritt durchdacht – und den übernächsten. Das ist keine Pedanterie. Das ist Kompetenz, auf die andere sich verlassen können."};
+const HERO_SHORT = {
+      'Innovator':  { line: 'Du erzeugst Neues und denkst in Möglichkeiten.',            q: 'Was wäre noch möglich?' },
+      'Explorer':   { line: 'Du testest die Realität und lernst durch Erfahrung.',        q: 'Was passiert, wenn wir es ausprobieren?' },
+      'Commander':  { line: 'Du lieferst Ergebnisse und bringst Entscheidungen ins Tun.', q: 'Was tun wir jetzt?' },
+      'Guardian':   { line: 'Du hältst Stabilität, Sicherheit und Verlässlichkeit.',      q: 'Was ist richtig, sicher, verlässlich?' },
+      'Sage':       { line: 'Du schaffst Verstehen, Klarheit und Orientierung.',          q: 'Was stimmt – und was bedeutet das?' },
+      'Strategist': { line: 'Du machst Komplexität beherrschbar – mit Plan und Trade-offs.', q: 'Was ist die beste Option unter aktuellen Bedingungen?' },
+    };
+const COMBO_NAME = {
+      'commander_explorer': 'Der Action-Leader',
+      'commander_guardian': 'Der Protective Commander',
+      'commander_innovator': 'Der Disruptive Leader',
+      'commander_sage': 'Der Principled Leader',
+      'commander_strategist': 'Der Präzise Macher',
+      'explorer_commander': 'Der Expedition Leader',
+      'explorer_guardian': 'Der Grounded Explorer',
+      'explorer_innovator': 'Der Trailblazer',
+      'explorer_sage': 'Der Purpose Explorer',
+      'explorer_strategist': 'Der Smart Adventurer',
+      'guardian_commander': 'Der Firm Protector',
+      'guardian_explorer': 'Der Safe Adventurer',
+      'guardian_innovator': 'Der Modernizer',
+      'guardian_sage': 'Der Compassionate Stabilizer',
+      'guardian_strategist': 'Der Process Anchor',
+      'innovator_commander': 'Der Vision-Executor',
+      'innovator_explorer': 'Der Field Tester',
+      'innovator_guardian': 'Der Safe Innovator',
+      'innovator_sage': 'Der Meaning Maker',
+      'innovator_strategist': 'Der System-Designer',
+      'sage_commander': 'Der Guiding Authority',
+      'sage_explorer': 'Der Experiential Sage',
+      'sage_guardian': 'Der Steady Mentor',
+      'sage_innovator': 'Der Insight Innovator',
+      'sage_strategist': 'Der Systems Philosopher',
+      'strategist_commander': 'Der Decisive Strategist',
+      'strategist_explorer': 'Der Adaptive Planner',
+      'strategist_guardian': 'Der Reliable Builder',
+      'strategist_innovator': 'Der Innovative Analyst',
+      'strategist_sage': 'Der Wise Architect',
+    };
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+const P=new URLSearchParams(location.search);
+const norm=s=>String(s||'').trim().toLowerCase();
+function wheel(m,name){
+  const cx=110,cy=110,R=104,r=56,gap=2.6;
+  const pt=(a,rad)=>{const t=(a-90)*Math.PI/180;return [cx+rad*Math.cos(t),cy+rad*Math.sin(t)]};
+  let out='';
+  ORDER.forEach((h,i)=>{
+    const a0=i*60+gap/2,a1=(i+1)*60-gap/2,am=(a0+a1)/2;
+    const [x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R),[x2,y2]=pt(a1,r),[x3,y3]=pt(a0,r);
+    out+='<path d="M'+x0+' '+y0+'A'+R+' '+R+' 0 0 1 '+x1+' '+y1+'L'+x2+' '+y2+'A'+r+' '+r+' 0 0 0 '+x3+' '+y3+'Z" fill="'+HC[h]+'"/>';
+    const marks=m[h];
+    if(marks&&marks.length){
+      const [bx,by]=pt(am,(R+r)/2);const w=marks.length>1?30:22;
+      out+='<g><rect x="'+(bx-w/2)+'" y="'+(by-11)+'" width="'+w+'" height="22" rx="11" fill="#fff"/><text x="'+bx+'" y="'+(by+4.5)+'" text-anchor="middle" font-size="'+(marks.length>1?9:11)+'" font-weight="700" fill="#20293A" font-family="Inter,sans-serif">'+marks.join('·')+'</text></g>';
+    }
+  });
+  const nm=esc(name||'');
+  out+=(nm?'<text x="110" y="108" text-anchor="middle" font-family="DM Serif Display,Georgia,serif" font-size="22" fill="#20293A">'+nm+'</text><text x="110" y="126" text-anchor="middle" font-size="9.5" fill="#5A6272" font-family="Inter,sans-serif">Dein Heldenrad</text>'
+     :'<text x="110" y="115" text-anchor="middle" font-family="DM Serif Display,Georgia,serif" font-size="14" fill="#20293A">Dein Heldenrad</text>');
+  return '<svg viewBox="0 0 220 220" role="img" aria-label="Dein Heldenrad">'+out+'</svg>';
+}
+function row(o){
+  const href=o.locked?UPGRADE_URL:o.url;
+  return '<a class="row'+(o.locked?' locked':'')+'" href="'+href+'" target="_top">'
+    +'<span class="dot" style="background:'+o.bg+';color:'+(o.dark?'#20293A':'#fff')+'">'+o.dot+'</span>'
+    +'<span class="txt"><span class="eb">'+esc(o.eb)+(o.free?'<span class="free">Frei</span>':'')+'</span><span class="nm">'+esc(o.nm)+'</span><span class="ds">'+esc(o.ds)+'</span></span>'
+    +(o.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
+}
+function render(d){
+  const b=norm(d.base),z=norm(d.second),s1=norm(d.s1),s2=norm(d.s2),paid=!!d.isPaid;
+  const marks={};[[b,'B'],[z,'Z'],[s1,'S1'],[s2,'S2']].forEach(p=>{(marks[p[0]]=marks[p[0]]||[]).push(p[1])});
+  const cn=COMBO_NAME[b+'_'+z]||'Euer Zusammenspiel';
+  const g=(c)=>'linear-gradient(135deg,'+HC[b]+','+HC[z]+')';
+  let h='<div class="head">'+(P.get('hideTitle')==='1'?'<span></span>':'<h1>Mein Bereich</h1>')+'<a class="gear" href="'+LINKS.account+'" target="_top" aria-label="Account und Einstellungen">'+GEAR+'</a></div>';
+  h+='<div class="wheel">'+wheel(marks,P.get('name'))+'</div>';
+  h+='<div class="label">Deine Helden</div><div class="stack">';
+  h+=row({eb:'Dein Basisheld',nm:HL[b],ds:HOOK[b],dot:'B',bg:HC[b],dark:b==='innovator',url:LINKS.basis,free:true});
+  h+=row({eb:'Dein Zweitheld',nm:HL[z],ds:HERO_SHORT[HL[z]].line,dot:'Z',bg:HC[z],dark:z==='innovator',url:LINKS.zweit,locked:!paid});
+  h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
+  h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
+  h+='</div>';
+  if(ROUTES.length){
+    h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
+  }
+  return h;
+}
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
+async function init(){
+  const app=document.getElementById('app');
+  let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1'};
+  const email=(P.get('email')||'').trim();
+  if((!d.base||!d.second||!d.s1||!d.s2)&&email){
+    try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(r.ok)d=await r.json();}catch(e){console.warn(e)}
+  }
+  if(![d.base,d.second,d.s1,d.s2].every(x=>HC[norm(x)])){app.className='wrap ready error';app.textContent='Profil konnte nicht geladen werden.';postHeight();return;}
+  app.innerHTML=render(d);app.classList.add('ready');postHeight();
+}
+window.addEventListener('load',init);
+window.addEventListener('resize',postHeight);
+if(window.ResizeObserver)new ResizeObserver(postHeight).observe(document.body);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(postHeight);
+[200,600,1200].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
