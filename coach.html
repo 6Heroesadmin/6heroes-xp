@@ -490,8 +490,7 @@
     <div class="body">
       <h1 id="nextTitle">Deine Wahl ist gespeichert.</h1>
       <p class="hint" id="nextHint">Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.</p>
-      <div class="spacer"></div>
-      <div class="actions"><button class="btn" data-back="start">Zum Start</button></div>
+      <div class="actions" style="margin-top:24px"><button class="btn" data-back="start">Zum Start</button></div>
     </div>
   </section>
 
@@ -818,6 +817,7 @@ let busy = 0;               // laufende Anfragen an Make
 let hintTimer = null;
 let startInfo = null;        // jüngster Durchlauf (aus Coach_Laden oder aus dieser Sitzung), steuert den Startzustand
 let zugangStatus = 'unbekannt';   // 'ja' | 'nein' | 'unbekannt'
+let frischAbgeschlossen = false;
 let startOverride = false;   // Nutzer hat \"Später\" oder \"etwas anderes\" gewählt: Kategorien anzeigen
 let HELLO = '';
 
@@ -928,6 +928,7 @@ function resetRun(){
 /* ---------- Schritt 1 ---------- */
 function startRun(kategorie){
   resetRun();
+  frischAbgeschlossen = false;
   $('nextTitle').textContent = 'Deine Wahl ist gespeichert.';
   $('nextHint').textContent = 'Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.';
   state.kategorie = kategorie;
@@ -1979,9 +1980,8 @@ function openAntwort(d){
 
 function finishAntwort(){
   state.abschluss = 'abgeschlossen';
-  $('nextTitle').textContent = 'Für heute bist du durch.';
-  $('nextHint').textContent = 'Deine Heldentat ist abgeschlossen. Komm morgen wieder, wenn du magst.';
-  go('next');
+  frischAbgeschlossen = true;
+  backClick('start');
 }
 
 /* ---------- Feier: Der Ring schließt sich ---------- */
@@ -2173,6 +2173,7 @@ function showStart(){
 }
 function showNewStart(){
   startOverride = true;
+  frischAbgeschlossen = false;
   renderStart();
   window.scrollTo(0, 0);
 }
@@ -2258,13 +2259,15 @@ function renderStart(){
     if (kind === 'erledigt'){
       box.appendChild(el('h1', null, state.name ? 'Für heute erledigt, ' + state.name + '.' : 'Für heute erledigt.'));
       box.appendChild(el('p', 'hint', 'Deine Heldentat ist abgeschlossen. Morgen geht es weiter.'));
-      if (d.naechstes) box.appendChild(infoBox('DEIN IMPULS FÜR DAS NÄCHSTE MAL', d.naechstes));
+      if (d.naechstes && !frischAbgeschlossen) box.appendChild(infoBox('DEIN IMPULS FÜR DAS NÄCHSTE MAL', d.naechstes));
     } else {
       box.appendChild(el('h1', null, state.name ? 'Alles klar, ' + state.name + '.' : 'Alles klar.'));
       box.appendChild(el('p', 'hint', 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.'));
     }
-    box.appendChild(el('div', 'spacer'));
-    box.appendChild(link('Noch einen Durchlauf starten'));
+    const nb = el('button', 'btn', 'Noch einen Durchlauf starten');
+    nb.style.marginTop = '24px';
+    nb.addEventListener('click', showNewStart);
+    box.appendChild(nb);
   }
 }
 
