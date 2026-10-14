@@ -2006,6 +2006,8 @@ function tonSetzen(an){
 /* Muss aus einem Klick heraus aufgerufen werden, sonst blockiert iOS den Ton */
 function audioFreischalten(){
   if (!tonAn()) return;
+  /* iOS: Ton auch bei aktivem Stummschalter abspielen */
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch(_) {}
   try {
     const A = window.AudioContext || window.webkitAudioContext;
     if (!A) return;
@@ -2085,6 +2087,29 @@ function feierStart(status){
   });
   feierTimers.push(setTimeout(feierEnde, 250 + 6 * 170 + 900));
 }
+
+/* ---------- Bildschirm wach halten, solange getippt oder diktiert wird ---------- */
+let wakeSentinel = null;
+async function wachHalten(){
+  try {
+    if (!('wakeLock' in navigator) || wakeSentinel) return;
+    wakeSentinel = await navigator.wakeLock.request('screen');
+    wakeSentinel.addEventListener('release', () => { wakeSentinel = null; });
+  } catch(_) { wakeSentinel = null; }
+}
+function wachFreigeben(){
+  try { if (wakeSentinel){ wakeSentinel.release(); } } catch(_) {}
+  wakeSentinel = null;
+}
+document.addEventListener('focusin', e => {
+  if (e.target && e.target.tagName === 'TEXTAREA') wachHalten();
+});
+document.addEventListener('focusout', e => {
+  if (e.target && e.target.tagName === 'TEXTAREA') wachFreigeben();
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && document.activeElement && document.activeElement.tagName === 'TEXTAREA') wachHalten();
+});
 
 /* ---------- Startzustand ---------- */
 function toDate(v){
