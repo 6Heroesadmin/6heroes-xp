@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dein Langzeitprofil – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--ok:#1F9D62;--warn:#B4471B;--gold:#F2B705;--accent:#0B63CE;--accent2:#F0672A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:12px 20px 72px;opacity:0;transition:opacity .2s}
+.wrap.ready{opacity:1}
+.topbar{display:flex;align-items:center;gap:6px;min-height:44px}
+.topbar a{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:13px;font-weight:600;color:var(--mute);text-decoration:none}
+.topbar svg{width:20px;height:20px}
+.hero{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:14px 0 6px}
+.emb{width:84px;height:84px;border-radius:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'DM Serif Display',Georgia,serif;font-size:38px}
+.emb2{display:flex}
+.emb2 .emb{width:68px;height:68px;border-radius:34px;font-size:30px;border:3px solid var(--bg)}
+.emb2 .emb+.emb{margin-left:-14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(30px,8vw,40px);line-height:1.15}
+h1 .accent{color:var(--accent)}
+.hook{font-size:16px;line-height:1.6;color:var(--mute);max-width:54ch}
+.label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:26px 2px 10px}
+.stack{display:flex;flex-direction:column;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px}
+details[open]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:12px 18px;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary .s1{display:flex;flex-direction:column;gap:1px}
+summary .a{font-size:15.5px;font-weight:600;line-height:1.35}
+summary .b{font-size:12.5px;color:var(--mute)}
+summary:after{content:'';flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);transition:transform .15s;margin-right:4px}
+details[open] summary:after{transform:rotate(45deg)}
+.body{padding:2px 18px 20px;display:flex;flex-direction:column;gap:18px}
+.blk{display:flex;flex-direction:column;gap:6px}
+.bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.bl.ok{color:var(--ok)}.bl.warn{color:var(--warn)}
+p{font-size:15.5px;line-height:1.7}
+ul{padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:15.5px;line-height:1.6}
+.card{display:flex;flex-direction:column;gap:18px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.links{display:flex;flex-wrap:wrap;gap:10px;padding-top:30px}
+.pill{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--ink);text-decoration:none}
+.pill:hover{border-color:var(--ink)}
+@media (max-width:480px){.wrap{padding:8px 16px 56px}}
+
+.dummy{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A5A00;background:#FFF3D1;border:1px solid #F2D58A;border-radius:999px;padding:3px 10px}
+.hero2{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:14px 0 4px}
+.story{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:14px}
+.story p{font-family:'DM Serif Display',Georgia,serif;font-size:20px;line-height:1.55;color:var(--ink)}
+.story .meta{font-size:12.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.tile .n{font-family:'DM Serif Display',Georgia,serif;font-size:30px;line-height:1.15}
+.tile .t{font-size:12.5px;color:var(--mute)}
+.bar{height:10px;border-radius:6px;background:#ECE7DB;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:6px}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+.goal b{font-size:15.5px}
+.goal span{font-size:14px;color:var(--mute)}
+.bd{display:flex;align-items:center;gap:14px}
+.bdc{flex:none;width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center}
+.bdc.on{background:var(--gold);color:#20293A}
+.bdc.off{border:2px dashed #C9C2B2;color:#9A9384}
+.bdc svg{width:22px;height:22px}
+.bd .x{display:flex;flex-direction:column;gap:1px}
+.bd .x b{font-size:15px}.bd .x span{font-size:13.5px;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 6px}
+.chip{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);font:600 14px 'Inter',sans-serif;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.week{display:flex;flex-direction:column;gap:10px;padding-top:8px}
+.wk{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:14px 2px 0}
+.wbild{background:#F0ECE0;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.wbild .bl{color:var(--mute)}
+.ent{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.ent .top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
+.dots{display:inline-flex;gap:4px;align-items:center}
+.dots i{width:10px;height:10px;border-radius:5px;border:1.5px solid var(--ink);display:block}
+.dots i.f{background:var(--ink)}
+.dots em{font-style:normal;font-size:12.5px;margin-left:6px;color:var(--mute)}
+.ent .sit{font-size:15.5px;font-weight:600;line-height:1.45}
+.ent .rb{font-size:15px;line-height:1.65;color:var(--ink);border-left:3px solid var(--line);padding-left:12px}
+.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.tag.ok{background:#E3F4EA;color:#17724A}.tag.mid{background:#F4EFE0;color:#7A6420}.tag.no{background:#F6E5DD;color:#8F3A17}
+.meta2{font-size:13px;color:var(--mute);text-align:center;max-width:46ch}
+.beleg{display:inline-block;font-size:12.5px;color:var(--mute);background:#F0ECE0;border-radius:8px;padding:4px 10px}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.two>div{background:#F0ECE0;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.fact{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.fact:last-child{border-bottom:0}
+.fact .ft{font-size:15px;line-height:1.5}.fact .fd{font-size:12.5px;color:var(--mute)}
+.fact button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font:600 13px 'Inter',sans-serif;color:var(--warn);cursor:pointer}
+.story2{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.story2 p{font-size:16.5px;line-height:1.75}
+.story2 p.lead{font-family:'DM Serif Display',Georgia,serif;font-size:21px;line-height:1.5}
+.story2 .meta{font-size:12.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
+.quote{border-left:3px solid var(--gold);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:2px}
+.quote p{font-size:15.5px;font-style:italic}
+.quote span{font-size:12.5px;color:var(--mute)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.note a{display:inline-flex;align-items:center;min-height:44px;padding:0 22px;border-radius:999px;background:var(--gold);color:#20293A;font-weight:700;font-size:15px;text-decoration:none}
+.lock-wrap{position:relative}
+.lock-wrap.locked .lockable{filter:blur(6px);opacity:.5;pointer-events:none;user-select:none}
+.lock-overlay{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:80px;gap:14px;text-align:center}
+.lock-wrap.locked .lock-overlay{display:flex}
+.lock-overlay .t{font-size:17px;font-weight:700;max-width:360px;line-height:1.45}
+.lock-overlay a{display:inline-flex;align-items:center;min-height:44px;padding:0 26px;border-radius:999px;background:var(--gold);color:#20293A;font-weight:700;font-size:15px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const LZ={"stand":"Zuletzt geschrieben am 1. Oktober. Ich schreibe es jeden Monat fort und nehme dabei mit, was du mir in den letzten Monaten erzählt hast.","bild":["Wenn ich auf deine letzten Monate schaue, sehe ich jemanden, der Verantwortung gewohnt ist und sie lange allein getragen hat. Du bist am stärksten, wenn es konkret wird: ein Termin, ein Gespräch, eine Entscheidung, die nicht warten kann. Dort fehlt dir weder Mut noch Klarheit.","Schwerer fällt dir, was keinen äußeren Anlass hat. Wenn du dir Zeit selbst einteilen oder nach einem langen Tag umschalten musst, wirst du schneller gereizt und brauchst länger, um wieder bei dir anzukommen. Das ist kein Mangel an Willen, sondern ein Muster: Du bleibst im Funktionsmodus, und das Abschalten hatte bisher keinen festen Platz.","Erfreulich ist die Richtung. Am Anfang hast du vieles selbst übernommen und dir bei Rückschlägen die Schuld gegeben. Inzwischen bereitest du Gespräche vor, gibst Aufgaben ab und nimmst auch aus einem misslungenen Tag etwas mit. Du verlässt dich nicht mehr nur auf deine Kraft, du baust dir Strukturen, die dich tragen."],"themen":[["Wie du mit Druck umgehst",["Wenn es eng wird, ziehst du die Dinge an dich. Du ordnest die Lage schnell und handelst, bevor andere zu Ende gedacht haben. Das hat dir viel gebracht, und andere verlassen sich darauf.","Der Preis zeigte sich vor allem am Anfang: Du hast Aufgaben mitgenommen, die jemand anderes hätte tragen können, und warst danach erschöpft. Seit Anfang September gibst du Dinge bewusst ab, auch wenn es sich noch ungewohnt anfühlt."],[["Ich habe die Aufgabe geteilt, statt alles selbst zu übernehmen. Das war ungewohnt.","Rückblick, Anfang Oktober"]]],["Wie du Gespräche führst",["Früher bist du in wichtige Gespräche hineingegangen, ohne dir vorher Zeit zu nehmen. Heute schreibst du dir ein paar Sätze auf, und das trägt: Du bleibst ruhiger, kommst auf den Punkt und lässt dem anderen Raum. Besonders gut gelingt dir der Einstieg mit Wertschätzung. Er öffnet Gespräche, die sonst schnell eng werden.","Schwer wird es, wenn du dich nicht vorbereiten konntest oder schon angespannt hineingehst. Dann kippt es leichter, wie bei dem schwierigen Kundentermin Ende September."],[["Der Einstieg mit Wertschätzung hat das Gespräch geöffnet.","Rückblick, Mitte Oktober"],["Es hat nicht funktioniert, ich war zu angespannt.","Rückblick, Ende September"]]],["Beruf und Zuhause",["Im Beruf weißt du, was von dir erwartet wird, und handelst entsprechend. Zu Hause ist das anders. Dort schreibst du öfter, dass du schon gereizt warst, bevor etwas passiert ist, und deine eigenen Versuche bewertest du seltener als hilfreich.","Ich lese das so: Du kommst oft noch im Arbeitsmodus nach Hause, und dein Umfeld spürt es. Es geht nicht darum, dass du es zu Hause weniger kannst. Dir fehlt der Übergang zwischen beiden Welten."],[["Zehn Minuten Pause vorher haben gereicht, aber nur halb.","Rückblick, Anfang Oktober"]]],["Was dir hilft, runterzukommen",["Immer wenn du dir vor einem belastenden Termin oder einem Abend bewusst ein paar Minuten für dich genommen hast, beschreibst du danach einen ruhigeren Verlauf. Es sind keine großen Dinge. Entscheidend scheint, dass du die Pause vorher planst und nicht erst, wenn du schon aufgebracht bist."],[]],["Wie du entscheidest",["Bei Entscheidungen mit vielen offenen Punkten hast du lange gegrübelt. Wenn du dir stattdessen zwei Möglichkeiten nebeneinanderlegst und dich festlegst, fällt dir die Entscheidung leichter, und du stehst anschließend dahinter. Jedes Mal, wenn du so vorgegangen bist, hast du es als hilfreich beschrieben."],[["Ich habe zwei Optionen gegenübergestellt und mich festgelegt.","Rückblick, Anfang Oktober"]]]],"vorher":["Am Anfang","Du hast vor allem beschrieben, was schiefgelaufen ist, und die Verantwortung meist bei dir gesucht. Schwierige Gespräche hast du spontan geführt, Aufgaben allein getragen. Deine Einträge waren kurz und sachlich."],"jetzt":["Heute","Du beschreibst, was du anders gemacht hast, und siehst dabei auch, was dir gelungen ist. Du bereitest dich vor, teilst Aufgaben und planst Pausen ein. Deine Einträge sind länger und persönlicher geworden."],"offen":["Zwei Dinge sind noch nicht entschieden. Zu Hause hast du noch keinen Weg gefunden, der dir verlässlich gelingt. Und in Situationen, in denen jemand anderes den Druck macht, etwa ein Kunde oder ein enger Termin, wirst du schneller angespannt als in selbstgewählten.","Das sind keine Schwächen. Es sind die Stellen, an denen sich bei dir als Nächstes etwas bewegen kann."],"fakten":[["Leitet ein Team, mittwochs ist Teammeeting.","Aus dem Rückblick vom 19. August"],["Zwei Kinder, das Abendessen ist ein häufiger Spannungsmoment.","Aus dem Rückblick vom 3. September"],["Hat Anfang September das Projekt gewechselt.","Aus dem Rückblick vom 9. September"],["Läuft morgens, wenn es klappt.","Aus dem Rückblick vom 22. August"]]};
+const LOCKSVG="<svg width=\"38\" height=\"38\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B4471B\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"11\" width=\"14\" height=\"9\" rx=\"2\"/><path d=\"M8 11V8a4 4 0 0 1 8 0v3\"/></svg>";
+
+var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+const PROFILE_FN='/.netlify/functions/profile';
+const PROFILE_URL='https://app.6heroes.de/mein-bereich';
+const HERO_COLOR={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
+const HERO_LABEL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
+const ON_COLOR=k=>k==='innovator'?'#20293A':'#fff';
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
+const blk=(l,p,cls,ul)=>'<div class="blk">'+(l?'<span class="bl '+(cls||'')+'">'+esc(l)+'</span>':'')+(p?'<p>'+esc(p)+'</p>':'')+(ul?'<ul>'+ul.map(x=>{const t=String(x).split('|');return t.length>1?'<li><b>'+esc(t[0])+'</b> '+esc(t.slice(1).join('|'))+'</li>':'<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+'</div>';
+const acc=(a,sub,inner,open)=>'<details'+(open?' open':'')+'><summary><span class="s1"><span class="a">'+esc(a)+'</span>'+(sub?'<span class="b">'+esc(sub)+'</span>':'')+'</span></summary><div class="body">'+inner+'</div></details>';
+const lab=t=>'<div class="label">'+esc(t)+'</div>';
+const topbar='<div class="topbar"><a href="'+PROFILE_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Mein Bereich</a></div>';
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
+async function getProfile(){
+  const p=new URLSearchParams(location.search);const email=(p.get('email')||'').trim();
+  if(!email) return null;
+  try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(!r.ok) throw new Error(r.status);return await r.json();}
+  catch(e){console.warn('Profil-Fetch fehlgeschlagen:',e);return null;}
+}
+function boot(render){
+  window.addEventListener('load',()=>{render().then(()=>{var w=document.querySelector('.wrap');if(w)w.classList.add('ready');postHeight();});});
+  window.addEventListener('resize',postHeight);
+  if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+  document.addEventListener('toggle',postHeight,true);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(postHeight);}
+  [50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+}
+
+
+function body(){
+  let h='<div class="story2">'+LZ.bild.map((p,i)=>'<p class="'+(i===0?'lead':'')+'">'+esc(p)+'</p>').join('')+'<div class="meta">'+esc(LZ.stand)+'</div></div>';
+  h+=lab('Was ich bei dir sehe')+'<div class="stack">'+LZ.themen.map((t,i)=>acc(t[0],'',t[1].map(p=>'<p>'+esc(p)+'</p>').join('')+(t[2].length?'<div class="blk"><span class="bl">Woran ich das sehe</span>'+t[2].map(q=>'<div class="quote"><p>„'+esc(q[0])+'“</p><span>'+esc(q[1])+'</span></div>').join('')+'</div>':''),i===0)).join('')+'</div>';
+  h+=lab('Was sich verändert hat')+'<div class="two"><div><span class="bl">'+esc(LZ.vorher[0])+'</span><p>'+esc(LZ.vorher[1])+'</p></div><div><span class="bl">'+esc(LZ.jetzt[0])+'</span><p>'+esc(LZ.jetzt[1])+'</p></div></div>';
+  h+=lab('Was noch offen ist')+'<div class="card">'+LZ.offen.map(p=>'<p>'+esc(p)+'</p>').join('')+'</div>';
+  h+=lab('Was ich über dich weiß')+'<div class="stack">'+acc('Deine gespeicherten Angaben','Du kannst jede einzelne vergessen lassen','<div id="facts">'+LZ.fakten.map((f,i)=>'<div class="fact" data-i="'+i+'"><div><div class="ft">'+esc(f[0])+'</div><div class="fd">'+esc(f[1])+'</div></div><button type="button">Vergessen</button></div>').join('')+'</div>')+'</div>';
+  return h;
+}
+async function render(){
+  const q=new URLSearchParams(location.search);
+  const paid=q.get('paid')!=='0', state=q.get('state')||'voll';
+  let html=topbar+'<div class="hero2"><span class="eyebrow">Langzeitprofil</span><h1>Was ich über dich sehe</h1><p class="meta2">Eine Zusammenfassung deiner letzten Monate, so, wie ein Coach sie schreiben würde.</p></div>'+(new URLSearchParams(location.search).get('echt')?'':'<div style="text-align:center;padding-top:6px"><span class="dummy">Beispieldaten</span></div>');
+  let inner;
+  if(state==='keine-einwilligung'){
+    inner='<div class="note"><b>Dafür brauche ich deine Zustimmung.</b><p>Das Langzeitprofil entsteht aus deinen Antworten und Rückblicken. Ohne deine Einwilligung zur Personalisierung kann ich es nicht schreiben.</p><a href="https://app.6heroes.de/account" target="_top">Zustimmung prüfen</a></div>';
+  }else if(state==='wenig'){
+    inner='<div class="note"><b>Dafür ist es noch zu früh.</b><p>Ich möchte dich erst besser kennenlernen, bevor ich etwas über dich sage. Sobald du ein paar Wochen dabei bist und einige Rückblicke geschrieben hast, schreibe ich dir das erste Bild. Bis dahin sammle ich in Ruhe mit.</p></div>';
+  }else inner=body();
+  html+='<div class="lock-wrap" id="lw" style="margin-top:14px"><div class="lockable">'+inner+'</div><div class="lock-overlay">'+LOCKSVG+'<div class="t">Lies, was deine letzten Monate über dich zeigen.</div><a href="https://6heroes.de/preise.html#pricing" target="_top">Jetzt freischalten</a></div></div>';
+  document.getElementById('app').innerHTML=html;
+  if(!paid) document.getElementById('lw').classList.add('locked');
+  document.querySelectorAll('.fact button').forEach(b=>b.addEventListener('click',()=>{b.closest('.fact').remove();postHeight();}));
+}
+boot(render);
+
+</script>
+</body>
+</html>
