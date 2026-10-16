@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deine Erfolge – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--ok:#1F9D62;--warn:#B4471B;--gold:#F2B705;--accent:#0B63CE;--accent2:#F0672A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:12px 20px 72px;opacity:0;transition:opacity .2s}
+.wrap.ready{opacity:1}
+.topbar{display:flex;align-items:center;gap:6px;min-height:44px}
+.topbar a{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:13px;font-weight:600;color:var(--mute);text-decoration:none}
+.topbar svg{width:20px;height:20px}
+.hero{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:14px 0 6px}
+.emb{width:84px;height:84px;border-radius:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'DM Serif Display',Georgia,serif;font-size:38px}
+.emb2{display:flex}
+.emb2 .emb{width:68px;height:68px;border-radius:34px;font-size:30px;border:3px solid var(--bg)}
+.emb2 .emb+.emb{margin-left:-14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(30px,8vw,40px);line-height:1.15}
+h1 .accent{color:var(--accent)}
+.hook{font-size:16px;line-height:1.6;color:var(--mute);max-width:54ch}
+.label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:26px 2px 10px}
+.stack{display:flex;flex-direction:column;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px}
+details[open]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:12px 18px;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary .s1{display:flex;flex-direction:column;gap:1px}
+summary .a{font-size:15.5px;font-weight:600;line-height:1.35}
+summary .b{font-size:12.5px;color:var(--mute)}
+summary:after{content:'';flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);transition:transform .15s;margin-right:4px}
+details[open] summary:after{transform:rotate(45deg)}
+.body{padding:2px 18px 20px;display:flex;flex-direction:column;gap:18px}
+.blk{display:flex;flex-direction:column;gap:6px}
+.bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.bl.ok{color:var(--ok)}.bl.warn{color:var(--warn)}
+p{font-size:15.5px;line-height:1.7}
+ul{padding-left:18px;display:flex;flex-direction:column;gap:7px;font-size:15.5px;line-height:1.6}
+.card{display:flex;flex-direction:column;gap:18px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.links{display:flex;flex-wrap:wrap;gap:10px;padding-top:30px}
+.pill{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:14px;font-weight:600;color:var(--ink);text-decoration:none}
+.pill:hover{border-color:var(--ink)}
+@media (max-width:480px){.wrap{padding:8px 16px 56px}}
+
+.dummy{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A5A00;background:#FFF3D1;border:1px solid #F2D58A;border-radius:999px;padding:3px 10px}
+.hero2{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:14px 0 4px}
+.story{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:14px}
+.story p{font-family:'DM Serif Display',Georgia,serif;font-size:20px;line-height:1.55;color:var(--ink)}
+.story .meta{font-size:12.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.tile .n{font-family:'DM Serif Display',Georgia,serif;font-size:30px;line-height:1.15}
+.tile .t{font-size:12.5px;color:var(--mute)}
+.bar{height:10px;border-radius:6px;background:#ECE7DB;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:6px}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:4px}
+.goal b{font-size:15.5px}
+.goal span{font-size:14px;color:var(--mute)}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 8px}
+.bg{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:12.5px;line-height:1.3;color:var(--ink)}
+.bg .bdc{width:48px;height:48px;border-radius:24px}
+.bd{display:flex;align-items:center;gap:14px}
+.bdc{flex:none;width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center}
+.bdc.on{background:var(--gold);color:#20293A}
+.bdc.off{border:2px dashed #C9C2B2;color:#9A9384}
+.bdc svg{width:22px;height:22px}
+.bd .x{display:flex;flex-direction:column;gap:1px}
+.bd .x b{font-size:15px}.bd .x span{font-size:13.5px;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding:4px 0 6px}
+.chip{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);font:600 14px 'Inter',sans-serif;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.week{display:flex;flex-direction:column;gap:10px;padding-top:8px}
+.wk{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:14px 2px 0}
+.wbild{background:#F0ECE0;border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:6px}
+.wbild .bl{color:var(--mute)}
+.ent{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.ent .top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;color:var(--mute)}
+.dots{display:inline-flex;gap:4px;align-items:center}
+.dots i{width:10px;height:10px;border-radius:5px;border:1.5px solid var(--ink);display:block}
+.dots i.f{background:var(--ink)}
+.dots em{font-style:normal;font-size:12.5px;margin-left:6px;color:var(--mute)}
+.ent .sit{font-size:15.5px;font-weight:600;line-height:1.45}
+.ent .rb{font-size:15px;line-height:1.65;color:var(--ink);border-left:3px solid var(--line);padding-left:12px}
+.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.tag.ok{background:#E3F4EA;color:#17724A}.tag.mid{background:#F4EFE0;color:#7A6420}.tag.no{background:#F6E5DD;color:#8F3A17}
+.meta2{font-size:13px;color:var(--mute);text-align:center;max-width:46ch}
+.beleg{display:inline-block;font-size:12.5px;color:var(--mute);background:#F0ECE0;border-radius:8px;padding:4px 10px}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.two>div{background:#F0ECE0;border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.fact{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.fact:last-child{border-bottom:0}
+.fact .ft{font-size:15px;line-height:1.5}.fact .fd{font-size:12.5px;color:var(--mute)}
+.fact button{flex:none;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;font:600 13px 'Inter',sans-serif;color:var(--warn);cursor:pointer}
+.story2{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.story2 p{font-size:16.5px;line-height:1.75}
+.story2 p.lead{font-family:'DM Serif Display',Georgia,serif;font-size:21px;line-height:1.5}
+.story2 .meta{font-size:12.5px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
+.quote{border-left:3px solid var(--gold);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:2px}
+.quote p{font-size:15.5px;font-style:italic}
+.quote span{font-size:12.5px;color:var(--mute)}
+.note{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.note a{display:inline-flex;align-items:center;min-height:44px;padding:0 22px;border-radius:999px;background:var(--gold);color:#20293A;font-weight:700;font-size:15px;text-decoration:none}
+.lock-wrap{position:relative}
+.lock-wrap.locked .lockable{filter:blur(6px);opacity:.5;pointer-events:none;user-select:none}
+.lock-overlay{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:80px;gap:14px;text-align:center}
+.lock-wrap.locked .lock-overlay{display:flex}
+.lock-overlay .t{font-size:17px;font-weight:700;max-width:360px;line-height:1.45}
+.lock-overlay a{display:inline-flex;align-items:center;min-height:44px;padding:0 26px;border-radius:999px;background:var(--gold);color:#20293A;font-weight:700;font-size:15px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const E={"story":["Du bist seit elf Wochen dabei und hast in dieser Zeit an sechsunddreißig Tagen eine Heldentat abgeschlossen. Seit fünf Wochen in Folge bleibst du dran.","Der Start war ruhig, in der dritten und vierten Woche hast du kaum etwas getan. Danach hast du deinen Rhythmus gefunden und seit Mitte August fast durchgehend weitergemacht. Du hast Level fünf erreicht, den Aufsteiger, und siebenundzwanzig Badges verdient, die meisten für Beständigkeit und fürs Nachdenken über das, was du getan hast.","Als Nächstes liegt das Level Champion in Reichweite: Es fehlen noch zweihundertsechzig Erfahrungspunkte, bei deinem Tempo etwa drei Wochen."],"stand":"Stand 1. Oktober. Die Geschichte wird jeden Monat neu geschrieben, die Zahlen darunter sind immer aktuell.","tiles":[["5","Level, Aufsteiger"],["1.240","Erfahrungspunkte"],["5","Wochen in Folge"],["27 von 68","Badges verdient"]],"level":{"von":"Aufsteiger","nach":"Champion","pct":83,"rest":"Noch 260 Erfahrungspunkte bis Champion"},"ziel":["Nächstes Badge in Reichweite","Zwanzig Rückblicke","Du hast siebzehn Rückblicke geschrieben. Noch drei, dann bekommst du das Badge."],"kats":[["Einstieg","6 von 6",[["Erster Schritt",1],["Profil entdeckt",1],["Heldenrad angesehen",1],["Coach gestartet",1],["Erste Heldentat",1],["Eine Woche dabei",1]]],["Beständigkeit","5 von 14",[["Drei Tage in Folge",1],["Sieben Tage in Folge",1],["Zehn aktive Tage",1],["Zwanzig aktive Tage",1],["Drei Wochen in Folge",1],["Vierzehn Tage in Folge",0],["Dreißig Tage in Folge",0],["Dreißig aktive Tage",0],["Fünfzig aktive Tage",0],["Acht Wochen in Folge",0],["Sechzehn Wochen in Folge",0],["Eine perfekte Woche",0],["Fünf perfekte Wochen",0],["Fünfzehn perfekte Wochen",0]]],["Pfade","3 von 18",[["Explorer Bronze",1],["Innovator Bronze",1],["Innovator Silber",1],["Commander Bronze",0],["Guardian Bronze",0],["Sage Bronze",0],["Strategist Bronze",0],["Commander Silber",0],["Explorer Silber",0],["Guardian Silber",0],["Sage Silber",0],["Strategist Silber",0],["Commander Gold",0],["Explorer Gold",0],["Guardian Gold",0],["Innovator Gold",0],["Sage Gold",0],["Strategist Gold",0]]],["Erfahrung","8 von 18",[["100 Erfahrungspunkte",1],["250 Erfahrungspunkte",1],["500 Erfahrungspunkte",1],["1.000 Erfahrungspunkte",1],["Level 2 erreicht",1],["Level 3 erreicht",1],["Level 4 erreicht",1],["Level 5 erreicht",1],["2.500 Erfahrungspunkte",0],["5.000 Erfahrungspunkte",0],["Level 6 erreicht",0],["Level 7 erreicht",0],["Level 8 erreicht",0],["Level 9 erreicht",0],["Level 10 erreicht",0],["Starke Woche",0],["Sehr starke Woche",0],["Rekordwoche",0]]],["Vielfalt","2 von 6",[["Zwei Bereiche",1],["Drei Bereiche",1],["Vier Bereiche",0],["Alle Bereiche",0],["Ausgewogene Woche",0],["Ausgewogener Monat",0]]],["Nachdenken","3 von 6",[["Erster Rückblick",1],["Fünf Rückblicke",1],["Zehn Rückblicke",1],["Zwanzig Rückblicke",0],["Dreißig Rückblicke",0],["Fünfzig Rückblicke",0]]]]};
+
+var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+const PROFILE_FN='/.netlify/functions/profile';
+const PROFILE_URL='https://app.6heroes.de/mein-bereich';
+const HERO_COLOR={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
+const HERO_LABEL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
+const ON_COLOR=k=>k==='innovator'?'#20293A':'#fff';
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():'';
+const blk=(l,p,cls,ul)=>'<div class="blk">'+(l?'<span class="bl '+(cls||'')+'">'+esc(l)+'</span>':'')+(p?'<p>'+esc(p)+'</p>':'')+(ul?'<ul>'+ul.map(x=>{const t=String(x).split('|');return t.length>1?'<li><b>'+esc(t[0])+'</b> '+esc(t.slice(1).join('|'))+'</li>':'<li>'+esc(x)+'</li>'}).join('')+'</ul>':'')+'</div>';
+const acc=(a,sub,inner,open)=>'<details'+(open?' open':'')+'><summary><span class="s1"><span class="a">'+esc(a)+'</span>'+(sub?'<span class="b">'+esc(sub)+'</span>':'')+'</span></summary><div class="body">'+inner+'</div></details>';
+const lab=t=>'<div class="label">'+esc(t)+'</div>';
+const topbar='<div class="topbar"><a href="'+PROFILE_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Mein Bereich</a></div>';
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
+async function getProfile(){
+  const p=new URLSearchParams(location.search);const email=(p.get('email')||'').trim();
+  if(!email) return null;
+  try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(!r.ok) throw new Error(r.status);return await r.json();}
+  catch(e){console.warn('Profil-Fetch fehlgeschlagen:',e);return null;}
+}
+function boot(render){
+  window.addEventListener('load',()=>{render().then(()=>{var w=document.querySelector('.wrap');if(w)w.classList.add('ready');postHeight();});});
+  window.addEventListener('resize',postHeight);
+  if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+  document.addEventListener('toggle',postHeight,true);
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(postHeight);}
+  [50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+}
+
+
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const RING='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/></svg>';
+async function render(){
+  const q=new URLSearchParams(location.search);
+  let name=(q.get('name')||'').trim();
+  let html=topbar+'<div class="hero2"><span class="eyebrow">Erfolge</span><h1>Deine Geschichte bisher</h1></div>'+(new URLSearchParams(location.search).get('echt')?'':'<div style="text-align:center;padding-top:6px"><span class="dummy">Beispieldaten</span></div>');
+  html+='<div style="height:14px"></div><div class="story">'+E.story.map(p=>'<p>'+esc(p)+'</p>').join('')+'<div class="meta">'+esc(E.stand)+'</div></div>';
+  html+=lab('Auf einen Blick')+'<div class="tiles">'+E.tiles.map(t=>'<div class="tile"><span class="n">'+esc(t[0])+'</span><span class="t">'+esc(t[1])+'</span></div>').join('')+'</div>';
+  html+='<div class="goal" style="margin-top:10px"><b>Level '+esc(E.level.von)+' auf dem Weg zu '+esc(E.level.nach)+'</b><div class="bar"><i style="width:'+E.level.pct+'%"></i></div><span>'+esc(E.level.rest)+'</span></div>';
+  html+='<div class="goal" style="margin-top:10px"><span>'+esc(E.ziel[0])+'</span><b>'+esc(E.ziel[1])+'</b><span>'+esc(E.ziel[2])+'</span></div>';
+  html+=lab('Deine Badges')+'<p class="meta2" style="margin:0 auto 12px">Gefüllt heißt verdient, gestrichelt heißt noch offen. Alle Badges einer Kategorie siehst du, wenn du sie aufklappst.</p><div class="stack">'+E.kats.map((k,i)=>acc(k[0],k[1]+' verdient','<div class="bgrid">'+k[2].map(b=>'<div class="bg"><div class="bdc '+(b[1]?'on':'off')+'">'+(b[1]?CHECK:RING)+'</div><span>'+esc(b[0])+'</span></div>').join('')+'</div>',false)).join('')+'</div>';
+  document.getElementById('app').innerHTML=html;
+}
+boot(render);
+
+</script>
+</body>
+</html>
