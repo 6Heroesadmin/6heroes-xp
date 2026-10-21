@@ -204,9 +204,9 @@
 
     <!-- Confirmation -->
     <div id="doneView">
-      <span class="badge"><span class="dot"></span>Profil erstellt</span>
-      <h1 class="headline">Dein Heldenprofil steht bereit.</h1>
-      <p class="subtext">Nur noch ein Schritt: Richte dein Konto ein, um dein Profil zu öffnen.</p>
+      <span class="badge"><span class="dot"></span>Fast geschafft</span>
+      <h1 class="headline">Bestätige deine E-Mail-Adresse.</h1>
+      <p class="subtext">Bestätige deine E-Mail-Adresse und registriere dich. Danach kannst du den Pocket Hero testen und hast Zugriff auf dein Basisprofil.</p>
 
       <div class="mailcard">
         <div class="icon">
@@ -217,7 +217,7 @@
         </div>
         <div class="body">
           <h3>Prüfe dein Postfach</h3>
-          <p id="mailText">Wir haben dir eine E-Mail geschickt. Öffne sie und klicke auf <strong style="color:var(--text);font-weight:500">„Set Up Your Account"</strong>, um Passwort zu setzen und loszulegen.</p>
+          <p id="mailText">Wir haben dir eine E-Mail geschickt. Öffne sie und klicke auf <strong style="color:var(--text);font-weight:500">„Jetzt kostenlos registrieren"</strong>, um deine Adresse zu bestätigen und dein Konto anzulegen.</p>
         </div>
       </div>
 
@@ -255,8 +255,8 @@
           document.getElementById('mailText').innerHTML =
             'Wir haben eine E-Mail an <span class="addr">' + email +
             '</span> geschickt. Öffne sie und klicke auf ' +
-            '<strong style="color:var(--text);font-weight:500">„Set Up Your Account"</strong>, ' +
-            'um dein Passwort zu setzen und loszulegen.';
+            '<strong style="color:var(--text);font-weight:500">„Jetzt kostenlos registrieren"</strong>, ' +
+            'um deine Adresse zu bestätigen und dein Konto anzulegen.';
         }
         document.body.classList.remove('loading');
         document.body.classList.add('done');
