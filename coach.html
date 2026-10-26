@@ -453,6 +453,7 @@
       <div class="optgrid" id="rvOpts"></div>
       <div class="coachrow" id="rvFrageRow" hidden><div class="avatar">6</div><p class="bubble-coach" id="rvFrage"></p></div>
       <div class="tchips" id="rvGruende" hidden></div>
+      <div id="rvZiel" hidden style="display:flex;flex-direction:column;gap:14px"></div>
       <label class="flbl" for="rvText" id="rvTextLbl" hidden>Deine Antwort (optional)</label>
       <textarea id="rvText" rows="3" hidden maxlength="1200"></textarea>
       <p class="msg" id="rvMsg" hidden></p>
@@ -1466,7 +1467,16 @@ function renderStufen(){
   });
 }
 
+/* Bei Trainingsschritten gibt es keine Schritt-Zählung (Schritt 1 bis 4 wurden nicht durchlaufen) */
+function stepChrome(screenId, ausblenden){
+  const sc = document.querySelector('#s-' + screenId + ' .stepcount');
+  const pg = document.querySelector('#s-' + screenId + ' .progress');
+  if (sc) sc.style.visibility = ausblenden ? 'hidden' : '';
+  if (pg) pg.style.display = ausblenden ? 'none' : '';
+}
+
 function renderStep5(){
+  stepChrome('step5', state.training);
   const h = state.heldentat, w = state.weg;
   $('step5Hint').textContent = state.training ? 'Das ist dein nächster Schritt zum Ziel. Bestätige ihn oder mach ihn einfacher.' : 'Wähle, wie groß deine Heldentat heute sein soll.';
   $('step5Title').textContent = h.titel;
@@ -1624,7 +1634,9 @@ function rueckblickOptionen(){
 
 function renderFestlegen(){
   const h = state.heldentat;
+  stepChrome('festlegen', state.training);
   $('wenn').value = h.wenn_dann || '';
+  $('wenn').placeholder = (state.training && !h.wenn_dann) ? 'Wenn …, dann … (wähle deinen eigenen Auslöser)' : '';
   fest.remOpts = erinnerungOptionen();
   fest.rem = fest.remOpts[0].date; fest.remArt = 'chip';
   fest.rbOpts = rueckblickOptionen(); fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
@@ -1925,7 +1937,14 @@ const RV_GRUENDE = [
   { key:'zeit', label:'Zeit' }, { key:'energie', label:'Energie' }, { key:'unklar', label:'Unklar' },
   { key:'blockade', label:'Blockade' }, { key:'situation_geaendert', label:'Situation geändert' }
 ];
-const rv = { status:null, gruende:[] };
+const rv = { status:null, gruende:[], gelegenheit:null, bemerkt:null, wirkung:null };
+/* Zusatzfragen im Rückblick zu einem Trainingsschritt. Die Werte entsprechen den Auswahlfeldern in Coach_Durchlaeufe. */
+const RV_ZIEL = [
+  { key:'gelegenheit', frage:'Gab es eine Gelegenheit dafür?', opts:[['ja','Ja'],['nein','Nein'],['unklar','Unklar']] },
+  { key:'bemerkt', frage:'Wann hast du die Situation bemerkt?', opts:[['vorher','Vorher'],['mittendrin','Mittendrin'],['hinterher','Hinterher']] },
+  { key:'wirkung', frage:'Was hat sich dadurch verändert?', opts:[['deutlich','Deutlich'],['ein wenig','Ein wenig'],['noch nichts','Noch nichts'],['weiss nicht','Weiß nicht']] }
+];
+const RV_HANDLUNG = { voll:'ja', teilweise:'teilweise', nicht:'nein' };   // bei "anders" wird nichts gesendet
 
 /* Einstieg in den Rückblick. daten: { runId, userId, titel, stufe, was, wennDann }.
    Wird später vom Startzustand bzw. vom Deep-Link aus der Erinnerung aufgerufen. */
@@ -1937,7 +1956,8 @@ function openRueckblick(daten, vorschau){
 }
 
 function renderRueckblick(){
-  rv.status = null; rv.gruende = [];
+  rv.status = null; rv.gruende = []; rv.gelegenheit = null; rv.bemerkt = null; rv.wirkung = null;
+  stepChrome('rueckblick', !!state.rueck.zielbezug);
   $('rvHeld').textContent = state.rueck.was || state.rueck.titel || '';
   $('rvText').value = ''; $('rvMsg').hidden = true;
   ['rvFrageRow','rvGruende','rvTextLbl','rvText'].forEach(id => { $(id).hidden = true; });
@@ -1965,6 +1985,7 @@ function chooseRvStatus(o){
   $('rvFrageRow').hidden = false;
   $('rvTextLbl').hidden = false; $('rvText').hidden = false;
   renderRvGruende(!!o.gruende);
+  renderRvZiel();
   $('rvMsg').hidden = true;
   updateRvGo();
 }
@@ -1984,6 +2005,31 @@ function renderRvGruende(zeigen){
       renderRvGruende(true);
     });
     box.appendChild(b);
+  });
+}
+
+/* Zusatzfragen nur bei Trainingsschritten. Ohne Gelegenheit entfallen Bemerkt und Wirkung, bei "Nicht umgesetzt" entfällt die Wirkung. */
+function renderRvZiel(){
+  const box = $('rvZiel');
+  box.innerHTML = '';
+  if (!(state.rueck && state.rueck.zielbezug) || !rv.status){ box.hidden = true; return; }
+  box.hidden = false;
+  RV_ZIEL.forEach(f => {
+    if (f.key !== 'gelegenheit' && rv.gelegenheit === 'nein') return;
+    if (f.key === 'wirkung' && rv.status === 'nicht') return;
+    const g = el('div', 'fgroup');
+    g.appendChild(el('span', 'flbl', f.frage));
+    const row = el('div', 'tchips');
+    f.opts.forEach(o => {
+      const aktiv = rv[f.key] === o[0];
+      const b = el('button', 'tchip' + (aktiv ? ' sel' : ''), o[1]);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', aktiv ? 'true' : 'false');
+      b.addEventListener('click', () => { rv[f.key] = aktiv ? null : o[0]; renderRvZiel(); });
+      row.appendChild(b);
+    });
+    g.appendChild(row);
+    box.appendChild(g);
   });
 }
 
@@ -2013,6 +2059,12 @@ async function sendRueckblick(){
       gruende: rv.gruende.join(','),
       text: $('rvText').value.trim()
     };
+    if (state.rueck.zielbezug){
+      // Leere Werte nicht mitsenden: Make schreibt dann nichts und lässt bestehende Werte stehen
+      const zus = { gelegenheit: rv.gelegenheit, bemerkt: rv.gelegenheit === 'nein' ? null : rv.bemerkt,
+                    handlung: RV_HANDLUNG[rv.status] || null, wirkung: (rv.gelegenheit === 'nein' || rv.status === 'nicht') ? null : rv.wirkung };
+      Object.keys(zus).forEach(k => { if (zus[k]) payload[k] = zus[k]; });
+    }
     try { result = await postJson(STEP6_WEBHOOK_URL, payload); }
     catch(e){ result = { ok:false, data:null }; }
   }
@@ -2045,6 +2097,7 @@ function openAntwort(d){
   if (feier) $('antRing').removeAttribute('hidden'); else $('antRing').setAttribute('hidden', '');
   $('antTon').hidden = !feier;
   $('antTon').textContent = tonAn() ? 'Ton aus' : 'Ton an';
+  stepChrome('coachantwort', !!(state.rueck && state.rueck.zielbezug));
   go('coachantwort');
   if (feier) feierStart(feier);
 }
@@ -2435,7 +2488,7 @@ function renderStart(){
     return c;
   };
   const startRueckblick = () => {
-    openRueckblick({ runId:d.runId, userId:state.userId, titel:d.titel, stufe:d.stufe, was:d.was, wennDann:d.wennDann }, false);
+    openRueckblick({ runId:d.runId, userId:state.userId, titel:d.titel, stufe:d.stufe, was:d.was, wennDann:d.wennDann, zielbezug: d.zielbezug === 'ja' }, false);
   };
   const rbBtn = () => {
     const b = el('button', 'btn', 'Jetzt zurückblicken');
@@ -2447,10 +2500,10 @@ function renderStart(){
     box.appendChild(greet(state.name ? 'Dein nächster Schritt, ' + state.name + '.' : 'Dein nächster Schritt.'));
     const c = el('div', 'hcard');
     const row = el('div', 'row');
-    row.appendChild(el('span', 'lbl', 'DEIN ZIEL'));
+    row.appendChild(el('span', 'lbl', 'DEIN NÄCHSTER SCHRITT'));
     c.appendChild(row);
     c.appendChild(el('span', 'ttl', zielInfo.titel));
-    if (zielInfo.kurz) c.appendChild(el('span', 'sub', zielInfo.kurz));
+    if (zielInfo.kurz) c.appendChild(el('span', 'sub', 'Ziel: ' + zielInfo.kurz));
     box.appendChild(c);
     const tm = el('div', 'msg'); tm.hidden = true;
     const go1 = el('button', 'btn', 'Schritt starten');
@@ -2554,7 +2607,7 @@ async function startUp(){
   if (demo){
     const jetzt = Date.now();
     startInfo = Object.assign({}, { status:'festgelegt', runId:'vorschau', titel:RV_DEMO.daten.titel, stufe:'Standard', was:RV_DEMO.daten.was,
-      wennDann:RV_DEMO.daten.wennDann, erinnerung:new Date(jetzt - 3 * 3600000), rueckblick:new Date(jetzt + 2 * 3600000),
+      wennDann:RV_DEMO.daten.wennDann, einstieg: p.get('zieldemo') ? 'Trainingsschritt' : '', zielbezug: p.get('zieldemo') ? 'ja' : '', erinnerung:new Date(jetzt - 3 * 3600000), rueckblick:new Date(jetzt + 2 * 3600000),
       geaendert:new Date(), naechstes:RV_DEMO.antwort.naechstes });
     if (demo === 'faellig') startInfo.rueckblick = new Date(jetzt - 30 * 60000);
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
