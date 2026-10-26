@@ -574,6 +574,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
+const BUILD = '2026-10-26 22:20 Kacheln';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2725,7 +2726,7 @@ function renderStart(){
   if (zugangStatus === 'nein'){ renderKeinZugang(); return; }
   const kind = startOverride ? 'neu' : startKind(startInfo);
   const zk = (kind === 'neu' && !startOverride) ? zielKarte() : null;
-  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
+  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Version: ' + BUILD + ' | Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
   const zh = $('zielHinweis');
