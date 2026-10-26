@@ -574,7 +574,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-26 22:20 Kacheln';
+const BUILD = '2026-10-26 22:35 Zieldialog-Einstieg';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2418,7 +2418,18 @@ function zielOeffnen(){
   $('zielEingabe').hidden = true;
   zielMsg('');
   go('ziel');
-  zielRunde(null);
+  // Der Dialog beginnt mit dem Text des Nutzers (leerer Verlauf wird vom Szenario nicht angenommen)
+  $('zielChat').appendChild(coachBubble('Woran möchtest du länger arbeiten? Schreib es in eigenen Worten. Wenn du unsicher bist, sag es einfach, dann machen wir dir Vorschläge.'));
+  const vb = $('zielVorschl');
+  const unsicher = el('button', 'optcard');
+  unsicher.type = 'button';
+  unsicher.appendChild(el('span', 't', 'Ich bin unsicher'));
+  unsicher.appendChild(el('span', 's', 'Der Coach macht dir Vorschläge.'));
+  unsicher.addEventListener('click', () => zielRunde('Ich weiß noch nicht genau, woran ich arbeiten möchte.'));
+  vb.appendChild(unsicher);
+  vb.hidden = false;
+  $('zielEingabe').hidden = false;
+  $('zielText').placeholder = 'Dein Ziel in eigenen Worten';
 }
 
 async function zielRunde(userText){
