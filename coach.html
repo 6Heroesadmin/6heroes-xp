@@ -365,7 +365,7 @@
     </div>
     <div class="body" style="gap:14px">
       <h1 id="step5Title"></h1>
-      <p class="hint">Wähle, wie groß deine Heldentat heute sein soll.</p>
+      <p class="hint" id="step5Hint">Wähle, wie groß deine Heldentat heute sein soll.</p>
       <div class="stufen" id="stufen"></div>
       <div id="info5" style="display:flex;flex-direction:column;gap:10px"></div>
       <div class="spacer"></div>
@@ -540,6 +540,10 @@ const LOAD_TIMEOUT_MS = 6000;
    Nur ein ausdrückliches KEIN_ZUGANG zeigt die Sperre. Bei Fehlern oder leerer URL startet der Coach normal, die echte Sperre liegt in Make.
    Beim Launch: URL leeren oder das Szenario ausschalten. */
 const ZUGANG_WEBHOOK_URL = 'https://hook.eu1.make.com/83fewk0antfcsyldjd2q68wtci94msk4';
+/* Ziel und Trainingsschritt (Make) */
+const ZIEL_LADEN_WEBHOOK_URL = 'https://hook.eu1.make.com/o86dym597s5bnnio7pu5dc978zbfdjjt';
+const TRAINING_START_WEBHOOK_URL = 'https://hook.eu1.make.com/qii25kstn5vqhhpwv4ur2fqjcwf5qm8d';
+const ZIEL_AKTION_WEBHOOK_URL = 'https://hook.eu1.make.com/uiqtjr6d11rr861jympbyrm9ks1vj67c';
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
@@ -605,7 +609,8 @@ const state = {
   abschluss: null,            // null | 'festgelegt' | 'heute_keine' | 'abgeschlossen' (danach gibt es kein Zurück in den Lauf)
   fest: null,                 // Stand nach dem Festlegen für die Bestätigung
   rueck: null,                // Daten für den Rückblick (runId, userId, titel, stufe, was, wennDann, vorschau)
-  antwort: null               // dreiteilige Coach-Antwort nach dem Rückblick
+  antwort: null,              // dreiteilige Coach-Antwort nach dem Rückblick
+  training: false             // Durchlauf ist ein Trainingsschritt aus dem Ziel (kein Weg aus Schritt 4)
 };
 
 /* ---------- Hilfsfunktionen ---------- */
@@ -666,6 +671,26 @@ async function postJson(url, body){
     });
     const text = await res.text();
     return { ok: res.ok, data: parsePayload(text) };
+  } finally {
+    clearTimeout(timer);
+    busy = Math.max(0, busy - 1);
+    if (busy === 0) document.body.classList.remove('busy');
+  }
+}
+
+async function postText(url, body, timeoutMs){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs || REQUEST_TIMEOUT_MS);
+  busy++; document.body.classList.add('busy');
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: ctrl.signal
+    });
+    const text = await res.text();
+    return { ok: res.ok, text: text };
   } finally {
     clearTimeout(timer);
     busy = Math.max(0, busy - 1);
@@ -848,9 +873,9 @@ function screenValid(id){
     case 'step2':  return state.optionen.length > 0;
     case 'step3':  return !!state.step3;
     case 'step4':  return state.wege.length > 0 && !!state.schritt3;
-    case 'step5':  return !!state.heldentat && !!state.weg && !state.abschluss;
-    case 'festlegen': return !!state.heldentat && !!state.weg && !state.abschluss;
-    case 'heutenicht': return !!state.heldentat && !!state.weg && !state.abschluss;
+    case 'step5':  return !!state.heldentat && (!!state.weg || state.training) && !state.abschluss;
+    case 'festlegen': return !!state.heldentat && (!!state.weg || state.training) && !state.abschluss;
+    case 'heutenicht': return !!state.heldentat && (!!state.weg || state.training) && !state.abschluss;
     case 'bestaetigung': return state.abschluss === 'festgelegt' && !!state.fest;
     case 'rueckblick': return !!state.rueck && !state.antwort;
     case 'coachantwort': return !!state.antwort && state.abschluss !== 'abgeschlossen';
@@ -909,7 +934,7 @@ window.addEventListener('popstate', e => {
 });
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null, rueck:null, antwort:null });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null, rueck:null, antwort:null, training:false });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -1358,6 +1383,30 @@ function normalizeHeldentat(d){
   };
 }
 
+/* Baustein aus einem Ziel (Quest): eine einzige Stufe, Name aus dem Aufwand. Gibt null zurück, wenn etwas Wesentliches fehlt. */
+function normalizeBaustein(d){
+  if (!d || typeof d !== 'object' || d.error) return null;
+  const arr = (Array.isArray(d.stufen) ? d.stufen : []).filter(x => x && String(x.was || '').trim());
+  if (!arr.length) return null;
+  const t = v => String(v || '').trim();
+  const stufen = arr.slice(0, 3).map(m => {
+    const info = STUFEN_INFO[stufeIndex(m.stufe)];
+    const was = grossStart(bereinigeLuecken(m.was));
+    let f = grossStart(bereinigeLuecken(m.formulierung));
+    if (f === was) f = '';
+    return { name:info.name, dauer:info.dauer, was:was, formulierung:f };
+  });
+  return {
+    titel: t(d.titel) || 'Dein nächster Schritt',
+    stufen: stufen,
+    warum: t(d.warum),
+    signal: t(d.signal),
+    wenn_dann: t(d.wenn_dann),
+    energie_satz: t(d.energie_satz),
+    quest_basis: t(d.quest_basis)
+  };
+}
+
 /* Vorschlag für die Stufe aus der Belastung, sofern Schritt 1 sie geliefert hat: hoch = Mini, niedrig = Erweitert, sonst Standard */
 function stufeVorschlag(){
   const b = String((state.coach && state.coach.belastung) || '').trim().toLowerCase();
@@ -1401,8 +1450,9 @@ function renderStufen(){
 
     if (i === sel5.stufe){
       const det = el('div', 'detail');
-      if (i === 1) det.appendChild(el('p', 'enthaelt', 'Enthält Mini.'));
-      if (i === 2) det.appendChild(el('p', 'enthaelt', 'Enthält Mini und Standard.'));
+      const sx = stufeIndex(s.name);
+      if (h.stufen.length > 1 && sx === 1) det.appendChild(el('p', 'enthaelt', 'Enthält Mini.'));
+      if (h.stufen.length > 1 && sx === 2) det.appendChild(el('p', 'enthaelt', 'Enthält Mini und Standard.'));
       det.appendChild(el('p', 'was', s.was));
       if (s.formulierung){
         const z = el('p', 'zitat');
@@ -1418,6 +1468,7 @@ function renderStufen(){
 
 function renderStep5(){
   const h = state.heldentat, w = state.weg;
+  $('step5Hint').textContent = state.training ? 'Das ist dein nächster Schritt zum Ziel. Bestätige ihn oder mach ihn einfacher.' : 'Wähle, wie groß deine Heldentat heute sein soll.';
   $('step5Title').textContent = h.titel;
 
   renderStufen();
@@ -1590,7 +1641,7 @@ function renderFestStufen(){
     b.type = 'button';
     b.setAttribute('aria-pressed', i === sel5.stufe ? 'true' : 'false');
     const dots = el('span', 'dots');
-    for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= i ? ' on' : '')));
+    for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= stufeIndex(s.name) ? ' on' : '')));
     b.appendChild(dots);
     b.appendChild(el('span', null, s.name));
     b.addEventListener('click', () => { sel5.stufe = i; renderFestStufen(); });
@@ -1711,7 +1762,8 @@ async function sendFestlegen(){
   state.abschluss = 'festgelegt';
   state.fest = { stufeIdx: sel5.stufe, wenn: wenn, rem: fest.rem, rb: fest.rb };
   startInfo = { status:'festgelegt', runId:state.runId, titel:state.heldentat.titel, stufe:stufe.name, was:stufe.was, wennDann:wenn,
-                erinnerung:fest.rem, rueckblick:fest.rb, geaendert:new Date(), naechstes:'' };
+                erinnerung:fest.rem, rueckblick:fest.rb, geaendert:new Date(), naechstes:'',
+                einstieg: state.training ? 'Trainingsschritt' : '', zielbezug: state.training ? 'ja' : '' };
   renderBestaetigung();
   go('bestaetigung');
 }
@@ -1725,7 +1777,7 @@ function renderBestaetigung(){
   const row = el('div', 'row');
   row.appendChild(el('span', 'lbl', s.name.toUpperCase()));
   const dots = el('span', 'dots');
-  for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= f.stufeIdx ? ' on' : '')));
+  for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= stufeIndex(s.name) ? ' on' : '')));
   row.appendChild(dots);
   sum.appendChild(row);
   sum.appendChild(el('span', 'txt', s.was));
@@ -1765,7 +1817,10 @@ function renderHeuteNicht(){
   box.innerHTML = '';
   $('hnMsg').hidden = true;
   const mini = state.heldentat.stufen[0];
-  const karten = [
+  const karten = state.training ? [
+    { wahl:'einfacher_ziel', titel:'Einfacher machen', sub:'Dein Ziel bekommt einen leichteren Schritt.' },
+    { wahl:'heute_keine', titel:'Heute keinen Schritt', sub:'Dein Ziel bleibt bestehen.' }
+  ] : [
     { wahl:'kleiner_machen', titel:'Kleiner machen', sub:'Nur die Mini-Stufe: ' + mini.was },
     { wahl:'anderer_weg', titel:'Anderen Weg wählen', sub:'Zurück zu den drei Wegen.' },
     { wahl:'heute_keine', titel:'Heute keine Heldentat', sub:'Deine Situation bleibt gespeichert.' }
@@ -1792,7 +1847,7 @@ function logHeuteNicht(wahl){
   } catch(_) {}
 }
 
-async function chooseHeuteNicht(wahl){
+async function chooseHeuteNicht(wahl){  // wahl wird unten ggf. überschrieben
   if (busy > 0) return;
   if (wahl === 'kleiner_machen'){
     logHeuteNicht(wahl);
@@ -1808,6 +1863,19 @@ async function chooseHeuteNicht(wahl){
   }
   // Heute keine Heldentat: Status heute_nicht, die Situation bleibt gespeichert
   const msg = $('hnMsg');
+  if (wahl === 'einfacher_ziel'){
+    msg.className = 'msg waiting';
+    msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Einen Moment …</span>';
+    msg.hidden = false;
+    const ok = await zielAktion('einfacher');
+    if (!ok){
+      msg.className = 'msg err';
+      msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+      return;
+    }
+    wahl = 'heute_keine';
+    state.einfacherGesetzt = true;
+  }
   msg.className = 'msg waiting';
   msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Einen Moment …</span>';
   msg.hidden = false;
@@ -1825,7 +1893,10 @@ async function chooseHeuteNicht(wahl){
   state.abschluss = 'heute_keine';
   startInfo = { status:'heute_nicht', runId:state.runId, titel:'', stufe:'', was:'', wennDann:'', erinnerung:null, rueckblick:null, geaendert:new Date(), naechstes:'' };
   $('nextTitle').textContent = 'Alles klar.';
-  $('nextHint').textContent = 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
+  $('nextHint').textContent = state.training
+    ? (state.einfacherGesetzt ? 'Dein Ziel bekommt beim nächsten Mal einen leichteren Schritt.' : 'Heute kein Schritt. Dein Ziel bleibt bestehen, du kannst jederzeit wieder einsteigen.')
+    : 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
+  state.einfacherGesetzt = false;
   go('next');
 }
 
@@ -2123,14 +2194,22 @@ function toDate(v){
    Status|||Run_ID|||Heldentat_Titel|||Stufe|||Wenn_Dann|||Erinnerung_Zeit|||Rueckblick_Zeit|||Geaendert|||Heldentat_JSON|||Antwort_JSON
    Alles andere (leer, "Accepted") bedeutet: kein Durchlauf gefunden. */
 function parseLaden(text){
-  const p = String(text || '').split('|||');
+  let p = String(text || '').split('|||');
   if (p.length < 8) return null;
+  // Neues Format (Einstiegsmodus und Zielbezug vor dem Heldentat_JSON, 12 Teile) oder altes Format (10 Teile)
+  let einstieg = '', zielbezug = '';
+  if (p.length >= 12 && !/^\s*\{/.test(p[8])){
+    einstieg = p[8].trim(); zielbezug = p[9].trim();
+    p = p.slice(0, 8).concat(p.slice(10));
+  }
   const d = {
     status: p[0].trim(), runId: p[1].trim(), titel: p[2].trim(), stufe: p[3].trim(), wennDann: p[4].trim(),
     erinnerung: toDate(p[5]), rueckblick: toDate(p[6]), geaendert: toDate(p[7]), was: '', naechstes: ''
   };
   if (!d.status || !d.runId) return null;
+  d.einstieg = einstieg; d.zielbezug = zielbezug;
   const hj = parsePayload(p[8] || '');
+  d.heldentatJson = hj && Array.isArray(hj.stufen) ? hj : null;
   if (hj && Array.isArray(hj.stufen)){
     const m = hj.stufen.find(x => x && String(x.stufe || '').trim().toLowerCase() === d.stufe.toLowerCase());
     if (m && m.was) d.was = grossStart(m.was);
@@ -2165,6 +2244,110 @@ async function ladeStart(){
     return null;
   }
   finally { clearTimeout(timer); }
+}
+
+/* ---------- Ziel und Trainingsschritt ---------- */
+let zielInfo = null;      // null = kein Ziel
+let zielDiag = 'nicht geladen';
+let zielDemo = '';
+const DEMO_BAUSTEIN = {
+  titel:'Energie-Check', warum:'Wer früh merkt, wann die Kraft nachlässt, kann besser gegensteuern.',
+  signal:'Du erkennst den Moment, bevor es zu viel wird.', wenn_dann:'Wenn ich mich nach dem Mittag leer fühle, dann prüfe ich kurz meine Energie.',
+  stufen:[{ stufe:'Mini', was:'Frage dich einmal am Tag: Wie voll ist mein Akku von 1 bis 10?', formulierung:'' }], quest_basis:'DEMO'
+};
+
+/* Ziel_Kurz|||Status|||Phase|||Modus|||Trainingskarte|||Next_Step_Titel|||Next_Step_Typ|||Next_Step_ID|||Faellig|||Bilanz|||Ende */
+function parseZiel(text){
+  const p = String(text || '').split('|||');
+  if (p.length < 5) return null;
+  const t = i => (p[i] || '').trim();
+  if (!t(0) && !t(1)) return null;
+  return { kurz:t(0), status:t(1).toLowerCase(), phase:t(2), modus:t(3), karte:t(4).toLowerCase(), titel:t(5), typ:t(6), stepId:t(7),
+           faellig:toDate(p[8]), bilanz:toDate(p[9]), ende:toDate(p[10]) };
+}
+
+async function ladeZiel(){
+  if (!ZIEL_LADEN_WEBHOOK_URL || !LOAD_TOKEN || !state.userId){ zielDiag = 'nicht konfiguriert'; return null; }
+  try {
+    const r = await postText(ZIEL_LADEN_WEBHOOK_URL, { aktion:'ziel_laden', token:LOAD_TOKEN, user_id:state.userId }, LOAD_TIMEOUT_MS);
+    if (!r.ok){ zielDiag = 'HTTP-Fehler'; return null; }
+    const z = parseZiel(r.text);
+    zielDiag = z ? ('Ziel "' + z.kurz.slice(0, 30) + '", Status ' + z.status + ', Karte ' + (z.karte || '-')) : 'kein Ziel (Antwort: "' + r.text.slice(0, 30) + '")';
+    return z;
+  } catch(e){
+    zielDiag = (e && e.name === 'AbortError') ? 'Timeout' : 'Netzwerkfehler';
+    return null;
+  }
+}
+
+/* Ziel_Aktion: weiter | einfacher | ruhen | festigen | abschliessen | beenden … Gibt true bei "ok" zurück. */
+async function zielAktion(aktion, extra){
+  if (zielDemo) return true;
+  try {
+    const body = Object.assign({ token:LOAD_TOKEN, user_id:state.userId, ziel_aktion:aktion }, extra || {});
+    const r = await postText(ZIEL_AKTION_WEBHOOK_URL, body);
+    return r.ok && r.text.trim() === 'ok';
+  } catch(_) { return false; }
+}
+
+/* Welche Karte zeigt der Start-Screen? 'training' | 'pause' | null */
+function zielKarte(){
+  const z = zielInfo;
+  if (!z) return null;
+  if (/paus|ruh/.test(z.status) || /paus|ruh/.test(z.karte)) return 'pause';
+  if (z.status === 'aktiv' && z.karte === 'bereit' && z.titel) return 'training';
+  return null;
+}
+
+/* Trainingsschritt starten: Durchlauf anlegen (Coach_Training_Start), Baustein anzeigen, dann der normale Festlegen-Ablauf */
+async function startTraining(btn, msg){
+  if (busy > 0) return;
+  const z = zielInfo;
+  btn.disabled = true;
+  msg.className = 'msg waiting';
+  msg.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Dein Schritt wird vorbereitet …</span>';
+  msg.hidden = false;
+  const fehler = () => {
+    msg.className = 'msg err';
+    msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+    msg.hidden = false;
+    btn.disabled = false;
+  };
+  let runId = '', titel = '', baustein = null;
+  if (zielDemo){
+    runId = newRunId(); titel = DEMO_BAUSTEIN.titel; baustein = normalizeBaustein(DEMO_BAUSTEIN);
+  } else {
+    // Wiederverwenden: läuft schon ein Trainingsdurchlauf zu diesem Schritt (z. B. nach Abbruch), keinen zweiten anlegen
+    const s = startInfo;
+    if (s && s.status === 'heldentat' && s.einstieg === 'Trainingsschritt' && s.heldentatJson && s.titel === z.titel){
+      runId = s.runId; titel = s.titel; baustein = normalizeBaustein(s.heldentatJson);
+    }
+    if (!baustein){
+      runId = newRunId();
+      let r;
+      try { r = await postText(TRAINING_START_WEBHOOK_URL, { aktion:'training_start', token:LOAD_TOKEN, user_id:state.userId, run_id:runId }); }
+      catch(_) { fehler(); return; }
+      const p = r.text.split('|||');
+      if (!r.ok || p[0].trim() !== 'ok'){ fehler(); return; }
+      runId = (p[1] || runId).trim(); titel = (p[2] || z.titel).trim();
+      // Baustein über Coach_Laden holen (liefert das Heldentat_JSON des neuen Durchlaufs)
+      const neu = await ladeStart();
+      if (neu && neu.runId === runId && neu.heldentatJson) baustein = normalizeBaustein(neu.heldentatJson);
+      if (neu && neu.runId === runId) startInfo = neu;
+    }
+  }
+  if (!baustein){ fehler(); return; }
+  btn.disabled = false;
+  msg.hidden = true;
+  resetRun();
+  frischAbgeschlossen = false;
+  state.training = true;
+  state.runId = runId;
+  state.heldentat = baustein;
+  if (!baustein.titel || baustein.titel === 'Dein nächster Schritt') baustein.titel = titel || z.titel;
+  sel5.stufe = 0;
+  renderStep5();
+  go('step5');
 }
 
 /* neu | laeuft | faellig | erledigt | heute_nicht
@@ -2207,10 +2390,11 @@ function renderStart(){
   $('startLoad').hidden = true;
   if (zugangStatus === 'nein'){ renderKeinZugang(); return; }
   const kind = startOverride ? 'neu' : startKind(startInfo);
-  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
+  const zk = (kind === 'neu' && !startOverride) ? zielKarte() : null;
+  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
-  if (kind === 'neu'){
+  if (kind === 'neu' && !zk){
     box.hidden = true;
     $('startNew').hidden = false;
     return;
@@ -2259,7 +2443,31 @@ function renderStart(){
     return b;
   };
 
-  if (kind === 'faellig'){
+  if (zk === 'training'){
+    box.appendChild(greet(state.name ? 'Dein nächster Schritt, ' + state.name + '.' : 'Dein nächster Schritt.'));
+    const c = el('div', 'hcard');
+    const row = el('div', 'row');
+    row.appendChild(el('span', 'lbl', 'DEIN ZIEL'));
+    c.appendChild(row);
+    c.appendChild(el('span', 'ttl', zielInfo.titel));
+    if (zielInfo.kurz) c.appendChild(el('span', 'sub', zielInfo.kurz));
+    box.appendChild(c);
+    const tm = el('div', 'msg'); tm.hidden = true;
+    const go1 = el('button', 'btn', 'Schritt starten');
+    go1.addEventListener('click', () => startTraining(go1, tm));
+    box.appendChild(go1);
+    box.appendChild(tm);
+    box.appendChild(el('div', 'spacer'));
+    box.appendChild(link('Mich beschäftigt noch etwas anderes'));
+  } else if (zk === 'pause'){
+    box.appendChild(greet('Dein Ziel macht Pause.'));
+    const c = el('div', 'hcard');
+    c.appendChild(el('span', 'ttl', zielInfo.kurz || zielInfo.titel || 'Dein Ziel'));
+    c.appendChild(el('span', 'sub', 'Du musst nichts tun. Ich melde mich, wenn es weitergeht.'));
+    box.appendChild(c);
+    box.appendChild(el('div', 'spacer'));
+    box.appendChild(link('Mich beschäftigt etwas anderes'));
+  } else if (kind === 'faellig'){
     box.appendChild(greet('Dein Rückblick ist dran.'));
     box.appendChild(heldCard('DEINE HELDENTAT', d.rueckblick ? (sameDay(d.rueckblick, new Date()) ? 'Rückblick war für ' + uhrzeit(d.rueckblick) + ' geplant' : 'Rückblick war geplant: ' + zeitLabel(d.rueckblick)) : ''));
     const rows = el('div', 'btnrow');
@@ -2352,6 +2560,12 @@ async function startUp(){
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
     if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
     if (demo === 'kein_zugang') zugangStatus = 'nein';
+    const zd = p.get('zieldemo');
+    if (zd){
+      zielDemo = zd;
+      startInfo = null;
+      zielInfo = { kurz:'Grenzen klar vertreten', status: zd === 'pause' ? 'pausiert' : 'aktiv', phase:'Ausprobieren', modus:'normal', karte: zd === 'pause' ? 'pausiert' : 'bereit', titel:'Energie-Check', typ:'Activate', stepId:'', faellig:null, bilanz:null, ende:null };
+    }
     renderStart();
     return;
   }
@@ -2360,9 +2574,10 @@ async function startUp(){
   if (!ladenAn && !zugangAn){ renderStart(); return; }
   $('startNew').hidden = true;
   $('startLoad').hidden = false;
-  const erg = await Promise.all([zugangAn ? pruefeZugang() : 'unbekannt', ladenAn ? ladeStart() : null]);
+  const erg = await Promise.all([zugangAn ? pruefeZugang() : 'unbekannt', ladenAn ? ladeStart() : null, ladenAn ? ladeZiel() : null]);
   zugangStatus = erg[0];
   startInfo = erg[1];
+  zielInfo = erg[2];
   renderStart();
 }
 
