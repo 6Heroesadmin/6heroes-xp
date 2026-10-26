@@ -266,6 +266,8 @@
           <button class="chip" data-kat="Eigenes">Etwas Eigenes</button>
         </div>
         <p class="msg err" id="startMsg" hidden></p>
+        <div id="zielHinweis" hidden style="display:flex;flex-direction:column;gap:6px;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px"></div>
+        <button class="btn2" id="zielEntry" hidden>Ein längerfristiges Ziel formulieren</button>
       </div>
       <p id="startDiag" hidden style="font-size:12px;line-height:1.4;color:#5A6272;word-break:break-all;margin-top:12px"></p>
     </div>
@@ -486,6 +488,28 @@
     </div>
   </section>
 
+  <!-- ZIEL FORMULIEREN -->
+  <section class="screen" id="s-ziel">
+    <div class="top">
+      <div class="toprow">
+        <button class="back" data-back="start" aria-label="Zurück"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <span class="stepcount">Dein Ziel</span><span style="width:44px"></span>
+      </div>
+    </div>
+    <div class="body" style="gap:14px">
+      <div class="chat" id="zielChat"></div>
+      <div id="zielVorschl" hidden style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="zielSumm" hidden style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="zielEingabe" style="display:flex;flex-direction:column;gap:12px">
+        <textarea id="zielText" rows="3" maxlength="800" aria-label="Deine Antwort"></textarea>
+        <button class="btn" id="zielSend" disabled>Senden</button>
+      </div>
+      <p class="msg" id="zielMsg" hidden></p>
+      <div class="spacer"></div>
+      <div class="actions" id="zielActions" hidden></div>
+    </div>
+  </section>
+
   <!-- ABSCHLUSS OHNE HELDENTAT -->
   <section class="screen" id="s-next">
     <div class="body">
@@ -545,6 +569,8 @@ const ZUGANG_WEBHOOK_URL = 'https://hook.eu1.make.com/83fewk0antfcsyldjd2q68wtci
 const ZIEL_LADEN_WEBHOOK_URL = 'https://hook.eu1.make.com/o86dym597s5bnnio7pu5dc978zbfdjjt';
 const TRAINING_START_WEBHOOK_URL = 'https://hook.eu1.make.com/qii25kstn5vqhhpwv4ur2fqjcwf5qm8d';
 const ZIEL_AKTION_WEBHOOK_URL = 'https://hook.eu1.make.com/uiqtjr6d11rr861jympbyrm9ks1vj67c';
+const ZIEL_DIALOG_WEBHOOK_URL = 'https://hook.eu1.make.com/h8vg7tjijic6ykn1nj3phx8fsmko1ki5';
+const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43riuimdy3vhmf';
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
@@ -611,6 +637,7 @@ const state = {
   fest: null,                 // Stand nach dem Festlegen für die Bestätigung
   rueck: null,                // Daten für den Rückblick (runId, userId, titel, stufe, was, wennDann, vorschau)
   antwort: null,              // dreiteilige Coach-Antwort nach dem Rückblick
+  zielAngelegt: false,        // Ziel wurde gerade angelegt (steuert den Abschluss-Screen)
   training: false             // Durchlauf ist ein Trainingsschritt aus dem Ziel (kein Weg aus Schritt 4)
 };
 
@@ -815,6 +842,15 @@ function init(){
   $('bestFertig').addEventListener('click', () => backClick('start'));
   $('rvBack').addEventListener('click', () => backClick('rueckblick'));
   $('rvGo').addEventListener('click', sendRueckblick);
+  $('zielEntry').addEventListener('click', zielOeffnen);
+  const zt = $('zielText');
+  zt.addEventListener('input', () => { $('zielSend').disabled = zt.value.trim().length < 3; });
+  $('zielSend').addEventListener('click', () => {
+    const v = zt.value.trim();
+    if (v.length < 3) return;
+    zt.value = ''; $('zielSend').disabled = true;
+    zielRunde(v);
+  });
   $('feier').addEventListener('click', feierEnde);
   $('antTon').addEventListener('click', () => {
     const an = !tonAn();
@@ -880,7 +916,8 @@ function screenValid(id){
     case 'bestaetigung': return state.abschluss === 'festgelegt' && !!state.fest;
     case 'rueckblick': return !!state.rueck && !state.antwort;
     case 'coachantwort': return !!state.antwort && state.abschluss !== 'abgeschlossen';
-    case 'next':   return state.abschluss === 'heute_keine' || state.abschluss === 'abgeschlossen';
+    case 'next':   return state.abschluss === 'heute_keine' || state.abschluss === 'abgeschlossen' || state.zielAngelegt;
+    case 'ziel':   return zd.aktiv;
     case 'crisis': return !!(state.coach && state.coach.krise === true);
     default:       return false;
   }
@@ -935,7 +972,7 @@ window.addEventListener('popstate', e => {
 });
 
 function resetRun(){
-  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null, rueck:null, antwort:null, training:false });
+  Object.assign(state, { runId:'', kategorie:'', situation:'', coach:null, tagesfrage:'', umformuliert:false, optionen:[], impuls:null, step3:null, schritt3:null, wege:[], weg:null, heldentat:null, abschluss:null, fest:null, rueck:null, antwort:null, training:false, zielAngelegt:false });
   $('situation').value = '';
   $('sendBtn').disabled = true;
   $('inputArea').style.display = 'flex';
@@ -2334,13 +2371,254 @@ async function ladeZiel(){
 }
 
 /* Ziel_Aktion: weiter | einfacher | ruhen | festigen | abschliessen | beenden … Gibt true bei "ok" zurück. */
-async function zielAktion(aktion, extra){
-  if (zielDemo) return true;
+async function zielAktionStatus(aktion, extra){
+  if (zielDemo) return 'ok';
   try {
     const body = Object.assign({ token:LOAD_TOKEN, user_id:state.userId, ziel_aktion:aktion }, extra || {});
     const r = await postText(ZIEL_AKTION_WEBHOOK_URL, body);
-    return r.ok && r.text.trim() === 'ok';
-  } catch(_) { return false; }
+    const t = r.text.trim();
+    return r.ok && ['ok', 'belegt', 'kein_ziel'].includes(t) ? t : 'fehler';
+  } catch(_) { return 'fehler'; }
+}
+/* "belegt" heißt: Eine Aktion ist schon vorgemerkt. Für den Nutzer ist das dasselbe wie "ok". */
+async function zielAktion(aktion, extra){
+  const t = await zielAktionStatus(aktion, extra);
+  return t === 'ok' || t === 'belegt';
+}
+
+/* ---------- Ziel formulieren (Zieldialog) ---------- */
+/* Namen der Auswahlfeld-Optionen Kompetenz_Start in der Tabelle Entwicklungsziele (bestätigt am 26.10.) */
+const KOMPETENZ = [
+  { wert:'erst hinterher', text:'Ich bemerke mein Muster meistens erst hinterher.' },
+  { wert:'während der Situation', text:'Ich erkenne es inzwischen während der Situation.' },
+  { wert:'gelegentlich anders', text:'Ich kann gelegentlich bewusst anders handeln.' },
+  { wert:'zunehmend selbst', text:'Ich steuere mein Verhalten zunehmend selbst.' }
+];
+const zd = { aktiv:false, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'' };
+
+function zielMsg(text, fehler){
+  const m = $('zielMsg');
+  if (!text){ m.hidden = true; return; }
+  m.className = 'msg' + (fehler ? ' err' : '');
+  m.textContent = text;
+  m.hidden = false;
+}
+
+function zielOeffnen(){
+  if (busy > 0) return;
+  Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'' });
+  $('zielChat').innerHTML = ''; $('zielVorschl').innerHTML = ''; $('zielVorschl').hidden = true;
+  $('zielSumm').innerHTML = ''; $('zielSumm').hidden = true;
+  $('zielActions').innerHTML = ''; $('zielActions').hidden = true;
+  $('zielText').value = ''; $('zielSend').disabled = true;
+  $('zielEingabe').hidden = true;
+  zielMsg('');
+  go('ziel');
+  zielRunde(null);
+}
+
+async function zielRunde(userText){
+  if (busy > 0) return;
+  const chat = $('zielChat');
+  $('zielVorschl').hidden = true; $('zielActions').hidden = true; $('zielEingabe').hidden = true;
+  zielMsg('');
+  if (userText){
+    zd.verlauf.push('Nutzer: ' + userText.replace(/\n+/g, ' '));
+    if (!zd.ersterText) zd.ersterText = userText;
+    zd.letzterText = userText;
+    chat.appendChild(el('p', 'bubble-user', userText));
+  }
+  const typing = typingBubble();
+  chat.appendChild(typing);
+  let r;
+  try {
+    r = await postJson(ZIEL_DIALOG_WEBHOOK_URL, { aktion:'ziel_dialog', token:LOAD_TOKEN, user_id:state.userId, runde:zd.runde + 1, bestaetigt:'nein', verlauf:zd.verlauf.join('\n') });
+  } catch(e){ r = { ok:false, data:null }; }
+  typing.remove();
+  const d = r.data;
+  if (!(r.ok && d && typeof d === 'object' && !d.error && d.text)){
+    if (userText){ zd.verlauf.pop(); }
+    zielFehler(userText);
+    return;
+  }
+  zd.runde++;
+  if (d.krise === true || d.schritt === 'krise'){
+    state.coach = { krise:true };
+    $('crisisText').textContent = String(d.text);
+    go('crisis');
+    return;
+  }
+  zd.verlauf.push('Coach: ' + String(d.text).replace(/\n+/g, ' '));
+  chat.appendChild(coachBubble(String(d.text)));
+  if (d.schritt === 'fertig' && d.ziel && typeof d.ziel === 'object'){ zielFertig(d.ziel); return; }
+  const vs = Array.isArray(d.vorschlaege) ? d.vorschlaege.filter(v => v && v.satz) : [];
+  const box = $('zielVorschl');
+  box.innerHTML = '';
+  if (vs.length){
+    vs.slice(0, 4).forEach(v => {
+      const b = el('button', 'optcard');
+      b.type = 'button';
+      if (v.feld) b.appendChild(el('span', 't', String(v.feld)));
+      b.appendChild(el('span', 's', String(v.satz)));
+      b.addEventListener('click', () => zielRunde(String(v.satz)));
+      box.appendChild(b);
+    });
+    box.hidden = false;
+  }
+  $('zielEingabe').hidden = false;
+  $('zielText').placeholder = vs.length ? 'Oder schreibe es in eigenen Worten' : 'Deine Antwort';
+  $('zielText').focus({ preventScroll:true });
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function zielFehler(userText){
+  zielMsg('Das hat gerade nicht geklappt. Tippe bitte noch einmal.', true);
+  const acts = $('zielActions');
+  acts.innerHTML = '';
+  const retry = el('button', 'btn', 'Nochmal versuchen');
+  retry.addEventListener('click', () => {
+    acts.hidden = true;
+    if (userText){ // Nutzertext steht schon im Chat: nur die Anfrage wiederholen
+      const last = $('zielChat').lastElementChild;
+      if (last && last.classList.contains('bubble-user')) last.remove();
+    }
+    zielRunde(userText);
+  });
+  acts.appendChild(retry);
+  acts.hidden = false;
+}
+
+function zielFertig(z){
+  zd.ziel = z; zd.kompetenz = null;
+  const box = $('zielSumm');
+  box.innerHTML = '';
+  const t = v => String(v || '').trim();
+  const zeile = (lbl, v) => { if (t(v)) box.appendChild(infoBox(lbl, t(v))); };
+  zeile('DEIN ZIEL', z.ziel_kurz);
+  zeile('WORAN DU ARBEITEST', z.entwicklungsfeld);
+  zeile('WAS DU TUN WILLST', z.zielverhalten);
+  zeile('WANN', z.ausloeser);
+  zeile('DEIN ERFOLGSSIGNAL', z.erfolgssignal);
+  const g = el('div', 'fgroup');
+  g.appendChild(el('span', 'flbl', 'WO STEHST DU HEUTE?'));
+  const row = el('div', 'optgrid');
+  KOMPETENZ.forEach(k => {
+    const b = el('button', 'optcard');
+    b.type = 'button';
+    b.setAttribute('aria-pressed', 'false');
+    b.appendChild(el('span', 't', k.text));
+    b.addEventListener('click', () => {
+      zd.kompetenz = k.wert;
+      row.querySelectorAll('.optcard').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
+      b.classList.add('sel'); b.setAttribute('aria-pressed', 'true');
+      $('zielOk').disabled = false;
+    });
+    row.appendChild(b);
+  });
+  g.appendChild(row);
+  box.appendChild(g);
+  box.hidden = false;
+  $('zielEingabe').hidden = true;
+  const acts = $('zielActions');
+  acts.innerHTML = '';
+  const ok = el('button', 'btn', 'Ziel bestätigen');
+  ok.id = 'zielOk'; ok.disabled = true;
+  ok.addEventListener('click', zielBestaetigen);
+  const aend = el('button', 'btn2', 'Noch etwas ändern');
+  aend.addEventListener('click', () => {
+    zd.ziel = null; zd.kompetenz = null;
+    box.hidden = true; box.innerHTML = ''; acts.hidden = true;
+    $('zielEingabe').hidden = false;
+    $('zielText').placeholder = 'Was soll anders sein?';
+    $('zielText').focus({ preventScroll:true });
+  });
+  acts.append(ok, aend);
+  acts.hidden = false;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+async function zielBestaetigen(){
+  if (busy > 0 || !zd.ziel || !zd.kompetenz) return;
+  const z = zd.ziel, btn = $('zielOk');
+  btn.disabled = true;
+  zielMsg('Dein Ziel wird angelegt …');
+  const t = v => String(v || '').trim();
+  const body = { aktion:'ziel_start', token:LOAD_TOKEN, user_id:state.userId, entwicklungsfeld:t(z.entwicklungsfeld), ziel_kurz:t(z.ziel_kurz),
+                 ziel_text:t(zd.ersterText) || t(z.zielverhalten), zielverhalten:t(z.zielverhalten), ausloeser:t(z.ausloeser),
+                 erfolgssignal:t(z.erfolgssignal), kompetenz_start:zd.kompetenz };
+  Object.keys(body).forEach(k => { if (body[k] === '') delete body[k]; });
+  let ok = false;
+  if (zielDemo) ok = true;
+  else {
+    try { const r = await postText(ZIEL_START_WEBHOOK_URL, body); ok = r.ok && r.text.trim() === 'ok'; }
+    catch(_) { ok = false; }
+  }
+  if (!ok){
+    zielMsg('Das Ziel konnte gerade nicht angelegt werden. Tippe bitte noch einmal.', true);
+    btn.disabled = false;
+    return;
+  }
+  zielMsg('');
+  zd.aktiv = false;
+  state.zielAngelegt = true;
+  zielInfo = null;
+  $('nextTitle').textContent = 'Dein Ziel steht.';
+  $('nextHint').textContent = 'Dein erster Schritt wird gerade vorbereitet. Du findest ihn gleich auf dem Start-Screen.';
+  // Der Airtable-Trigger legt den ersten Schritt kurz nach dem Anlegen an: Ziel später noch einmal laden
+  [3000, 9000].forEach(ms => setTimeout(async () => {
+    if (zielInfo) return;
+    const z2 = await ladeZiel();
+    if (z2){ zielInfo = z2; if (document.getElementById('s-start').classList.contains('active') && !startOverride) renderStart(); }
+  }, ms));
+  go('next');
+}
+
+/* Ziel beenden: erst nachfragen, dann Coach_Ziel_Aktion mit "beenden" */
+function zielBeendenFrage(box){
+  box.innerHTML = '';
+  const g = el('div', 'greet');
+  g.appendChild(el('span', 'hello', HELLO));
+  g.appendChild(el('h1', null, 'Möchtest du dein Ziel beenden?'));
+  box.appendChild(g);
+  const nm = (zielInfo && (zielInfo.kurz || zielInfo.titel)) || 'dein Ziel';
+  box.appendChild(el('p', 'hint', 'Das Ziel „' + nm + '“ wird abgeschlossen. Deine bisherigen Rückblicke bleiben gespeichert.'));
+  // Optionaler Grund (Werte wie im Auswahlfeld Wechselgrund der Tabelle Entwicklungsziele)
+  let grund = null;
+  const gbox = el('div', 'fgroup');
+  gbox.appendChild(el('span', 'flbl', 'WARUM? (OPTIONAL)'));
+  const grow = el('div', 'tchips');
+  ['anderes wichtiger', 'gerade nicht wichtig', 'zu schwer'].forEach(gv => {
+    const b = el('button', 'tchip', gv.charAt(0).toUpperCase() + gv.slice(1));
+    b.type = 'button';
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => {
+      grund = grund === gv ? null : gv;
+      grow.querySelectorAll('.tchip').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
+      if (grund){ b.classList.add('sel'); b.setAttribute('aria-pressed', 'true'); }
+    });
+    grow.appendChild(b);
+  });
+  gbox.appendChild(grow);
+  box.appendChild(gbox);
+  const msg = el('p', 'msg err'); msg.hidden = true;
+  const ja = el('button', 'btn', 'Ja, Ziel beenden');
+  ja.addEventListener('click', async () => {
+    if (busy > 0) return;
+    ja.disabled = true;
+    msg.hidden = true;
+    const st = await zielAktionStatus('beenden', grund ? { wechselgrund: grund } : null);
+    if (st === 'ok' || st === 'belegt' || st === 'kein_ziel'){
+      zielInfo = null;
+      showStart();
+      return;
+    }
+    msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+    msg.hidden = false;
+    ja.disabled = false;
+  });
+  const nein = el('button', 'btn2', 'Nein, behalten');
+  nein.addEventListener('click', () => renderStart());
+  box.append(ja, nein, msg);
 }
 
 /* Welche Karte zeigt der Start-Screen? 'training' | 'pause' | null */
@@ -2447,6 +2725,20 @@ function renderStart(){
   if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
+  const zh = $('zielHinweis');
+  zh.innerHTML = '';
+  const zielLaeuft = kind === 'neu' && !zk && zielInfo && (zielInfo.status === 'aktiv');
+  zh.hidden = !zielLaeuft;
+  if (zielLaeuft){
+    zh.appendChild(el('span', 'flbl', 'DEIN ZIEL'));
+    zh.appendChild(el('span', null, zielInfo.kurz || 'Dein Ziel'));
+    if (zielInfo.faellig) zh.appendChild(el('span', 'msg', 'Nächster Schritt: ' + zielInfo.faellig.toLocaleDateString('de-DE', { weekday:'short', day:'numeric', month:'numeric' })));
+    const bz = el('button', 'linkbtn', 'Ziel beenden');
+    bz.type = 'button';
+    bz.addEventListener('click', () => { $('startNew').hidden = true; const sb = $('startState'); sb.hidden = false; zielBeendenFrage(sb); });
+    zh.appendChild(bz);
+  }
+  $('zielEntry').hidden = !(kind === 'neu' && !zk && !zielInfo && state.userId && zugangStatus !== 'nein');
   if (kind === 'neu' && !zk){
     box.hidden = true;
     $('startNew').hidden = false;
@@ -2512,6 +2804,10 @@ function renderStart(){
     box.appendChild(tm);
     box.appendChild(el('div', 'spacer'));
     box.appendChild(link('Mich beschäftigt noch etwas anderes'));
+    const be = el('button', 'linkbtn', 'Ziel beenden');
+    be.type = 'button';
+    be.addEventListener('click', () => zielBeendenFrage(box));
+    box.appendChild(be);
   } else if (zk === 'pause'){
     box.appendChild(greet('Dein Ziel macht Pause.'));
     const c = el('div', 'hcard');
@@ -2520,6 +2816,10 @@ function renderStart(){
     box.appendChild(c);
     box.appendChild(el('div', 'spacer'));
     box.appendChild(link('Mich beschäftigt etwas anderes'));
+    const be2 = el('button', 'linkbtn', 'Ziel beenden');
+    be2.type = 'button';
+    be2.addEventListener('click', () => zielBeendenFrage(box));
+    box.appendChild(be2);
   } else if (kind === 'faellig'){
     box.appendChild(greet('Dein Rückblick ist dran.'));
     box.appendChild(heldCard('DEINE HELDENTAT', d.rueckblick ? (sameDay(d.rueckblick, new Date()) ? 'Rückblick war für ' + uhrzeit(d.rueckblick) + ' geplant' : 'Rückblick war geplant: ' + zeitLabel(d.rueckblick)) : ''));
@@ -2613,11 +2913,11 @@ async function startUp(){
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
     if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
     if (demo === 'kein_zugang') zugangStatus = 'nein';
-    const zd = p.get('zieldemo');
-    if (zd){
-      zielDemo = zd;
+    const zdm = p.get('zieldemo');
+    if (zdm){
+      zielDemo = zdm;
       startInfo = null;
-      zielInfo = { kurz:'Grenzen klar vertreten', status: zd === 'pause' ? 'pausiert' : 'aktiv', phase:'Ausprobieren', modus:'normal', karte: zd === 'pause' ? 'pausiert' : 'bereit', titel:'Energie-Check', typ:'Activate', stepId:'', faellig:null, bilanz:null, ende:null };
+      zielInfo = { kurz:'Grenzen klar vertreten', status: zdm === 'pause' ? 'pausiert' : 'aktiv', phase:'Ausprobieren', modus:'normal', karte: zdm === 'pause' ? 'pausiert' : 'bereit', titel:'Energie-Check', typ:'Activate', stepId:'', faellig:null, bilanz:null, ende:null };
     }
     renderStart();
     return;
