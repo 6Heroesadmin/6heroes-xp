@@ -574,7 +574,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-27 13:45 Dialog-Diagnose';
+const BUILD = '2026-10-27 14:50 Dialog-Fertig';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2398,7 +2398,8 @@ const KOMPETENZ = [
   { wert:'gelegentlich anders', text:'Ich kann gelegentlich bewusst anders handeln.' },
   { wert:'zunehmend selbst', text:'Ich steuere mein Verhalten zunehmend selbst.' }
 ];
-const zd = { aktiv:false, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'' };
+const zd = { aktiv:false, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'' };
+const JA_RE = /^\s*(ja|jap|jo|genau|stimmt|passt|richtig|ja[,.!]?\s*(genau|passt|stimmt|das stimmt|so stimmt es)(\s+so)?)[\s.!]*$/i;
 
 function zielMsg(text, fehler){
   const m = $('zielMsg');
@@ -2410,7 +2411,7 @@ function zielMsg(text, fehler){
 
 function zielOeffnen(){
   if (busy > 0) return;
-  Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'' });
+  Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'' });
   $('zielChat').innerHTML = ''; $('zielVorschl').innerHTML = ''; $('zielVorschl').hidden = true;
   $('zielSumm').innerHTML = ''; $('zielSumm').hidden = true;
   $('zielActions').innerHTML = ''; $('zielActions').hidden = true;
@@ -2432,8 +2433,10 @@ function zielOeffnen(){
   $('zielText').placeholder = 'Dein Ziel in eigenen Worten';
 }
 
-async function zielRunde(userText){
+async function zielRunde(userText, ja){
   if (busy > 0) return;
+  // Bestätigung nur, wenn der Coach zuvor gespiegelt hat und der Nutzer zustimmt
+  const best = (zd.letzterSchritt === 'spiegeln' && (ja === true || JA_RE.test(userText || ''))) ? 'ja' : 'nein';
   const chat = $('zielChat');
   $('zielVorschl').hidden = true; $('zielActions').hidden = true; $('zielEingabe').hidden = true;
   zielMsg('');
@@ -2447,7 +2450,7 @@ async function zielRunde(userText){
   chat.appendChild(typing);
   let r, diag = '';
   try {
-    const rt = await postText(ZIEL_DIALOG_WEBHOOK_URL, { aktion:'ziel_dialog', token:LOAD_TOKEN, user_id:state.userId, runde:zd.runde + 1, bestaetigt:'nein', verlauf:zd.verlauf.join('\n') });
+    const rt = await postText(ZIEL_DIALOG_WEBHOOK_URL, { aktion:'ziel_dialog', token:LOAD_TOKEN, user_id:state.userId, runde:zd.runde + 1, bestaetigt:best, verlauf:zd.verlauf.join('\n') });
     r = { ok:rt.ok, data:parsePayload(rt.text) };
     diag = 'HTTP ' + rt.status + ': ' + String(rt.text).slice(0, 300);
   } catch(e){
@@ -2456,25 +2459,43 @@ async function zielRunde(userText){
   }
   typing.remove();
   const d = r.data;
-  if (!(r.ok && d && typeof d === 'object' && !d.error && d.text)){
+  if (!(r.ok && d && typeof d === 'object' && !d.error && (d.text || (d.schritt === 'fertig' && d.ziel)))){
     if (userText){ zd.verlauf.pop(); }
-    zielFehler(userText);
+    zielFehler(userText, ja);
     if (DEBUG) zielMsg('Das hat gerade nicht geklappt. [' + diag + ']', true);
     return;
   }
   zd.runde++;
+  zd.letzterSchritt = String(d.schritt || '');
   if (d.krise === true || d.schritt === 'krise'){
     state.coach = { krise:true };
     $('crisisText').textContent = String(d.text);
     go('crisis');
     return;
   }
-  zd.verlauf.push('Coach: ' + String(d.text).replace(/\n+/g, ' '));
-  chat.appendChild(coachBubble(String(d.text)));
+  const ctext = String(d.text || '').trim() || (d.schritt === 'fertig' ? 'Dann halten wir dein Ziel so fest.' : '');
+  if (ctext){
+    zd.verlauf.push('Coach: ' + ctext.replace(/\n+/g, ' '));
+    chat.appendChild(coachBubble(ctext));
+  }
   if (d.schritt === 'fertig' && d.ziel && typeof d.ziel === 'object'){ zielFertig(d.ziel); return; }
   const vs = Array.isArray(d.vorschlaege) ? d.vorschlaege.filter(v => v && v.satz) : [];
   const box = $('zielVorschl');
   box.innerHTML = '';
+  if (zd.letzterSchritt === 'spiegeln'){
+    const jb = el('button', 'optcard');
+    jb.type = 'button';
+    jb.appendChild(el('span', 't', 'Ja, so stimmt es'));
+    jb.addEventListener('click', () => zielRunde('Ja, so stimmt es.', true));
+    box.appendChild(jb);
+    const nb = el('button', 'optcard');
+    nb.type = 'button';
+    nb.appendChild(el('span', 't', 'Nicht ganz'));
+    nb.appendChild(el('span', 's', 'Dann schreibe ich es anders.'));
+    nb.addEventListener('click', () => { box.hidden = true; $('zielText').placeholder = 'Was stimmt nicht ganz?'; $('zielText').focus({ preventScroll:true }); });
+    box.appendChild(nb);
+    box.hidden = false;
+  }
   if (vs.length){
     vs.slice(0, 4).forEach(v => {
       const b = el('button', 'optcard');
@@ -2492,7 +2513,7 @@ async function zielRunde(userText){
   window.scrollTo(0, document.body.scrollHeight);
 }
 
-function zielFehler(userText){
+function zielFehler(userText, ja){
   zielMsg('Das hat gerade nicht geklappt. Tippe bitte noch einmal.', true);
   const acts = $('zielActions');
   acts.innerHTML = '';
@@ -2503,7 +2524,7 @@ function zielFehler(userText){
       const last = $('zielChat').lastElementChild;
       if (last && last.classList.contains('bubble-user')) last.remove();
     }
-    zielRunde(userText);
+    zielRunde(userText, ja);
   });
   acts.appendChild(retry);
   acts.hidden = false;
