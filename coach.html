@@ -574,7 +574,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-27 14:50 Dialog-Fertig';
+const BUILD = '2026-10-27 15:05 Stufen-Ziel';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2544,11 +2544,13 @@ function zielFertig(z){
   const g = el('div', 'fgroup');
   g.appendChild(el('span', 'flbl', 'WO STEHST DU HEUTE?'));
   const row = el('div', 'optgrid');
-  KOMPETENZ.forEach(k => {
+  // Die KI darf die vier Stufen auf das Ziel zuschneiden (kompetenz_stufen, Reihenfolge wie KOMPETENZ); gespeichert wird immer der feste Wert
+  const stufen = Array.isArray(z.kompetenz_stufen) && z.kompetenz_stufen.length === 4 && z.kompetenz_stufen.every(x => String(x || '').trim()) ? z.kompetenz_stufen.map(x => String(x).trim()) : null;
+  KOMPETENZ.forEach((k, ki) => {
     const b = el('button', 'optcard');
     b.type = 'button';
     b.setAttribute('aria-pressed', 'false');
-    b.appendChild(el('span', 't', k.text));
+    b.appendChild(el('span', 't', stufen ? stufen[ki] : k.text));
     b.addEventListener('click', () => {
       zd.kompetenz = k.wert;
       row.querySelectorAll('.optcard').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
