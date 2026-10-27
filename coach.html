@@ -389,12 +389,18 @@
     </div>
     <div class="body" style="gap:18px">
       <h1>Mach es verbindlich</h1>
-      <div class="fgroup"><span class="flbl">WELCHE STUFE?</span><div class="seg" id="festStufen"></div></div>
+      <div class="fgroup" id="festStufenGrp"><span class="flbl">WELCHE STUFE?</span><div class="seg" id="festStufen"></div></div>
       <div class="fgroup">
         <label class="flbl" for="wenn">DEIN WENN-DANN-SATZ</label>
         <textarea id="wenn" rows="3"></textarea>
         <p class="fnote">Ein fester Auslöser macht es viel wahrscheinlicher, dass du es wirklich tust.</p>
       </div>
+      <div class="fgroup" id="zeitSumGrp" hidden>
+        <span class="flbl">ERINNERUNG UND RÜCKBLICK</span>
+        <p class="fnote" id="zeitSum" style="margin:0"></p>
+        <button class="linkbtn" id="zeitAendern" type="button" style="align-self:flex-start;background:none;border:0;padding:0;font:inherit;font-weight:600;text-decoration:underline;color:inherit;cursor:pointer">Zeiten ändern</button>
+      </div>
+      <div id="zeitBox" style="display:flex;flex-direction:column;gap:18px">
       <div class="fgroup">
         <span class="flbl">ERINNERE MICH</span>
         <div class="tchips" id="remChips"></div>
@@ -404,6 +410,7 @@
         <span class="flbl">RÜCKBLICK DANACH</span>
         <div class="tchips" id="rbChips"></div>
         <div class="zp" id="rbPick" hidden></div>
+      </div>
       </div>
       <p class="msg" id="festMsg" hidden></p>
       <div class="spacer"></div>
@@ -574,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-27 17:20 Folgeteile';
+const BUILD = '2026-10-27 21:55 Stufen-Zeiten';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -829,7 +836,8 @@ function init(){
   $('step5Skip').addEventListener('click', skipHeldentat);
   $('festBack').addEventListener('click', () => backClick('festlegen'));
   $('hnBack').addEventListener('click', () => backClick('heutenicht'));
-  $('festGo').addEventListener('click', sendFestlegen);
+  $('zeitAendern').addEventListener('click', () => zeitEinklappen(false));
+$('festGo').addEventListener('click', sendFestlegen);
   $('wenn').addEventListener('input', updateFestGo);
   // Auswahl "Andere Zeit": nur Viertelstunden, nur erlaubte Zeiten (kein Hinweistext nötig)
   fest.remPicker = zeitPicker($('remPick'), () => aufTakt(new Date(Date.now() + 5 * 60000)), d => {
@@ -1681,6 +1689,16 @@ function renderFestlegen(){
   $('remPick').hidden = true; $('rbPick').hidden = true; $('festMsg').hidden = true;
   $('festGo').disabled = false;
   renderFestStufen(); renderRemChips(); renderRbChips(); updateFestGo();
+  /* Nur eine Stufe: Abschnitt entfällt. Zeiten sind vorbelegt und eingeklappt, bis der Nutzer sie ändern will. */
+  $('festStufenGrp').hidden = h.stufen.length <= 1;
+  zeitEinklappen(true);
+}
+
+function zeitEinklappen(zu){
+  const sum = fest.rem ? 'Erinnerung ' + zeitLabel(fest.rem) : 'Keine Erinnerung';
+  $('zeitSum').textContent = sum + '. Rückblick ' + (fest.rb ? zeitLabel(fest.rb) : 'keiner') + '.';
+  $('zeitSumGrp').hidden = !zu;
+  $('zeitBox').style.display = zu ? 'none' : 'flex';
 }
 
 function renderFestStufen(){
