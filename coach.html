@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-27 21:55 Stufen-Zeiten';
+const BUILD = '2026-10-27 22:25 Wenn-Dann je Stufe';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -836,7 +836,7 @@ function init(){
   $('step5Skip').addEventListener('click', skipHeldentat);
   $('festBack').addEventListener('click', () => backClick('festlegen'));
   $('hnBack').addEventListener('click', () => backClick('heutenicht'));
-  $('zeitAendern').addEventListener('click', () => zeitEinklappen(false));
+  $('zeitAendern').addEventListener('click', () => { fest.zeitOffen = true; zeitEinklappen(false); });
 $('festGo').addEventListener('click', sendFestlegen);
   $('wenn').addEventListener('input', updateFestGo);
   // Auswahl "Andere Zeit": nur Viertelstunden, nur erlaubte Zeiten (kein Hinweistext nötig)
@@ -1441,7 +1441,7 @@ function normalizeBaustein(d){
     const was = grossStart(bereinigeLuecken(m.was));
     let f = grossStart(bereinigeLuecken(m.formulierung));
     if (f === was) f = '';
-    return { name:info.name, dauer:info.dauer, was:was, formulierung:f };
+    return { name:info.name, dauer:info.dauer, was:was, formulierung:f, wenn_dann:t(m.wenn_dann) };
   });
   return {
     titel: t(d.titel) || 'Dein nächster Schritt',
@@ -1681,8 +1681,9 @@ function rueckblickOptionen(){
 function renderFestlegen(){
   const h = state.heldentat;
   stepChrome('festlegen', state.training);
-  $('wenn').value = h.wenn_dann || '';
-  $('wenn').placeholder = (state.training && !h.wenn_dann) ? 'Wenn …, dann … (wähle deinen eigenen Auslöser)' : '';
+  fest.zeitOffen = false; fest.wennAuto = '';
+  wennAusStufe(true);
+  $('wenn').placeholder = (state.training && !wennVorschlag()) ? 'Wenn …, dann … (wähle deinen eigenen Auslöser)' : '';
   fest.remOpts = erinnerungOptionen();
   fest.rem = fest.remOpts[0].date; fest.remArt = 'chip';
   fest.rbOpts = rueckblickOptionen(); fest.rb = fest.rbOpts[0].date; fest.rbArt = 'chip';
@@ -1691,7 +1692,26 @@ function renderFestlegen(){
   renderFestStufen(); renderRemChips(); renderRbChips(); updateFestGo();
   /* Nur eine Stufe: Abschnitt entfällt. Zeiten sind vorbelegt und eingeklappt, bis der Nutzer sie ändern will. */
   $('festStufenGrp').hidden = h.stufen.length <= 1;
-  zeitEinklappen(true);
+  zeitAuto();
+}
+
+/* Wenn-Dann-Vorschlag je Stufe, sonst der allgemeine der Quest */
+function wennVorschlag(){
+  const h = state.heldentat, st = h && h.stufen[sel5.stufe];
+  return (st && st.wenn_dann) || (h && h.wenn_dann) || '';
+}
+/* Setzt den Vorschlag der gewählten Stufe, solange der Nutzer den Satz nicht selbst geändert hat */
+function wennAusStufe(erst){
+  const cur = $('wenn').value.trim();
+  if (erst || !cur || cur === fest.wennAuto){
+    fest.wennAuto = wennVorschlag();
+    $('wenn').value = fest.wennAuto;
+  }
+}
+/* Mini: Zeiten vorbelegt und eingeklappt. Standard und Erweitert brauchen mehr Planung, dort sind sie offen. */
+function zeitAuto(){
+  const st = state.heldentat.stufen[sel5.stufe];
+  zeitEinklappen(!fest.zeitOffen && !!st && st.name === 'Mini');
 }
 
 function zeitEinklappen(zu){
@@ -1712,7 +1732,7 @@ function renderFestStufen(){
     for (let k = 0; k < 3; k++) dots.appendChild(el('span', 'dot3' + (k <= stufeIndex(s.name) ? ' on' : '')));
     b.appendChild(dots);
     b.appendChild(el('span', null, s.name));
-    b.addEventListener('click', () => { sel5.stufe = i; renderFestStufen(); });
+    b.addEventListener('click', () => { sel5.stufe = i; renderFestStufen(); wennAusStufe(false); zeitAuto(); });
     box.appendChild(b);
   });
 }
