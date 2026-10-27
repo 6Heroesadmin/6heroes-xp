@@ -574,7 +574,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-26 22:35 Zieldialog-Einstieg';
+const BUILD = '2026-10-27 13:45 Dialog-Diagnose';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -719,7 +719,7 @@ async function postText(url, body, timeoutMs){
       signal: ctrl.signal
     });
     const text = await res.text();
-    return { ok: res.ok, text: text };
+    return { ok: res.ok, status: res.status, text: text };
   } finally {
     clearTimeout(timer);
     busy = Math.max(0, busy - 1);
@@ -2445,15 +2445,21 @@ async function zielRunde(userText){
   }
   const typing = typingBubble();
   chat.appendChild(typing);
-  let r;
+  let r, diag = '';
   try {
-    r = await postJson(ZIEL_DIALOG_WEBHOOK_URL, { aktion:'ziel_dialog', token:LOAD_TOKEN, user_id:state.userId, runde:zd.runde + 1, bestaetigt:'nein', verlauf:zd.verlauf.join('\n') });
-  } catch(e){ r = { ok:false, data:null }; }
+    const rt = await postText(ZIEL_DIALOG_WEBHOOK_URL, { aktion:'ziel_dialog', token:LOAD_TOKEN, user_id:state.userId, runde:zd.runde + 1, bestaetigt:'nein', verlauf:zd.verlauf.join('\n') });
+    r = { ok:rt.ok, data:parsePayload(rt.text) };
+    diag = 'HTTP ' + rt.status + ': ' + String(rt.text).slice(0, 300);
+  } catch(e){
+    r = { ok:false, data:null };
+    diag = (e && e.name === 'AbortError') ? 'Zeitüberschreitung nach ' + (REQUEST_TIMEOUT_MS / 1000) + ' s' : 'Netzwerk- oder CORS-Fehler: ' + (e && e.message ? e.message : e);
+  }
   typing.remove();
   const d = r.data;
   if (!(r.ok && d && typeof d === 'object' && !d.error && d.text)){
     if (userText){ zd.verlauf.pop(); }
     zielFehler(userText);
+    if (DEBUG) zielMsg('Das hat gerade nicht geklappt. [' + diag + ']', true);
     return;
   }
   zd.runde++;
@@ -2879,6 +2885,12 @@ function renderStart(){
     nb.style.marginTop = '24px';
     nb.addEventListener('click', showNewStart);
     box.appendChild(nb);
+    if (!zielInfo && state.userId && !zielLadeFehler){
+      const zb = el('button', 'btn2', 'Ein längerfristiges Ziel formulieren');
+      zb.style.marginTop = '12px';
+      zb.addEventListener('click', zielOeffnen);
+      box.appendChild(zb);
+    }
   }
 }
 
