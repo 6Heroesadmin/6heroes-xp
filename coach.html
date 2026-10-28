@@ -1499,8 +1499,6 @@ function renderStufen(){
     if (i === sel5.stufe){
       const det = el('div', 'detail');
       const sx = stufeIndex(s.name);
-      if (h.stufen.length > 1 && sx === 1) det.appendChild(el('p', 'enthaelt', 'Enthält Mini.'));
-      if (h.stufen.length > 1 && sx === 2) det.appendChild(el('p', 'enthaelt', 'Enthält Mini und Standard.'));
       det.appendChild(el('p', 'was', s.was));
       if (s.formulierung){
         const z = el('p', 'zitat');
