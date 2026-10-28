@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-28 16:50 Ziel nach erledigtem Lauf sichtbar';
+const BUILD = '2026-10-28 17:50 Wenn-Dann je Stufe';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -1416,7 +1416,7 @@ function normalizeHeldentat(d){
   if (arr.length < 3) return null;
   const stufen = STUFEN_INFO.map((info, i) => {
     const m = arr.find(x => x && String(x.stufe || '').trim().toLowerCase() === info.name.toLowerCase()) || arr[i] || {};
-    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)) };
+    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)), wenn_dann:String(m.wenn_dann || '').trim() };
   });
   if (stufen.some(x => !x.was)) return null;
   const t = v => String(v || '').trim();
