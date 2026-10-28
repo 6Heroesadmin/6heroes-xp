@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-28 17:50 Wenn-Dann je Stufe';
+const BUILD = '2026-10-28 20:10 Wenn-Dann Feld waechst';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -838,7 +838,7 @@ function init(){
   $('hnBack').addEventListener('click', () => backClick('heutenicht'));
   $('zeitAendern').addEventListener('click', () => { fest.zeitOffen = true; zeitEinklappen(false); });
 $('festGo').addEventListener('click', sendFestlegen);
-  $('wenn').addEventListener('input', updateFestGo);
+  $('wenn').addEventListener('input', () => { updateFestGo(); wennHoehe(); });
   // Auswahl "Andere Zeit": nur Viertelstunden, nur erlaubte Zeiten (kein Hinweistext nötig)
   fest.remPicker = zeitPicker($('remPick'), () => aufTakt(new Date(Date.now() + 5 * 60000)), d => {
     if (fest.remArt !== 'own') return;
@@ -1706,6 +1706,15 @@ function wennAusStufe(erst){
     fest.wennAuto = wennVorschlag();
     $('wenn').value = fest.wennAuto;
   }
+  wennHoehe();
+}
+/* Feld wächst mit dem Text, damit nichts abgeschnitten wird */
+function wennHoehe(){
+  const ta = $('wenn');
+  const fit = () => { ta.style.height = 'auto'; if (ta.scrollHeight > 0) ta.style.height = (ta.scrollHeight + 2) + 'px'; };
+  fit();
+  requestAnimationFrame(fit);
+  setTimeout(fit, 120);
 }
 /* Mini: Zeiten vorbelegt und eingeklappt. Standard und Erweitert brauchen mehr Planung, dort sind sie offen. */
 function zeitAuto(){
