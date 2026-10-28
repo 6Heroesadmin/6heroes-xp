@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-28 15:20 Ziel-Aktion aktion-Feld';
+const BUILD = '2026-10-28 16:15 Zieldialog Vorschlaege ohne Text';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2496,7 +2496,7 @@ async function zielRunde(userText, ja){
   }
   typing.remove();
   const d = r.data;
-  if (!(r.ok && d && typeof d === 'object' && !d.error && (d.text || (d.schritt === 'fertig' && d.ziel)))){
+  if (!(r.ok && d && typeof d === 'object' && !d.error && (d.text || (d.schritt === 'fertig' && d.ziel) || (Array.isArray(d.vorschlaege) && d.vorschlaege.some(v => v && v.satz))))){
     if (userText){ zd.verlauf.pop(); }
     zielFehler(userText, ja);
     if (DEBUG) zielMsg('Das hat gerade nicht geklappt. [' + diag + ']', true);
@@ -2510,7 +2510,7 @@ async function zielRunde(userText, ja){
     go('crisis');
     return;
   }
-  const ctext = String(d.text || '').trim() || (d.schritt === 'fertig' ? 'Dann halten wir dein Ziel so fest.' : '');
+  const ctext = String(d.text || '').trim() || (d.schritt === 'fertig' ? 'Dann halten wir dein Ziel so fest.' : (Array.isArray(d.vorschlaege) && d.vorschlaege.length ? 'Hier sind ein paar Möglichkeiten. Was passt am ehesten zu dir?' : ''));
   if (ctext){
     zd.verlauf.push('Coach: ' + ctext.replace(/\n+/g, ' '));
     chat.appendChild(coachBubble(ctext));
