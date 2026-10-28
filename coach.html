@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-27 23:00 Noch ein Durchlauf mit Ziel';
+const BUILD = '2026-10-28 15:20 Ziel-Aktion aktion-Feld';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2415,7 +2415,7 @@ async function ladeZiel(){
 async function zielAktionStatus(aktion, extra){
   if (zielDemo) return 'ok';
   try {
-    const body = Object.assign({ token:LOAD_TOKEN, user_id:state.userId, ziel_aktion:aktion }, extra || {});
+    const body = Object.assign({ aktion:'ziel_aktion', token:LOAD_TOKEN, user_id:state.userId, ziel_aktion:aktion }, extra || {});
     const r = await postText(ZIEL_AKTION_WEBHOOK_URL, body);
     const t = r.text.trim();
     return r.ok && ['ok', 'belegt', 'kein_ziel'].includes(t) ? t : 'fehler';
