@@ -581,7 +581,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-29 11:30 Ziel nach Anlegen nachladen';
+const BUILD = '2026-10-29 13:15 Platzhalter im Plural';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -1396,13 +1396,41 @@ const STUFEN_INFO = [
 ];
 const sel5 = { stufe:1 };
 
-/* Fasst Folgen nummerierter Platzhalter ([Argument 1], [Argument 2], [Argument 3]) zu einem einzigen Platzhalter zusammen.
-   Einzelne nummerierte Platzhalter und Platzhalter ohne Nummer bleiben unverändert. */
+/* Fasst Folgen nummerierter Platzhalter zu einem Platzhalter im Plural zusammen:
+   "um [Uhrzeit 1] und um [Uhrzeit 2]" -> "um [deine Uhrzeiten]", "[Argument 1], [Argument 2] und [Argument 3]" -> "[deine Argumente]".
+   Unbekannte Wörter: einfache Pluralregel, sonst "[deine Angaben]". Einzelne nummerierte Platzhalter verlieren nur die Ziffer. */
+const LUECKEN_PLURAL = {
+  uhrzeit:'Uhrzeiten', zeitpunkt:'Zeitpunkte', zeit:'Zeiten', zeitfenster:'Zeitfenster', termin:'Termine', datum:'Termine',
+  kriterium:'Kriterien', argument:'Argumente', meilenstein:'Meilensteine', frage:'Fragen', punkt:'Punkte', aufgabe:'Aufgaben',
+  name:'Namen', person:'Personen', idee:'Ideen', option:'Optionen', schritt:'Schritte', ziel:'Ziele', beispiel:'Beispiele',
+  grund:'Gründe', thema:'Themen', pause:'Pausen', wert:'Werte', vorteil:'Vorteile', nachteil:'Nachteile', etappe:'Etappen',
+  aktivität:'Aktivitäten', priorität:'Prioritäten', bedürfnis:'Bedürfnisse', satz:'Sätze', stichpunkt:'Stichpunkte'
+};
+function luekenPlural(basis){
+  const w = String(basis || '').trim().replace(/^(dein|deine|deinen|deiner|eigene|eigener|eigenen)\s+/i, '');
+  const letzt = w.split(/\s+/).pop() || '';
+  const k = letzt.toLowerCase();
+  if (!k) return 'deine Angaben';
+  if (LUECKEN_PLURAL[k]) return 'deine ' + LUECKEN_PLURAL[k];
+  if (/e$/.test(k)) return 'deine ' + letzt + 'n';
+  if (/(ung|heit|keit|ion|tät|schaft)$/.test(k)) return 'deine ' + letzt + 'en';
+  return 'deine Angaben';
+}
 function bereinigeLuecken(text){
-  return String(text || '').replace(
-    /\[[^\]\[]*?\s\d\](?:\s*(?:,|und|sowie)\s*\[[^\]\[]*?\s\d\])+/g,
-    '[deine Liste]'
-  );
+  const PRAEP = '(?:um|am|an|ab|zu|für|mit|von|im|in)';
+  const NUM = '\\[([^\\]\\[]*?)\\s*\\d+\\]';
+  const folge = new RegExp('(' + PRAEP + '\\s+)?' + NUM + '(?:\\s*(?:,|und|sowie|oder)\\s*(?:' + PRAEP + '\\s+)?\\[[^\\]\\[]*?\\s*\\d+\\])+', 'gi');
+  let t = String(text || '').replace(folge, (ganz, praep) => {
+    const basen = [];
+    ganz.replace(/\[([^\]\[]*?)\s*\d+\]/g, (_, b) => { basen.push(b.trim().toLowerCase()); return _; });
+    if (!basen.length || !basen[0]) return ganz;
+    const gleich = basen.every(b => b === basen[0]);
+    const first = /\[([^\]\[]*?)\s*\d+\]/.exec(ganz)[1];
+    return (praep || '') + '[' + (gleich ? luekenPlural(first) : 'deine Angaben') + ']';
+  });
+  // Einzelne übrige nummerierte Platzhalter: nur die Ziffer entfernen
+  t = t.replace(/\[([^\]\[]*?[^\]\[\s\d])\s*\d+\]/g, '[$1]');
+  return t;
 }
 function grossStart(t){
   const x = String(t || '').trim();
@@ -1416,7 +1444,7 @@ function normalizeHeldentat(d){
   if (arr.length < 3) return null;
   const stufen = STUFEN_INFO.map((info, i) => {
     const m = arr.find(x => x && String(x.stufe || '').trim().toLowerCase() === info.name.toLowerCase()) || arr[i] || {};
-    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)), wenn_dann:String(m.wenn_dann || '').trim() };
+    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)), wenn_dann:bereinigeLuecken(String(m.wenn_dann || '').trim()) };
   });
   if (stufen.some(x => !x.was)) return null;
   const t = v => String(v || '').trim();
@@ -1442,7 +1470,7 @@ function normalizeBaustein(d){
     const was = grossStart(bereinigeLuecken(m.was));
     let f = grossStart(bereinigeLuecken(m.formulierung));
     if (f === was) f = '';
-    return { name:info.name, dauer:info.dauer, was:was, formulierung:f, wenn_dann:t(m.wenn_dann) };
+    return { name:info.name, dauer:info.dauer, was:was, formulierung:f, wenn_dann:bereinigeLuecken(t(m.wenn_dann)) };
   });
   return {
     titel: t(d.titel) || 'Dein nächster Schritt',
@@ -2349,7 +2377,7 @@ function parseLaden(text){
   d.heldentatJson = hj && Array.isArray(hj.stufen) ? hj : null;
   if (hj && Array.isArray(hj.stufen)){
     const m = hj.stufen.find(x => x && String(x.stufe || '').trim().toLowerCase() === d.stufe.toLowerCase());
-    if (m && m.was) d.was = grossStart(m.was);
+    if (m && m.was) d.was = grossStart(bereinigeLuecken(m.was));
   }
   const aj = parsePayload(p.slice(9).join('|||'));
   if (aj && aj.krise !== true && aj.naechstes) d.naechstes = String(aj.naechstes).trim();
