@@ -583,7 +583,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-29 19:30 Meta-Saetze raus, zeigt optional';
+const BUILD = '2026-10-29 19:45 zeigt nur mit Text';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2209,7 +2209,8 @@ async function sendRueckblick(){
     return;
   }
   msg.hidden = true;
-  openAntwort(d);
+  // Ohne eigenen Text des Nutzers gibt es nichts, was sich "zeigen" könnte: Abschnitt immer ausblenden, auch wenn die KI etwas liefert
+  openAntwort($('rvText').value.trim() ? d : Object.assign({}, d, { zeigt:'' }));
 }
 
 function openAntwort(d){
