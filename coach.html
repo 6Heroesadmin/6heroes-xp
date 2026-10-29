@@ -486,7 +486,7 @@
       <div class="hrow"><h1>Das nimmst du mit</h1><svg id="antRing" class="antring" viewBox="0 0 300 300" width="56" height="56" aria-hidden="true" hidden></svg></div>
       <div class="answer">
         <div class="part"><span class="lbl">WAS DU GETAN HAST</span><span class="txt" id="antGetan"></span></div>
-        <div class="part"><span class="lbl">WAS SICH ZEIGT</span><span class="txt" id="antZeigt"></span></div>
+        <div class="part" id="antZeigtPart"><span class="lbl">WAS SICH ZEIGT</span><span class="txt" id="antZeigt"></span></div>
         <div class="part"><span class="lbl">FÜR DAS NÄCHSTE MAL</span><span class="txt" id="antNaechstes"></span></div>
       </div>
       <div class="first" id="antErstmals" hidden><span class="lbl">ERSTMALS</span><span class="txt" id="antErstmalsTxt"></span></div>
@@ -583,7 +583,7 @@ const ZIEL_START_WEBHOOK_URL = 'https://hook.eu1.make.com/dkhqduabsaoj5zbi0x43ri
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-29 17:30 Stufentext beim Festlegen';
+const BUILD = '2026-10-29 19:30 Meta-Saetze raus, zeigt optional';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -1434,6 +1434,14 @@ function bereinigeLuecken(text){
   t = t.replace(/\[([^\]\[]*?[^\]\[\s\d])\s*\d+\]/g, '[$1]');
   return t;
 }
+/* Entfernt Sätze, in denen die KI ihre eigene Anleitung kommentiert ("Der neue Teil ist ...", "Neu ist ...", "Das Neue ist ...") */
+function entferneMeta(text){
+  const t = String(text || '');
+  const saetze = t.match(/[^.!?]+[.!?]*\s*/g) || [t];
+  const re = /^\s*(der neue (teil|schritt)|neu (ist|dabei ist|daran ist)|das neue (ist|daran ist|dabei ist))\b/i;
+  const rest = saetze.filter(x => !re.test(x));
+  return (rest.length ? rest : saetze).join('').trim();
+}
 function grossStart(t){
   const x = String(t || '').trim();
   return x ? x.charAt(0).toUpperCase() + x.slice(1) : x;
@@ -1446,7 +1454,7 @@ function normalizeHeldentat(d){
   if (arr.length < 3) return null;
   const stufen = STUFEN_INFO.map((info, i) => {
     const m = arr.find(x => x && String(x.stufe || '').trim().toLowerCase() === info.name.toLowerCase()) || arr[i] || {};
-    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(m.was)), formulierung:grossStart(bereinigeLuecken(m.formulierung)), wenn_dann:bereinigeLuecken(String(m.wenn_dann || '').trim()) };
+    return { name:info.name, dauer:info.dauer, was:grossStart(bereinigeLuecken(entferneMeta(m.was))), formulierung:grossStart(bereinigeLuecken(entferneMeta(m.formulierung))), wenn_dann:bereinigeLuecken(String(m.wenn_dann || '').trim()) };
   });
   if (stufen.some(x => !x.was)) return null;
   const t = v => String(v || '').trim();
@@ -1469,8 +1477,8 @@ function normalizeBaustein(d){
   const t = v => String(v || '').trim();
   const stufen = arr.slice(0, 3).map(m => {
     const info = STUFEN_INFO[stufeIndex(m.stufe)];
-    const was = grossStart(bereinigeLuecken(m.was));
-    let f = grossStart(bereinigeLuecken(m.formulierung));
+    const was = grossStart(bereinigeLuecken(entferneMeta(m.was)));
+    let f = grossStart(bereinigeLuecken(entferneMeta(m.formulierung)));
     if (f === was) f = '';
     return { name:info.name, dauer:info.dauer, was:was, formulierung:f, wenn_dann:bereinigeLuecken(t(m.wenn_dann)) };
   });
@@ -2193,7 +2201,7 @@ async function sendRueckblick(){
   }
 
   const d = result.data;
-  if (!(result.ok && d && typeof d === 'object' && d.getan && d.zeigt && d.naechstes)){
+  if (!(result.ok && d && typeof d === 'object' && d.getan && d.naechstes)){
     msg.className = 'msg err';
     msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal auf Absenden.';
     msg.hidden = false;
@@ -2211,6 +2219,8 @@ function openAntwort(d){
   };
   $('antGetan').textContent = state.antwort.getan;
   $('antZeigt').textContent = state.antwort.zeigt;
+  // Ohne Text des Nutzers liefert der Coach kein "Was sich zeigt" (Prompt schritt6 ab s6-v15): Abschnitt ausblenden
+  $('antZeigtPart').hidden = !state.antwort.zeigt.trim();
   $('antNaechstes').textContent = state.antwort.naechstes;
   $('antErstmals').hidden = !state.antwort.erstmals;
   $('antErstmalsTxt').textContent = state.antwort.erstmals;
@@ -2388,7 +2398,7 @@ function parseLaden(text){
   d.heldentatJson = hj && Array.isArray(hj.stufen) ? hj : null;
   if (hj && Array.isArray(hj.stufen)){
     const m = hj.stufen.find(x => x && String(x.stufe || '').trim().toLowerCase() === d.stufe.toLowerCase());
-    if (m && m.was) d.was = grossStart(bereinigeLuecken(m.was));
+    if (m && m.was) d.was = grossStart(bereinigeLuecken(entferneMeta(m.was)));
   }
   const aj = parsePayload(p.slice(9).join('|||'));
   if (aj && aj.krise !== true && aj.naechstes) d.naechstes = String(aj.naechstes).trim();
