@@ -602,7 +602,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-29 23:20 Ziel-Bilanz live';
+const BUILD = '2026-10-29 23:55 Bilanz auch nach erledigt';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -3254,7 +3254,18 @@ function renderStart(){
       box.appendChild(el('h1', null, state.name ? 'Alles klar, ' + state.name + '.' : 'Alles klar.'));
       box.appendChild(el('p', 'hint', 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.'));
     }
-    if (zielInfo && zielInfo.status === 'aktiv'){
+    const ba = bilanzArt();
+    if (ba){
+      // Bilanz ist fällig: auch nach einem erledigten Durchlauf direkt anbieten
+      const c = el('div', 'hcard');
+      c.appendChild(el('span', 'lbl', ba === 'ende' ? 'ABSCHLUSS' : 'ZWISCHENBILANZ'));
+      c.appendChild(el('span', 'ttl', zielInfo.kurz || 'Dein Ziel'));
+      c.appendChild(el('span', 'sub', ba === 'ende' ? 'Deine Trainingszeit ist um. Lass uns gemeinsam zurückschauen.' : 'Zwei Wochen sind um. Schau kurz mit mir zurück, bevor es weitergeht.'));
+      const bb = el('button', 'btn', 'Bilanz ziehen');
+      bb.addEventListener('click', () => openBilanz(ba));
+      c.appendChild(bb);
+      box.appendChild(c);
+    } else if (zielInfo && zielInfo.status === 'aktiv'){
       const zt = (zielInfo.kurz || 'Dein Ziel') + (zielInfo.faellig ? '. Nächster Schritt: ' + zielInfo.faellig.toLocaleDateString('de-DE', { weekday:'short', day:'numeric', month:'numeric' }) : '');
       box.appendChild(infoBox('DEIN ZIEL', zt));
     } else if (!zielInfo && Date.now() < zielWartetBis){
@@ -3263,7 +3274,7 @@ function renderStart(){
     const nb = el('button', 'btn', 'Noch einen Durchlauf starten');
     nb.style.marginTop = '24px';
     nb.addEventListener('click', () => {
-      if (zielKarte() === 'training'){ startZiel = true; startOverride = false; frischAbgeschlossen = false; renderStart(); show('start'); }
+      if (/^(training|bilanz_)/.test(zielKarte() || '')){ startZiel = true; startOverride = false; frischAbgeschlossen = false; renderStart(); show('start'); }
       else showNewStart();
     });
     box.appendChild(nb);
