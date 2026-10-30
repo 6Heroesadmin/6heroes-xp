@@ -603,7 +603,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-30 00:40 Vertiefen mit Vorgaenger';
+const BUILD = '2026-10-30 10:10 Auswahl mit Bestaetigen';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2544,6 +2544,36 @@ function bilanzOption(titel, sub, onClick){
   b.addEventListener('click', () => onClick(b));
   return b;
 }
+/* Auswahl mit Bestätigung: Karte antippen markiert sie, erst der gelbe Knopf führt die Aktion aus (wie auf den anderen Screens) */
+function auswahlBox(container, btnText){
+  const liste = el('div');
+  liste.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+  const btn = el('button', 'btn', btnText || 'Weiter');
+  btn.disabled = true;
+  btn.style.marginTop = '8px';
+  let gewaehlt = null;
+  btn.addEventListener('click', () => { if (busy > 0 || !gewaehlt || btn.disabled) return; gewaehlt(btn); });
+  container.append(liste, btn);
+  return {
+    btn,
+    add(titel, sub, action){
+      const b = el('button', 'optcard');
+      b.type = 'button';
+      b.setAttribute('aria-pressed', 'false');
+      if (titel) b.appendChild(el('span', 't', titel));
+      if (sub) b.appendChild(el('span', 's', sub));
+      b.addEventListener('click', () => {
+        if (busy > 0) return;
+        gewaehlt = action;
+        liste.querySelectorAll('.optcard').forEach(x => { x.classList.remove('sel'); x.setAttribute('aria-pressed', 'false'); });
+        b.classList.add('sel'); b.setAttribute('aria-pressed', 'true');
+        btn.disabled = false;
+      });
+      liste.appendChild(b);
+      return b;
+    }
+  };
+}
 function bilanzFehler(msg, text){ msg.className = 'msg err'; msg.textContent = text || 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.'; msg.hidden = false; }
 
 function openBilanz(art){
@@ -2680,13 +2710,12 @@ async function bilanzZumStart(){
 function bilanzEntscheidung(){
   const box = $('bilanzBox'), z = zielInfo;
   const msg = el('p', 'msg'); msg.hidden = true;
-  const liste = el('div');
-  liste.style.cssText = 'display:flex;flex-direction:column;gap:10px';
   if (bz.art === 'mitte'){
     bilanzKopf(box, 'Wie geht es weiter?', 'Du hast noch zwei Wochen mit deinem Ziel.');
-    liste.appendChild(bilanzOption('Weiter wie bisher', 'Dein nächster Schritt kommt wie geplant.', () => bilanzZumStart()));
-    liste.appendChild(bilanzOption('Kleinere Schritte', 'Die nächsten Schritte werden einfacher.', async b => { if (await bilanzAktion('einfacher', b, msg)){ await new Promise(r => setTimeout(r, 2500)); bilanzZumStart(); } }));
-    liste.appendChild(bilanzOption('Pause machen', 'Dein Ziel ruht, bis du weitermachen willst.', async b => { if (await bilanzAktion('ruhen', b, msg)){ z.status = 'pausiert'; showStart(); } }));
+    const a = auswahlBox(box, 'Weiter');
+    a.add('Weiter wie bisher', 'Dein nächster Schritt kommt wie geplant.', b => { b.disabled = true; bilanzZumStart(); });
+    a.add('Kleinere Schritte', 'Die nächsten Schritte werden einfacher.', async b => { if (await bilanzAktion('einfacher', b, msg)){ await new Promise(r => setTimeout(r, 2500)); bilanzZumStart(); } });
+    a.add('Pause machen', 'Dein Ziel ruht, bis du weitermachen willst.', async b => { if (await bilanzAktion('ruhen', b, msg)){ z.status = 'pausiert'; showStart(); } });
   } else {
     box.innerHTML = '';
     const ring = el('div', 'bring');
@@ -2696,31 +2725,30 @@ function bilanzEntscheidung(){
     box.appendChild(ring);
     box.appendChild(el('h1', null, 'Der Ring schließt sich.'));
     box.appendChild(el('p', 'hint', 'Du hast „' + (z.kurz || 'dein Ziel') + '“ über Wochen trainiert. Wie möchtest du weitermachen?'));
-    liste.appendChild(bilanzOption('Ziel abschließen', 'Du beendest das Training und wählst, wie es weitergeht.', async b => { if (await bilanzAktion('abschliessen', b, msg)) bilanzFolge(); }));
+    const a = auswahlBox(box, 'Weiter');
+    a.add('Ziel abschließen', 'Du beendest das Training und wählst, wie es weitergeht.', async b => { if (await bilanzAktion('abschliessen', b, msg)) bilanzFolge(); });
     if (!z.verlaengert){
       const verl = (wochen) => async b => {
         if (!(await bilanzAktion('verlaengern_' + wochen, b, msg))) return;
         Object.assign(z, { verlaengert:true, zfBestaetigt:false, endeStr:plusTageStr(heuteBerlin(), wochen * 7) });
         showStart();
       };
-      liste.appendChild(bilanzOption('Noch zwei Wochen dranbleiben', 'Du übst weiter und ziehst danach noch einmal Bilanz.', verl(2)));
-      liste.appendChild(bilanzOption('Noch vier Wochen dranbleiben', 'Mehr Zeit, um es zu festigen.', verl(4)));
+      a.add('Noch zwei Wochen dranbleiben', 'Du übst weiter und ziehst danach noch einmal Bilanz.', verl(2));
+      a.add('Noch vier Wochen dranbleiben', 'Mehr Zeit, um es zu festigen.', verl(4));
     }
   }
-  box.append(liste, msg);
+  box.appendChild(msg);
 }
 
 function bilanzFolge(){
   const box = $('bilanzBox');
   const ft = (zielInfo && zielInfo.folgeteile) || [];
   bilanzKopf(box, 'Wie geht es weiter?', 'Dein Ziel ist abgeschlossen. Deine Rückblicke bleiben gespeichert.');
-  const liste = el('div');
-  liste.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+  const a = auswahlBox(box, 'Weiter');
   const ende = (fn) => () => { zielInfo = null; fn(); };
-  if (ft.length) liste.appendChild(bilanzOption('Den nächsten Teil angehen', ft[0], ende(() => zielOeffnen({ vorgabe:ft[0], rest:ft.slice(1) }))));
-  liste.appendChild(bilanzOption('Ein neues Thema wählen', 'Wir formulieren gemeinsam ein neues Ziel.', ende(() => zielOeffnen())));
-  liste.appendChild(bilanzOption('Erst einmal Pause', 'Du kannst jederzeit ein neues Ziel setzen.', ende(() => showStart())));
-  box.appendChild(liste);
+  if (ft.length) a.add('Den nächsten Teil angehen', ft[0], ende(() => zielOeffnen({ vorgabe:ft[0], rest:ft.slice(1) })));
+  a.add('Ein neues Thema wählen', 'Wir formulieren gemeinsam ein neues Ziel.', ende(() => zielOeffnen({ zurueck:true })));
+  a.add('Erst einmal Pause', 'Du kannst jederzeit ein neues Ziel setzen.', ende(() => showStart()));
 }
 
 /* ---------- Ziel formulieren (Zieldialog) ---------- */
@@ -2746,6 +2774,8 @@ function zielMsg(text, fehler){
 function zielOeffnen(opt){
   if (busy > 0) return;
   const o = (opt && typeof opt === 'object' && opt.vorgabe) ? opt : null;
+  // Aus der Bilanz geöffnet: Zurück führt wieder zur Auswahl "Wie geht es weiter?" statt zum Start
+  $('s-ziel').querySelector('.back').dataset.back = (opt && typeof opt === 'object' && (opt.vorgabe || opt.zurueck)) ? 'zurueck' : 'start';
   Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'', folgeRest: o && Array.isArray(o.rest) ? o.rest.slice() : [], vertiefen: !!o });
   $('zielChat').innerHTML = ''; $('zielVorschl').innerHTML = ''; $('zielVorschl').hidden = true;
   $('zielSumm').innerHTML = ''; $('zielSumm').hidden = true;
@@ -2757,12 +2787,7 @@ function zielOeffnen(opt){
   // Der Dialog beginnt mit dem Text des Nutzers (leerer Verlauf wird vom Szenario nicht angenommen)
   $('zielChat').appendChild(coachBubble('Woran möchtest du länger arbeiten? Schreib es in eigenen Worten. Wenn du unsicher bist, sag es einfach, dann machen wir dir Vorschläge.'));
   const vb = $('zielVorschl');
-  const unsicher = el('button', 'optcard');
-  unsicher.type = 'button';
-  unsicher.appendChild(el('span', 't', 'Ich bin unsicher'));
-  unsicher.appendChild(el('span', 's', 'Der Coach macht dir Vorschläge.'));
-  unsicher.addEventListener('click', () => zielRunde('Ich weiß noch nicht genau, woran ich arbeiten möchte.'));
-  vb.appendChild(unsicher);
+  auswahlBox(vb, 'Weiter').add('Ich bin unsicher', 'Der Coach macht dir Vorschläge.', () => zielRunde('Ich weiß noch nicht genau, woran ich arbeiten möchte.'));
   vb.hidden = false;
   $('zielEingabe').hidden = false;
   $('zielText').placeholder = 'Dein Ziel in eigenen Worten';
@@ -2818,29 +2843,14 @@ async function zielRunde(userText, ja){
   const vs = Array.isArray(d.vorschlaege) ? d.vorschlaege.filter(v => v && v.satz) : [];
   const box = $('zielVorschl');
   box.innerHTML = '';
+  const auswahl = (zd.letzterSchritt === 'spiegeln' || vs.length) ? auswahlBox(box, 'Weiter') : null;
   if (zd.letzterSchritt === 'spiegeln'){
-    const jb = el('button', 'optcard');
-    jb.type = 'button';
-    jb.appendChild(el('span', 't', 'Ja, so stimmt es'));
-    jb.addEventListener('click', () => zielRunde('Ja, so stimmt es.', true));
-    box.appendChild(jb);
-    const nb = el('button', 'optcard');
-    nb.type = 'button';
-    nb.appendChild(el('span', 't', 'Nicht ganz'));
-    nb.appendChild(el('span', 's', 'Dann schreibe ich es anders.'));
-    nb.addEventListener('click', () => { box.hidden = true; $('zielText').placeholder = 'Was stimmt nicht ganz?'; $('zielText').focus({ preventScroll:true }); });
-    box.appendChild(nb);
+    auswahl.add('Ja, so stimmt es', '', () => zielRunde('Ja, so stimmt es.', true));
+    auswahl.add('Nicht ganz', 'Dann schreibe ich es anders.', () => { box.hidden = true; $('zielText').placeholder = 'Was stimmt nicht ganz?'; $('zielText').focus({ preventScroll:true }); });
     box.hidden = false;
   }
   if (vs.length){
-    vs.slice(0, 4).forEach(v => {
-      const b = el('button', 'optcard');
-      b.type = 'button';
-      if (v.feld) b.appendChild(el('span', 't', String(v.feld)));
-      b.appendChild(el('span', 's', String(v.satz)));
-      b.addEventListener('click', () => zielRunde(String(v.satz)));
-      box.appendChild(b);
-    });
+    vs.slice(0, 4).forEach(v => auswahl.add(v.feld ? String(v.feld) : '', String(v.satz), () => zielRunde(String(v.satz))));
     box.hidden = false;
   }
   $('zielEingabe').hidden = false;
