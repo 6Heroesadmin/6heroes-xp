@@ -603,7 +603,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-30 00:10 Auswahl sichtbar';
+const BUILD = '2026-10-30 00:40 Vertiefen mit Vorgaenger';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2671,6 +2671,12 @@ async function bilanzAktion(aktion, b, msg){
   return ok;
 }
 
+/* Nach einer Bilanz-Entscheidung das Ziel neu laden (Trainingskarte, Daten aus me_regeln), dann zum Start */
+async function bilanzZumStart(){
+  if (!zielDemo){ const z = await ladeZiel(); if (z) zielInfo = z; }
+  showStart();
+}
+
 function bilanzEntscheidung(){
   const box = $('bilanzBox'), z = zielInfo;
   const msg = el('p', 'msg'); msg.hidden = true;
@@ -2678,8 +2684,8 @@ function bilanzEntscheidung(){
   liste.style.cssText = 'display:flex;flex-direction:column;gap:10px';
   if (bz.art === 'mitte'){
     bilanzKopf(box, 'Wie geht es weiter?', 'Du hast noch zwei Wochen mit deinem Ziel.');
-    liste.appendChild(bilanzOption('Weiter wie bisher', 'Dein nächster Schritt kommt wie geplant.', () => showStart()));
-    liste.appendChild(bilanzOption('Kleinere Schritte', 'Die nächsten Schritte werden einfacher.', async b => { if (await bilanzAktion('einfacher', b, msg)) showStart(); }));
+    liste.appendChild(bilanzOption('Weiter wie bisher', 'Dein nächster Schritt kommt wie geplant.', () => bilanzZumStart()));
+    liste.appendChild(bilanzOption('Kleinere Schritte', 'Die nächsten Schritte werden einfacher.', async b => { if (await bilanzAktion('einfacher', b, msg)){ await new Promise(r => setTimeout(r, 2500)); bilanzZumStart(); } }));
     liste.appendChild(bilanzOption('Pause machen', 'Dein Ziel ruht, bis du weitermachen willst.', async b => { if (await bilanzAktion('ruhen', b, msg)){ z.status = 'pausiert'; showStart(); } }));
   } else {
     box.innerHTML = '';
@@ -2725,7 +2731,7 @@ const KOMPETENZ = [
   { wert:'gelegentlich anders', text:'Ich kann gelegentlich bewusst anders handeln.' },
   { wert:'zunehmend selbst', text:'Ich steuere mein Verhalten zunehmend selbst.' }
 ];
-const zd = { aktiv:false, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'', folgeRest:[] };
+const zd = { aktiv:false, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'', folgeRest:[], vertiefen:false };
 const JA_RE = /^\s*(ja|jap|jo|genau|stimmt|passt|richtig|ja[,.!]?\s*(genau|passt|stimmt|das stimmt|so stimmt es)(\s+so)?)[\s.!]*$/i;
 
 function zielMsg(text, fehler){
@@ -2740,7 +2746,7 @@ function zielMsg(text, fehler){
 function zielOeffnen(opt){
   if (busy > 0) return;
   const o = (opt && typeof opt === 'object' && opt.vorgabe) ? opt : null;
-  Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'', folgeRest: o && Array.isArray(o.rest) ? o.rest.slice() : [] });
+  Object.assign(zd, { aktiv:true, runde:0, verlauf:[], ziel:null, ersterText:'', kompetenz:null, letzterText:'', letzterSchritt:'', folgeRest: o && Array.isArray(o.rest) ? o.rest.slice() : [], vertiefen: !!o });
   $('zielChat').innerHTML = ''; $('zielVorschl').innerHTML = ''; $('zielVorschl').hidden = true;
   $('zielSumm').innerHTML = ''; $('zielSumm').hidden = true;
   $('zielActions').innerHTML = ''; $('zielActions').hidden = true;
@@ -2921,6 +2927,7 @@ async function zielBestaetigen(){
                  ziel_text:t(zd.ersterText) || t(z.zielverhalten), zielverhalten:t(z.zielverhalten), ausloeser:t(z.ausloeser),
                  erfolgssignal:t(z.erfolgssignal), kompetenz_start:zd.kompetenz,
                  folgeteile:[...new Set([...(Array.isArray(z.folgeteile) ? z.folgeteile.map(t) : t(z.folgeteile).split('\n')), ...zd.folgeRest.map(t)].filter(Boolean))].join('\n') };
+  if (zd.vertiefen) body.vertiefen = 'ja';   // Coach_Ziel_Start verknüpft dann das zuletzt abgeschlossene Ziel als Vorgaenger
   Object.keys(body).forEach(k => { if (body[k] === '') delete body[k]; });
   let ok = false;
   if (zielDemo) ok = true;
