@@ -603,7 +603,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-30 10:10 Auswahl mit Bestaetigen';
+const BUILD = '2026-10-30 18:45 Folgeteil auf Start';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -2476,8 +2476,17 @@ function parseZiel(text){
   return { kurz:t(0), status:t(1).toLowerCase(), phase:t(2), modus:t(3), karte:t(4).toLowerCase(), titel:t(5), typ:t(6), stepId:t(7),
            faellig:toDate(p[8]), bilanz:toDate(p[9]), ende:toDate(p[10]), bilanzStr:t(9).slice(0, 10), endeStr:t(10).slice(0, 10),
            bilanzErledigt:b(11), kompStart:t(12), kompMitte:t(13), verlaengert:b(14), zfBestaetigt:b(15),
-           folgeteile:p.slice(16).join('|||').split(/\r?\n/).map(x => x.replace(/^\s*[-*\d.)]+\s*/, '').trim()).filter(Boolean) };
+           folgeteile:folgeListe(p.length > 17 ? p[16] : p.slice(16).join('|||')) };
 }
+function folgeListe(t){ return String(t || '').split(/\r?\n/).map(x => x.replace(/^\s*[-*\d.)]+\s*/, '').trim()).filter(Boolean); }
+/* Ab Coach_Ziel_Laden v3: |||Ziel_Kurz|||Folgeteile des zuletzt abgeschlossenen Ziels (ohne Nachfolger, max. 60 Tage) */
+function parseFolgeAngebot(text){
+  const p = String(text || '').split('|||');
+  if (p.length < 19) return null;
+  const teile = folgeListe(p.slice(18).join('|||'));
+  return teile.length ? { kurz:(p[17] || '').trim(), teile } : null;
+}
+let folgeAngebot = null;   // offene Folgeteile des letzten abgeschlossenen Ziels, nur genutzt, wenn kein Ziel läuft
 
 async function ladeZiel(){
   if (!ZIEL_LADEN_WEBHOOK_URL || !LOAD_TOKEN || !state.userId){ zielDiag = 'nicht konfiguriert'; return null; }
@@ -2486,7 +2495,8 @@ async function ladeZiel(){
     if (!r.ok){ zielDiag = 'HTTP-Fehler'; zielLadeFehler = true; return null; }
     zielLadeFehler = false;
     const z = parseZiel(r.text);
-    zielDiag = z ? ('Ziel "' + z.kurz.slice(0, 30) + '", Status ' + z.status + ', Karte ' + (z.karte || '-')) : 'kein Ziel (Antwort: "' + r.text.slice(0, 30) + '")';
+    folgeAngebot = parseFolgeAngebot(r.text);
+    zielDiag = (folgeAngebot ? 'Folgeteil "' + folgeAngebot.teile[0].slice(0, 20) + '" | ' : '') + (z ? ('Ziel "' + z.kurz.slice(0, 30) + '", Status ' + z.status + ', Karte ' + (z.karte || '-')) : 'kein Ziel (Antwort: "' + r.text.slice(0, 30) + '")');
     return z;
   } catch(e){
     zielDiag = (e && e.name === 'AbortError') ? 'Timeout' : 'Netzwerkfehler';
@@ -2745,7 +2755,8 @@ function bilanzFolge(){
   const ft = (zielInfo && zielInfo.folgeteile) || [];
   bilanzKopf(box, 'Wie geht es weiter?', 'Dein Ziel ist abgeschlossen. Deine Rückblicke bleiben gespeichert.');
   const a = auswahlBox(box, 'Weiter');
-  const ende = (fn) => () => { zielInfo = null; fn(); };
+  const kurz = (zielInfo && zielInfo.kurz) || '';
+  const ende = (fn) => () => { zielInfo = null; folgeAngebot = ft.length ? { kurz, teile:ft } : null; fn(); };
   if (ft.length) a.add('Den nächsten Teil angehen', ft[0], ende(() => zielOeffnen({ vorgabe:ft[0], rest:ft.slice(1) })));
   a.add('Ein neues Thema wählen', 'Wir formulieren gemeinsam ein neues Ziel.', ende(() => zielOeffnen({ zurueck:true })));
   a.add('Erst einmal Pause', 'Du kannst jederzeit ein neues Ziel setzen.', ende(() => showStart()));
@@ -2954,6 +2965,7 @@ async function zielBestaetigen(){
   zd.aktiv = false;
   state.zielAngelegt = true;
   zielInfo = null;
+  folgeAngebot = null;
   zielWartetBis = Date.now() + 90000;
   $('nextTitle').textContent = 'Dein Ziel steht.';
   $('nextHint').textContent = 'Dein erster Schritt wird gerade vorbereitet. Du findest ihn gleich auf dem Start-Screen.';
@@ -3239,7 +3251,17 @@ function renderStart(){
     } else if (Date.now() < zielWartetBis){
       box.appendChild(kachel('MEIN ZIEL', '', 'Dein Ziel wird gerade vorbereitet', 'Dein erster Schritt erscheint gleich hier.', '', null));
     } else if (state.userId && !zielLadeFehler){
-      box.appendChild(kachel('EIN ZIEL SETZEN', '', 'Woran willst du länger arbeiten?', 'Wir formulieren gemeinsam ein Ziel und üben es in kleinen Schritten.', 'Ziel formulieren', () => zielOeffnen()));
+      if (folgeAngebot){
+        const fa = folgeAngebot;
+        const c = kachel('DEIN NÄCHSTER TEIL', '', fa.teile[0], fa.kurz ? 'Er schließt an dein abgeschlossenes Ziel „' + fa.kurz + '“ an.' : 'Er schließt an dein abgeschlossenes Ziel an.', 'Diesen Teil angehen', () => zielOeffnen({ vorgabe:fa.teile[0], rest:fa.teile.slice(1) }));
+        const neu = el('button', 'linkbtn', 'Lieber ein neues Thema wählen');
+        neu.type = 'button';
+        neu.addEventListener('click', () => zielOeffnen());
+        c.appendChild(neu);
+        box.appendChild(c);
+      } else {
+        box.appendChild(kachel('EIN ZIEL SETZEN', '', 'Woran willst du länger arbeiten?', 'Wir formulieren gemeinsam ein Ziel und üben es in kleinen Schritten.', 'Ziel formulieren', () => zielOeffnen()));
+      }
     }
     box.appendChild(kachel('EINE SITUATION BESPRECHEN', '#B3382B', 'Was beschäftigt dich gerade?', 'Ein Gespräch, eine Entscheidung, Druck oder etwas Eigenes.', 'Situation beschreiben', () => showNewStart()));
   } else if (kind === 'faellig'){
@@ -3297,9 +3319,10 @@ function renderStart(){
     });
     box.appendChild(nb);
     if (!zielInfo && state.userId && !zielLadeFehler){
-      const zb = el('button', 'btn2', 'Ein längerfristiges Ziel formulieren');
+      const fa = folgeAngebot;
+      const zb = el('button', 'btn2', fa ? 'Den nächsten Teil angehen: ' + fa.teile[0] : 'Ein längerfristiges Ziel formulieren');
       zb.style.marginTop = '12px';
-      zb.addEventListener('click', zielOeffnen);
+      zb.addEventListener('click', () => fa ? zielOeffnen({ vorgabe:fa.teile[0], rest:fa.teile.slice(1) }) : zielOeffnen());
       box.appendChild(zb);
     }
   }
