@@ -165,8 +165,9 @@ const PHASE_SATZ={Erkennen:'Du lernst gerade, wann dein gewohntes Verhalten begi
 const heuteB=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
 const tageZw=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/86400000);
 function zkHtml(cls,ey,z,p,cta,ctaUrl,mainUrl){
-  return '<div class="zk '+cls+'"><a href="'+(mainUrl||LINKS.entwicklung)+'" target="_top" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:6px"><span class="ey">'+esc(ey)+'</span><span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')+'</a>'
-    +'<a class="cta" href="'+(ctaUrl||LINKS.entwicklung)+'" target="_top"><span>'+esc(cta)+'</span><span class="chev"></span></a></div>';
+  /* Eine Klickfläche: die ganze Karte führt zu Meine Entwicklung (ohne Abo zur Preisseite). ctaUrl bleibt nur aus Kompatibilität. */
+  return '<a class="zk '+cls+'" href="'+(mainUrl||LINKS.entwicklung)+'" target="_top"><span class="ey">'+esc(ey)+'</span><span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')
+    +'<span class="cta"><span>'+esc(cta)+'</span><span class="chev"></span></span></a>';
 }
 function zielkarte(ziele,paid){
   if(!paid)return zkHtml('dash','MEINE ENTWICKLUNG','Langfristig etwas verändern','Ein Ziel, kleine Schritte, dein Coach begleitet dich. Im Abo enthalten.','Freischalten',UPGRADE_URL,UPGRADE_URL);
@@ -175,10 +176,10 @@ function zielkarte(ziele,paid){
   const z=ziele.find(x=>x.status==='aktiv'||x.status==='pausiert');
   if(z){
     if(z.status==='pausiert')return zkHtml('light','RUHT GERADE',z.kurz,'Dein Fortschritt bleibt erhalten.','Ansehen');
-    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Abschluss ziehen',LINKS.coach);
-    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Zwischenbilanz ziehen',LINKS.coach);
+    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Ansehen');
+    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Ansehen');
     const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
-    if(bereit)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Dein nächster Schritt ist bereit.','Im Pocket Hero öffnen',LINKS.coach);
+    if(bereit)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Dein nächster Schritt ist bereit.','Ansehen');
     return zkHtml('','MEINE ENTWICKLUNG',z.kurz,PHASE_SATZ[z.phase]||'','Ansehen');
   }
   const ab=ziele.filter(x=>x.status==='abgeschlossen').sort((a,b)=>String(b.geschlossen||b.ende_am).localeCompare(String(a.geschlossen||a.ende_am)))[0];
@@ -186,7 +187,7 @@ function zielkarte(ziele,paid){
     const teil=String(ab.folgeteile).split('\n').map(x=>x.trim()).filter(Boolean)[0];
     if(teil)return zkHtml('light','DEIN NÄCHSTER TEIL',teil,'Baut auf deinem letzten Ziel auf.','Ansehen');
   }
-  return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ziel festlegen',LINKS.coach);
+  return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
 }
 async function ladeEntwicklung(email){
   const key='me_entw_'+email.toLowerCase();
