@@ -60,7 +60,8 @@ const APP='https://app.6heroes.de';
 const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
 /* Zentrale Konfiguration der Ziele. url:null = Eintrag wird noch nicht angezeigt. */
 const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account',
-  entwicklung:APP+'/meine-entwicklung',   /* ANPASSEN: Noloco-Adresse der neuen Seite */
+  entwicklung:APP+'/meine-entwicklung',
+  langzeitprofil:APP+'/langzeitprofil',   /* ANPASSEN: Noloco-Adresse der Langzeitprofil-Seite */   /* ANPASSEN: Noloco-Adresse der neuen Seite */
   coach:APP+'/pocket-hero'};              /* ANPASSEN: Noloco-Adresse der Pocket-Hero-Seite */
 /* Meine Entwicklung (AP-3.3): Make Entwicklung_Laden, Ergebnis eine Minute im sessionStorage (entwicklung.html liest es mit) */
 const ENTW_WEBHOOK_URL='https://hook.eu1.make.com/mr9ocjodq1obqahe2uua1m91zy1qjv23';
@@ -155,6 +156,7 @@ function render(d){
   h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
   h+='</div>';
   h+='<div class="label">Deine Entwicklung</div><div class="stack" id="zkBox">'+(paid?'<div class="zk wait">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
+  h+='<div class="stack" style="margin-top:12px">'+row({eb:'Langzeitprofil',nm:'Was dein Alltag zeigt',ds:'Was ich aus deinen Rückblicken über dich sehe, etwa zweimal im Monat fortgeschrieben.',dot:'L',bg:'#20293A',url:LINKS.langzeitprofil,locked:!paid})+'</div>';
   if(ROUTES.length){
     h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
   }
