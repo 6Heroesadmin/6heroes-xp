@@ -35,6 +35,19 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 .lk svg{width:13px;height:13px}
 .free{margin-left:8px;padding:2px 8px;border-radius:999px;background:#E6F5EC;color:#1F7A4C;font-size:11px;font-weight:700;vertical-align:middle}
 .error{text-align:center;color:#B4471B;padding:40px 16px;font-size:14px}
+/* Zielkarte Meine Entwicklung */
+.zk{display:flex;flex-direction:column;gap:6px;padding:18px;background:#20293A;color:#fff;border-radius:16px;text-decoration:none;min-height:76px;transition:box-shadow .15s}
+.zk:hover{box-shadow:0 6px 18px rgba(32,41,58,.18)}
+.zk .ey{font-size:11.5px;font-weight:700;letter-spacing:.08em;color:#F2B705}
+.zk .z{font-family:'DM Serif Display',Georgia,serif;font-size:21px;line-height:1.3}
+.zk .p{font-size:14px;line-height:1.5;color:#C9CFDA}
+.zk .cta{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:14.5px;font-weight:600;color:#fff;text-decoration:none}
+.zk .cta .chev{border-color:#fff}
+.zk.light{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.zk.light .p{color:var(--mute)}.zk.light .ey{color:#B26B00}.zk.light .cta{color:var(--ink)}.zk.light .cta .chev{border-color:var(--mute)}
+.zk.dash{background:var(--card);color:var(--ink);border:1.5px dashed #B9B2A0}
+.zk.dash .p{color:var(--mute)}.zk.dash .ey{color:var(--mute)}.zk.dash .cta{color:var(--ink)}.zk.dash .cta .chev{border-color:var(--mute)}
+.zk.wait{background:var(--card);border:1px solid var(--line);color:var(--mute);font-size:14px;justify-content:center}
 @media(max-width:480px){.wrap{padding:6px 16px 24px}.row{padding:14px;gap:12px}.lk span{display:none}.lk{padding:7px}}
 </style>
 </head>
@@ -46,7 +59,12 @@ const PROFILE_FN='/.netlify/functions/profile';
 const APP='https://app.6heroes.de';
 const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
 /* Zentrale Konfiguration der Ziele. url:null = Eintrag wird noch nicht angezeigt. */
-const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account'};
+const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account',
+  entwicklung:APP+'/meine-entwicklung',   /* ANPASSEN: Noloco-Adresse der neuen Seite */
+  coach:APP+'/pocket-hero'};              /* ANPASSEN: Noloco-Adresse der Pocket-Hero-Seite */
+/* Meine Entwicklung (AP-3.3): Make Entwicklung_Laden, Ergebnis eine Minute im sessionStorage (entwicklung.html liest es mit) */
+const ENTW_WEBHOOK_URL='https://hook.eu1.make.com/mr9ocjodq1obqahe2uua1m91zy1qjv23';
+const LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
 const ROUTES=[ /* spaeter: {name:'Langzeitprofil',desc:'...',url:APP+'/langzeitprofil'}, Verlauf, Erfolge */ ];
 const HC={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
 const HL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
@@ -136,10 +154,52 @@ function render(d){
   h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
   h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
   h+='</div>';
+  h+='<div class="label">Deine Entwicklung</div><div class="stack" id="zkBox">'+(paid?'<div class="zk wait">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
   if(ROUTES.length){
     h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
   }
   return h;
+}
+/* ---------- Zielkarte Meine Entwicklung ---------- */
+const PHASE_SATZ={Erkennen:'Du lernst gerade, wann dein gewohntes Verhalten beginnt.',Ausprobieren:'Du probierst gerade eine neue Reaktion bewusst aus.',Uebertragen:'Du setzt es gerade auch in schwierigen Situationen ein.',Eigenstaendig:'Du brauchst immer seltener Anleitung.'};
+const heuteB=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
+const tageZw=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/86400000);
+function zkHtml(cls,ey,z,p,cta,ctaUrl){
+  return '<div class="zk '+cls+'"><a href="'+LINKS.entwicklung+'" target="_top" style="color:inherit;text-decoration:none;display:flex;flex-direction:column;gap:6px"><span class="ey">'+esc(ey)+'</span><span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')+'</a>'
+    +'<a class="cta" href="'+(ctaUrl||LINKS.entwicklung)+'" target="_top"><span>'+esc(cta)+'</span><span class="chev"></span></a></div>';
+}
+function zielkarte(ziele,paid){
+  if(!paid)return zkHtml('dash','MEINE ENTWICKLUNG','Langfristig etwas verändern','Im Abo enthalten.','Mehr erfahren');
+  if(!ziele)return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
+  const h=heuteB();
+  const z=ziele.find(x=>x.status==='aktiv'||x.status==='pausiert');
+  if(z){
+    if(z.status==='pausiert')return zkHtml('light','RUHT GERADE',z.kurz,'Dein Fortschritt bleibt erhalten.','Ansehen');
+    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Abschluss ziehen',LINKS.coach);
+    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Zwischenbilanz ziehen',LINKS.coach);
+    const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
+    if(bereit)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Dein nächster Schritt ist bereit.','Im Pocket Hero öffnen',LINKS.coach);
+    return zkHtml('','MEINE ENTWICKLUNG',z.kurz,PHASE_SATZ[z.phase]||'','Ansehen');
+  }
+  const ab=ziele.filter(x=>x.status==='abgeschlossen').sort((a,b)=>String(b.geschlossen||b.ende_am).localeCompare(String(a.geschlossen||a.ende_am)))[0];
+  if(ab&&ab.hat_nachfolger!=='1'&&ab.folgeteile&&!((ab.geschlossen||ab.ende_am)&&tageZw(ab.geschlossen||ab.ende_am,h)>60)){
+    const teil=String(ab.folgeteile).split('\n').map(x=>x.trim()).filter(Boolean)[0];
+    if(teil)return zkHtml('light','DEIN NÄCHSTER TEIL',teil,'Baut auf deinem letzten Ziel auf.','Ansehen');
+  }
+  return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ziel festlegen',LINKS.coach);
+}
+async function ladeEntwicklung(email){
+  const key='me_entw_'+email.toLowerCase();
+  try{const c=JSON.parse(sessionStorage.getItem(key)||'null');if(c&&Date.now()-c.t<60000&&Array.isArray(c.d))return c.d;}catch(e){}
+  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),20000);
+  try{
+    const r=await fetch(ENTW_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({aktion:'entwicklung',token:LOAD_TOKEN,user_id:email}),signal:ctrl.signal});
+    const arr=JSON.parse((await r.text()).trim());
+    if(!Array.isArray(arr))return null;
+    try{sessionStorage.setItem(key,JSON.stringify({t:Date.now(),d:arr}));}catch(e){}
+    return arr;
+  }catch(e){console.warn('Entwicklung laden:',e);return null;}
+  finally{clearTimeout(t);}
 }
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
 async function init(){
@@ -151,6 +211,11 @@ async function init(){
   }
   if(![d.base,d.second,d.s1,d.s2].every(x=>HC[norm(x)])){app.className='wrap ready error';app.textContent='Profil konnte nicht geladen werden.';postHeight();return;}
   app.innerHTML=render(d);app.classList.add('ready');postHeight();
+  if(d.isPaid&&email){
+    const ziele=await ladeEntwicklung(email);
+    const box=document.getElementById('zkBox');
+    if(box){box.innerHTML=zielkarte(ziele?ziele.filter(z=>z.status!=='beendet'||(z.momente||[]).length||z.mitnahme):null,true);postHeight();}
+  }
 }
 window.addEventListener('load',init);
 window.addEventListener('resize',postHeight);

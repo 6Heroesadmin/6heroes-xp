@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meine Entwicklung – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--ok:#1F9D62;--warn:#B4471B;--gold:#F2B705}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:680px;margin:0 auto;padding:12px 20px 72px;opacity:0;transition:opacity .2s}
+.wrap.ready{opacity:1}
+.topbar{display:flex;align-items:center;gap:6px;min-height:44px}
+.topbar a,.topbar button{display:inline-flex;align-items:center;gap:6px;min-height:44px;font:600 13px 'Inter',sans-serif;color:var(--mute);text-decoration:none;background:none;border:0;cursor:pointer;padding:0}
+.topbar svg{width:20px;height:20px}
+.hero{display:flex;flex-direction:column;gap:10px;padding:14px 0 6px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(28px,7.5vw,38px);line-height:1.2}
+.meta{font-size:14px;color:var(--mute);line-height:1.55}
+.label{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:26px 2px 10px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.card{display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.card p,.body p{font-size:15.5px;line-height:1.7}
+.bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.bl.ok{color:var(--ok)}
+.blk{display:flex;flex-direction:column;gap:4px}
+.step{display:flex;flex-direction:column;gap:10px;padding:18px;background:#FFF8DD;border:1px solid #EAD48A;border-radius:14px;margin-top:14px}
+.step .t{font-size:17px;font-weight:600;line-height:1.4}
+.btn{display:flex;align-items:center;justify-content:center;min-height:50px;padding:0 20px;border-radius:14px;font:600 15.5px 'Inter',sans-serif;text-decoration:none;border:1.5px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;width:100%}
+.btn.y{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.btn.o{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.phases{display:flex;flex-direction:column}
+.ph{display:flex;gap:12px;align-items:flex-start;padding:8px 0;position:relative}
+.ph .c{width:14px;height:14px;border-radius:7px;border:2px solid #B9B2A0;margin-top:5px;flex:none;background:#fff}
+.ph.done .c{background:var(--ink);border-color:var(--ink)}
+.ph.now .c{background:var(--gold);border-color:var(--ink);width:18px;height:18px;border-radius:9px;margin:3px -2px 0}
+.ph.con::after{content:"";position:absolute;left:6px;top:22px;bottom:-10px;width:2px;background:var(--ink)}
+.ph .tt{display:flex;flex-direction:column;gap:2px}
+.ph .a{font-size:15.5px;font-weight:600}
+.ph:not(.now):not(.done) .a{color:#8A909C;font-weight:500}
+.ph .b{font-size:14px;color:var(--mute);line-height:1.5}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px}
+details[open]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:12px 18px;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+summary .s1{display:flex;flex-direction:column;gap:1px}
+summary .a{font-size:15.5px;font-weight:600;line-height:1.35}
+summary .b{font-size:12.5px;color:var(--mute)}
+summary:after{content:'';flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);transition:transform .15s;margin-right:4px}
+details[open] summary:after{transform:rotate(45deg)}
+.body{padding:2px 18px 20px;display:flex;flex-direction:column;gap:16px}
+.moment{display:flex;flex-direction:column;gap:6px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.moment .w{font-size:12.5px;color:var(--mute);font-weight:600}
+.moment .q{font-size:15.5px;line-height:1.6;font-style:italic;border-left:3px solid var(--gold);padding-left:12px}
+.moment .s{font-size:15px;line-height:1.6}
+.moment .e{font-size:13.5px;color:var(--mute)}
+.hint{font-size:14px;color:var(--mute);line-height:1.55;padding:14px 16px;background:var(--card);border:1px dashed #C9C2B3;border-radius:12px}
+.actions{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.actions button{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:56px;padding:12px 18px;background:none;border:0;border-top:1px solid var(--line);font:500 15.5px 'Inter',sans-serif;color:var(--ink);cursor:pointer;text-align:left}
+.actions button:first-child{border-top:0}
+.chev{flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);margin-right:4px}
+.arch{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--card);border:1px solid var(--line);border-radius:14px;cursor:pointer;text-align:left;font-family:inherit;color:inherit;width:100%}
+.arch .x{flex:1;display:flex;flex-direction:column;gap:2px}
+.arch .a{font-size:15.5px;font-weight:600;line-height:1.4}
+.arch .b{font-size:13px;color:var(--mute)}
+.opt{display:flex;flex-direction:column;gap:3px;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;cursor:pointer;text-align:left;font-family:inherit;color:inherit;width:100%}
+.opt.sel{border:2px solid var(--ink);padding:13.5px 15.5px}
+.opt .a{font-size:15.5px;font-weight:600}.opt .b{font-size:13.5px;color:var(--mute);line-height:1.45}
+textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font:15.5px/1.5 'Inter',sans-serif;background:#fff;resize:vertical;color:var(--ink)}
+.lock{display:flex;flex-direction:column;gap:8px;padding:18px;background:var(--card);border:1px dashed #B9B2A0;border-radius:14px}
+.msg{font-size:14px;color:var(--warn)}
+.ok-note{font-size:14px;color:var(--ok);font-weight:600}
+.err{text-align:center;color:var(--warn);padding:40px 16px;font-size:15px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.dummy{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A5A00;background:#FFF3D1;border:1px solid #F2D58A;border-radius:999px;padding:3px 10px;align-self:flex-start}
+@media (max-width:480px){.wrap{padding:8px 16px 56px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* Meine Entwicklung (AP-3.3), Build 2026-11-02
+   Daten: Make Entwicklung_Laden (Users.Entwicklung_JSON). Aktionen: Make Coach_Ziel_Aktion (wie coach.html).
+   URL-Parameter: email, paid (0/1), frame. Vorschau ohne Make: ?demo=aktiv | pause | bilanz | leer | frei */
+const BUILD='2026-11-02 Meine Entwicklung v1';
+var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+const APP='https://app.6heroes.de';
+const MB_URL=APP+'/mein-bereich';
+const COACH_URL=APP+'/pocket-hero';            /* ANPASSEN: Noloco-Adresse der Pocket-Hero-Seite */
+const HILFE_URL=APP+'/account';
+const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
+const ENTW_WEBHOOK_URL='https://hook.eu1.make.com/mr9ocjodq1obqahe2uua1m91zy1qjv23';
+const ZIEL_AKTION_WEBHOOK_URL='https://hook.eu1.make.com/uiqtjr6d11rr861jympbyrm9ks1vj67c';
+const LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
+const CACHE_MS=60000;   /* Daten aus mein-bereich.html werden eine Minute weiterverwendet (spart Make-Credits) */
+
+const Q=new URLSearchParams(location.search);
+const EMAIL=(Q.get('email')||'').trim();
+const PAID=Q.get('paid')!=='0';
+const DEMO=Q.get('demo')||'';
+
+const PHASEN=[['Erkennen','Erkennen','Du lernst, wann dein gewohntes Verhalten beginnt.'],['Ausprobieren','Ausprobieren','Du probierst eine neue Reaktion bewusst aus, in Situationen, die gut zu schaffen sind.'],['Uebertragen','Übertragen','Du setzt es auch ein, wenn es schwierig wird.'],['Eigenstaendig','Eigenständig','Du brauchst immer seltener Anleitung.']];
+const KOMPETENZ=[['erst hinterher','Ich bemerke mein Muster meistens erst hinterher.'],['während der Situation','Ich erkenne es inzwischen während der Situation.'],['gelegentlich anders','Ich kann gelegentlich bewusst anders handeln.'],['zunehmend selbst','Ich steuere mein Verhalten zunehmend selbst.']];
+const GRUENDE=[['anderes wichtiger','Etwas anderes ist gerade wichtiger'],['gerade nicht wichtig','Es ist gerade nicht wichtig'],['zu schwer','Es war zu schwer']];
+const MONATE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const TAGE=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const paras=s=>String(s||'').split(/\n\s*\n|\n/).map(x=>x.trim()).filter(Boolean).map(x=>'<p>'+esc(x)+'</p>').join('');
+const lab=t=>'<div class="label">'+esc(t)+'</div>';
+const BACK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
+
+/* ---------- Datum ---------- */
+function heute(){return new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});}
+function tage(a,b){return Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/86400000);}
+function d(s){return new Date(s+'T12:00:00Z');}
+function datumLang(s){const x=d(s);return x.getUTCDate()+'. '+MONATE[x.getUTCMonth()];}
+function monat(s){const x=d(s);return MONATE[x.getUTCMonth()]+(x.getUTCFullYear()!==d(heute()).getUTCFullYear()?' '+x.getUTCFullYear():'');}
+function wann(s){ /* für Momente: heute, gestern, am Dienstag, am 23. Oktober */
+  if(!s)return '';const n=tage(s,heute());
+  if(n<=0)return 'Heute';if(n===1)return 'Gestern';
+  if(n<7)return 'Am '+TAGE[d(s).getUTCDay()];
+  return 'Am '+datumLang(s);
+}
+function abWann(s){ /* für Fälligkeiten in der Zukunft */
+  const n=tage(heute(),s);
+  if(n<=0)return 'heute';if(n===1)return 'morgen';
+  if(n<7)return 'am '+TAGE[d(s).getUTCDay()];
+  return 'am '+datumLang(s);
+}
+function seit(s){
+  const n=tage(s,heute());
+  if(n<=0)return 'Seit heute';if(n===1)return 'Seit gestern';
+  if(n<7)return 'Seit '+['','einem','zwei','drei','vier','fünf','sechs'][n]+' Tag'+(n>1?'en':'');
+  const w=Math.round(n/7);if(w<=1)return 'Seit einer Woche';
+  if(w<=6)return 'Seit '+['','einer','zwei','drei','vier','fünf','sechs'][w]+' Wochen';
+  return 'Seit dem '+datumLang(s);
+}
+function kompText(v){const n=String(v||'').toLowerCase().replace(/waehrend/g,'während').trim();const k=KOMPETENZ.find(x=>x[0].toLowerCase()===n);return k?k[1]:'';}
+function phaseIdx(p){const i=PHASEN.findIndex(x=>x[0]===p);return i<0?0:i;}
+
+/* ---------- Daten ---------- */
+let ZIELE=[];      /* alle Ziele aus Make */
+let VIEW={name:'main'};
+let NOTIZ='';      /* kurze Bestätigung nach einer Aktion */
+
+function anzeigen(z){return z.status==='aktiv'||z.status==='pausiert'||z.status==='abgeschlossen'||(z.status==='beendet'&&((z.momente||[]).length||z.mitnahme));}
+function aktivesZiel(){return ZIELE.find(z=>z.status==='aktiv'||z.status==='pausiert')||null;}
+function archiv(){return ZIELE.filter(z=>z.status==='abgeschlossen'||z.status==='beendet').sort((a,b)=>String(b.geschlossen||b.ende_am).localeCompare(String(a.geschlossen||a.ende_am)));}
+function naechsterTeil(){ /* wie Coach_Ziel_Laden v3: letztes abgeschlossenes Ziel mit Folgeteilen, ohne Nachfolger, höchstens 60 Tage */
+  if(aktivesZiel())return null;
+  const z=archiv().find(x=>x.status==='abgeschlossen');
+  if(!z||z.hat_nachfolger==='1'||!z.folgeteile)return null;
+  const g=z.geschlossen||z.ende_am;if(g&&tage(g,heute())>60)return null;
+  const teil=String(z.folgeteile).split('\n').map(x=>x.trim()).filter(Boolean)[0];
+  return teil?{ziel:z,teil:teil}:null;
+}
+function cacheKey(){return 'me_entw_'+EMAIL.toLowerCase();}
+function cacheLesen(){try{const c=JSON.parse(sessionStorage.getItem(cacheKey())||'null');if(c&&Date.now()-c.t<CACHE_MS&&Array.isArray(c.d))return c.d;}catch(e){}return null;}
+function cacheSchreiben(arr){try{sessionStorage.setItem(cacheKey(),JSON.stringify({t:Date.now(),d:arr}));}catch(e){}}
+function cacheLeeren(){try{sessionStorage.removeItem(cacheKey());}catch(e){}}
+
+async function laden(){
+  if(DEMO)return demoDaten(DEMO);
+  const c=cacheLesen();if(c)return c;
+  const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),20000);
+  try{
+    const r=await fetch(ENTW_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({aktion:'entwicklung',token:LOAD_TOKEN,user_id:EMAIL}),signal:ctrl.signal});
+    const txt=(await r.text()).trim();
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const arr=JSON.parse(txt);
+    if(!Array.isArray(arr))throw new Error('keine Liste');
+    cacheSchreiben(arr);return arr;
+  }finally{clearTimeout(t);}
+}
+async function zielAktion(aktion,extra){
+  if(DEMO)return 'ok';
+  try{
+    const r=await fetch(ZIEL_AKTION_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({aktion:'ziel_aktion',token:LOAD_TOKEN,user_id:EMAIL,ziel_aktion:aktion},extra||{}))});
+    const t=(await r.text()).trim();
+    return r.ok&&['ok','belegt','kein_ziel'].includes(t)?t:'fehler';
+  }catch(e){return 'fehler';}
+}
+
+/* ---------- Bausteine ---------- */
+function topbar(){
+  if(VIEW.name==='main')return '<div class="topbar"><a href="'+MB_URL+'" target="_top">'+BACK_SVG+'Mein Bereich</a></div>';
+  return '<div class="topbar"><button type="button" data-go="main">'+BACK_SVG+'Meine Entwicklung</button></div>';
+}
+function phasenPfad(phase){
+  const i=phaseIdx(phase);
+  return '<div class="phases">'+PHASEN.map((p,k)=>{
+    const cls=k<i?'done':(k===i?'now':'');
+    const con=k<i?' con':'';
+    return '<div class="ph '+cls+con+'"><span class="c"></span><span class="tt"><span class="a">'+p[1]+'</span>'+(k===i?'<span class="b">'+esc(p[2])+'</span>':'')+'</span></div>';
+  }).join('')+'</div>';
+}
+function momentSatz(m){
+  const teile=[];
+  const g=m.gelegenheit,h=m.handlung;
+  if(g==='nein')teile.push('Diesmal gab es keine passende Gelegenheit.');
+  else if(g==='unklar')teile.push('Ob es eine Gelegenheit gab, war nicht ganz klar.');
+  else if(g==='ja'){
+    if(h==='ja')teile.push('Es gab eine Gelegenheit, und du hast es umgesetzt.');
+    else if(h==='teilweise')teile.push('Es gab eine Gelegenheit, und du hast es teilweise umgesetzt.');
+    else if(h==='nein')teile.push('Es gab eine Gelegenheit, diesmal hat es noch nicht geklappt.');
+    else teile.push('Es gab eine Gelegenheit.');
+  }else{
+    const s={voll:'Du hast es umgesetzt.',teilweise:'Du hast es teilweise umgesetzt.',nicht:'Diesmal hat es nicht geklappt.',anders:'Du hast es auf deine Weise gelöst.'}[m.status];
+    if(s)teile.push(s);
+  }
+  const b={vorher:'Bemerkt hast du es schon vorher.',mittendrin:'Bemerkt hast du es mittendrin.',hinterher:'Bemerkt hast du es erst hinterher.'}[m.bemerkt];
+  if(b)teile.push(b);
+  const w={'deutlich':'Es hat deutlich etwas verändert.','ein wenig':'Es hat ein wenig verändert.','noch nichts':'Verändert hat sich noch nichts.'}[m.wirkung];
+  if(w)teile.push(w);
+  return teile.join(' ');
+}
+function moment(m){
+  const kopf=esc(wann(m.datum))+(m.titel?' · '+esc(m.titel):'');
+  const satz=momentSatz(m);
+  if(m.text)return '<div class="moment"><span class="w">'+kopf+'</span><span class="q">„'+esc(m.text)+'“</span>'+(satz?'<span class="e">'+esc(satz)+'</span>':'')+'</div>';
+  return '<div class="moment"><span class="w">'+kopf+'</span><span class="s">'+esc(satz||'Du hast zurückgeblickt.')+'</span></div>';
+}
+function momenteBlock(z,offen){
+  const ms=(z.momente||[]).slice().sort((a,b)=>String(b.datum).localeCompare(String(a.datum)));
+  if(!ms.length)return '<div class="hint">Hier erscheinen deine Momente, sobald du nach einem Schritt kurz zurückblickst. Ein Satz reicht, und auch ohne Text zählt deine Antwort.</div>';
+  const sicht=ms.slice(0,3).map(moment).join('');
+  const rest=ms.slice(3);
+  return '<div class="stack">'+sicht+(rest.length?'<details><summary><span class="s1"><span class="a">Alle Momente zu diesem Ziel</span></span></summary><div class="body">'+rest.map(moment).join('')+'</div></details>':'')+'</div>';
+}
+function einschaetzung(z,ende){
+  const s=kompText(z.komp_start),m=kompText(z.komp_mitte),e=kompText(z.komp_ende);
+  if(!s&&!m&&!e)return '';
+  let h='<div class="card">';
+  if(s)h+='<div class="blk"><span class="meta">Zu Beginn</span><p>'+esc(s)+'</p></div>';
+  if(m)h+='<div class="blk"><span class="meta">Nach zwei Wochen</span><p>'+esc(m)+'</p></div>';
+  if(e&&ende)h+='<div class="blk"><span class="meta">Am Ende</span><p>'+esc(e)+'</p></div>';
+  return h+'</div>';
+}
+function zielGenau(z){
+  const r=[['Was du konkret tust',z.verhalten,''],['Wann du es üben kannst',z.ausloeser,''],['Woran du Entwicklung merkst',z.signal,'ok']].filter(x=>x[1]);
+  if(!r.length)return '';
+  return '<details><summary><span class="s1"><span class="a">Dein Ziel genau</span><span class="b">Verhalten, Gelegenheit, Erfolgssignal</span></span></summary><div class="body">'+r.map(x=>'<div class="blk"><span class="bl '+x[2]+'">'+esc(x[0])+'</span><p>'+esc(x[1])+'</p></div>').join('')+'</div></details>';
+}
+function archivListe(){
+  const a=archiv();if(!a.length)return '';
+  return lab('Frühere Ziele')+'<div class="stack">'+a.map(z=>'<button type="button" class="arch" data-ziel="'+esc(z.id)+'"><span class="x"><span class="a">'+esc(z.kurz)+'</span><span class="b">'+(z.status==='abgeschlossen'?'Abgeschlossen':'Beendet')+' im '+esc(monat(z.geschlossen||z.ende_am))+'</span></span><span class="chev"></span></button>').join('')+'</div>';
+}
+function bilanzFaellig(z){
+  const h=heute();
+  if(z.status!=='aktiv')return '';
+  if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return 'ende';
+  if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1'&&(!z.ende_am||h<z.ende_am))return 'mitte';
+  return '';
+}
+
+/* ---------- Ansichten ---------- */
+function viewAktiv(z){
+  const h=heute();
+  let meta=seit(z.start);
+  if(z.status==='aktiv'){
+    if(z.bilanz_erledigt!=='1'&&z.bilanz_am&&z.bilanz_am>h)meta+=' · Zwischenbilanz '+abWann(z.bilanz_am);
+    else if(z.ende_am&&z.ende_am>h)meta+=' · Abschluss '+abWann(z.ende_am);
+  }
+  let out='<div class="hero"><span class="eyebrow">'+(z.status==='pausiert'?'Dein Ziel ruht':'Dein Ziel')+'</span><h1>'+esc(z.kurz)+'</h1><span class="meta">'+(z.status==='pausiert'&&z.pausiert_seit?'Pausiert seit dem '+esc(datumLang(z.pausiert_seit)):esc(meta))+'</span></div>';
+  if(NOTIZ)out+='<p class="ok-note">'+esc(NOTIZ)+'</p>';
+  if(z.status==='pausiert'){
+    out+='<div class="card" style="margin-top:14px"><p>Pausen gehören dazu. Dein Fortschritt bleibt erhalten, und du machst dort weiter, wo du aufgehört hast.</p>'
+      +'<button class="btn y" type="button" data-akt="weiter">Weitermachen</button><button class="btn o" type="button" data-akt="einfacher">Mit kleineren Schritten weitermachen</button><p class="msg" id="aktmsg" hidden></p></div>';
+  }else{
+    const bf=bilanzFaellig(z);
+    if(bf){
+      out+='<div class="step"><span class="bl">'+(bf==='mitte'?'Zeit für einen Blick zurück':'Dein Abschluss')+'</span><span class="t">'+(bf==='mitte'?'Zwei Wochen sind um.':'Vier Wochen sind um.')+'</span><span class="meta">'+(bf==='mitte'?'Im Pocket Hero schaust du kurz zurück und entscheidest, wie es weitergeht.':'Im Pocket Hero schaust du auf den ganzen Weg zurück.')+'</span><a class="btn" href="'+COACH_URL+'" target="_top">Im Pocket Hero öffnen</a></div>';
+    }else if(z.next_titel){
+      const bereit=z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h);
+      out+='<div class="step"><span class="bl">Dein nächster Schritt</span><span class="t">'+esc(z.next_titel)+'</span><span class="meta">'+(bereit?'Bereit, wenn du es bist.':'Bereit '+esc(abWann(z.next_faellig)))+'</span>'+(bereit?'<a class="btn" href="'+COACH_URL+'" target="_top">Im Pocket Hero öffnen</a>':'')+'</div>';
+    }
+  }
+  out+=lab('Wo du gerade stehst')+'<div class="card">'+phasenPfad(z.phase)+'</div>';
+  const zg=zielGenau(z);if(zg)out+='<div style="margin-top:10px">'+zg+'</div>';
+  out+=lab('Deine Momente')+momenteBlock(z);
+  const ei=einschaetzung(z,false);if(ei)out+=lab('Wie du dich einschätzt')+ei;
+  if(z.zwischenbilanz)out+=lab('Deine Zwischenbilanz')+'<div class="card">'+paras(z.zwischenbilanz)+'</div>';
+  out+=lab('Ziel anpassen')+'<div class="actions">'
+    +(z.status==='aktiv'?'<button type="button" data-go="anpassen"><span>Pause machen oder kleinere Schritte</span><span class="chev"></span></button>':'')
+    +'<button type="button" data-go="beenden"><span>Ziel beenden</span><span class="chev"></span></button></div>';
+  return out+archivListe();
+}
+function viewLeer(){
+  let out='<div class="hero"><span class="eyebrow">Meine Entwicklung</span><h1>Woran möchtest du in den nächsten Wochen arbeiten?</h1><p class="meta" style="font-size:15.5px">Dein Pocket Hero hilft dir im Moment. Mit einem Ziel begleitet er dich dabei, langfristig etwas zu verändern.</p></div>';
+  if(NOTIZ)out+='<p class="ok-note">'+esc(NOTIZ)+'</p>';
+  const nt=naechsterTeil();
+  if(nt)out+='<div class="step"><span class="bl">Dein nächster Teil</span><span class="t">'+esc(nt.teil)+'</span><span class="meta">Baut auf deinem Ziel „'+esc(nt.ziel.kurz)+'“ auf.</span><a class="btn" href="'+COACH_URL+'" target="_top">Diesen Teil angehen</a></div>';
+  out+='<div class="card" style="margin-top:14px"><span class="bl">So funktioniert es</span><p>Du legst ein Ziel fest, das in deinem Alltag vorkommt. Etwa dreimal pro Woche bekommst du im Pocket Hero einen kleinen Schritt dazu. Nach zwei Wochen schaut ihr gemeinsam zurück, nach vier Wochen schließt sich der Kreis.</p></div>';
+  out+='<div class="card" style="margin-top:10px"><span class="bl">Zum Beispiel</span><p>Bei Zusatzaufgaben Kapazität ansprechen, statt automatisch zuzusagen.</p><p>In Stressmomenten erst sortieren, dann reagieren.</p><p>Ergebnisse übergeben, nicht jeden Schritt kontrollieren.</p></div>';
+  out+='<div style="margin-top:14px"><a class="btn y" href="'+COACH_URL+'" target="_top">'+(nt?'Ein neues Ziel festlegen':'Ziel festlegen')+'</a></div>';
+  return out+archivListe();
+}
+function viewFrei(){
+  let out='<div class="hero"><span class="eyebrow">Meine Entwicklung</span><h1>Langfristig etwas verändern</h1><p class="meta" style="font-size:15.5px">Ein Ziel aus deinem Alltag, kleine Schritte im Pocket Hero und ein Blick zurück, der zeigt, was sich bewegt hat.</p></div>';
+  const z=aktivesZiel();
+  if(z)out+='<div class="card" style="margin-top:14px"><span class="bl">Dein Ziel ruht</span><p>'+esc(z.kurz)+'</p><p class="meta">Mit dem Abo machst du dort weiter, wo du aufgehört hast.</p></div>';
+  out+='<div class="lock" style="margin-top:14px"><b>Im Abo enthalten</b><span>Mit dem Abo legst du ein Ziel fest, und dein Coach begleitet dich vier Wochen lang dabei.</span></div>';
+  out+='<div style="margin-top:14px"><a class="btn" href="'+UPGRADE_URL+'" target="_top">Freischalten</a></div>';
+  return out+archivListe();
+}
+function viewDetail(z){
+  const ab=z.status==='abgeschlossen';
+  let out='<div class="hero"><span class="eyebrow">'+(ab?'Abgeschlossen':'Beendet')+' im '+esc(monat(z.geschlossen||z.ende_am))+'</span><h1>'+esc(z.kurz)+'</h1></div>';
+  if(z.zusammenfassung)out+=lab('Dein Rückblick')+'<div class="card">'+paras(z.zusammenfassung)+'</div>';
+  const ei=einschaetzung(z,true);if(ei)out+=lab('Wie du dich eingeschätzt hast')+ei;
+  if(z.mitnahme)out+=lab('Was du mitgenommen hast')+'<div class="card">'+paras(z.mitnahme)+'</div>';
+  const extra=[];
+  if(z.zwischenbilanz)extra.push('<details><summary><span class="s1"><span class="a">Zwischenbilanz</span><span class="b">Nach zwei Wochen</span></span></summary><div class="body">'+paras(z.zwischenbilanz)+'</div></details>');
+  const zg=zielGenau(z);if(zg)extra.push(zg);
+  if(extra.length)out+='<div class="stack" style="margin-top:14px">'+extra.join('')+'</div>';
+  out+=lab('Deine Momente')+momenteBlock(z);
+  const nt=naechsterTeil();
+  if(nt&&nt.ziel.id===z.id)out+=lab('Dein nächster Teil')+'<div class="card"><p>'+esc(nt.teil)+'</p><a class="btn o" href="'+COACH_URL+'" target="_top">Diesen Teil angehen</a></div>';
+  return out;
+}
+function viewAnpassen(){
+  return '<div class="hero"><h1>Was passt gerade besser?</h1></div>'
+    +'<div class="stack" style="margin-top:10px">'
+    +'<button type="button" class="opt" data-wahl="einfacher"><span class="a">Kleinere Schritte</span><span class="b">Die nächsten Schritte werden kürzer und leichter.</span></button>'
+    +'<button type="button" class="opt" data-wahl="ruhen"><span class="a">Pause machen</span><span class="b">Dein Ziel ruht. Es kommen keine Trainingsschritte, bis du weitermachst.</span></button>'
+    +'<button type="button" class="btn y" id="wahlOk" disabled>Weiter</button><button type="button" class="btn o" data-go="main">Abbrechen</button><p class="msg" id="aktmsg" hidden></p></div>';
+}
+function viewBeenden(z){
+  return '<div class="hero"><h1>Bevor du dieses Ziel beendest</h1><p class="meta">Ein beendetes Ziel ist kein gescheitertes. Was du geübt hast, bleibt.</p></div>'
+    +'<div class="stack" style="margin-top:10px"><span class="bl">Was nimmst du mit? (optional)</span><textarea id="mitnahme" placeholder="Ein Satz reicht." maxlength="500"></textarea>'
+    +'<span class="bl" style="padding-top:8px">Warum hörst du auf? (optional)</span>'
+    +GRUENDE.map(g=>'<button type="button" class="opt" data-grund="'+esc(g[0])+'"><span class="a">'+esc(g[1])+'</span></button>').join('')
+    +'<button type="button" class="btn y" id="beendenOk">Ziel beenden</button><button type="button" class="btn o" data-go="main">Abbrechen</button><p class="msg" id="aktmsg" hidden></p></div>';
+}
+function viewBeendet(){
+  return '<div class="hero"><span class="eyebrow">Ziel beendet</span><h1>Gut, dass du hingeschaut hast.</h1><p class="meta">Dein Ziel und deine Momente findest du unter Frühere Ziele.</p></div>'
+    +'<div class="stack" style="margin-top:14px"><a class="btn y" href="'+COACH_URL+'" target="_top">Ein neues Ziel festlegen</a><button type="button" class="btn o" data-go="main">Zurück zu Meine Entwicklung</button></div>';
+}
+
+/* ---------- Rendern und Ereignisse ---------- */
+function render(){
+  const app=document.getElementById('app');
+  let h=topbar();
+  if(DEMO)h+='<span class="dummy">Vorschau mit Beispieldaten</span>';
+  const z=aktivesZiel();
+  if(VIEW.name==='detail'){const a=ZIELE.find(x=>x.id===VIEW.id);h+=a?viewDetail(a):viewLeer();}
+  else if(VIEW.name==='anpassen'&&z)h+=viewAnpassen();
+  else if(VIEW.name==='beenden'&&z)h+=viewBeenden(z);
+  else if(VIEW.name==='beendet')h+=viewBeendet();
+  else h+=!PAID?viewFrei():(z?viewAktiv(z):viewLeer());
+  app.innerHTML=h;
+  binden();
+  postHeight();
+}
+function go(name,extra){VIEW=Object.assign({name:name},extra||{});if(name!=='main')NOTIZ='';render();try{window.scrollTo(0,0);parent.postMessage({type:'6heroes:scrollTop',frame:__FRAME_ID__},'*');}catch(e){}}
+function fehler(t){const m=document.getElementById('aktmsg');if(m){m.textContent=t||'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';m.hidden=false;postHeight();}}
+async function ausfuehren(aktion,extra,knopf){
+  if(knopf)knopf.disabled=true;
+  const st=await zielAktion(aktion,extra);
+  if(st==='fehler'){if(knopf)knopf.disabled=false;fehler();return false;}
+  cacheLeeren();
+  const z=aktivesZiel();
+  /* Airtable rechnet die Aktion nach einigen Sekunden; bis dahin zeigt die Seite den erwarteten Stand */
+  if(z){
+    if(aktion==='ruhen'){z.status='pausiert';z.pausiert_seit=heute();NOTIZ='Dein Ziel ruht jetzt.';}
+    else if(aktion==='weiter'){z.status='aktiv';z.pausiert_seit='';z.karte='bereit';NOTIZ='Schön, dass du weitermachst. Dein nächster Schritt wartet im Pocket Hero.';}
+    else if(aktion==='einfacher'){z.status='aktiv';z.pausiert_seit='';z.karte='bereit';NOTIZ='Deine nächsten Schritte werden kleiner. Der nächste wartet im Pocket Hero.';}
+    else if(aktion==='beenden'){z.status='beendet';z.geschlossen=heute();if(extra&&extra.mitnahme)z.mitnahme=extra.mitnahme;if(extra&&extra.wechselgrund)z.wechselgrund=extra.wechselgrund;}
+  }
+  return true;
+}
+function binden(){
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+  document.querySelectorAll('[data-ziel]').forEach(b=>b.addEventListener('click',()=>go('detail',{id:b.dataset.ziel})));
+  document.querySelectorAll('[data-akt]').forEach(b=>b.addEventListener('click',async()=>{if(await ausfuehren(b.dataset.akt,null,b))go('main');}));
+  let wahl=null;
+  document.querySelectorAll('[data-wahl]').forEach(b=>b.addEventListener('click',()=>{
+    wahl=b.dataset.wahl;document.querySelectorAll('[data-wahl]').forEach(x=>x.classList.toggle('sel',x===b));
+    const ok=document.getElementById('wahlOk');if(ok)ok.disabled=false;
+  }));
+  const wahlOk=document.getElementById('wahlOk');
+  if(wahlOk)wahlOk.addEventListener('click',async()=>{if(wahl&&await ausfuehren(wahl,null,wahlOk))go('main');});
+  let grund=null;
+  document.querySelectorAll('[data-grund]').forEach(b=>b.addEventListener('click',()=>{
+    grund=grund===b.dataset.grund?null:b.dataset.grund;
+    document.querySelectorAll('[data-grund]').forEach(x=>x.classList.toggle('sel',x.dataset.grund===grund));
+  }));
+  const be=document.getElementById('beendenOk');
+  if(be)be.addEventListener('click',async()=>{
+    const extra={};const mt=(document.getElementById('mitnahme').value||'').trim();
+    if(mt)extra.mitnahme=mt;if(grund)extra.wechselgrund=grund;
+    if(await ausfuehren('beenden',extra,be))go('beendet');
+  });
+}
+
+/* ---------- Vorschau ---------- */
+function demoDaten(art){
+  const h=heute(),p=n=>{const x=new Date(h+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10);};
+  const alt={id:'alt',status:'abgeschlossen',phase:'Uebertragen',kurz:'Ich bringe meine Ideen klar und knapp ein.',verhalten:'Ich nenne in Meetings zuerst den Kern meiner Idee.',ausloeser:'Wenn ich in Meetings spreche',signal:'Ich habe meine Idee eingebracht, auch ohne direktes Feedback.',start:p(-60),geschlossen:p(-30),ende_am:p(-30),komp_start:'erst hinterher',komp_mitte:'waehrend der Situation',komp_ende:'gelegentlich anders',zwischenbilanz:'Zu Beginn hast du es meist erst hinterher bemerkt, inzwischen erkennst du es oft schon während der Situation.',zusammenfassung:'Zu Beginn hast du deine Ideen oft erst hinterher eingebracht. In den letzten Wochen hast du mehrmals im Meeting zuerst den Kern genannt und dann begründet.',mitnahme:'',folgeteile:'Auch unter Zeitdruck den Kern zuerst nennen\nIdeen schriftlich vorbereiten',hat_nachfolger:'0',momente:[{datum:p(-40),titel:'Ein Satz vorab',text:'Ich habe den ersten Satz vorher aufgeschrieben. Das hat geholfen.',gelegenheit:'ja',handlung:'ja',bemerkt:'vorher',wirkung:'deutlich'}]};
+  const akt={id:'akt',status:art==='pause'?'pausiert':'aktiv',phase:'Ausprobieren',kurz:'Ich spreche Spannungen früh an, statt sie aufzuschieben.',verhalten:'Ich spreche an, was mich stört, sobald ich es merke.',ausloeser:'Wenn mich in Abstimmungen etwas stört',signal:'Ich sage es in der Situation und nicht erst Tage später.',start:p(-12),bilanz_am:art==='bilanz'?p(0):p(2),ende_am:p(16),pausiert_seit:art==='pause'?p(-4):'',next_titel:'Der erste Satz',next_faellig:p(0),karte:'bereit',bilanz_erledigt:'0',komp_start:'erst hinterher',momente:[
+    {datum:p(-3),titel:'Der erste Satz',text:'Ich habe im Meeting gesagt, dass mich die Verschiebung stört. Es war unangenehm, aber danach war es klarer.',gelegenheit:'ja',handlung:'ja',bemerkt:'mittendrin',wirkung:'ein wenig'},
+    {datum:p(-7),titel:'Wann es beginnt',text:'',gelegenheit:'ja',handlung:'teilweise',bemerkt:'hinterher',wirkung:''},
+    {datum:p(-10),titel:'Spannung bemerken',text:'',status:'voll'}]};
+  if(art==='leer')return [alt];
+  return [akt,alt];
+}
+
+/* ---------- Höhe an Noloco melden (wie langzeitprofil.html) ---------- */
+function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
+async function init(){
+  const app=document.getElementById('app');
+  if(!EMAIL&&!DEMO){app.innerHTML=topbar()+'<div class="err">Deine Daten konnten nicht geladen werden.</div>';app.classList.add('ready');postHeight();return;}
+  try{
+    ZIELE=(await laden()).filter(anzeigen);
+    render();
+  }catch(e){
+    console.warn('Entwicklung laden:',e);
+    app.innerHTML=topbar()+'<div class="err"><span>Deine Entwicklung ist gerade nicht erreichbar.</span><button class="btn o" type="button" id="nochmal" style="max-width:260px">Noch einmal versuchen</button></div>';
+    document.getElementById('nochmal').addEventListener('click',()=>{cacheLeeren();init();});
+    postHeight();
+  }
+  app.classList.add('ready');postHeight();
+}
+window.addEventListener('load',init);
+window.addEventListener('resize',postHeight);
+if(window.ResizeObserver)new ResizeObserver(postHeight).observe(document.body);
+document.addEventListener('toggle',postHeight,true);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(postHeight);
+[50,200,500,1000,1600].forEach(t=>setTimeout(postHeight,t));
+</script>
+</body>
+</html>
