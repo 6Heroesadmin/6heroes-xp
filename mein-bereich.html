@@ -139,7 +139,7 @@ function row(o){
   const href=o.locked?UPGRADE_URL:o.url;
   return '<a class="row'+(o.locked?' locked':'')+'" href="'+href+'" target="_top">'
     +'<span class="dot" style="background:'+o.bg+';color:'+(o.dark?'#20293A':'#fff')+'">'+o.dot+'</span>'
-    +'<span class="txt"><span class="eb">'+esc(o.eb)+(o.free?'<span class="free">Frei</span>':'')+'</span><span class="nm">'+esc(o.nm)+'</span><span class="ds">'+esc(o.ds)+'</span></span>'
+    +'<span class="txt">'+(o.eb||o.free?'<span class="eb">'+esc(o.eb)+(o.free?'<span class="free">Frei</span>':'')+'</span>':'')+'<span class="nm">'+esc(o.nm)+'</span><span class="ds">'+esc(o.ds)+'</span></span>'
     +(o.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
 }
 function render(d){
@@ -155,8 +155,8 @@ function render(d){
   h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
   h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
   h+='</div>';
-  h+='<div class="label">Deine Entwicklung</div><div class="stack" id="zkBox">'+(paid?'<div class="zk wait">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
-  h+='<div class="stack" style="margin-top:12px">'+row({eb:'Langzeitprofil',nm:'Was dein Alltag zeigt',ds:'Was ich aus deinen Rückblicken über dich sehe, etwa zweimal im Monat fortgeschrieben.',dot:'L',bg:'#20293A',url:LINKS.langzeitprofil,locked:!paid})+'</div>';
+  h+='<div class="label">Mein aktuelles Ziel</div><div class="stack" id="zkBox">'+(paid?'<div class="zk wait">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
+  h+='<div class="label">Dein Langzeitprofil</div><div class="stack">'+row({eb:'',nm:'Was dein Alltag zeigt',ds:'Was ich aus deinen Rückblicken über dich sehe, etwa zweimal im Monat fortgeschrieben.',dot:'L',bg:'#20293A',url:LINKS.langzeitprofil,locked:!paid})+'</div>';
   if(ROUTES.length){
     h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
   }
@@ -168,28 +168,28 @@ const heuteB=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'
 const tageZw=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/86400000);
 function zkHtml(cls,ey,z,p,cta,ctaUrl,mainUrl){
   /* Eine Klickfläche: die ganze Karte führt zu Meine Entwicklung (ohne Abo zur Preisseite). ctaUrl bleibt nur aus Kompatibilität. */
-  return '<a class="zk '+cls+'" href="'+(mainUrl||LINKS.entwicklung)+'" target="_top"><span class="ey">'+esc(ey)+'</span><span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')
+  return '<a class="zk '+cls+'" href="'+(mainUrl||LINKS.entwicklung)+'" target="_top">'+(ey?'<span class="ey">'+esc(ey)+'</span>':'')+'<span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')
     +'<span class="cta"><span>'+esc(cta)+'</span><span class="chev"></span></span></a>';
 }
 function zielkarte(ziele,paid){
-  if(!paid)return zkHtml('dash','MEINE ENTWICKLUNG','Langfristig etwas verändern','Ein Ziel, kleine Schritte, dein Coach begleitet dich. Im Abo enthalten.','Freischalten',UPGRADE_URL,UPGRADE_URL);
-  if(!ziele)return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
+  if(!paid)return zkHtml('dash','','Langfristig etwas verändern','Ein Ziel, kleine Schritte, dein Coach begleitet dich. Im Abo enthalten.','Freischalten',UPGRADE_URL,UPGRADE_URL);
+  if(!ziele)return zkHtml('dash','','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
   const h=heuteB();
   const z=ziele.find(x=>x.status==='aktiv'||x.status==='pausiert');
   if(z){
     if(z.status==='pausiert')return zkHtml('light','RUHT GERADE',z.kurz,'Dein Fortschritt bleibt erhalten.','Ansehen');
-    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Ansehen');
-    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Ansehen');
+    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Ansehen');
+    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Ansehen');
     const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
-    if(bereit)return zkHtml('','MEINE ENTWICKLUNG',z.kurz,'Dein nächster Schritt ist bereit.','Ansehen');
-    return zkHtml('','MEINE ENTWICKLUNG',z.kurz,PHASE_SATZ[z.phase]||'','Ansehen');
+    if(bereit)return zkHtml('','',z.kurz,'Dein nächster Schritt ist bereit.','Ansehen');
+    return zkHtml('','',z.kurz,PHASE_SATZ[z.phase]||'','Ansehen');
   }
   const ab=ziele.filter(x=>x.status==='abgeschlossen').sort((a,b)=>String(b.geschlossen||b.ende_am).localeCompare(String(a.geschlossen||a.ende_am)))[0];
   if(ab&&ab.hat_nachfolger!=='1'&&ab.folgeteile&&!((ab.geschlossen||ab.ende_am)&&tageZw(ab.geschlossen||ab.ende_am,h)>60)){
     const teil=String(ab.folgeteile).split('\n').map(x=>x.trim()).filter(Boolean)[0];
     if(teil)return zkHtml('light','DEIN NÄCHSTER TEIL',teil,'Baut auf deinem letzten Ziel auf.','Ansehen');
   }
-  return zkHtml('dash','MEINE ENTWICKLUNG','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
+  return zkHtml('dash','','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
 }
 async function ladeEntwicklung(email){
   const key='me_entw_'+email.toLowerCase();
