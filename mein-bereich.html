@@ -31,6 +31,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 .ds{font-size:14.5px;line-height:1.55;color:var(--mute)}
 .chev{flex:none;width:10px;height:10px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg);margin:0 6px 0 2px}
 .row.locked{border-color:#EBD9A0}
+.row.leer{border-style:dashed;border-color:#C9C2B3}
 .lk{flex:none;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:#7A5C00;background:#FFF6D6;border:1px solid #EBD9A0;border-radius:999px;padding:6px 11px}
 .lk svg{width:13px;height:13px}
 .free{margin-left:8px;padding:2px 8px;border-radius:999px;background:#E6F5EC;color:#1F7A4C;font-size:11px;font-weight:700;vertical-align:middle}
@@ -155,7 +156,7 @@ function render(d){
   h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
   h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
   h+='</div>';
-  h+='<div class="label">Mein aktuelles Ziel</div><div class="stack" id="zkBox">'+(paid?'<div class="zk wait">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
+  h+='<div class="label">Dein aktuelles Ziel</div><div class="stack" id="zkBox">'+(paid?'<div class="row" style="justify-content:center;color:var(--mute);font-size:14px">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
   h+='<div class="label">Dein Langzeitprofil</div><div class="stack">'+row({eb:'',nm:'Was dein Alltag zeigt',ds:'Was ich aus deinen Rückblicken über dich sehe, etwa zweimal im Monat fortgeschrieben.',dot:'L',bg:'#20293A',url:LINKS.langzeitprofil,locked:!paid})+'</div>';
   if(ROUTES.length){
     h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
@@ -166,30 +167,36 @@ function render(d){
 const PHASE_SATZ={Erkennen:'Du lernst gerade, wann dein gewohntes Verhalten beginnt.',Ausprobieren:'Du probierst gerade eine neue Reaktion bewusst aus.',Uebertragen:'Du setzt es gerade auch in schwierigen Situationen ein.',Eigenstaendig:'Du brauchst immer seltener Anleitung.'};
 const heuteB=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Berlin'});
 const tageZw=(a,b)=>Math.round((new Date(b+'T12:00:00Z')-new Date(a+'T12:00:00Z'))/86400000);
-function zkHtml(cls,ey,z,p,cta,ctaUrl,mainUrl){
-  /* Eine Klickfläche: die ganze Karte führt zu Meine Entwicklung (ohne Abo zur Preisseite). ctaUrl bleibt nur aus Kompatibilität. */
-  return '<a class="zk '+cls+'" href="'+(mainUrl||LINKS.entwicklung)+'" target="_top">'+(ey?'<span class="ey">'+esc(ey)+'</span>':'')+'<span class="z">'+esc(z)+'</span>'+(p?'<span class="p">'+esc(p)+'</span>':'')
-    +'<span class="cta"><span>'+esc(cta)+'</span><span class="chev"></span></span></a>';
+const ZIEL_ICON='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#20293A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#20293A"/></svg>';
+/* Zielkarte im Stil der übrigen Karten: goldener Kreis mit Zielscheibe, Statuszeile, Ziel fett, Phase grau */
+function zkRow(status,ziel,text,opt){
+  opt=opt||{};
+  const href=opt.locked?UPGRADE_URL:LINKS.entwicklung;
+  return '<a class="row'+(opt.locked?' locked':'')+(opt.leer?' leer':'')+'" href="'+href+'" target="_top">'
+    +'<span class="dot" style="background:#F2B705">'+ZIEL_ICON+'</span>'
+    +'<span class="txt">'+(status?'<span class="eb">'+esc(status)+'</span>':'')+'<span class="nm">'+esc(ziel)+'</span>'+(text?'<span class="ds">'+esc(text)+'</span>':'')+'</span>'
+    +(opt.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
 }
 function zielkarte(ziele,paid){
-  if(!paid)return zkHtml('dash','','Langfristig etwas verändern','Ein Ziel, kleine Schritte, dein Coach begleitet dich. Im Abo enthalten.','Freischalten',UPGRADE_URL,UPGRADE_URL);
-  if(!ziele)return zkHtml('dash','','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
+  if(!paid)return zkRow('Im Abo enthalten','Langfristig etwas verändern','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.',{locked:true});
+  const LEER=()=>zkRow('Noch kein Ziel','Woran möchtest du arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche.',{leer:true});
+  if(!ziele)return LEER();
   const h=heuteB();
   const z=ziele.find(x=>x.status==='aktiv'||x.status==='pausiert');
   if(z){
-    if(z.status==='pausiert')return zkHtml('light','RUHT GERADE',z.kurz,'Dein Fortschritt bleibt erhalten.','Ansehen');
-    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkHtml('','',z.kurz,'Vier Wochen sind um. Zeit für deinen Abschluss.','Ansehen');
-    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkHtml('','',z.kurz,'Zwei Wochen sind um. Zeit für einen kurzen Blick zurück.','Ansehen');
+    const phase=PHASE_SATZ[z.phase]||'';
+    if(z.status==='pausiert')return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.');
+    if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkRow('Abschluss fällig',z.kurz,phase);
+    if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkRow('Zwischenbilanz fällig',z.kurz,phase);
     const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
-    if(bereit)return zkHtml('','',z.kurz,'Dein nächster Schritt ist bereit.','Ansehen');
-    return zkHtml('','',z.kurz,PHASE_SATZ[z.phase]||'','Ansehen');
+    return zkRow(bereit?'Dein nächster Schritt ist bereit':'',z.kurz,phase);
   }
   const ab=ziele.filter(x=>x.status==='abgeschlossen').sort((a,b)=>String(b.geschlossen||b.ende_am).localeCompare(String(a.geschlossen||a.ende_am)))[0];
   if(ab&&ab.hat_nachfolger!=='1'&&ab.folgeteile&&!((ab.geschlossen||ab.ende_am)&&tageZw(ab.geschlossen||ab.ende_am,h)>60)){
     const teil=String(ab.folgeteile).split('\n').map(x=>x.trim()).filter(Boolean)[0];
-    if(teil)return zkHtml('light','DEIN NÄCHSTER TEIL',teil,'Baut auf deinem letzten Ziel auf.','Ansehen');
+    if(teil)return zkRow('Dein nächster Teil wartet',teil,'Baut auf deinem letzten Ziel auf.');
   }
-  return zkHtml('dash','','Woran möchtest du in den nächsten Wochen arbeiten?','Ein Ziel, ein paar kleine Schritte pro Woche, dein Coach begleitet dich.','Ansehen');
+  return LEER();
 }
 async function ladeEntwicklung(email){
   const key='me_entw_'+email.toLowerCase();

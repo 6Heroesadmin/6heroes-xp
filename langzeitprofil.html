@@ -128,7 +128,7 @@ h1.big{font-size:clamp(36px,10vw,52px);line-height:1.1}
 /* Langzeitprofil, Build 2026-11-02 v1
    Daten: Make Langzeitprofil_Laden (Users.Langzeit_JSON). Vergessen: Make Fakt_Vergessen.
    URL-Parameter: email, frame. Vorschau ohne Make: ?demo=voll | frueh | keine */
-const BUILD='2026-11-02 Langzeitprofil v1';
+const BUILD='2026-11-03 Langzeitprofil v2 ohne Faktenliste';
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const MB_URL='https://app.6heroes.de/mein-bereich';
 const ACCOUNT_URL='https://app.6heroes.de/account';
@@ -191,9 +191,9 @@ function render(){
   if(D.einwilligung!=='ja'){
     inner='<div class="note"><b>Dafür brauche ich deine Zustimmung.</b><p>Das Langzeitprofil entsteht aus deinen Rückblicken. Ohne deine Einwilligung, dass ich aus ihnen lernen darf, schreibe ich es nicht.</p><a href="'+ACCOUNT_URL+'" target="_top">Zustimmung prüfen</a></div>';
   }else if(!D.profil||!D.profil.inhalt||D.profil.zustand==='zu_frueh'){
-    inner='<div class="note"><b>Dafür ist es noch zu früh.</b><p>Ich möchte dich erst besser kennenlernen, bevor ich etwas über dich sage. Sobald du ein paar Wochen dabei bist und einige Rückblicke geschrieben hast, schreibe ich dir das erste Bild. Bis dahin sammle ich in Ruhe mit.</p></div>'+faktenHtml(D.fakten);
+    inner='<div class="note"><b>Dafür ist es noch zu früh.</b><p>Ich möchte dich erst besser kennenlernen, bevor ich etwas über dich sage. Sobald du ein paar Wochen dabei bist und einige Rückblicke geschrieben hast, schreibe ich dir das erste Bild. Bis dahin sammle ich in Ruhe mit.</p></div>';
   }else{
-    inner=profilHtml(D.profil.inhalt,D.profil.erstellt)+faktenHtml(D.fakten);
+    inner=profilHtml(D.profil.inhalt,D.profil.erstellt);
   }
   document.getElementById('app').innerHTML=h+'<div style="margin-top:14px">'+inner+'</div>';
   binden();postHeight();
