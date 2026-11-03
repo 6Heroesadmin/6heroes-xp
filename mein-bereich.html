@@ -151,7 +151,7 @@ function render(d){
   let h='<div class="head">'+(P.get('hideTitle')==='1'?'<span></span>':'<h1>Mein Bereich</h1>')+'<a class="gear" href="'+LINKS.account+'" target="_top" aria-label="Account und Einstellungen">'+GEAR+'</a></div>';
   h+='<div class="wheel">'+wheel(marks,P.get('name'))+'</div>';
   h+='<div class="label">Deine Helden</div><div class="stack">';
-  h+=row({eb:'Dein Basisheld',nm:HL[b],ds:HOOK[b],dot:'B',bg:HC[b],dark:b==='innovator',url:LINKS.basis,free:true});
+  h+=row({eb:'Dein Basisheld',nm:HL[b],ds:HOOK[b],dot:'B',bg:HC[b],dark:b==='innovator',url:LINKS.basis,free:!paid});
   h+=row({eb:'Dein Zweitheld',nm:HL[z],ds:HERO_SHORT[HL[z]].line,dot:'Z',bg:HC[z],dark:z==='innovator',url:LINKS.zweit,locked:!paid});
   h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
   h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
