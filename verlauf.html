@@ -53,7 +53,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 <body>
 <div class="wrap" id="app"></div>
 <script>
-// Build: 2026-11-05 Verlauf v1.1
+// Build: 2026-11-05 Verlauf v1.2
 var VERLAUF_WEBHOOK_URL='https://hook.eu1.make.com/5y427lg5937oqsibywlpeuxjgijuneld';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
 var MB_URL='https://app.6heroes.de/mein-bereich';
@@ -166,16 +166,17 @@ function render(d){
   fertig();
 }
 
-function fehler(){
-  document.getElementById('app').innerHTML=kopf()+'<div class="note"><p>Dein Verlauf lässt sich gerade nicht laden.</p><button class="btn" id="nochmal">Nochmal versuchen</button></div>';
+function fehler(err){
+  var dbg=Q.get('debug')?'<p style="font-size:12px;color:#5A6272;word-break:break-all">email='+esc(EMAIL||'(leer)')+' | '+esc(err&&err.message||'')+'</p>':'';
+  document.getElementById('app').innerHTML=kopf()+'<div class="note"><p>Dein Verlauf lässt sich gerade nicht laden.</p><button class="btn" id="nochmal">Nochmal versuchen</button>'+dbg+'</div>';
   document.getElementById('nochmal').addEventListener('click',function(){start();});
   fertig();
 }
 function fertig(){document.getElementById('app').classList.add('ready');postHeight();}
 
 async function start(){
-  if(!EMAIL&&!DEMO){fehler();return;}
-  try{render(await laden());}catch(e){console.warn('Verlauf laden:',e);fehler();}
+  if((!EMAIL||EMAIL.indexOf('@')<1)&&!DEMO){fehler(new Error('keine gueltige email im Link'));return;}
+  try{render(await laden());}catch(e){console.warn('Verlauf laden:',e);fehler(e);}
 }
 
 // ---- Demo ----
