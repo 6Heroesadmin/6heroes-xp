@@ -63,6 +63,7 @@ const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
 const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account',
   entwicklung:APP+'/meine-entwicklung',
   verlauf:APP+'/verlauf',
+  erfolge:APP+'/erfolge',
   langzeitprofil:APP+'/langzeitprofil',   /* ANPASSEN: Noloco-Adresse der Langzeitprofil-Seite */   /* ANPASSEN: Noloco-Adresse der neuen Seite */
   coach:APP+'/pocket-hero'};              /* ANPASSEN: Noloco-Adresse der Pocket-Hero-Seite */
 /* Meine Entwicklung (AP-3.3): Make Entwicklung_Laden, Ergebnis eine Minute im sessionStorage (entwicklung.html liest es mit) */
@@ -159,6 +160,7 @@ function render(d){
   h+='</div>';
   h+='<div class="label">Dein aktuelles Ziel</div><div class="stack" id="zkBox">'+(paid?'<div class="row" style="justify-content:center;color:var(--mute);font-size:14px">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
   h+='<div class="label">Dein Verlauf</div><div class="stack">'+row({eb:'',nm:'Was du getan hast',ds:'Deine Heldentaten und Wochenrückblicke der letzten 60 Tage, nach Wochen geordnet.',dot:'V',bg:'#5A6272',url:LINKS.verlauf,locked:!paid})+'</div>';
+  h+='<div class="label">Deine Erfolge</div><div class="stack">'+row({eb:'',nm:'Level und Abzeichen',ds:'Hero Points, Wochen in Folge und Abzeichen aus deinen Rückblicken.',dot:'E',bg:'#1F9D62',url:LINKS.erfolge,locked:!paid})+'</div>';
   h+='<div class="label">Dein Langzeitprofil</div><div class="stack">'+row({eb:'',nm:'Was dein Alltag zeigt',ds:'Was ich aus deinen Rückblicken über dich sehe, etwa zweimal im Monat fortgeschrieben.',dot:'L',bg:'#20293A',url:LINKS.langzeitprofil,locked:!paid})+'</div>';
   if(ROUTES.length){
     h+='<div class="label">Dein Weg</div><div class="stack">'+ROUTES.map(r=>row({eb:r.eb||'',nm:r.name,ds:r.desc,dot:r.dot||'•',bg:'#20293A',url:r.url})).join('')+'</div>';
