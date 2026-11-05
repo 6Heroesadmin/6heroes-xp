@@ -53,7 +53,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 <body>
 <div class="wrap" id="app"></div>
 <script>
-// Build: 2026-11-05 Verlauf v1.2
+// Build: 2026-11-05 Verlauf v1.3
 var VERLAUF_WEBHOOK_URL='https://hook.eu1.make.com/5y427lg5937oqsibywlpeuxjgijuneld';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
 var MB_URL='https://app.6heroes.de/mein-bereich';
@@ -89,11 +89,13 @@ function cacheSchreiben(d){try{sessionStorage.setItem('vl_'+EMAIL,JSON.stringify
 async function laden(){
   if(DEMO) return demoDaten(DEMO);
   var c=cacheLesen(); if(c) return c;
-  var body=new URLSearchParams({aktion:'verlauf',token:LOAD_TOKEN,user_id:EMAIL});
+  var body=JSON.stringify({aktion:'verlauf',token:LOAD_TOKEN,user_id:EMAIL});
   var letzter=null;
   for(var versuch=0;versuch<2;versuch++){
+    var ctrl=new AbortController();var timer=setTimeout(function(){ctrl.abort();},20000);
     try{
-      var r=await fetch(VERLAUF_WEBHOOK_URL,{method:'POST',body:body});
+      var r=await fetch(VERLAUF_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:body,signal:ctrl.signal});
+      clearTimeout(timer);
       var t=await r.text();
       if(!r.ok) throw new Error('HTTP '+r.status+': '+t.slice(0,120));
       var d;
@@ -102,7 +104,7 @@ async function laden(){
       if(!d||!Array.isArray(d.chronik)) throw new Error('Format: '+t.slice(0,120));
       cacheSchreiben(d);
       return d;
-    }catch(e){letzter=e;console.warn('Verlauf Versuch '+(versuch+1)+':',e.message);if(versuch===0)await new Promise(function(res){setTimeout(res,1200);});}
+    }catch(e){clearTimeout(timer);letzter=e;console.warn('Verlauf Versuch '+(versuch+1)+':',e.message);if(versuch===0)await new Promise(function(res){setTimeout(res,1200);});}
   }
   throw letzter;
 }
