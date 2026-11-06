@@ -244,6 +244,28 @@
   .startstate{display:flex;flex-direction:column;gap:20px;flex:1}
   .startnew{display:flex;flex-direction:column;gap:16px}
 
+  /* Einwilligungen (Erstabfrage, Pause, Wochenhinweis) */
+  .einwbox{display:flex;flex-direction:column;gap:10px;padding:16px;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .einwbox p{margin:0;font-size:15px;line-height:1.5}
+  .einwbox .flbl{font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--muted)}
+  .einwbox a{color:var(--navy);font-weight:600}
+  .haken{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:var(--white);border:1px solid var(--line);border-radius:14px;cursor:pointer;font-size:15px;line-height:1.45}
+  .haken input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--navy)}
+  .haken.on{border:2px solid var(--navy);padding:13px 15px}
+  .schalter{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:14px}
+  .tg{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-top:1px solid var(--line)}
+  .tg:first-child{border-top:0}
+  .tg .t{flex:1;display:flex;flex-direction:column;gap:2px}
+  .tg b{font-size:15px;font-weight:600}
+  .tg span{font-size:13px;line-height:1.45;color:var(--muted)}
+  .tg .warn{color:var(--err)}
+  .sw{flex:none;width:46px;height:28px;margin-top:2px;padding:0;border:0;border-radius:14px;background:#D6D0C3;position:relative;cursor:pointer}
+  .sw:after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:#fff;transition:left .15s}
+  .sw[aria-checked="true"]{background:#1F9D62}
+  .sw[aria-checked="true"]:after{left:21px}
+  @media (prefers-reduced-motion:reduce){.sw:after{transition:none}}
+  .zweier{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
   /* Hinweis, wenn Zurück gerade nicht geht */
   .navhint{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:20;width:min(432px,calc(100% - 32px));
     padding:11px 14px;background:var(--navy);color:var(--white);border-radius:12px;font-size:14px;line-height:1.4;text-align:center}
@@ -542,6 +564,7 @@
     <div class="body">
       <h1 id="nextTitle">Deine Wahl ist gespeichert.</h1>
       <p class="hint" id="nextHint">Der nächste Schritt ist noch im Bau. Hier geht es bald weiter.</p>
+      <div class="einwbox" id="nextWoche" hidden></div>
       <div class="actions" style="margin-top:24px"><button class="btn" data-back="start">Zum Start</button></div>
     </div>
   </section>
@@ -603,7 +626,14 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-10-30 18:45 Folgeteil auf Start';
+const BUILD = '2026-11-06 Einwilligungen v1';
+/* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
+   EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
+   Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
+const ACCOUNT_AKTION_WEBHOOK_URL = 'https://hook.eu1.make.com/ue9m1kpl3xefyxuqsjpnqj7p6fhce8q1';
+const EINW_TEXTVERSION = 1;
+const ACCOUNT_URL = 'https://app.6heroes.de/account';
+const DATENSCHUTZ_URL = 'https://6heroes.de/datenschutz.html';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
 const REQUEST_TIMEOUT_MS = 60000;
@@ -812,6 +842,8 @@ function init(){
   const p = new URLSearchParams(window.location.search);
   state.userId = (p.get('email') || '').trim();
   state.name = (p.get('name') || '').trim();
+  const kp = (p.get('k') || '').trim();
+  state.k = /^rec[A-Za-z0-9]{14}$/.test(kp) ? kp : '';
   if (p.get('ton') === '1') tonSetzen(true);
   if (p.get('ton') === '0') tonSetzen(false);
   // Optional zum Abstimmen: ?puffer=90 schiebt die Buttons nach oben, falls die Noloco-Fußzeile sie überdeckt
@@ -910,6 +942,9 @@ let busy = 0;               // laufende Anfragen an Make
 let hintTimer = null;
 let startInfo = null;        // jüngster Durchlauf (aus Coach_Laden oder aus dieser Sitzung), steuert den Startzustand
 let zugangStatus = 'unbekannt';   // 'ja' | 'nein' | 'unbekannt'
+let einw = null;                  // Einwilligungen aus Zugang_JSON: { ki, profil, antworten, woche, mail, push, tv }; null = unbekannt
+let einwDemo = '';                // Vorschau ohne Make: ?einwdemo=erst|update|pause|woche
+let einwDiag = 'nicht geladen';
 let frischAbgeschlossen = false;
 let startZiel = false;       // nach "Noch einen Durchlauf": Trainingskarte des Ziels zeigen, falls bereit
 let startOverride = false;   // Nutzer hat \"Später\" oder \"etwas anderes\" gewählt: Kategorien anzeigen
@@ -2060,6 +2095,7 @@ async function chooseHeuteNicht(wahl){  // wahl wird unten ggf. überschrieben
     ? (state.einfacherGesetzt ? 'Dein Ziel bekommt beim nächsten Mal einen leichteren Schritt.' : 'Heute kein Schritt. Dein Ziel bleibt bestehen, du kannst jederzeit wieder einsteigen.')
     : 'Heute keine Heldentat. Deine Situation bleibt gespeichert, du kannst jederzeit wieder einsteigen.';
   state.einfacherGesetzt = false;
+  $('nextWoche').hidden = true;
   go('next');
 }
 
@@ -2969,6 +3005,7 @@ async function zielBestaetigen(){
   zielWartetBis = Date.now() + 90000;
   $('nextTitle').textContent = 'Dein Ziel steht.';
   $('nextHint').textContent = 'Dein erster Schritt wird gerade vorbereitet. Du findest ihn gleich auf dem Start-Screen.';
+  renderWochenFrage();
   // Der Airtable-Trigger legt den ersten Schritt kurz nach dem Anlegen an: Ziel später noch einmal laden
   [3000, 8000, 15000, 25000, 40000, 60000, 85000].forEach(ms => setTimeout(async () => {
     if (zielInfo) return;
@@ -3133,9 +3170,12 @@ function showNewStart(){
 function renderStart(){
   $('startLoad').hidden = true;
   if (zugangStatus === 'nein'){ renderKeinZugang(); return; }
+  const es = einwStatus();
+  if (es === 'fragen'){ renderEinwilligung(einw && einw.ki === 'ja' && einw.tv > 0 && einw.tv < EINW_TEXTVERSION ? 'update' : 'erst'); return; }
+  if (es === 'pause'){ renderPause(); return; }
   const kind = (startOverride || startZiel) ? 'neu' : startKind(startInfo);
   const zk = (kind === 'neu' && !startOverride) ? zielKarte() : null;
-  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Version: ' + BUILD + ' | Zugang: ' + zugangStatus + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
+  if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Version: ' + BUILD + ' | Zugang: ' + zugangStatus + ' | Einwilligung: ' + einwDiag + (state.k ? '' : ' (k fehlt)') + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
   box.innerHTML = '';
   const zh = $('zielHinweis');
@@ -3343,8 +3383,18 @@ async function pruefeZugang(){
     });
     if (!res.ok) return 'unbekannt';
     const t = (await res.text()).trim();
-    if (t === 'KEIN_ZUGANG') return 'nein';
-    if (t === 'ZUGANG') return 'ja';
+    if (t === 'KEIN_ZUGANG'){ einwDiag = 'altes Format'; return 'nein'; }
+    if (t === 'ZUGANG'){ einwDiag = 'altes Format'; return 'ja'; }
+    if (t.charAt(0) === '{'){
+      const d = parsePayload(t);
+      if (d && typeof d === 'object'){
+        const w = v => String(v == null ? '' : v).trim().toLowerCase();
+        einw = { ki:w(d.ki), profil:w(d.profil), antworten:w(d.antworten), woche:w(d.woche), mail:w(d.mail), push:w(d.push), tv:parseInt(d.tv, 10) || 0 };
+        einwDiag = 'geladen';
+        if (w(d.zugang) === 'nein') return 'nein';
+        if (w(d.zugang) === 'ja') return 'ja';
+      }
+    }
     return 'unbekannt';
   } catch(_) { return 'unbekannt'; }
   finally { clearTimeout(timer); }
@@ -3371,10 +3421,247 @@ function renderKeinZugang(){
   box.appendChild(a);
 }
 
+/* ---------- Einwilligungen (V156) ---------- */
+/* 'ok' = Coach normal, 'fragen' = Erstabfrage (A1/A2) oder neue Textversion (A4), 'pause' = KI_Einwilligung nein (A3).
+   Ohne Daten (altes Format, Fehler) oder ohne Seiten_Schluessel startet der Coach normal; die harte Sperre liegt in Make. */
+function einwStatus(){
+  if (!einw) return 'ok';
+  const fragen = einw.ki === '' || (einw.ki === 'ja' && einw.tv < EINW_TEXTVERSION);
+  if (fragen) return (state.k || einwDemo) ? 'fragen' : 'ok';
+  if (einw.ki === 'nein') return 'pause';
+  return 'ok';
+}
+
+async function einwSpeichern(quelle, werte){
+  if (einwDemo) return true;
+  if (!ACCOUNT_AKTION_WEBHOOK_URL || !LOAD_TOKEN || !state.userId || !state.k) return false;
+  const wert = Object.keys(werte).map(k => k + '=' + werte[k]).join(';');
+  try {
+    const r = await postText(ACCOUNT_AKTION_WEBHOOK_URL, { aktion:'account_aktion', token:LOAD_TOKEN, user_id:state.userId.toLowerCase(), k:state.k,
+      art:'einwilligungen', feld:quelle, wert:wert, grund:'', text:'' }, 20000);
+    return r.ok && r.text.indexOf('"ok":true') >= 0;
+  } catch(_) { return false; }
+}
+
+function einwKopf(box, titel, text){
+  $('startNew').hidden = true;
+  $('zielEntry').hidden = true;
+  box.hidden = false;
+  box.innerHTML = '';
+  const g = el('div', 'greet');
+  g.appendChild(el('span', 'hello', HELLO));
+  g.appendChild(el('h1', null, titel));
+  box.appendChild(g);
+  if (text) box.appendChild(el('p', 'hint', text));
+}
+
+function accountLink(text){
+  const a = el('a', 'btn2', text || 'Zum Account');
+  a.href = ACCOUNT_URL;
+  a.target = '_top';
+  a.style.cssText = 'display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--navy)';
+  return a;
+}
+
+/* A1 (und A4): KI-Coach mit Haken. modus 'erst' | 'update' | 'pause' (wieder einschalten aus dem Pausen-Screen) */
+function renderEinwilligung(modus){
+  const box = $('startState');
+  const titel = modus === 'update' ? 'Wir haben unsere Hinweise aktualisiert.' : (modus === 'pause' ? 'KI-Coach einschalten' : 'Bevor es losgeht');
+  const text = modus === 'update' ? 'Bitte lies sie kurz und bestätige sie noch einmal. Danach geht es wie gewohnt weiter.'
+    : 'Dein Coach arbeitet mit einer KI. Damit er dich begleiten kann, brauchen wir deine Einwilligung.';
+  einwKopf(box, titel, text);
+  const info = el('div', 'einwbox');
+  info.appendChild(el('span', 'flbl', 'SO ARBEITET DEIN COACH'));
+  info.appendChild(el('p', null, 'Was du im Coach schreibst, wird von einer KI (OpenAI) ausgewertet. Daraus entstehen deine Heldentaten, Rückblicke und Antworten.'));
+  info.appendChild(el('p', null, 'Wenn du dabei von Belastung, Stress oder deiner Gesundheit erzählst, wird auch das ausgewertet.'));
+  const ds = el('p');
+  const dl = el('a', null, 'Mehr dazu in der Datenschutzerklärung');
+  dl.href = DATENSCHUTZ_URL; dl.target = '_blank'; dl.rel = 'noopener';
+  ds.appendChild(dl);
+  info.appendChild(ds);
+  box.appendChild(info);
+
+  const lab = el('label', 'haken');
+  const cb = el('input');
+  cb.type = 'checkbox';
+  lab.appendChild(cb);
+  lab.appendChild(el('span', null, 'Ich willige ein, dass meine Einträge dafür von einer KI ausgewertet werden, auch Angaben zu Belastung und Gesundheit. Ich kann das jederzeit im Account widerrufen.'));
+  box.appendChild(lab);
+
+  const msg = el('p', 'msg err'); msg.hidden = true;
+  const acts = el('div', 'btnrow');
+  const weiter = el('button', 'btn', 'Weiter');
+  weiter.type = 'button';
+  weiter.disabled = true;
+  cb.addEventListener('change', () => { weiter.disabled = !cb.checked; lab.classList.toggle('on', cb.checked); });
+  weiter.addEventListener('click', () => { if (cb.checked) renderPersonalisierung(modus); });
+  acts.appendChild(weiter);
+  if (modus === 'pause'){
+    const zur = el('button', 'btn2', 'Zurück');
+    zur.type = 'button';
+    zur.addEventListener('click', renderPause);
+    acts.appendChild(zur);
+  } else {
+    const nein = el('button', 'btn2', 'Ohne KI-Coach weiter');
+    nein.type = 'button';
+    nein.addEventListener('click', async () => {
+      if (busy > 0) return;
+      nein.disabled = true; weiter.disabled = true;
+      msg.className = 'msg'; msg.textContent = 'Wird gespeichert …'; msg.hidden = false;
+      const ok = await einwSpeichern(modus === 'erst' ? 'erstabfrage' : 'coach', { ki:'nein' });
+      if (!ok){
+        msg.className = 'msg err'; msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+        nein.disabled = false; weiter.disabled = !cb.checked;
+        return;
+      }
+      Object.assign(einw, { ki:'nein', tv:EINW_TEXTVERSION });
+      renderPause();
+    });
+    acts.appendChild(nein);
+  }
+  box.appendChild(msg);
+  box.appendChild(acts);
+  window.scrollTo(0, 0);
+}
+
+/* A2: Personalisierung aus Profil und Antworten, nichts vorausgewählt (bestehende Werte bleiben) */
+function renderPersonalisierung(modus){
+  const box = $('startState');
+  einwKopf(box, 'Wie persönlich soll dein Coach sein?', 'Beides ist freiwillig. Du kannst es jederzeit im Account ändern.');
+  const wahl = { profil: einw.profil === 'ja', antworten: einw.antworten === 'ja' };
+  const vorher = einw.antworten === 'ja';
+  const liste = el('div', 'schalter');
+  const zeile = (key, titel, text) => {
+    const r = el('div', 'tg');
+    const t = el('div', 't');
+    t.appendChild(el('b', null, titel));
+    t.appendChild(el('span', null, text));
+    const warn = el('span', 'warn', 'Was dein Coach sich bisher gemerkt hat, wird dann gelöscht.');
+    warn.hidden = true;
+    t.appendChild(warn);
+    const sw = el('button', 'sw');
+    sw.type = 'button';
+    sw.setAttribute('role', 'switch');
+    sw.setAttribute('aria-label', titel);
+    const setzen = () => { sw.setAttribute('aria-checked', wahl[key] ? 'true' : 'false'); warn.hidden = !(key === 'antworten' && vorher && !wahl[key]); };
+    sw.addEventListener('click', () => { wahl[key] = !wahl[key]; setzen(); });
+    setzen();
+    r.append(t, sw);
+    liste.appendChild(r);
+  };
+  zeile('profil', 'Personalisierung aus deinem Profil', 'Dein Coach berücksichtigt deine Helden und dein Assessment.');
+  zeile('antworten', 'Personalisierung aus deinen Antworten', 'Dein Coach merkt sich, was du in Rückblicken schreibst. Grundlage für Wochenrückblicke und dein Langzeitprofil.');
+  box.appendChild(liste);
+  if (modus === 'erst') box.appendChild(el('p', 'hint', 'Erinnerungen an deine Heldentat bekommst du per E-Mail und, wenn du 6Heroes auf deinem Startbildschirm installiert hast, per Push. Das kannst du im Account ändern.'));
+
+  const msg = el('p', 'msg err'); msg.hidden = true;
+  const acts = el('div', 'btnrow');
+  const los = el('button', 'btn', 'Speichern und loslegen');
+  los.type = 'button';
+  los.addEventListener('click', async () => {
+    if (busy > 0) return;
+    los.disabled = true;
+    msg.className = 'msg'; msg.textContent = 'Wird gespeichert …'; msg.hidden = false;
+    const werte = { ki:'ja', profil:wahl.profil ? 'ja' : 'nein', antworten:wahl.antworten ? 'ja' : 'nein' };
+    if (modus === 'erst'){ werte.mail = 'ja'; werte.push = 'ja'; }
+    const ok = await einwSpeichern(modus === 'erst' ? 'erstabfrage' : 'coach', werte);
+    if (!ok){
+      msg.className = 'msg err'; msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+      los.disabled = false;
+      return;
+    }
+    Object.assign(einw, { ki:'ja', profil:werte.profil, antworten:werte.antworten, tv:EINW_TEXTVERSION });
+    if (modus === 'erst'){ if (!einw.mail) einw.mail = 'ja'; if (!einw.push) einw.push = 'ja'; }
+    $('startState').hidden = true;
+    $('startState').innerHTML = '';
+    $('startNew').hidden = false;
+    renderStart();
+    window.scrollTo(0, 0);
+  });
+  const zur = el('button', 'btn2', 'Zurück');
+  zur.type = 'button';
+  zur.addEventListener('click', () => renderEinwilligung(modus));
+  acts.append(los, zur);
+  box.appendChild(msg);
+  box.appendChild(acts);
+  window.scrollTo(0, 0);
+}
+
+/* A3: Pausen-Screen bei KI_Einwilligung = nein */
+function renderPause(){
+  $('zielHinweis').hidden = true;
+  const box = $('startState');
+  einwKopf(box, 'Dein Coach pausiert.', 'Ohne deine Einwilligung kann der KI-Coach keine Heldentaten und Rückblicke für dich erstellen.');
+  const info = el('div', 'einwbox');
+  info.appendChild(el('p', null, 'Deine Helden, deine bisherigen Heldentaten und deine Erfolge kannst du weiter ansehen. Dein Abo läuft unverändert weiter.'));
+  box.appendChild(info);
+  const acts = el('div', 'btnrow');
+  const an = el('button', 'btn', 'KI-Coach einschalten');
+  an.type = 'button';
+  an.addEventListener('click', () => renderEinwilligung('pause'));
+  acts.append(an, accountLink('Zum Account'));
+  box.appendChild(acts);
+}
+
+/* A5: Wochenhinweis am Ende des Zieldialogs, nur wenn noch nicht festgelegt */
+function renderWochenFrage(){
+  const box = $('nextWoche');
+  box.innerHTML = '';
+  box.hidden = true;
+  if (!einw || einw.woche !== '' || (!state.k && !einwDemo)) return;
+  box.appendChild(el('span', 'flbl', 'WOCHENHINWEIS'));
+  box.appendChild(el('p', null, 'Soll ich dich höchstens einmal pro Woche an dein Ziel erinnern? Per E-Mail und, wenn du 6Heroes installiert hast, per Push.'));
+  const msg = el('p', 'msg'); msg.hidden = true;
+  const row = el('div', 'zweier');
+  const antwort = async (wert, btn) => {
+    if (busy > 0) return;
+    row.querySelectorAll('button').forEach(b => { b.disabled = true; });
+    msg.className = 'msg'; msg.textContent = 'Wird gespeichert …'; msg.hidden = false;
+    const ok = await einwSpeichern('zieldialog', { woche:wert });
+    if (!ok){
+      msg.className = 'msg err'; msg.textContent = 'Das hat gerade nicht geklappt. Tippe bitte noch einmal.';
+      row.querySelectorAll('button').forEach(b => { b.disabled = false; });
+      return;
+    }
+    einw.woche = wert;
+    row.hidden = true;
+    msg.className = 'msg';
+    msg.textContent = (wert === 'ja' ? 'Gespeichert, ich melde mich höchstens einmal pro Woche.' : 'Gespeichert, kein Wochenhinweis.') + ' Ändern kannst du das jederzeit im Account.';
+  };
+  const ja = el('button', 'btn2', 'Ja, gern');
+  ja.type = 'button';
+  ja.addEventListener('click', () => antwort('ja', ja));
+  const nein = el('button', 'btn2', 'Nein, danke');
+  nein.type = 'button';
+  nein.addEventListener('click', () => antwort('nein', nein));
+  row.append(ja, nein);
+  box.append(row, msg);
+  box.hidden = false;
+}
+
 async function startUp(){
   const p = new URLSearchParams(window.location.search);
   // Vorschau ohne Make: ?startdemo=faellig | laeuft | erledigt | heute_nicht
   const demo = p.get('startdemo');
+  const ed = p.get('einwdemo');
+  if (/^(erst|update|pause|woche)$/.test(ed || '')){
+    einwDemo = ed; zugangStatus = 'ja'; einwDiag = 'Vorschau';
+    einw = { ki:'', profil:'', antworten:'ja', woche:'', mail:'', push:'', tv:0 };
+    if (ed === 'update') Object.assign(einw, { ki:'ja', profil:'ja', tv:0.5 });
+    if (ed === 'pause') Object.assign(einw, { ki:'nein', tv:EINW_TEXTVERSION });
+    if (ed === 'woche'){
+      Object.assign(einw, { ki:'ja', profil:'ja', tv:EINW_TEXTVERSION });
+      state.zielAngelegt = true;
+      $('nextTitle').textContent = 'Dein Ziel steht.';
+      $('nextHint').textContent = 'Dein erster Schritt wird gerade vorbereitet. Du findest ihn gleich auf dem Start-Screen.';
+      renderWochenFrage();
+      renderStart();
+      go('next');
+      return;
+    }
+    renderStart();
+    return;
+  }
   if (demo || p.get('zieldemo')){
     const jetzt = Date.now();
     startInfo = Object.assign({}, { status:'festgelegt', runId:'vorschau', titel:RV_DEMO.daten.titel, stufe:'Standard', was:RV_DEMO.daten.was,
