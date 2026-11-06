@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account – 6Heroes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--soft:#F0ECE0;--gold:#F2B705;--warn:#B4471B}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55}
+.wrap{max-width:600px;margin:0 auto;padding:12px 20px 64px;opacity:0;transition:opacity .2s}
+.wrap.ready{opacity:1}
+.dummy{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A5A00;background:#FFF3D1;border:1px solid #F2D58A;border-radius:999px;padding:3px 10px}
+.topbar{display:flex;align-items:center;gap:6px;min-height:44px}
+.topbar a{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:13px;font-weight:600;color:var(--mute);text-decoration:none;cursor:pointer}
+.topbar svg{width:20px;height:20px}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:34px;line-height:1.15;margin:6px 0 4px}
+h2{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:25px;line-height:1.25;margin:6px 0 8px}
+.sub{font-size:14px;color:var(--mute)}
+.label{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);padding:24px 2px 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.card p{font-size:14.5px}
+.card.gelb{border-color:#EBD9A0}
+.card.krise{background:#FFF6E8;border-color:#F2D58A}
+.list{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line);cursor:pointer;text-decoration:none;color:inherit;width:100%;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;text-align:left}
+.row:first-child{border-top:0}
+.row .t{flex:1;display:flex;flex-direction:column;gap:1px}
+.row b{font-size:15px;font-weight:600}
+.row span.s{font-size:13px;color:var(--mute)}
+.chev{flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(-45deg)}
+.avatar{flex:none;width:52px;height:52px;border-radius:26px;background:#20293A;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:24px}
+.head{display:flex;align-items:center;gap:14px;padding:8px 0 4px}
+.pill{display:inline-flex;align-self:flex-start;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:#E3F4EA;color:#17724A}
+.pill.grey{background:var(--soft);color:var(--mute)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:999px;background:var(--gold);color:#20293A;font:700 15px Inter,sans-serif;border:0;cursor:pointer;text-decoration:none;text-align:center}
+.btn.sec{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn.warn{background:var(--warn);color:#fff}
+.btn[disabled]{opacity:.6;cursor:default}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.note{font-size:13px;color:var(--mute)}
+.tg{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;border-top:1px solid var(--line)}
+.tg:first-child{border-top:0}
+.tg .t{flex:1}
+.tg b{font-size:15px;font-weight:600;display:block}
+.tg span{font-size:13px;color:var(--mute);display:block}
+.tg em{font-style:normal;font-size:12px;color:#8A5A00}
+.sw{flex:none;width:46px;height:28px;border-radius:14px;background:#D6D0C3;position:relative;cursor:pointer;margin-top:2px;border:0}
+.sw:after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:#fff;transition:left .15s}
+.sw.on{background:#1F9D62}.sw.on:after{left:21px}
+.sw[disabled]{opacity:.5}
+.opt{display:flex;align-items:center;gap:12px;padding:13px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font:15px Inter,sans-serif;text-align:left;width:100%}
+.opt i{width:20px;height:20px;border-radius:10px;border:2px solid #B9B2A0;flex:none}
+.opt.on{border-color:var(--ink)}.opt.on i{border:6px solid var(--ink)}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:12px;padding:12px;font:15px Inter,sans-serif;resize:vertical}
+details{background:var(--card);border-top:1px solid var(--line)}
+details:first-child{border-top:0}
+summary{list-style:none;padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:'';flex:none;width:9px;height:9px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);margin-top:4px}
+details[open] summary:after{transform:rotate(-135deg)}
+details p{padding:0 18px 16px;font-size:14.5px;color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#20293A;color:#fff;font-size:14px;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media (max-width:480px){.wrap{padding:8px 16px 56px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+// Build: 2026-11-06 Account v1
+var LADEN_URL='https://hook.eu1.make.com/of52cgp12ejzxiyqy6othv7yv3huq4g9';
+var AKTION_URL='https://hook.eu1.make.com/ue9m1kpl3xefyxuqsjpnqj7p6fhce8q1';
+var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
+var MB_URL='https://app.6heroes.de/mein-bereich';
+var PREIS_URL='https://6heroes.de/preise.html#pricing';
+var DATENSCHUTZ_MAIL='datenschutz@6heroes.de';
+var SUPPORT_MAIL='';
+var LEGAL=[['AGB','https://6heroes.de/agb.html'],['Datenschutz','https://6heroes.de/datenschutz.html'],['Impressum','https://6heroes.de/impressum.html'],['Widerrufsbelehrung','https://6heroes.de/widerruf.html']];
+
+var Q=new URLSearchParams(location.search);
+var __FRAME_ID__=Q.get('frame')||'';
+var EMAIL=(Q.get('email')||'').trim().toLowerCase();
+var KEY=(Q.get('k')||'').trim();
+var DEMO=Q.get('demo')||'';
+var D=null, CUR='uebersicht', GRUND='', LOESCH_ART='';
+var MONATE=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');};
+function seit(s){var m=/^(\d{4})-(\d{2})/.exec(s||'');return m?MONATE[+m[2]-1]+' '+m[1]:'';}
+function tag(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?(+m[3])+'. '+MONATE[+m[2]-1]+' '+m[1]:'';}
+function postHeight(){var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);try{parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}catch(e){}}
+function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on');},2600);}
+function back(z,t){return '<div class="topbar"><a '+(z?'data-go="'+z+'"':'href="'+MB_URL+'" target="_top"')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'+t+'</a></div>';}
+
+// ---------- Webhooks ----------
+async function post(url,obj){
+  var ctrl=new AbortController();var t=setTimeout(function(){ctrl.abort();},20000);
+  try{
+    var r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(obj),signal:ctrl.signal});
+    var txt=(await r.text()).trim();
+    try{return JSON.parse(txt.replace(/[\u0000-\u001F]+/g,' '));}catch(e){throw new Error('Kein JSON: '+txt.slice(0,80));}
+  }finally{clearTimeout(t);}
+}
+async function laden(){
+  if(DEMO) return demo(DEMO);
+  var d=await post(LADEN_URL,{aktion:'account',token:LOAD_TOKEN,user_id:EMAIL,k:KEY});
+  if(!d||!d.email) throw new Error('Format');
+  return d;
+}
+async function aktion(felder){
+  if(DEMO){await new Promise(function(r){setTimeout(r,300);});return {ok:true,mail:felder.art==='loeschen'};}
+  var body={aktion:'account_aktion',token:LOAD_TOKEN,user_id:EMAIL,k:KEY,art:'',feld:'',wert:'',grund:'',text:'',loesch_art:''};
+  for(var x in felder) body[x]=felder[x];
+  var r=await post(AKTION_URL,body);
+  if(!r||!r.ok) throw new Error('nicht ok');
+  return r;
+}
+
+// ---------- Bausteine ----------
+function sw(k){var on=D[k]==='ja';return '<button class="sw'+(on?' on':'')+'" data-sw="'+k+'" aria-pressed="'+on+'" aria-label="Schalter"></button>';}
+function offen(k){return D[k]===''?'<em>Noch nicht festgelegt</em>':'';}
+function zugangKarte(){
+  if(D.zugang==='abo') return '<div class="card"><span class="pill">Aktiv</span><b style="font-size:17px">6Heroes Premium</b><p class="sub">Abgerechnet über unseren Zahlungsanbieter Ablefy.</p>'
+    +(D.abo_url?'<div class="btns" style="margin-top:6px"><button class="btn sec" data-go="kuendigen">Abo kündigen oder ändern</button></div>':'<p class="note">Den Link zur Verwaltung deines Abos findest du in deiner Kaufbestätigung von Ablefy.</p>')+'</div>';
+  if(D.zugang==='team') return '<div class="card"><span class="pill">Aktiv</span><b style="font-size:17px">6Heroes Premium über dein Team</b><p class="sub">Dein Zugang läuft über dein Team. Fragen dazu beantwortet dir dein Ansprechpartner.</p></div>';
+  return '<div class="card gelb"><span class="pill grey">Basisprofil</span><b style="font-size:17px">Hol dir deinen täglichen Coach</b><p class="sub">Täglicher Coach, alle deine Helden, Verlauf, Erfolge und Langzeitprofil.</p><div class="btns" style="margin-top:6px"><a class="btn" href="'+PREIS_URL+'" target="_top">Jetzt freischalten</a></div></div>';
+}
+function menu(){
+  return '<div class="label">Einstellungen</div><div class="list">'
+   +'<button class="row" data-go="einw"><span class="t"><b>Einwilligungen und Benachrichtigungen</b><span class="s">KI-Coach, Personalisierung, E-Mail, Push, Newsletter</span></span><span class="chev"></span></button>'
+   +'<button class="row" data-go="gedaechtnis"><span class="t"><b>Gedächtnis und Datenschutz</b><span class="s">Was dein Coach sich merkt, zurücksetzen, löschen</span></span><span class="chev"></span></button>'
+   +'<button class="row" data-go="daten"><span class="t"><b>Meine Daten</b><span class="s">Export und Account löschen</span></span><span class="chev"></span></button></div>'
+   +'<div class="label">Hilfe</div><div class="list"><button class="row" data-go="hilfe"><span class="t"><b>Hilfe und Kontakt</b><span class="s">Häufige Fragen, Support, Hilfe in Krisen</span></span><span class="chev"></span></button></div>'
+   +'<div class="label">Rechtliches</div><div class="list">'+LEGAL.map(function(l){return '<a class="row" href="'+l[1]+'" target="_blank" rel="noopener"><span class="t"><b>'+l[0]+'</b></span><span class="chev"></span></a>';}).join('')+'</div>';
+}
+var GRUENDE=[['zu_teuer','Zu teuer'],['keine_zeit','Keine Zeit'],['nicht_geholfen','Hat mir nicht geholfen'],['pause','Ich mache eine Pause'],['anderer','Anderer Grund']];
+var LOESCH_TXT={reset:'Gedächtnis zurücksetzen',alles:'Alles löschen',account:'Account löschen'};
+var FAQ=[
+ ['Wie funktioniert der Coach?','Du beschreibst eine Situation aus deinem Alltag. Dein Coach hilft dir, sie aus Sicht deiner Helden zu betrachten, und schlägt dir eine kleine Heldentat vor. Danach erzählst du im Rückblick, wie es gelaufen ist. Daraus entstehen dein Verlauf, deine Erfolge und, wenn du zustimmst, dein Langzeitprofil.'],
+ ['Wie entsteht mein Heldenprofil?','Dein Profil entsteht aus dem Assessment am Anfang. Es zeigt, welche Helden deine Stärken prägen (Basis- und Zweitheld) und welche unter Druck in den Vordergrund treten (Stresshelden).'],
+ ['Kann ich das Assessment wiederholen?','Nein, das Assessment machst du einmal. Dein Heldenprofil bleibt die Grundlage für deinen Coach.'],
+ ['Was passiert mit meinen Daten?','Deine Einträge werden von einer KI (OpenAI) ausgewertet, damit dein Coach dich begleiten kann. Was sich dein Coach merkt, entscheidest du in den Einwilligungen, und du kannst es jederzeit zurücksetzen oder löschen. Mehr dazu in unserer Datenschutzerklärung.']];
+
+// ---------- Screens ----------
+var S={
+ uebersicht:function(){
+  var n=(D.vorname||D.email||'?').trim();
+  return back('', 'Mein Bereich')+'<h1>Account</h1><div class="head"><div class="avatar">'+esc(n.charAt(0).toUpperCase())+'</div><div><div style="font-weight:700;font-size:18px">'+esc(D.vorname||'')+'</div><div class="sub">'+esc(D.email)+(D.seit?' · dabei seit '+seit(D.seit):'')+'</div></div></div>'
+   +'<div class="label">Dein Zugang</div>'+zugangKarte()+menu();
+ },
+ kuendigen:function(){
+  return back('uebersicht','Account')+'<h2>Abo kündigen oder ändern</h2><p class="sub">Dein Abo verwaltet unser Zahlungsanbieter Ablefy. Dort kannst du kündigen, die Zahlungsart ändern und deine Rechnungen herunterladen.</p>'
+   +'<div class="label">Magst du uns sagen, warum? (freiwillig)</div><div style="display:flex;flex-direction:column;gap:8px">'
+   +GRUENDE.map(function(g){return '<button class="opt'+(GRUND===g[0]?' on':'')+'" data-grund="'+g[0]+'"><i></i>'+g[1]+'</button>';}).join('')+'</div>'
+   +'<div style="margin-top:10px"><textarea id="ktext" maxlength="1500" placeholder="Möchtest du noch etwas ergänzen? (freiwillig)"></textarea></div>'
+   +'<div class="card" style="margin-top:14px"><b>Was danach passiert</b><p class="sub">Dein Zugang läuft bis zum Ende der bezahlten Laufzeit weiter. Danach bleibt dein Basisprofil erhalten, deine Einträge bleiben gespeichert, falls du wiederkommst.</p></div>'
+   +'<div class="btns"><button class="btn" id="zuAblefy">Weiter zu Ablefy</button><button class="btn sec" data-go="uebersicht">Abo behalten</button></div><p class="note" style="margin-top:10px">Ablefy öffnet sich in einem neuen Fenster. Danach kommst du hierher zurück.</p>';
+ },
+ einw:function(){
+  return back('uebersicht','Account')+'<h2>Einwilligungen und Benachrichtigungen</h2>'
+   +'<div class="label">Coach</div><div class="list">'
+   +'<div class="tg"><div class="t"><b>KI-Coach</b><span>Deine Einträge werden von einer KI (OpenAI) ausgewertet, damit dein Coach dich begleiten kann. Voraussetzung für den Coach.</span>'+offen('ki')+'</div>'+sw('ki')+'</div>'
+   +'<div class="tg"><div class="t"><b>Personalisierung aus deinem Profil</b><span>Dein Coach berücksichtigt deine Helden und dein Assessment.</span>'+offen('profil')+'</div>'+sw('profil')+'</div>'
+   +'<div class="tg"><div class="t"><b>Personalisierung aus deinen Antworten</b><span>Dein Coach merkt sich, was du in Rückblicken schreibst. Grundlage für Wochenrückblicke und Langzeitprofil.</span>'+offen('antworten')+'</div>'+sw('antworten')+'</div></div>'
+   +'<div class="label">Benachrichtigungen</div><div class="list">'
+   +'<div class="tg"><div class="t"><b>Erinnerungen per E-Mail</b><span>An deine Heldentat und deinen Rückblick zur gewählten Uhrzeit.</span></div>'+sw('mail')+'</div>'
+   +'<div class="tg"><div class="t"><b>Erinnerungen per Push</b><span>Nur, wenn du 6Heroes auf deinem Startbildschirm installiert hast.</span></div>'+sw('push')+'</div>'
+   +'<div class="tg"><div class="t"><b>Wochenhinweis zu deinem Ziel</b><span>Höchstens einmal pro Woche, per E-Mail und, falls aktiv, per Push.</span></div>'+sw('woche')+'</div>'
+   +'<div class="tg"><div class="t"><b>Newsletter</b><span>Neue Artikel und Impulse, etwa einmal im Monat.</span></div>'+sw('news')+'</div></div>'
+   +'<p class="note" style="margin-top:12px">Änderungen gelten sofort.</p>';
+ },
+ ki_aus:function(){
+  return back('einw','Einwilligungen')+'<h2>KI-Coach ausschalten?</h2><p class="sub">Du kannst deine Einwilligung jederzeit widerrufen. Das hat diese Folgen:</p>'
+   +'<div class="label">Dein Coach pausiert</div><div class="card"><p>Ohne KI-Auswertung kann der Coach keine Heldentaten und Rückblicke für dich erstellen.</p></div>'
+   +'<div class="label">Dein Profil bleibt</div><div class="card"><p>Heldenrad, Heldenbeschreibungen, Verlauf und Erfolge kannst du weiter ansehen.</p></div>'
+   +'<div class="label">Dein Abo läuft weiter</div><div class="card"><p>Der Widerruf kündigt dein Abo nicht. Das machst du bei Bedarf separat.</p></div>'
+   +'<div class="btns"><button class="btn warn" data-setze="ki">Ausschalten</button><button class="btn sec" data-go="einw">Eingeschaltet lassen</button></div>';
+ },
+ antw_aus:function(){
+  return back('einw','Einwilligungen')+'<h2>Personalisierung aus deinen Antworten ausschalten?</h2>'
+   +'<div class="card"><p>Ab sofort merkt sich dein Coach nichts mehr aus deinen Rückblicken. Was er sich bisher gemerkt hat, wird gelöscht: Wochenrückblicke und Langzeitprofil. Deine Heldentaten, Rückblicke und Erfolge bleiben.</p></div>'
+   +'<div class="btns"><button class="btn warn" data-setze="antworten">Ausschalten und löschen</button><button class="btn sec" data-go="einw">Eingeschaltet lassen</button></div>';
+ },
+ gedaechtnis:function(){
+  var off=D.loesch_offen?'<div class="card gelb" style="margin-top:12px"><p>Wir haben dir eine E-Mail geschickt: <b>'+esc(LOESCH_TXT[D.loesch_offen]||'')+'</b>. Bestätige sie dort, der Link gilt 24 Stunden.</p></div>':'';
+  return back('uebersicht','Account')+'<h2>Gedächtnis und Datenschutz</h2>'
+   +'<p class="sub">Dein Coach merkt sich Wichtiges aus deinen Rückblicken, um dich besser zu begleiten. Zuletzt zurückgesetzt: '+(D.reset_am?tag(D.reset_am):'nie')+'.</p>'+off
+   +'<div class="label">Gedächtnis zurücksetzen</div><div class="card"><p>Löscht, was dein Coach sich gemerkt hat: Wochenrückblicke und Langzeitprofil. Deine Heldentaten, Rückblicke und Erfolge bleiben.</p><div class="btns" style="margin-top:4px"><button class="btn sec" data-loesch="reset">Gedächtnis zurücksetzen</button></div></div>'
+   +'<div class="label">Alles löschen</div><div class="card"><p>Löscht zusätzlich alle Heldentaten und Rückblicke. Verlauf und Erfolge beginnen danach von vorn. Dein Profil und dein Abo bleiben.</p><div class="btns" style="margin-top:4px"><button class="btn warn" data-loesch="alles">Alles löschen</button></div></div>'
+   +'<p class="note" style="margin-top:12px">Zur Sicherheit bestätigst du jede Löschung über einen Link per E-Mail.</p>';
+ },
+ mail_gesendet:function(){
+  return back('uebersicht','Account')+'<h2>Bitte bestätige per E-Mail</h2>'
+   +'<div class="card"><p>Wir haben dir eine E-Mail an <b>'+esc(D.email)+'</b> geschickt: <b>'+esc(LOESCH_TXT[LOESCH_ART]||'')+'</b>. Erst wenn du dort auf "Löschung bestätigen" tippst, löschen wir. Der Link gilt 24 Stunden.</p></div>'
+   +'<p class="note" style="margin-top:12px">Keine E-Mail bekommen? Sieh im Spam-Ordner nach oder fordere die Löschung erneut an.</p><div class="btns"><button class="btn sec" data-go="uebersicht">Zurück zum Account</button></div>';
+ },
+ daten:function(){
+  var exp='mailto:'+DATENSCHUTZ_MAIL+'?subject='+encodeURIComponent('Datenexport 6Heroes')+'&body='+encodeURIComponent('Hallo,\n\nbitte schickt mir alle meine Daten aus 6Heroes.\n\nE-Mail-Adresse meines Accounts: '+D.email+'\n\nDanke');
+  return back('uebersicht','Account')+'<h2>Meine Daten</h2>'
+   +'<div class="label">Daten exportieren</div><div class="card"><p>Du bekommst alle deine Daten als Datei per E-Mail: Profil, Heldentaten, Rückblicke und was dein Coach sich gemerkt hat. Das dauert in der Regel wenige Tage.</p><div class="btns" style="margin-top:4px"><a class="btn sec" href="'+exp+'" target="_top">Export anfordern</a></div><p class="note">Öffnet eine vorbereitete E-Mail an '+DATENSCHUTZ_MAIL+'.</p></div>'
+   +'<div class="label">Account löschen</div><div class="card"><p>Löscht dein Profil und alle Einträge endgültig. Das lässt sich nicht rückgängig machen.'+(D.zugang==='abo'?' Ein laufendes Abo kündigst du vorher über "Abo kündigen oder ändern".':'')+'</p><div class="btns" style="margin-top:4px"><button class="btn warn" data-loesch="account">Account löschen</button></div><p class="note">Du bekommst eine E-Mail zur Bestätigung.</p></div>';
+ },
+ hilfe:function(){
+  return back('uebersicht','Account')+'<h2>Hilfe und Kontakt</h2>'
+   +'<div class="card krise"><b>Wenn es dir gerade nicht gut geht</b><p>6Heroes ist kein Ersatz für Therapie. Bei der TelefonSeelsorge erreichst du rund um die Uhr kostenfrei jemanden: <a href="tel:08001110111" target="_top"><b>0800 111 0 111</b></a> oder <a href="tel:08001110222" target="_top"><b>0800 111 0 222</b></a>.</p></div>'
+   +'<div class="label">Häufige Fragen</div><div class="list">'+FAQ.map(function(f){return '<details><summary>'+esc(f[0])+'</summary><p>'+esc(f[1])+'</p></details>';}).join('')+'</div>'
+   +(SUPPORT_MAIL?'<div class="label">Kontakt</div><div class="list"><a class="row" href="mailto:'+SUPPORT_MAIL+'" target="_top"><span class="t"><b>Schreib uns</b><span class="s">'+SUPPORT_MAIL+'</span></span><span class="chev"></span></a></div>':'');
+ }
+};
+
+function go(k){CUR=k;draw();try{window.scrollTo(0,0);parent.postMessage({type:'6heroes:scrollTop',frame:__FRAME_ID__},'*');}catch(e){}}
+function draw(){
+  var app=document.getElementById('app');
+  app.innerHTML=(DEMO?'<div style="text-align:center"><span class="dummy">Beispieldaten</span></div>':'')+S[CUR]();
+  app.classList.add('ready');
+  binden();postHeight();
+}
+function binden(){
+  document.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();go(b.dataset.go);});});
+  document.querySelectorAll('[data-grund]').forEach(function(b){b.addEventListener('click',function(){var t=document.getElementById('ktext').value;GRUND=(GRUND===b.dataset.grund?'':b.dataset.grund);draw();document.getElementById('ktext').value=t;});});
+  var ab=document.getElementById('zuAblefy');
+  if(ab) ab.addEventListener('click',function(){
+    var w=window.open(D.abo_url,'_blank','noopener');
+    if(!w) top.location.href=D.abo_url;
+    var t=(document.getElementById('ktext').value||'').trim();
+    if(GRUND||t) aktion({art:'kuendigung',grund:GRUND,text:t}).catch(function(e){console.warn('Kuendigungsgrund',e);});
+    GRUND='';go('uebersicht');
+  });
+  document.querySelectorAll('[data-sw]').forEach(function(b){b.addEventListener('click',function(){
+    var k=b.dataset.sw, neu=D[k]==='ja'?'nein':'ja';
+    if(neu==='nein'&&k==='ki'){go('ki_aus');return;}
+    if(neu==='nein'&&k==='antworten'){go('antw_aus');return;}
+    schalten(k,neu,b);
+  });});
+  document.querySelectorAll('[data-setze]').forEach(function(b){b.addEventListener('click',function(){schalten(b.dataset.setze,'nein',b,'einw');});});
+  document.querySelectorAll('[data-loesch]').forEach(function(b){b.addEventListener('click',async function(){
+    b.disabled=true;var alt=b.textContent;b.textContent='Wird angefordert …';
+    try{await aktion({art:'loeschen',loesch_art:b.dataset.loesch});LOESCH_ART=b.dataset.loesch;D.loesch_offen=LOESCH_ART;go('mail_gesendet');}
+    catch(e){console.warn(e);b.disabled=false;b.textContent=alt;toast('Das hat nicht geklappt. Bitte versuch es noch einmal.');}
+  });});
+}
+async function schalten(k,wert,btn,danach){
+  var alt=D[k];D[k]=wert;
+  if(danach) CUR=danach;
+  draw();
+  try{await aktion({art:'schalter',feld:k,wert:wert});toast(wert==='ja'?'Eingeschaltet':'Ausgeschaltet');}
+  catch(e){console.warn(e);D[k]=alt;draw();toast('Das hat nicht geklappt. Bitte versuch es noch einmal.');}
+}
+function fehler(err){
+  var dbg=Q.get('debug')?'<p class="note" style="word-break:break-all">email='+esc(EMAIL||'(leer)')+' | k='+esc(KEY||'(leer)')+' | '+esc(err&&err.message||'')+'</p>':'';
+  var app=document.getElementById('app');
+  app.innerHTML=back('','Mein Bereich')+'<h1>Account</h1><div class="card" style="margin-top:14px"><p>Dein Account lässt sich gerade nicht laden.</p><div class="btns"><button class="btn" id="nochmal">Nochmal versuchen</button></div>'+dbg+'</div>';
+  document.getElementById('nochmal').addEventListener('click',start);
+  app.classList.add('ready');postHeight();
+}
+async function start(){
+  if(!DEMO&&(!EMAIL||!/^rec[A-Za-z0-9]{14}$/.test(KEY))){fehler(new Error('email oder k fehlt im Link'));return;}
+  try{D=await laden();draw();}catch(e){console.warn('Account laden:',e);fehler(e);}
+}
+function demo(art){
+  return {vorname:'Lena',email:'lena@beispiel.de',seit:'2026-08-12',zugang:art==='team'?'team':(art==='ohne'?'ohne':'abo'),abo_url:'https://myablefy.com/',ki:'ja',profil:'',antworten:'ja',woche:'ja',mail:'ja',push:'',news:'',textversion:'1',reset_am:'',loesch_offen:''};
+}
+window.addEventListener('load',start);
+window.addEventListener('resize',postHeight);
+document.addEventListener('toggle',postHeight,true);
+if(window.ResizeObserver){new ResizeObserver(postHeight).observe(document.body);}
+[200,600,1200].forEach(function(t){setTimeout(postHeight,t);});
+</script>
+</body>
+</html>
