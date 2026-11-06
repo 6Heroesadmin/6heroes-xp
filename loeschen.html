@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Löschung bestätigen – 6Heroes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--gold:#F2B705;--warn:#B4471B}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.55}
+.wrap{max-width:520px;margin:0 auto;padding:40px 20px 64px;text-align:center}
+.logo{font-family:'DM Serif Display',Georgia,serif;font-size:22px;margin-bottom:28px}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:30px;line-height:1.2;margin-bottom:8px}
+.sub{font-size:15px;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:20px;text-align:left;font-size:15px}
+.btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;font:700 15px Inter,sans-serif;border:0;cursor:pointer;text-decoration:none}
+.btn.warn{background:var(--warn);color:#fff}
+.btn.sec{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn.gold{background:var(--gold);color:#20293A}
+.btn[disabled]{opacity:.6;cursor:default}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="logo">6Heroes</div><div id="app"><p class="sub">Einen Moment …</p></div></div>
+<script>
+// Build: 2026-11-06 Loeschen v1
+var WEBHOOK_URL='https://hook.eu1.make.com/ep0vu5xsjv3dn9zfg5836vzhf2b95mxc';
+var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
+var APP_URL='https://app.6heroes.de/mein-bereich';
+var CODE=(new URLSearchParams(location.search).get('c')||'').trim().toLowerCase();
+var TEXTE={
+  reset:{titel:'Gedächtnis zurücksetzen',was:'Gelöscht wird, was dein Coach sich aus deinen Rückblicken gemerkt hat: Wochenrückblicke und Langzeitprofil. Deine Heldentaten, Rückblicke und Erfolge bleiben.',fertig:'Dein Gedächtnis wurde zurückgesetzt. Dein Coach beginnt mit dem nächsten Rückblick neu.'},
+  alles:{titel:'Alles löschen',was:'Gelöscht werden alle Heldentaten und Rückblicke und alles, was dein Coach sich gemerkt hat. Verlauf und Erfolge beginnen danach von vorn. Dein Profil und dein Abo bleiben.',fertig:'Deine Heldentaten, Rückblicke und alles Gemerkte wurden gelöscht.'},
+  account:{titel:'Account löschen',was:'Dein Profil und alle Einträge werden endgültig gelöscht. Ein laufendes Abo kündigst du bitte vorher separat.',fertig:'Wir haben deine Bestätigung erhalten und löschen deinen Account. Du bekommst eine E-Mail, sobald alles erledigt ist.'}
+};
+var app=document.getElementById('app');
+var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');};
+async function rufe(schritt){
+  var r=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({aktion:'loeschung',token:LOAD_TOKEN,c:CODE,schritt:schritt})});
+  var t=(await r.text()).trim();
+  try{return JSON.parse(t);}catch(e){return null;}
+}
+function ungueltig(){
+  app.innerHTML='<h1>Link nicht mehr gültig</h1><p class="sub">Dieser Link ist abgelaufen oder wurde schon verwendet. Du kannst die Löschung in deinem Account erneut anfordern.</p><div class="btns"><a class="btn gold" href="'+APP_URL+'">Zur App</a></div>';
+}
+function fehler(){
+  app.innerHTML='<h1>Das hat nicht geklappt</h1><p class="sub">Bitte versuch es in ein paar Minuten noch einmal. Es wurde nichts gelöscht.</p><div class="btns"><button class="btn sec" onclick="start()">Nochmal versuchen</button></div>';
+}
+async function start(){
+  if(!/^[a-f0-9]{32}$/.test(CODE)){ungueltig();return;}
+  var d; try{d=await rufe('pruefen');}catch(e){fehler();return;}
+  if(!d||!d.ok||!TEXTE[d.art]){ungueltig();return;}
+  var t=TEXTE[d.art];
+  app.innerHTML='<h1>Löschung bestätigen</h1><p class="sub">'+esc(t.titel)+' für '+esc(d.email)+'</p>'
+    +'<div class="card">'+esc(t.was)+' Das lässt sich nicht rückgängig machen.</div>'
+    +'<div class="btns"><button class="btn warn" id="ja">Jetzt endgültig löschen</button><a class="btn sec" href="'+APP_URL+'">Abbrechen</a></div>';
+  document.getElementById('ja').addEventListener('click',async function(){
+    this.disabled=true;this.textContent='Wird gelöscht …';
+    var e; try{e=await rufe('bestaetigen');}catch(x){fehler();return;}
+    if(!e||!e.ok){ungueltig();return;}
+    app.innerHTML='<h1>Erledigt</h1><p class="sub">'+esc(t.fertig)+'</p><div class="btns"><a class="btn gold" href="'+APP_URL+'">Zur App</a></div>';
+  });
+}
+start();
+</script>
+</body>
+</html>
