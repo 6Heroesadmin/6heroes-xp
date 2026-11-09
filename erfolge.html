@@ -59,10 +59,10 @@ details[open] summary:after{transform:rotate(45deg)}
 <body>
 <div class="wrap" id="app"></div>
 <script>
-// Build: 2026-11-05 Erfolge v1
+// Build: 2026-11-09 Erfolge v2 (Einstieg liegt jetzt auf Meine Entwicklung)
 var ERFOLGE_WEBHOOK_URL='https://hook.eu1.make.com/6jkmvrn3slh5im38jlqd4s33c3bxxirk';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
-var MB_URL='https://app.6heroes.de/mein-bereich';
+var MB_URL='https://app.6heroes.de/meine-entwicklung';
 var COACH_URL='https://app.6heroes.de/pocket-hero';
 var CACHE_MS=60000;
 
@@ -89,7 +89,7 @@ function streakAktuell(wochen){
 }
 
 function postHeight(){var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);try{parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}catch(e){}}
-var topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Mein Bereich</a></div>';
+var topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Meine Entwicklung</a></div>';
 function kopf(){return topbar+'<div class="hero2"><span class="eyebrow">Erfolge</span><h1>Deine Erfolge</h1><p class="meta2">Hero Points und Abzeichen bekommst du für jeden Rückblick auf eine Heldentat.</p></div>'+(DEMO?'<div style="text-align:center;padding-top:6px"><span class="dummy">Beispieldaten</span></div>':'');}
 
 // ---- Laden ----
@@ -122,27 +122,13 @@ async function laden(){
 function render(d){
   var html=kopf();
   if(!d.rueckblicke){
-    html+='<div class="note"><p>Deine Erfolge beginnen mit deinem ersten Rückblick. Leg im Pocket Hero eine Heldentat fest und erzähl danach, wie es gelaufen ist.</p><a class="btn" href="'+COACH_URL+'" target="_top">Zum Pocket Hero</a></div>';
+    html+='<div class="note"><p>Nutze den Pocket Hero, um mit Heldentaten deine Entwicklung voranzubringen. Für jeden Rückblick auf eine Heldentat bekommst du Hero Points und Abzeichen.</p><a class="btn" href="'+COACH_URL+'" target="_top">Zum Pocket Hero</a></div>';
     document.getElementById('app').innerHTML=html; fertig(); return;
   }
   var ab=d.abzeichen||[];
   var verdient=ab.filter(function(a){return a.erreicht;}).length;
-  var streak=streakAktuell(d.wochen);
-  html+='<div class="label">Auf einen Blick</div><div class="tiles">'
-    +'<div class="tile"><span class="n">'+esc(d.level)+'</span><span class="t">Level, '+esc(d.level_name)+'</span></div>'
-    +'<div class="tile"><span class="n">'+zahl(d.punkte)+'</span><span class="t">Hero Points</span></div>'
-    +'<div class="tile"><span class="n">'+streak+'</span><span class="t">'+(streak===1?'Woche':'Wochen')+' in Folge'+(d.streak_max>streak?', bisher bis zu '+d.streak_max:'')+'</span></div>'
-    +'<div class="tile"><span class="n">'+verdient+' von '+ab.length+'</span><span class="t">Abzeichen verdient</span></div></div>';
-  var nl=d.naechstes_level;
-  if(nl){
-    html+='<div class="goal"><b>'+esc(d.level_name)+' auf dem Weg zu '+esc(nl.name)+'</b><div class="bar"><i style="width:'+Math.max(2,Math.min(100,nl.prozent||0))+'%"></i></div><span>Noch '+zahl(nl.fehlt)+' Hero Points bis '+esc(nl.name)+'</span></div>';
-  } else {
-    html+='<div class="goal"><b>'+esc(d.level_name)+'</b><span>Du hast die höchste Stufe erreicht.</span></div>';
-  }
-  if(d.naechstes_abzeichen){
-    html+='<div class="goal"><span>Nächstes Abzeichen in Reichweite</span><b>'+esc(d.naechstes_abzeichen.name)+'</b><span>'+esc(d.naechstes_abzeichen.text)+'</span></div>';
-  }
-  html+='<div class="label">Deine Abzeichen</div><p class="meta2" style="margin:0 auto 12px">Gefüllt heißt verdient, gestrichelt heißt noch offen.</p><div class="stack">';
+  /* Kacheln, Level-Balken und nächstes Abzeichen stehen jetzt oben auf Meine Entwicklung */
+  html+='<div class="label">Deine Abzeichen · '+verdient+' von '+ab.length+'</div><p class="meta2" style="margin:0 auto 12px">Gefüllt heißt verdient, gestrichelt heißt noch offen.</p><div class="stack">';
   KATS.forEach(function(k){
     var liste=ab.filter(function(a){return a.kat===k;});
     if(!liste.length) return;

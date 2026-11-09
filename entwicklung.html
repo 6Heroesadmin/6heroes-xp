@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meine Entwicklung – 6Heroes</title>
+<title>Dein aktuelles Ziel – 6Heroes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -82,20 +82,20 @@ textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius
 <body>
 <div class="wrap" id="app"></div>
 <script>
-/* Meine Entwicklung (AP-3.3), Build 2026-11-02
+/* Dein aktuelles Ziel (bis 09.11. "Meine Entwicklung"), Build 2026-11-09
    Daten: Make Entwicklung_Laden (Users.Entwicklung_JSON). Aktionen: Make Coach_Ziel_Aktion (wie coach.html).
    URL-Parameter: email, paid (0/1), frame. Vorschau ohne Make: ?demo=aktiv | pause | bilanz | leer | frei */
-const BUILD='2026-11-02 Meine Entwicklung v1';
+const BUILD='2026-11-09 Dein aktuelles Ziel v2';
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const APP='https://app.6heroes.de';
-const MB_URL=APP+'/mein-bereich';
+const MB_URL=APP+'/meine-entwicklung';
 const COACH_URL=APP+'/pocket-hero';            /* ANPASSEN: Noloco-Adresse der Pocket-Hero-Seite */
 const HILFE_URL=APP+'/account';
 const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
 const ENTW_WEBHOOK_URL='https://hook.eu1.make.com/mr9ocjodq1obqahe2uua1m91zy1qjv23';
 const ZIEL_AKTION_WEBHOOK_URL='https://hook.eu1.make.com/uiqtjr6d11rr861jympbyrm9ks1vj67c';
 const LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
-const CACHE_MS=60000;   /* Daten aus mein-bereich.html werden eine Minute weiterverwendet (spart Make-Credits) */
+const CACHE_MS=60000;   /* Daten aus meine-entwicklung.html werden eine Minute weiterverwendet (spart Make-Credits) */
 
 const Q=new URLSearchParams(location.search);
 const EMAIL=(Q.get('email')||'').trim();
@@ -187,8 +187,8 @@ async function zielAktion(aktion,extra){
 
 /* ---------- Bausteine ---------- */
 function topbar(){
-  if(VIEW.name==='main')return '<div class="topbar"><a href="'+MB_URL+'" target="_top">'+BACK_SVG+'Mein Bereich</a></div>';
-  return '<div class="topbar"><button type="button" data-go="main">'+BACK_SVG+'Meine Entwicklung</button></div>';
+  if(VIEW.name==='main')return '<div class="topbar"><a href="'+MB_URL+'" target="_top">'+BACK_SVG+'Meine Entwicklung</a></div>';
+  return '<div class="topbar"><button type="button" data-go="main">'+BACK_SVG+'Dein aktuelles Ziel</button></div>';
 }
 function phasenPfad(phase){
   const i=phaseIdx(phase);
@@ -290,7 +290,7 @@ function viewAktiv(z){
   return out+archivListe();
 }
 function viewLeer(){
-  let out='<div class="hero"><span class="eyebrow">Meine Entwicklung</span><h1>Woran möchtest du in den nächsten Wochen arbeiten?</h1><p class="meta" style="font-size:15.5px">Dein Pocket Hero hilft dir im Moment. Mit einem Ziel begleitet er dich dabei, langfristig etwas zu verändern.</p></div>';
+  let out='<div class="hero"><span class="eyebrow">Dein aktuelles Ziel</span><h1>Woran möchtest du in den nächsten Wochen arbeiten?</h1><p class="meta" style="font-size:15.5px">Dein Pocket Hero hilft dir im Moment. Mit einem Ziel begleitet er dich dabei, langfristig etwas zu verändern.</p></div>';
   if(NOTIZ)out+='<p class="ok-note">'+esc(NOTIZ)+'</p>';
   const nt=naechsterTeil();
   if(nt)out+='<div class="step"><span class="bl">Dein nächster Teil</span><span class="t">'+esc(nt.teil)+'</span><span class="meta">Baut auf deinem Ziel „'+esc(nt.ziel.kurz)+'“ auf.</span><a class="btn" href="'+COACH_URL+'" target="_top">Diesen Teil angehen</a></div>';
@@ -300,7 +300,7 @@ function viewLeer(){
   return out+archivListe();
 }
 function viewFrei(){
-  let out='<div class="hero"><span class="eyebrow">Meine Entwicklung</span><h1>Langfristig etwas verändern</h1><p class="meta" style="font-size:15.5px">Ein Ziel aus deinem Alltag, kleine Schritte im Pocket Hero und ein Blick zurück, der zeigt, was sich bewegt hat.</p></div>';
+  let out='<div class="hero"><span class="eyebrow">Dein aktuelles Ziel</span><h1>Langfristig etwas verändern</h1><p class="meta" style="font-size:15.5px">Ein Ziel aus deinem Alltag, kleine Schritte im Pocket Hero und ein Blick zurück, der zeigt, was sich bewegt hat.</p></div>';
   const z=aktivesZiel();
   if(z)out+='<div class="card" style="margin-top:14px"><span class="bl">Dein Ziel ruht</span><p>'+esc(z.kurz)+'</p><p class="meta">Mit dem Abo machst du dort weiter, wo du aufgehört hast.</p></div>';
   out+='<div class="lock" style="margin-top:14px"><b>Im Abo enthalten</b><span>Mit dem Abo legst du ein Ziel fest, und dein Coach begleitet dich vier Wochen lang dabei.</span></div>';
@@ -338,7 +338,7 @@ function viewBeenden(z){
 }
 function viewBeendet(){
   return '<div class="hero"><span class="eyebrow">Ziel beendet</span><h1>Gut, dass du hingeschaut hast.</h1><p class="meta">Dein Ziel und deine Momente findest du unter Frühere Ziele.</p></div>'
-    +'<div class="stack" style="margin-top:14px"><a class="btn y" href="'+COACH_URL+'" target="_top">Ein neues Ziel festlegen</a><button type="button" class="btn o" data-go="main">Zurück zu Meine Entwicklung</button></div>';
+    +'<div class="stack" style="margin-top:14px"><a class="btn y" href="'+COACH_URL+'" target="_top">Ein neues Ziel festlegen</a><button type="button" class="btn o" data-go="main">Zurück zu deinem Ziel</button></div>';
 }
 
 /* ---------- Rendern und Ereignisse ---------- */
