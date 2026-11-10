@@ -10,7 +10,7 @@
 <style>
 :root{--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--bg:#F7F5F0}
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:transparent;color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+html,body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
 .wrap{max-width:680px;margin:0 auto;padding:8px 20px 28px;opacity:0;transition:opacity .2s}
 .wrap.ready{opacity:1}
 .head{display:flex;align-items:center;justify-content:space-between;min-height:48px}
@@ -72,7 +72,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 <body>
 <div class="wrap" id="app"></div>
 <script>
-// Build: 2026-11-09 Meine Entwicklung v1
+// Build: 2026-11-10 Meine Entwicklung v1.1 (Trainingskarte ruht)
 // Daten: Make Meine_Entwicklung_Laden (Users.MeineEntwicklung_JSON = {zugang, erfolge, entwicklung}).
 // URL-Parameter: email, k (Seiten_Schluessel), frame. Vorschau: ?demo=abo|neu|frei, Diagnose ?debug=1
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
@@ -120,6 +120,7 @@ function zielkarte(ziele,paid){
     if(z.status==='pausiert')return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.');
     if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkRow('Abschluss fällig',z.kurz,phase);
     if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkRow('Zwischenbilanz fällig',z.kurz,phase);
+    if(z.karte==='ruht')return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.'); /* wie Pocket Hero: Trainingskarte ruht nach 10 Tagen ohne Schritt */
     const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
     return zkRow(bereit?'Dein nächster Schritt ist bereit':'',z.kurz,phase);
   }
