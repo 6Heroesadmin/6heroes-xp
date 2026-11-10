@@ -78,7 +78,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const APP='https://app.6heroes.de';
 const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
-const LINKS={ziel:APP+'/dein-aktuelles-ziel',verlauf:APP+'/verlauf',erfolge:APP+'/erfolge',langzeitprofil:APP+'/langzeitprofil',coach:APP+'/pocket-hero',account:APP+'/account'};
+const LINKS={ziel:APP+'/dein-aktuelles-ziel',verlauf:APP+'/verlauf',erfolge:APP+'/erfolge',langzeitprofil:APP+'/langzeitprofil',coach:APP+'/coach',account:APP+'/account'};
 const ME_WEBHOOK_URL='https://hook.eu1.make.com/g2pd0gpxfarijkh2r2n834yhdkg9dw1g';   /* Make Meine_Entwicklung_Laden */
 const LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
 const CACHE_MS=60000;
@@ -117,10 +117,9 @@ function zielkarte(ziele,paid){
   const z=ziele.find(x=>x.status==='aktiv'||x.status==='pausiert');
   if(z){
     const phase=PHASE_SATZ[z.phase]||'';
-    if(z.status==='pausiert')return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.');
+    if(z.status==='pausiert'||/paus|ruh/.test(z.karte||''))return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.'); /* wie 6Hero Coach (zielKarte): Pause vor Bilanz */
     if(z.ende_am&&z.ende_am<=h&&!z.zusammenfassung)return zkRow('Abschluss fällig',z.kurz,phase);
     if(z.bilanz_am&&z.bilanz_am<=h&&z.bilanz_erledigt!=='1')return zkRow('Zwischenbilanz fällig',z.kurz,phase);
-    if(z.karte==='ruht')return zkRow('Ruht gerade',z.kurz,'Dein Fortschritt bleibt erhalten.'); /* wie Pocket Hero: Trainingskarte ruht nach 10 Tagen ohne Schritt */
     const bereit=z.next_titel&&(z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h));
     return zkRow(bereit?'Dein nächster Schritt ist bereit':'',z.kurz,phase);
   }
@@ -158,7 +157,7 @@ function einstieg(paid,e){
   e=e||{};
   let h=kacheln(e)+levelBalken(e);
   if(!e.rueckblicke){
-    h+='<div class="note"><p>Nutze den Pocket Hero, um mit Heldentaten deine Entwicklung voranzubringen. Für jeden Rückblick auf eine Heldentat bekommst du Hero Points.</p><a class="btn" href="'+LINKS.coach+'" target="_top">Zum Pocket Hero</a></div>';
+    h+='<div class="note"><p>Nutze den 6Hero Coach, um mit Heldentaten deine Entwicklung voranzubringen. Für jeden Rückblick auf eine Heldentat bekommst du Hero Points.</p><a class="btn" href="'+LINKS.coach+'" target="_top">Zum 6Hero Coach</a></div>';
   }else if(e.naechstes_abzeichen){
     h+='<div class="goal"><span>Nächstes Abzeichen in Reichweite</span><b>'+esc(e.naechstes_abzeichen.name)+'</b><span>'+esc(e.naechstes_abzeichen.text)+'</span></div>';
   }
