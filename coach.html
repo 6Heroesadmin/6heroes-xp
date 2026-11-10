@@ -626,7 +626,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-11-10 Pause fortsetzen v1.2';
+const BUILD = '2026-11-10 Pause fortsetzen v1.3';
 /* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
    EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
    Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
@@ -3283,7 +3283,25 @@ function renderStart(){
       } else if (zk === 'pause'){
         /* Pause (Status pausiert) oder ruhend (Trainingskarte ruht, 10 Tage ohne Schritt): fortsetzen über Coach_Ziel_Aktion.
            me_regeln_v4 reaktivieren(): Status aktiv, Letzte_Lernerfahrung_Am = heute (beendet "ruht"), Next_Step_Faellig_Am = heute, Bilanz und Ende verschoben. */
-        const fortsetzen = async (aktion, b, m) => { if (await bilanzAktion(aktion, b, m)){ await new Promise(r => setTimeout(r, 2500)); bilanzZumStart(); } };
+        /* Airtable braucht einige Sekunden für die Automation: bis zu 6-mal im Abstand von 2,5 s nachladen, bis die Pause vorbei ist. Knöpfe bleiben so lange gesperrt. */
+        const fortsetzen = async (aktion, b, m) => {
+          if (c.dataset.laeuft) return;
+          c.dataset.laeuft = '1';
+          c.querySelectorAll('button').forEach(x => x.disabled = true);
+          if (!(await bilanzAktion(aktion, b, m))){ delete c.dataset.laeuft; c.querySelectorAll('button').forEach(x => x.disabled = false); return; }
+          m.className = 'msg waiting';
+          m.innerHTML = '<span class="typing"><i></i><i></i><i></i></span><span>Dein Ziel wird fortgesetzt …</span>';
+          m.hidden = false;
+          let z = null;
+          for (let i = 0; i < 6; i++){
+            await new Promise(r => setTimeout(r, 2500));
+            if (zielDemo) break;
+            z = await ladeZiel();
+            if (z && !/paus|ruh/.test(z.status) && !/paus|ruh/.test(z.karte || '')) break;
+          }
+          if (z) zielInfo = z;
+          showStart();
+        };
         c = kachel('MEIN ZIEL', '', name, zielInfo.status === 'pausiert' ? 'Dein Ziel ruht gerade. Dein Fortschritt bleibt erhalten, und du machst dort weiter, wo du aufgehört hast.' : 'Eine Weile gab es keinen Schritt zu deinem Ziel. Dein Fortschritt bleibt erhalten, und du machst dort weiter, wo du aufgehört hast.', 'Weitermachen', (b, m) => fortsetzen('weiter', b, m));
         const kl = el('button', 'linkbtn', 'Mit kleineren Schritten weitermachen');
         kl.type = 'button';
