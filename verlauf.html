@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dein Verlauf – 6Heroes</title>
+<title>Deine bisherigen Heldentaten – 6Heroes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,10 +53,10 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 <body>
 <div class="wrap" id="app"></div>
 <script>
-// Build: 2026-11-05 Verlauf v1.3
+// Build: 2026-11-10 Verlauf v1.4 (Titel, Zurück zu Meine Entwicklung)
 var VERLAUF_WEBHOOK_URL='https://hook.eu1.make.com/5y427lg5937oqsibywlpeuxjgijuneld';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
-var MB_URL='https://app.6heroes.de/mein-bereich';
+var MB_URL='https://app.6heroes.de/meine-entwicklung';
 var COACH_URL='https://app.6heroes.de/pocket-hero';
 var ACCOUNT_URL='https://app.6heroes.de/account';
 var LZ_URL='https://app.6heroes.de/langzeitprofil';
@@ -80,8 +80,8 @@ function kuerzen(s,n){s=String(s||'').replace(/\s+/g,' ').trim();if(s.length<=n)
 
 function postHeight(){var h=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight);try{parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}catch(e){}}
 
-var topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Mein Bereich</a></div>';
-function kopf(){return topbar+'<div class="hero2"><span class="eyebrow">Verlauf</span><h1>Dein Verlauf</h1><p class="meta2">Was du dir vorgenommen und umgesetzt hast, nach Wochen geordnet.</p></div>'+(DEMO?'<div style="text-align:center;padding-top:6px"><span class="dummy">Beispieldaten</span></div>':'');}
+var topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Meine Entwicklung</a></div>';
+function kopf(){return topbar+'<div class="hero2"><span class="eyebrow">Heldentaten</span><h1>Deine bisherigen Heldentaten</h1><p class="meta2">Was du dir vorgenommen und umgesetzt hast, nach Wochen geordnet.</p></div>'+(DEMO?'<div style="text-align:center;padding-top:6px"><span class="dummy">Beispieldaten</span></div>':'');}
 
 // ---- Daten laden ----
 function cacheLesen(){try{var r=sessionStorage.getItem('vl_'+EMAIL);if(!r)return null;var o=JSON.parse(r);if(Date.now()-o.t>CACHE_MS)return null;return o.d;}catch(e){return null;}}
@@ -170,7 +170,7 @@ function render(d){
 
 function fehler(err){
   var dbg=Q.get('debug')?'<p style="font-size:12px;color:#5A6272;word-break:break-all">email='+esc(EMAIL||'(leer)')+' | '+esc(err&&err.message||'')+'</p>':'';
-  document.getElementById('app').innerHTML=kopf()+'<div class="note"><p>Dein Verlauf lässt sich gerade nicht laden.</p><button class="btn" id="nochmal">Nochmal versuchen</button>'+dbg+'</div>';
+  document.getElementById('app').innerHTML=kopf()+'<div class="note"><p>Deine Heldentaten lassen sich gerade nicht laden.</p><button class="btn" id="nochmal">Nochmal versuchen</button>'+dbg+'</div>';
   document.getElementById('nochmal').addEventListener('click',function(){start();});
   fertig();
 }

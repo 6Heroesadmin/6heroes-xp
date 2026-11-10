@@ -128,9 +128,9 @@ h1.big{font-size:clamp(36px,10vw,52px);line-height:1.1}
 /* Langzeitprofil, Build 2026-11-02 v1
    Daten: Make Langzeitprofil_Laden (Users.Langzeit_JSON). Vergessen: Make Fakt_Vergessen.
    URL-Parameter: email, frame. Vorschau ohne Make: ?demo=voll | frueh | keine */
-const BUILD='2026-11-03 Langzeitprofil v2 ohne Faktenliste';
+const BUILD='2026-11-10 Langzeitprofil v2.1 (Zurück zu Meine Entwicklung)';
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
-const MB_URL='https://app.6heroes.de/mein-bereich';
+const MB_URL='https://app.6heroes.de/meine-entwicklung';
 const ACCOUNT_URL='https://app.6heroes.de/account';
 const LZ_WEBHOOK_URL='https://hook.eu1.make.com/phvn36spxoeq6kbwbopsogt5hxcjwf5x';
 const VERGESSEN_WEBHOOK_URL='https://hook.eu1.make.com/bc57s5afmbtmy7ty217y92xcvx3sbub7';
@@ -142,7 +142,7 @@ const MONATE=['Januar','Februar','März','April','Mai','Juni','Juli','August','S
 const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const lab=t=>'<div class="label">'+esc(t)+'</div>';
 const acc=(a,sub,inner,open)=>'<details'+(open?' open':'')+'><summary><span class="s1"><span class="a">'+esc(a)+'</span>'+(sub?'<span class="b">'+esc(sub)+'</span>':'')+'</span></summary><div class="body">'+inner+'</div></details>';
-const topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Mein Bereich</a></div>';
+const topbar='<div class="topbar"><a href="'+MB_URL+'" target="_top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Meine Entwicklung</a></div>';
 const kopf='<div class="hero2"><h1 class="big">Dein Langzeitprofil</h1><p class="meta2">Eine Zusammenfassung deiner letzten Wochen.</p></div>';
 function datum(s){if(!s)return '';const d=new Date(String(s).slice(0,10)+'T12:00:00Z');if(isNaN(d))return '';return d.getUTCDate()+'. '+MONATE[d.getUTCMonth()];}
 const liste=v=>Array.isArray(v)?v.filter(x=>String(x||'').trim()):(v?[v]:[]);

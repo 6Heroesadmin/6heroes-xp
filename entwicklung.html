@@ -85,7 +85,7 @@ textarea{width:100%;min-height:96px;border:1.5px solid var(--line);border-radius
 /* Dein aktuelles Ziel (bis 09.11. "Meine Entwicklung"), Build 2026-11-09
    Daten: Make Entwicklung_Laden (Users.Entwicklung_JSON). Aktionen: Make Coach_Ziel_Aktion (wie coach.html).
    URL-Parameter: email, paid (0/1), frame. Vorschau ohne Make: ?demo=aktiv | pause | bilanz | leer | frei */
-const BUILD='2026-11-09 Dein aktuelles Ziel v2';
+const BUILD='2026-11-10 Dein aktuelles Ziel v2.2';
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const APP='https://app.6heroes.de';
 const MB_URL=APP+'/meine-entwicklung';
@@ -265,14 +265,18 @@ function viewAktiv(z){
     if(z.bilanz_erledigt!=='1'&&z.bilanz_am&&z.bilanz_am>h)meta+=' · Zwischenbilanz '+abWann(z.bilanz_am);
     else if(z.ende_am&&z.ende_am>h)meta+=' · Abschluss '+abWann(z.ende_am);
   }
-  let out='<div class="hero"><span class="eyebrow">'+(z.status==='pausiert'?'Dein Ziel ruht':'Dein Ziel')+'</span><h1>'+esc(z.kurz)+'</h1><span class="meta">'+(z.status==='pausiert'&&z.pausiert_seit?'Pausiert seit dem '+esc(datumLang(z.pausiert_seit)):esc(meta))+'</span></div>';
+  const ruht=z.status==='aktiv'&&/paus|ruh/.test(z.karte||''); /* wie Pocket Hero: Trainingskarte ruht nach 10 Tagen ohne Schritt */
+  let out='<div class="hero"><span class="eyebrow">'+(z.status==='pausiert'||ruht?'Dein Ziel ruht':'Dein Ziel')+'</span><h1>'+esc(z.kurz)+'</h1><span class="meta">'+(z.status==='pausiert'&&z.pausiert_seit?'Pausiert seit dem '+esc(datumLang(z.pausiert_seit)):esc(meta))+'</span></div>';
   if(NOTIZ)out+='<p class="ok-note">'+esc(NOTIZ)+'</p>';
   if(z.status==='pausiert'){
     out+='<div class="card" style="margin-top:14px"><p>Pausen gehören dazu. Dein Fortschritt bleibt erhalten, und du machst dort weiter, wo du aufgehört hast.</p>'
       +'<button class="btn y" type="button" data-akt="weiter">Weitermachen</button><button class="btn o" type="button" data-akt="einfacher">Mit kleineren Schritten weitermachen</button><p class="msg" id="aktmsg" hidden></p></div>';
   }else{
-    const bf=bilanzFaellig(z);
-    if(bf){
+    const bf=ruht?'':bilanzFaellig(z); /* wie Pocket Hero: Pause vor Bilanz */
+    if(ruht){
+      out+='<div class="card" style="margin-top:14px"><p>Eine Weile gab es keinen Schritt zu deinem Ziel. Dein Fortschritt bleibt erhalten, und du machst dort weiter, wo du aufgehört hast.</p>'
+        +'<button class="btn y" type="button" data-akt="weiter">Weitermachen</button><button class="btn o" type="button" data-akt="einfacher">Mit kleineren Schritten weitermachen</button><p class="msg" id="aktmsg" hidden></p></div>';
+    }else if(bf){
       out+='<div class="step"><span class="bl">'+(bf==='mitte'?'Zeit für einen Blick zurück':'Dein Abschluss')+'</span><span class="t">'+(bf==='mitte'?'Zwei Wochen sind um.':'Vier Wochen sind um.')+'</span><span class="meta">'+(bf==='mitte'?'Im Pocket Hero schaust du kurz zurück und entscheidest, wie es weitergeht.':'Im Pocket Hero schaust du auf den ganzen Weg zurück.')+'</span><a class="btn" href="'+COACH_URL+'" target="_top">Im Pocket Hero öffnen</a></div>';
     }else if(z.next_titel){
       const bereit=z.karte==='bereit'||(z.next_faellig&&z.next_faellig<=h);
