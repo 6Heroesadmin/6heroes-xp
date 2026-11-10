@@ -72,11 +72,11 @@ details p{padding:0 18px 16px;font-size:14.5px;color:var(--ink)}
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast"></div>
 <script>
-// Build: 2026-11-06 Account v1
+// Build: 2026-11-10 Account v1.1 (Intro, Zurück zu Mein Profil)
 var LADEN_URL='https://hook.eu1.make.com/of52cgp12ejzxiyqy6othv7yv3huq4g9';
 var AKTION_URL='https://hook.eu1.make.com/ue9m1kpl3xefyxuqsjpnqj7p6fhce8q1';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
-var MB_URL='https://app.6heroes.de/mein-bereich';
+var MB_URL='https://app.6heroes.de/mein-profil';
 var PREIS_URL='https://6heroes.de/preise.html#pricing';
 var DATENSCHUTZ_MAIL='datenschutz@6heroes.de';
 var SUPPORT_MAIL='';
@@ -96,6 +96,63 @@ function tag(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||'');return m?(+m[3])+'.
 function postHeight(){var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);try{parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}catch(e){}}
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('on');setTimeout(function(){el.classList.remove('on');},2600);}
 function back(z,t){return '<div class="topbar"><a '+(z?'data-go="'+z+'"':'href="'+MB_URL+'" target="_top"')+'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'+t+'</a></div>';}
+
+/* ---------- Intro "So funktioniert 6Heroes" (Build 2026-11-10 Intro v1) ----------
+   Overlay oben in der Seite (absolut, weil der iframe in Noloco mit dem Inhalt mitwächst). zeigeIntro(onClose, fest) */
+const INTRO_FARBEN={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
+function introRing(){const o=['innovator','commander','strategist','sage','guardian','explorer'];let s='';o.forEach((h,i)=>{const a0=(i*60+1.5-90)*Math.PI/180,a1=((i+1)*60-1.5-90)*Math.PI/180,R=50,r=27,cx=55,cy=55;const p=(a,rad)=>[cx+rad*Math.cos(a),cy+rad*Math.sin(a)];const[x0,y0]=p(a0,R),[x1,y1]=p(a1,R),[x2,y2]=p(a1,r),[x3,y3]=p(a0,r);s+='<path d="M'+x0+' '+y0+'A'+R+' '+R+' 0 0 1 '+x1+' '+y1+'L'+x2+' '+y2+'A'+r+' '+r+' 0 0 0 '+x3+' '+y3+'Z" fill="'+INTRO_FARBEN[h]+'"/>';});return '<svg viewBox="0 0 110 110">'+s+'</svg>';}
+const INTRO_BILDER=[introRing(),
+ '<svg viewBox="0 0 120 110" fill="none" stroke="#20293A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="14" width="70" height="44" rx="12" fill="#fff"/><path d="M26 58l-6 14 18-14"/><rect x="44" y="50" width="66" height="40" rx="12" fill="#F2B705"/><path d="M92 90l6 12-16-12"/><path d="M24 30h42M24 42h28M58 66h38M58 76h24"/></svg>',
+ '<svg viewBox="0 0 120 110" fill="none" stroke-linecap="round"><circle cx="60" cy="50" r="38" stroke="#20293A" stroke-width="3"/><circle cx="60" cy="50" r="24" stroke="#20293A" stroke-width="3"/><circle cx="60" cy="50" r="8" fill="#F2B705" stroke="#20293A" stroke-width="3"/><rect x="18" y="96" width="84" height="8" rx="4" fill="#ECE7DB"/><rect x="18" y="96" width="38" height="8" rx="4" fill="#F2B705"/></svg>',
+ '<svg viewBox="0 0 24 24" fill="none" stroke="#20293A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>'];
+const INTRO_KARTEN=[
+ ['Willkommen','Dein Profil','Hier findest du alle Informationen zu deinem Basishelden, der dir sagt, wie du normalerweise tickst. Dein Zweitheld ergänzt ihn, und deine Stresshelden übernehmen unter Druck.'],
+ ['Der Alltagshelfer','6Hero Coach I','Beschreib eine Situation, die dich gerade beschäftigt. Dein Coach kreiert eine kleine Heldentat für dich, die dir bei der Lösung der Situation helfen soll. Gib ihm Feedback, damit du wachsen kannst.'],
+ ['Der Entwicklungscoach','6Hero Coach II','Lege ein Entwicklungsziel fest und übe vier Wochen lang ein neues Verhalten in kleinen Schritten. Für jeden Rückblick bekommst du Hero Points und Abzeichen, und dein Langzeitprofil zeigt, was sich über die Wochen verändert.'],
+ ['Alles an einem Ort','Dein Account','Über das Zahnrad oben rechts in Mein Profil und Meine Entwicklung kommst du in deinen Account. Dort verwaltest du deine Daten und Einwilligungen und kannst diese Einführung jederzeit wieder ansehen.']];
+function zeigeIntro(onClose, fest){ /* fest = true: Overlay fest im Fenster (coach.html scrollt im iframe selbst) */
+  if (document.getElementById('introOv')) return;
+  if (!document.getElementById('introCss')){
+    const st=document.createElement('style');st.id='introCss';
+    st.textContent='body{position:relative}'
+     +'.iov{position:absolute;top:0;left:0;right:0;min-height:100%;background:rgba(32,41,58,.55);display:flex;justify-content:center;align-items:flex-start;padding:16px;z-index:999}'
+     +'.isheet{background:#F7F5F0;color:#20293A;width:100%;max-width:460px;border-radius:22px;padding:14px 22px 22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,.2);font-family:Inter,system-ui,sans-serif;margin-top:8px}'
+     +'.ihead{display:flex;justify-content:space-between;align-items:center;min-height:40px}'
+     +'.idots{display:flex;gap:6px}.idots i{width:8px;height:8px;border-radius:4px;background:#D6D0C2;transition:width .2s}.idots i.on{width:22px;background:#20293A}'
+     +'.iskip{background:none;border:0;font:600 14px Inter,sans-serif;color:#5A6272;cursor:pointer;min-height:44px;padding:0 4px}'
+     +'.ipic{height:150px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #E4DFD4;border-radius:16px}.ipic svg{height:110px;width:auto}'
+     +'.iey{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#B26B00}'
+     +'.isheet h2{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:27px;line-height:1.2;margin:0}'
+     +'.isheet p{font-size:15.5px;line-height:1.65;margin:0}'
+     +'.inav{display:flex;gap:10px;margin-top:4px}.inav button{flex:1;min-height:50px;border-radius:14px;font:700 15.5px Inter,sans-serif;cursor:pointer}'
+     +'.iback{background:transparent;border:1.5px solid #20293A;color:#20293A}.inext{background:#F2B705;border:1.5px solid #F2B705;color:#20293A}';
+    document.head.appendChild(st);
+  }
+  let i=0;
+  const ov=document.createElement('div');ov.className='iov';ov.id='introOv';
+  if(fest){ov.style.position='fixed';ov.style.bottom='0';ov.style.overflowY='auto';}
+  ov.innerHTML='<div class="isheet" role="dialog" aria-modal="true" aria-labelledby="introH"><div class="ihead"><span class="idots"></span><button type="button" class="iskip">Überspringen</button></div><div class="ipic"></div><span class="iey"></span><h2 id="introH"></h2><p class="itx"></p><div class="inav"><button type="button" class="iback">Zurück</button><button type="button" class="inext">Weiter</button></div></div>';
+  document.body.appendChild(ov);
+  const q=s=>ov.querySelector(s);
+  const zeig=()=>{
+    q('.idots').innerHTML=INTRO_KARTEN.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+    q('.ipic').innerHTML=INTRO_BILDER[i];
+    q('.iey').textContent=INTRO_KARTEN[i][0];q('#introH').textContent=INTRO_KARTEN[i][1];q('.itx').textContent=INTRO_KARTEN[i][2];
+    q('.iback').style.visibility=i?'visible':'hidden';
+    q('.inext').textContent=i===INTRO_KARTEN.length-1?'Los geht’s':'Weiter';
+    q('.iskip').style.visibility=i===INTRO_KARTEN.length-1?'hidden':'visible';
+  };
+  const zu=()=>{ov.remove();try{if(typeof postHeight==='function')postHeight();}catch(_){} if(onClose)onClose();};
+  q('.inext').addEventListener('click',()=>{if(i<INTRO_KARTEN.length-1){i++;zeig();}else zu();});
+  q('.iback').addEventListener('click',()=>{if(i>0){i--;zeig();}});
+  q('.iskip').addEventListener('click',zu);
+  let sx=null;const sh=q('.isheet');
+  sh.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
+  sh.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(dx<-50&&i<INTRO_KARTEN.length-1){i++;zeig();}else if(dx>50&&i>0){i--;zeig();}sx=null;});
+  zeig();
+  try{window.scrollTo(0,0);parent.postMessage({type:'6heroes:scrollTop',frame:(typeof __FRAME_ID__!=='undefined'?__FRAME_ID__:'')},'*');}catch(_){}
+  try{if(typeof postHeight==='function')setTimeout(postHeight,50);}catch(_){}
+}
 
 // ---------- Webhooks ----------
 async function post(url,obj){
@@ -135,7 +192,7 @@ function menu(){
    +'<button class="row" data-go="einw"><span class="t"><b>Einwilligungen und Benachrichtigungen</b><span class="s">KI-Coach, Personalisierung, E-Mail, Push, Newsletter</span></span><span class="chev"></span></button>'
    +'<button class="row" data-go="gedaechtnis"><span class="t"><b>Gedächtnis und Datenschutz</b><span class="s">Was dein Coach sich merkt, zurücksetzen, löschen</span></span><span class="chev"></span></button>'
    +'<button class="row" data-go="daten"><span class="t"><b>Meine Daten</b><span class="s">Export und Account löschen</span></span><span class="chev"></span></button></div>'
-   +'<div class="label">Hilfe</div><div class="list"><button class="row" data-go="hilfe"><span class="t"><b>Hilfe und Kontakt</b><span class="s">Häufige Fragen, Support, Hilfe in Krisen</span></span><span class="chev"></span></button></div>'
+   +'<div class="label">Hilfe</div><div class="list"><button class="row" data-intro="1"><span class="t"><b>So funktioniert 6Heroes</b><span class="s">Die kurze Einführung noch einmal ansehen</span></span><span class="chev"></span></button><button class="row" data-go="hilfe"><span class="t"><b>Hilfe und Kontakt</b><span class="s">Häufige Fragen, Support, Hilfe in Krisen</span></span><span class="chev"></span></button></div>'
    +'<div class="label">Rechtliches</div><div class="list">'+LEGAL.map(function(l){return '<a class="row" href="'+l[1]+'" target="_blank" rel="noopener"><span class="t"><b>'+l[0]+'</b></span><span class="chev"></span></a>';}).join('')+'</div>';
 }
 var GRUENDE=[['zu_teuer','Zu teuer'],['keine_zeit','Keine Zeit'],['nicht_geholfen','Hat mir nicht geholfen'],['pause','Ich mache eine Pause'],['anderer','Anderer Grund']];
@@ -150,7 +207,7 @@ var FAQ=[
 var S={
  uebersicht:function(){
   var n=(D.vorname||D.email||'?').trim();
-  return back('', 'Mein Bereich')+'<h1>Account</h1><div class="head"><div class="avatar">'+esc(n.charAt(0).toUpperCase())+'</div><div><div style="font-weight:700;font-size:18px">'+esc(D.vorname||'')+'</div><div class="sub">'+esc(D.email)+(D.seit?' · dabei seit '+seit(D.seit):'')+'</div></div></div>'
+  return back('', 'Mein Profil')+'<h1>Account</h1><div class="head"><div class="avatar">'+esc(n.charAt(0).toUpperCase())+'</div><div><div style="font-weight:700;font-size:18px">'+esc(D.vorname||'')+'</div><div class="sub">'+esc(D.email)+(D.seit?' · dabei seit '+seit(D.seit):'')+'</div></div></div>'
    +'<div class="label">Dein Zugang</div>'+zugangKarte()+menu();
  },
  kuendigen:function(){
@@ -222,6 +279,7 @@ function draw(){
 }
 function binden(){
   document.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();go(b.dataset.go);});});
+  document.querySelectorAll('[data-intro]').forEach(function(b){b.addEventListener('click',function(){zeigeIntro(null,false);});});
   document.querySelectorAll('[data-grund]').forEach(function(b){b.addEventListener('click',function(){var t=document.getElementById('ktext').value;GRUND=(GRUND===b.dataset.grund?'':b.dataset.grund);draw();document.getElementById('ktext').value=t;});});
   var ab=document.getElementById('zuAblefy');
   if(ab) ab.addEventListener('click',function(){
@@ -254,7 +312,7 @@ async function schalten(k,wert,btn,danach){
 function fehler(err){
   var dbg=Q.get('debug')?'<p class="note" style="word-break:break-all">email='+esc(EMAIL||'(leer)')+' | k='+esc(KEY||'(leer)')+' | '+esc(err&&err.message||'')+'</p>':'';
   var app=document.getElementById('app');
-  app.innerHTML=back('','Mein Bereich')+'<h1>Account</h1><div class="card" style="margin-top:14px"><p>Dein Account lässt sich gerade nicht laden.</p><div class="btns"><button class="btn" id="nochmal">Nochmal versuchen</button></div>'+dbg+'</div>';
+  app.innerHTML=back('','Mein Profil')+'<h1>Account</h1><div class="card" style="margin-top:14px"><p>Dein Account lässt sich gerade nicht laden.</p><div class="btns"><button class="btn" id="nochmal">Nochmal versuchen</button></div>'+dbg+'</div>';
   document.getElementById('nochmal').addEventListener('click',start);
   app.classList.add('ready');postHeight();
 }
