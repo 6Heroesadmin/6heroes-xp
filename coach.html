@@ -81,6 +81,7 @@
   .btn{min-height:52px;padding:0 16px;background:var(--gold);border:0;border-radius:14px;
     font-size:16px;font-weight:700;cursor:pointer}
   .btn:disabled{opacity:.45;cursor:default}
+  a.btn{color:var(--navy);text-decoration:none}
   .btn2{min-height:48px;padding:0 16px;background:transparent;border:1px solid var(--line);border-radius:14px;
     font-size:15px;font-weight:600;cursor:pointer}
   .linkbtn{align-self:flex-start;background:none;border:0;padding:4px 0;font-size:15px;font-weight:600;
@@ -626,13 +627,14 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-11-10 Intro v1.4';
+const BUILD = '2026-11-11 Freier Durchlauf v1.6';
 /* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
    EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
    Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
 const ACCOUNT_AKTION_WEBHOOK_URL = 'https://hook.eu1.make.com/ue9m1kpl3xefyxuqsjpnqj7p6fhce8q1';
 const EINW_TEXTVERSION = 1;
 const ACCOUNT_URL = 'https://app.6heroes.de/account';
+const PREISE_URL = 'https://6heroes.de/preise.html';   // Ziel des Knopfs "Freischalten" nach dem freien Durchlauf
 const DATENSCHUTZ_URL = 'https://6heroes.de/datenschutz.html';
 let loadDiag = 'noch nicht geladen';
 const HEROES = ['Commander','Guardian','Innovator','Explorer','Sage','Strategist'];
@@ -3180,6 +3182,9 @@ function renderStart(){
     setTimeout(() => zeigeIntro(introGesehenMelden, true), 0);
   }
   const kind = (startOverride || startZiel) ? 'neu' : startKind(startInfo);
+  /* Freier Durchlauf: Zugang_JSON frei = "nein" (kein Abo und schon ein angenommener Durchlauf) sperrt nur den Start eines neuen
+     Durchlaufs. Offene Heldentaten und Rückblicke bleiben erreichbar. Fehlt der Wert, startet der Coach normal (harte Sperre in Make). */
+  if (kind === 'neu' && einw && einw.frei === 'nein'){ renderFreiVerbraucht(); return; }
   const zk = (kind === 'neu' && !startOverride) ? zielKarte() : null;
   if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Version: ' + BUILD + ' | Zugang: ' + zugangStatus + ' | Einwilligung: ' + einwDiag + (state.k ? '' : ' (k fehlt)') + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
@@ -3420,7 +3425,7 @@ async function pruefeZugang(){
       const d = parsePayload(t);
       if (d && typeof d === 'object'){
         const w = v => String(v == null ? '' : v).trim().toLowerCase();
-        einw = { ki:w(d.ki), profil:w(d.profil), antworten:w(d.antworten), woche:w(d.woche), mail:w(d.mail), push:w(d.push), tv:parseInt(d.tv, 10) || 0, intro:w(d.intro) };
+        einw = { ki:w(d.ki), profil:w(d.profil), antworten:w(d.antworten), woche:w(d.woche), mail:w(d.mail), push:w(d.push), tv:parseInt(d.tv, 10) || 0, intro:w(d.intro), frei:w(d.frei) };
         einwDiag = 'geladen';
         if (w(d.zugang) === 'nein') return 'nein';
         if (w(d.zugang) === 'ja') return 'ja';
@@ -3449,6 +3454,29 @@ function renderKeinZugang(){
   a.style.alignItems = 'center';
   a.style.justifyContent = 'center';
   a.style.textDecoration = 'none';
+  box.appendChild(a);
+}
+
+function renderFreiVerbraucht(){
+  $('startLoad').hidden = true;
+  $('startNew').hidden = true;
+  $('zielHinweis').hidden = true;
+  $('zielEntry').hidden = true;
+  startOverride = false;
+  const box = $('startState');
+  box.hidden = false;
+  box.innerHTML = '';
+  const g = el('div', 'greet');
+  g.appendChild(el('span', 'hello', HELLO));
+  g.appendChild(el('h1', null, 'Deinen freien Durchlauf hast du genutzt.'));
+  box.appendChild(g);
+  box.appendChild(el('p', 'hint', 'Mit dem Hero-Paket begleitet dich dein 6Hero Coach weiter im Alltag, so oft du willst, und hilft dir, langfristig etwas zu verändern.'));
+  const a = el('a', 'btn', 'Freischalten');
+  a.href = PREISE_URL;
+  a.target = '_top';
+  a.style.display = 'flex';
+  a.style.alignItems = 'center';
+  a.style.justifyContent = 'center';
   box.appendChild(a);
 }
 
@@ -3777,6 +3805,7 @@ async function startUp(){
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
     if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
     if (demo === 'kein_zugang') zugangStatus = 'nein';
+    if (demo === 'frei_verbraucht'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein' }; }
     const zdm = p.get('zieldemo');
     if (zdm){
       zielDemo = zdm;
