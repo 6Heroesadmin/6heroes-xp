@@ -627,7 +627,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-11-11 Freier Durchlauf v1.6';
+const BUILD = '2026-11-12 Zurueck zur Heldentat v1.8';
 /* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
    EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
    Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
@@ -2822,6 +2822,7 @@ function zielMsg(text, fehler){
 
 /* opt (optional): { vorgabe, rest } aus der Bilanz: nächster Teil eines zerlegten Ziels. Als Klick-Handler kommt hier ein Event an. */
 function zielOeffnen(opt){
+  if (ohneAbo()){ preiseOeffnen(); return; }
   if (busy > 0) return;
   const o = (opt && typeof opt === 'object' && opt.vorgabe) ? opt : null;
   // Aus der Bilanz geöffnet: Zurück führt wieder zur Auswahl "Wie geht es weiter?" statt zum Start
@@ -3207,7 +3208,7 @@ function renderStart(){
     bz.addEventListener('click', () => { $('startNew').hidden = true; const sb = $('startState'); sb.hidden = false; zielBeendenFrage(sb); });
     zh.appendChild(bz);
   }
-  $('zielEntry').hidden = !(kind === 'neu' && !zk && !zielInfo && !zielWartet && state.userId && zugangStatus !== 'nein');
+  $('zielEntry').hidden = !(kind === 'neu' && !zk && !zielInfo && !zielWartet && state.userId && zugangStatus !== 'nein' && !ohneAbo());
   // Kategorien nur, wenn der Nutzer "Situation beschreiben" gewählt hat (oder das Konto fehlt)
   if (kind === 'neu' && (startOverride || !state.userId)){
     box.hidden = true;
@@ -3327,7 +3328,9 @@ function renderStart(){
     } else if (Date.now() < zielWartetBis){
       box.appendChild(kachel('MEIN ZIEL', '', 'Dein Ziel wird gerade vorbereitet', 'Dein erster Schritt erscheint gleich hier.', '', null));
     } else if (state.userId && !zielLadeFehler){
-      if (folgeAngebot){
+      if (ohneAbo()){
+        box.appendChild(kachel('EIN ZIEL SETZEN · IM ABO ENTHALTEN', '', 'Woran willst du länger arbeiten?', 'Mit dem Hero-Paket formulieren wir gemeinsam ein Ziel und üben es in kleinen Schritten.', 'Freischalten', () => preiseOeffnen()));
+      } else if (folgeAngebot){
         const fa = folgeAngebot;
         const c = kachel('DEIN NÄCHSTER TEIL', '', fa.teile[0], fa.kurz ? 'Er schließt an dein abgeschlossenes Ziel „' + fa.kurz + '“ an.' : 'Er schließt an dein abgeschlossenes Ziel an.', 'Diesen Teil angehen', () => zielOeffnen({ vorgabe:fa.teile[0], rest:fa.teile.slice(1) }));
         const neu = el('button', 'linkbtn', 'Lieber ein neues Thema wählen');
@@ -3394,7 +3397,7 @@ function renderStart(){
       else showNewStart();
     });
     box.appendChild(nb);
-    if (!zielInfo && state.userId && !zielLadeFehler){
+    if (!zielInfo && state.userId && !zielLadeFehler && !ohneAbo()){
       const fa = folgeAngebot;
       const zb = el('button', 'btn2', fa ? 'Den nächsten Teil angehen: ' + fa.teile[0] : 'Ein längerfristiges Ziel formulieren');
       zb.style.marginTop = '12px';
@@ -3425,7 +3428,7 @@ async function pruefeZugang(){
       const d = parsePayload(t);
       if (d && typeof d === 'object'){
         const w = v => String(v == null ? '' : v).trim().toLowerCase();
-        einw = { ki:w(d.ki), profil:w(d.profil), antworten:w(d.antworten), woche:w(d.woche), mail:w(d.mail), push:w(d.push), tv:parseInt(d.tv, 10) || 0, intro:w(d.intro), frei:w(d.frei) };
+        einw = { ki:w(d.ki), profil:w(d.profil), antworten:w(d.antworten), woche:w(d.woche), mail:w(d.mail), push:w(d.push), tv:parseInt(d.tv, 10) || 0, intro:w(d.intro), frei:w(d.frei), abo:w(d.abo) };
         einwDiag = 'geladen';
         if (w(d.zugang) === 'nein') return 'nein';
         if (w(d.zugang) === 'ja') return 'ja';
@@ -3457,6 +3460,13 @@ function renderKeinZugang(){
   box.appendChild(a);
 }
 
+/* Ziel nur im Abo: Zugang_JSON abo = "nein" sperrt das Anlegen eines neuen Ziels. Fehlt der Wert, bleibt alles wie bisher (harte Sperre in Make). */
+function ohneAbo(){ return !!(einw && einw.abo === 'nein'); }
+function preiseOeffnen(){
+  try { window.open(PREISE_URL, '_top'); }
+  catch(_) { window.open(PREISE_URL, '_blank'); }
+}
+
 function renderFreiVerbraucht(){
   $('startLoad').hidden = true;
   $('startNew').hidden = true;
@@ -3478,6 +3488,15 @@ function renderFreiVerbraucht(){
   a.style.alignItems = 'center';
   a.style.justifyContent = 'center';
   box.appendChild(a);
+  /* Rückweg, wenn der User über "Mich beschäftigt noch etwas anderes" kam und noch eine Heldentat oder ein Rückblick offen ist */
+  const k = startKind(startInfo);
+  if (k !== 'neu'){
+    const zb = el('button', 'linkbtn', (k === 'laeuft' || k === 'faellig') ? 'Zurück zu deiner Heldentat' : 'Zurück');
+    zb.type = 'button';
+    zb.style.marginTop = '16px';
+    zb.addEventListener('click', () => { startOverride = false; renderStart(); window.scrollTo(0, 0); });
+    box.appendChild(zb);
+  }
 }
 
 /* ---------- Intro "So funktioniert 6Heroes" (Build 2026-11-10 Intro v1) ----------
@@ -3805,7 +3824,9 @@ async function startUp(){
     if (demo === 'erledigt') startInfo.status = 'abgeschlossen';
     if (demo === 'heute_nicht') startInfo.status = 'heute_nicht';
     if (demo === 'kein_zugang') zugangStatus = 'nein';
-    if (demo === 'frei_verbraucht'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein' }; }
+    if (demo === 'frei_verbraucht'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein', abo:'nein' }; }
+    if (demo === 'frei_laeuft'){ einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein', abo:'nein' }; }
+    if (demo === 'ohne_abo'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'ja', abo:'nein' }; }
     const zdm = p.get('zieldemo');
     if (zdm){
       zielDemo = zdm;
