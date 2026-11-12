@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>6Heroes – E-Mails bestätigen</title>
+<!-- Build: 2026-11-12 Double-Opt-in v1.0 -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--err:#B42318}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--navy);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;padding:28px 18px 40px}
+.brand{font-family:'DM Serif Display',Georgia,serif;font-size:20px;margin-bottom:22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 22px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#9A7400;margin-bottom:10px}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;margin:0 0 14px}
+p{line-height:1.55;margin:0 0 12px}
+.btn{display:block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:12px;padding:15px 18px;font:600 16px Inter,sans-serif;cursor:pointer;margin-top:18px;text-align:center;text-decoration:none}
+.btn:disabled{opacity:.45;cursor:default}
+.hint{font-size:13px;color:var(--muted);line-height:1.5;margin-top:14px}
+.err{color:var(--err);font-size:14px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">6Heroes</div>
+  <div class="card" id="card"></div>
+</div>
+<script>
+var WEBHOOK_URL = 'HIER_WEBHOOK_URL_OPTIN_EINFUEGEN';
+var APP_URL = 'https://app.6heroes.de';
+var OPTIN_TEXT = 'Ja, ich möchte motivierende E-Mails und Erfolgs-Benachrichtigungen von 6Heroes erhalten. Abbestellen jederzeit möglich.';
+(function(){
+  var card = document.getElementById('card');
+  var m = location.search.match(/[?&]t=([A-Za-z0-9-]{16,64})/);
+  var token = m ? m[1] : '';
+  /* Token sofort aus der Adresszeile entfernen (Verlauf, Screenshots) */
+  try { history.replaceState(null, '', location.pathname); } catch(e){}
+
+  function show(kicker, title, text, btn){
+    card.innerHTML = '<div class="kicker">' + kicker + '</div><h1>' + title + '</h1><p>' + text + '</p>' + (btn || '');
+  }
+  if (!token){
+    return show('Link ungültig', 'Dieser Link funktioniert nicht.', 'Bitte öffne den Link direkt aus der E-Mail. Falls er nicht mehr funktioniert, kannst du die E-Mails später im Account aktivieren.');
+  }
+  show('Fast geschafft', 'Bestätige deine E-Mails.',
+    'Du hast zugestimmt: ' + OPTIN_TEXT + ' Bitte bestätige das mit einem Klick.',
+    '<button class="btn" id="ok">Ja, bestätigen</button><div class="err" id="err"></div>' +
+    '<p class="hint">Wenn du dich nicht angemeldet hast, ignoriere diese Seite einfach. Ohne Bestätigung schicken wir dir keine solchen E-Mails.</p>');
+  document.getElementById('ok').onclick = function(){
+    var b = this; b.disabled = true;
+    fetch(WEBHOOK_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:token, text:OPTIN_TEXT})})
+      .then(function(r){ return r.text().then(function(t){ return {ok:r.ok, body:t}; }); })
+      .then(function(r){
+        if (!r.ok) throw new Error();
+        var status = ''; try { status = JSON.parse(r.body).status; } catch(e){ status = r.body.trim(); }
+        if (status === 'ok') return show('Bestätigt', 'Danke, das hat geklappt.', 'Du bekommst ab jetzt motivierende E-Mails und Erfolgs-Benachrichtigungen. Abmelden kannst du dich jederzeit im Account oder über den Link in jeder E-Mail.', '<a class="btn" href="' + APP_URL + '">Zur App</a>');
+        show('Schon erledigt', 'Dieser Link ist nicht mehr gültig.', 'Entweder hast du schon bestätigt, oder der Link ist abgelaufen. Du kannst die E-Mails jederzeit im Account aktivieren.', '<a class="btn" href="' + APP_URL + '">Zur App</a>');
+      })
+      .catch(function(){ b.disabled = false; document.getElementById('err').textContent = 'Das hat nicht geklappt. Bitte versuche es noch einmal.'; });
+  };
+})();
+</script>
+</body>
+</html>
