@@ -627,7 +627,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-11-12 Preise mit Nachname v1.10';
+const BUILD = '2026-11-12 Freisperre lokal v1.11';
 /* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
    EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
    Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
@@ -3185,7 +3185,7 @@ function renderStart(){
   const kind = (startOverride || startZiel) ? 'neu' : startKind(startInfo);
   /* Freier Durchlauf: Zugang_JSON frei = "nein" (kein Abo und schon ein angenommener Durchlauf) sperrt nur den Start eines neuen
      Durchlaufs. Offene Heldentaten und Rückblicke bleiben erreichbar. Fehlt der Wert, startet der Coach normal (harte Sperre in Make). */
-  if (kind === 'neu' && einw && einw.frei === 'nein'){ renderFreiVerbraucht(); return; }
+  if (kind === 'neu' && freiVerbraucht()){ renderFreiVerbraucht(); return; }
   const zk = (kind === 'neu' && !startOverride) ? zielKarte() : null;
   if (DEBUG){ const dg = $('startDiag'); dg.hidden = false; dg.textContent = 'Version: ' + BUILD + ' | Zugang: ' + zugangStatus + ' | Einwilligung: ' + einwDiag + (state.k ? '' : ' (k fehlt)') + ' | Laden: ' + loadDiag + ' | Ziel: ' + zielDiag + ' | Zustand: ' + kind + (startOverride ? ' (übersprungen)' : ''); }
   const box = $('startState');
@@ -3329,7 +3329,7 @@ function renderStart(){
       box.appendChild(kachel('MEIN ZIEL', '', 'Dein Ziel wird gerade vorbereitet', 'Dein erster Schritt erscheint gleich hier.', '', null));
     } else if (state.userId && !zielLadeFehler){
       if (ohneAbo()){
-        box.appendChild(kachel('EIN ZIEL SETZEN · IM ABO ENTHALTEN', '', 'Woran willst du länger arbeiten?', 'Mit dem Hero-Paket formulieren wir gemeinsam ein Ziel und üben es in kleinen Schritten.', 'Freischalten', () => preiseOeffnen()));
+        { const zk2 = kachel('EIN ZIEL SETZEN · IM ABO ENTHALTEN', '', 'Woran willst du länger arbeiten?', 'Mit dem Hero-Paket formulieren wir gemeinsam ein Ziel und üben es in kleinen Schritten.', 'Freischalten', () => preiseOeffnen()); const zb2 = zk2.querySelector('.btn'); if (zb2) mitSchloss(zb2, 'Freischalten'); box.appendChild(zk2); }
       } else if (folgeAngebot){
         const fa = folgeAngebot;
         const c = kachel('DEIN NÄCHSTER TEIL', '', fa.teile[0], fa.kurz ? 'Er schließt an dein abgeschlossenes Ziel „' + fa.kurz + '“ an.' : 'Er schließt an dein abgeschlossenes Ziel an.', 'Diesen Teil angehen', () => zielOeffnen({ vorgabe:fa.teile[0], rest:fa.teile.slice(1) }));
@@ -3462,6 +3462,15 @@ function renderKeinZugang(){
 
 /* Ziel nur im Abo: Zugang_JSON abo = "nein" sperrt das Anlegen eines neuen Ziels. Fehlt der Wert, bleibt alles wie bisher (harte Sperre in Make). */
 function ohneAbo(){ return !!(einw && einw.abo === 'nein'); }
+/* Freier Durchlauf verbraucht: laut Zugang_JSON ("frei":"nein") oder, ohne Neuladen, sobald in dieser Sitzung
+   ein Durchlauf angenommen wurde (festgelegt, heute_nicht, abgeschlossen). Make sperrt zusätzlich hart. */
+function freiVerbraucht(){
+  if (!einw) return false;
+  if (einw.frei === 'nein') return true;
+  return einw.abo === 'nein' && !!(startInfo && /^(festgelegt|heute_nicht|abgeschlossen)$/.test(startInfo.status || ''));
+}
+const LOCK_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:8px;flex:none"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+function mitSchloss(node, text){ node.innerHTML = LOCK_SVG; node.appendChild(document.createTextNode(text)); node.style.display = 'flex'; node.style.alignItems = 'center'; node.style.justifyContent = 'center'; return node; }
 /* Preisseite mit E-Mail und Vorname im Fragment (#), damit Ablefy die Bezahlseite vorausfüllt.
    Das Fragment geht an keinen Server und in keinen Referer; preise.html entfernt es sofort wieder. */
 function preiseLink(){
@@ -3492,7 +3501,7 @@ function renderFreiVerbraucht(){
   g.appendChild(el('h1', null, 'Deinen freien Durchlauf hast du genutzt.'));
   box.appendChild(g);
   box.appendChild(el('p', 'hint', 'Mit dem Hero-Paket begleitet dich dein 6Hero Coach weiter im Alltag, so oft du willst, und hilft dir, langfristig etwas zu verändern.'));
-  const a = el('a', 'btn', 'Freischalten');
+  const a = mitSchloss(el('a', 'btn'), 'Freischalten');
   a.href = preiseLink();
   a.rel = 'noreferrer';
   a.target = '_top';
@@ -3838,6 +3847,7 @@ async function startUp(){
     if (demo === 'kein_zugang') zugangStatus = 'nein';
     if (demo === 'frei_verbraucht'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein', abo:'nein' }; }
     if (demo === 'frei_laeuft'){ einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'nein', abo:'nein' }; }
+    if (demo === 'frei_lokal'){ einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'ja', abo:'nein' }; }
     if (demo === 'ohne_abo'){ startInfo = null; einw = { ki:'ja', profil:'ja', antworten:'ja', woche:'ja', mail:'ja', push:'ja', tv:EINW_TEXTVERSION, intro:'ja', frei:'ja', abo:'nein' }; }
     const zdm = p.get('zieldemo');
     if (zdm){

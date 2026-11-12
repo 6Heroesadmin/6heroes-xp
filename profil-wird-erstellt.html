@@ -13,24 +13,24 @@
     plausible('Assessment abgeschlossen');
   </script>
 
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Playfair+Display:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
+    /* Farben und Schriften wie in der App (coach.html) */
     :root {
-      --bg:    #0D1117;
-      --text:  #F5F5F0;
-      --muted: rgba(245,245,240,0.5);
-      --card:  rgba(255,255,255,0.04);
-      --stroke: rgba(255,255,255,0.10);
-      --g1: #1F9D62;
-      --g2: #F2B705;
-      --g3: #F0672A;
+      --bg:    #F7F5F0;
+      --navy:  #20293A;
+      --gold:  #F2B705;
+      --line:  #E4DFD4;
+      --muted: #5A6272;
+      --white: #FFFFFF;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       width: 100%; min-height: 100%;
       background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
       display: flex;
       align-items: center;
@@ -48,11 +48,11 @@
       width: 100%;
     }
 
-    /* Wheel */
+    /* Rad */
     .wheel-wrap {
       position: relative;
-      width: clamp(120px, 30vw, 168px);
-      height: clamp(120px, 30vw, 168px);
+      width: clamp(120px, 30vw, 160px);
+      height: clamp(120px, 30vw, 160px);
       margin-bottom: 2rem;
       opacity: 0;
       animation: fadeUp 0.7s ease 0.2s forwards;
@@ -62,56 +62,50 @@
       width: 100%; height: 100%;
       transform-origin: center;
     }
-    /* Spinning only while loading */
     .loading .wheel-segments { animation: wheelSpin 6s linear infinite; }
-    /* Gentle settle once done */
     .done .wheel-segments { animation: settle 0.9s cubic-bezier(0.2,0.7,0.2,1) forwards; }
 
     .wheel-center {
       position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 48%; height: 48%;
-      background: #ffffff;
+      background: var(--white);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
     }
     .wheel-center span {
-      font-family: 'Playfair Display', 'Georgia', serif;
-      font-weight: 700;
-      font-size: clamp(0.5rem, 2.2vw, 0.78rem);
-      color: #1B2333;
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(0.6rem, 2.4vw, 0.85rem);
+      color: var(--navy);
       white-space: nowrap;
-      letter-spacing: -0.02em;
     }
     @keyframes wheelSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes settle { from { transform: rotate(340deg); } to { transform: rotate(360deg); } }
 
-    /* Headlines */
+    /* Überschriften */
     .headline {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.4rem, 5vw, 2.1rem);
-      letter-spacing: -0.02em;
-      line-height: 1.18;
-      margin-bottom: 0.65rem;
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(1.6rem, 5vw, 2.1rem);
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
     }
     .subtext {
-      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      font-size: 1rem;
       color: var(--muted);
-      font-weight: 300;
       line-height: 1.55;
-      max-width: 340px;
+      max-width: 360px;
       margin: 0 auto;
     }
 
-    /* ---- Loading view ---- */
+    /* Ladeansicht */
     #loadingView .headline { opacity: 0; animation: fadeUp 0.7s ease 0.5s forwards; }
     #loadingView .subtext  { opacity: 0; animation: fadeUp 0.7s ease 0.7s forwards; margin-bottom: 2rem; }
     .progress-track {
       width: clamp(200px, 55vw, 300px);
-      height: 3px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 99px;
+      height: 4px;
+      background: var(--line);
+      border-radius: 2px;
       overflow: hidden;
       opacity: 0;
       animation: fadeUp 0.7s ease 0.9s forwards;
@@ -119,63 +113,61 @@
     }
     .progress-fill {
       height: 100%; width: 0%;
-      border-radius: 99px;
-      background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3));
+      border-radius: 2px;
+      background: var(--gold);
       animation: fillBar 4.6s cubic-bezier(0.4,0,0.2,1) 1.0s forwards;
     }
     @keyframes fillBar { 0%{width:0%} 30%{width:38%} 60%{width:68%} 85%{width:90%} 100%{width:100%} }
 
-    /* ---- Confirmation view ---- */
+    /* Bestätigungsansicht */
     #doneView { display: none; }
     #doneView.show { display: block; animation: fadeUp 0.6s ease forwards; }
 
     .badge {
       display: inline-flex; align-items: center; gap: 0.45rem;
-      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em;
-      color: var(--g2);
-      background: rgba(242,183,5,0.10);
-      border: 1px solid rgba(242,183,5,0.25);
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--navy);
+      background: rgba(242,183,5,0.16);
+      border: 1px solid rgba(242,183,5,0.45);
       padding: 0.4rem 0.85rem;
       border-radius: 99px;
       margin-bottom: 1.4rem;
     }
-    .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--g1); box-shadow: 0 0 0 3px rgba(31,157,98,0.2); }
+    .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
 
     .mailcard {
       margin-top: 1.6rem;
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      padding: 1.35rem 1.4rem;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.25rem 1.3rem;
       text-align: left;
       display: flex; gap: 0.95rem; align-items: flex-start;
     }
     .mailcard .icon {
       flex: none;
       width: 40px; height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, rgba(31,157,98,0.25), rgba(240,103,42,0.25));
+      border-radius: 20px;
+      background: var(--navy);
       display: flex; align-items: center; justify-content: center;
     }
-    .mailcard .icon svg { width: 20px; height: 20px; stroke: var(--text); }
+    .mailcard .icon svg { width: 20px; height: 20px; stroke: var(--gold); }
     .mailcard .body h3 {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.98rem; font-weight: 500;
-      margin-bottom: 0.25rem;
+      font-size: 1rem; font-weight: 600;
+      margin-bottom: 0.3rem;
     }
     .mailcard .body p {
-      font-size: 0.88rem; color: var(--muted); font-weight: 300; line-height: 1.5;
+      font-size: 0.92rem; color: var(--muted); line-height: 1.5;
     }
-    .mailcard .body .addr {
-      color: var(--text); font-weight: 500;
-      word-break: break-all;
+    .mailcard .body strong, .mailcard .body .addr {
+      color: var(--navy); font-weight: 600;
     }
+    .mailcard .body .addr { word-break: break-all; }
 
     .hint {
       margin-top: 1.25rem;
-      font-size: 0.8rem;
-      color: rgba(245,245,240,0.38);
-      font-weight: 300;
+      font-size: 0.82rem;
+      color: var(--muted);
       line-height: 1.5;
     }
 
@@ -206,7 +198,7 @@
     <div id="doneView">
       <span class="badge"><span class="dot"></span>Fast geschafft</span>
       <h1 class="headline">Bestätige deine E-Mail-Adresse.</h1>
-      <p class="subtext">Bestätige deine E-Mail-Adresse und registriere dich. Danach kannst du den Pocket Hero testen und hast Zugriff auf dein Basisprofil.</p>
+      <p class="subtext">Bestätige deine E-Mail-Adresse und registriere dich. Danach kannst du den 6Hero Coach testen und hast Zugriff auf dein Basisprofil.</p>
 
       <div class="mailcard">
         <div class="icon">
@@ -217,7 +209,7 @@
         </div>
         <div class="body">
           <h3>Prüfe dein Postfach</h3>
-          <p id="mailText">Wir haben dir eine E-Mail geschickt. Öffne sie und klicke auf <strong style="color:var(--text);font-weight:500">„Jetzt kostenlos registrieren"</strong>, um deine Adresse zu bestätigen und dein Konto anzulegen.</p>
+          <p id="mailText">Wir haben dir eine E-Mail geschickt. Öffne sie und klicke auf <strong>„Jetzt kostenlos registrieren"</strong>, um deine Adresse zu bestätigen und dein Konto anzulegen.</p>
         </div>
       </div>
 
@@ -255,7 +247,7 @@
           document.getElementById('mailText').innerHTML =
             'Wir haben eine E-Mail an <span class="addr">' + email +
             '</span> geschickt. Öffne sie und klicke auf ' +
-            '<strong style="color:var(--text);font-weight:500">„Jetzt kostenlos registrieren"</strong>, ' +
+            '<strong>„Jetzt kostenlos registrieren"</strong>, ' +
             'um deine Adresse zu bestätigen und dein Konto anzulegen.';
         }
         document.body.classList.remove('loading');
