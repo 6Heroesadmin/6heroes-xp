@@ -627,7 +627,7 @@ const ZIEL_BILANZ_WEBHOOK_URL = 'https://hook.eu1.make.com/kyvw4loq313srtkraogh7
 /* Ein fälliger Rückblick wird nur so lange angeboten, danach beginnt der Start wieder bei einem neuen Tag */
 const RUECKBLICK_VERFALL_TAGE = 3;
 const DEBUG = new URLSearchParams(window.location.search).get('debug') === '1';
-const BUILD = '2026-11-12 Zurueck zur Heldentat v1.8';
+const BUILD = '2026-11-12 Preise mit Nachname v1.10';
 /* Einwilligungen (V156): Coach_Zugang liefert Zugang_JSON, gespeichert wird über Account_Aktion (art einwilligungen).
    EINW_TEXTVERSION hochzählen, wenn sich der Einwilligungstext ändert (dann fragt der Coach erneut, A4).
    Auch in account_aktion_anwenden.js (TEXTVERSION) anpassen. */
@@ -3462,9 +3462,20 @@ function renderKeinZugang(){
 
 /* Ziel nur im Abo: Zugang_JSON abo = "nein" sperrt das Anlegen eines neuen Ziels. Fehlt der Wert, bleibt alles wie bisher (harte Sperre in Make). */
 function ohneAbo(){ return !!(einw && einw.abo === 'nein'); }
+/* Preisseite mit E-Mail und Vorname im Fragment (#), damit Ablefy die Bezahlseite vorausfüllt.
+   Das Fragment geht an keinen Server und in keinen Referer; preise.html entfernt es sofort wieder. */
+function preiseLink(){
+  const h = new URLSearchParams();
+  if (state.userId) h.set('email', state.userId);
+  if (state.name) h.set('vorname', state.name);
+  const nn = (new URLSearchParams(location.search).get('nachname') || '').trim();
+  if (nn) h.set('nachname', nn);
+  const s = h.toString();
+  return s ? PREISE_URL + '#' + s : PREISE_URL;
+}
 function preiseOeffnen(){
-  try { window.open(PREISE_URL, '_top'); }
-  catch(_) { window.open(PREISE_URL, '_blank'); }
+  try { window.open(preiseLink(), '_top'); }
+  catch(_) { window.open(preiseLink(), '_blank'); }
 }
 
 function renderFreiVerbraucht(){
@@ -3482,7 +3493,8 @@ function renderFreiVerbraucht(){
   box.appendChild(g);
   box.appendChild(el('p', 'hint', 'Mit dem Hero-Paket begleitet dich dein 6Hero Coach weiter im Alltag, so oft du willst, und hilft dir, langfristig etwas zu verändern.'));
   const a = el('a', 'btn', 'Freischalten');
-  a.href = PREISE_URL;
+  a.href = preiseLink();
+  a.rel = 'noreferrer';
   a.target = '_top';
   a.style.display = 'flex';
   a.style.alignItems = 'center';

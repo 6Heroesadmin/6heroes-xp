@@ -12,6 +12,8 @@
   </script>
   <meta name="description" content="Der Test und ein Einblick in dein Heldenprofil sind kostenlos. Upgrade auf Hero für tägliche Übungen und deinen persönlichen Coach." />
   <meta name="robots" content="noindex, nofollow" />
+  <!-- Keine vollständige Adresse (mit Daten) als Referer an andere Seiten weitergeben -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -1383,6 +1385,40 @@
 
 
 
+
+<script>
+  // ── VORAUSFÜLLEN DER ABLEFY-BEZAHLSEITE (Datenschutz) ──────────────────────
+  // Die App übergibt E-Mail, Vor- und Nachname im Fragment (#email=…&vorname=…&nachname=…), nie im
+  // Query-String: Ein Fragment wird nicht an den Server gesendet, landet also in
+  // keinem Server-Log, nicht im Referer und nicht in der Plausible-Statistik.
+  // Die Werte werden sofort aus der Adresszeile entfernt, nicht gespeichert
+  // (kein Cookie, kein localStorage) und nur an die Ablefy-Bezahllinks gehängt,
+  // damit die Felder dort vorausgefüllt sind. Ablefy erhält die Daten ohnehin
+  // für den Kauf (Vertragsanbahnung, Art. 6 Abs. 1 lit. b DSGVO).
+  (function () {
+    try {
+      var h = window.location.hash.replace(/^#/, '');
+      if (!h) return;
+      var hp = new URLSearchParams(h);
+      var email = (hp.get('email') || '').trim();
+      var vorname = (hp.get('vorname') || '').trim();
+      var nachname = (hp.get('nachname') || '').trim();
+      if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = '';
+      if (vorname.length > 60) vorname = '';
+      if (nachname.length > 60) nachname = '';
+      if (!email && !vorname && !nachname) return;
+      document.querySelectorAll('a[href*="myablefy.com"]').forEach(function (a) {
+        var u = new URL(a.href);
+        if (email) u.searchParams.set('email', email);
+        if (vorname) u.searchParams.set('first_name', vorname);
+        if (nachname) u.searchParams.set('last_name', nachname);
+        a.href = u.toString();
+        a.setAttribute('referrerpolicy', 'no-referrer');
+      });
+    } catch (e) { /* Links bleiben unverändert */ }
+  })();
+</script>
 
 <script>
   // ── DEEP-LINK-HIGHLIGHT ─────────────────────────────────────────────────────

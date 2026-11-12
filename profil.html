@@ -58,8 +58,11 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const PROFILE_FN='/.netlify/functions/profile';
 const APP='https://app.6heroes.de';
-const UPGRADE_URL='https://6heroes.de/preise.html#pricing';
-/* Build: 2026-11-09 Mein Profil v1 (aus mein-bereich.html) */
+const UPGRADE_URL='https://6heroes.de/preise.html';
+/* Preisseite mit E-Mail und Namen im Fragment (#): geht an keinen Server und in keinen Referer; preise.html entfernt es sofort und füllt damit nur die Ablefy-Bezahlseite vor. */
+function upgradeLink(){const h=new URLSearchParams();const q=new URLSearchParams(location.search);const e=(q.get('email')||'').trim(),v=(q.get('name')||'').trim(),n=(q.get('nachname')||'').trim();if(e)h.set('email',e);if(v)h.set('vorname',v);if(n)h.set('nachname',n);const s=h.toString();return s?UPGRADE_URL+'#'+s:UPGRADE_URL;}
+
+/* Build: 2026-11-12 Mein Profil v1.1 (Preise vorausfuellen; URL-Parameter nachname nur für die Preisseite) */
 const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account'};
 const HC={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
 const HL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
@@ -130,8 +133,8 @@ function wheel(m,name){
   return '<svg viewBox="0 0 220 220" role="img" aria-label="Dein Heldenrad">'+out+'</svg>';
 }
 function row(o){
-  const href=o.locked?UPGRADE_URL:o.url;
-  return '<a class="row'+(o.locked?' locked':'')+'" href="'+href+'" target="_top">'
+  const href=o.locked?upgradeLink():o.url;
+  return '<a class="row'+(o.locked?' locked':'')+'" href="'+esc(href)+'" target="_top"'+(o.locked?' rel="noreferrer"':'')+'>'
     +'<span class="dot" style="background:'+o.bg+';color:'+(o.dark?'#20293A':'#fff')+'">'+o.dot+'</span>'
     +'<span class="txt">'+(o.eb||o.free?'<span class="eb">'+esc(o.eb)+(o.free?'<span class="free">Frei</span>':'')+'</span>':'')+'<span class="nm">'+esc(o.nm)+'</span><span class="ds">'+esc(o.ds)+'</span></span>'
     +(o.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
