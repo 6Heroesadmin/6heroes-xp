@@ -1,119 +1,482 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>6Heroes Assessment</title>
-  <!-- Privacy-friendly analytics by Plausible -->
-  <script async src="https://plausible.io/js/pa-ZJ_EtukJIVLQMLKSUFxdJ.js"></script>
-  <script>
-    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-    plausible.init()
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
-  <script async src="https://tally.so/widgets/embed.js"></script>
-  <style>
-    :root {
-      --navy:       #1E293B;
-      --gold:       #F2B705;
-      --white:      #FFFFFF;
-      --commander:  #0B63CE;
-      --guardian:   #1F9D62;
-      --innovator:  #F2B705;
-      --strategist: #475569;
-      --sage:       #C0266A;
-      --explorer:   #F0672A;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      background: var(--navy);
-      font-family: 'Outfit', sans-serif;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header.nav {
-      flex: 0 0 auto;
-      height: 68px;
-      padding: 0 24px;
-      background: rgba(30, 41, 59, 0.9);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.35rem;
-      letter-spacing: -0.02em;
-      color: var(--white);
-    }
-    .logo-dots { display: flex; gap: 3px; }
-    .logo-dots span {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      animation: dot-pulse 3s ease-in-out infinite;
-    }
-    .logo-dots span:nth-child(1) { background: var(--commander); animation-delay: 0s; }
-    .logo-dots span:nth-child(2) { background: var(--guardian);  animation-delay: 0.2s; }
-    .logo-dots span:nth-child(3) { background: var(--innovator); animation-delay: 0.4s; }
-    .logo-dots span:nth-child(4) { background: var(--strategist);animation-delay: 0.6s; }
-    .logo-dots span:nth-child(5) { background: var(--sage);      animation-delay: 0.8s; }
-    .logo-dots span:nth-child(6) { background: var(--explorer);  animation-delay: 1.0s; }
-    @keyframes dot-pulse {
-      0%, 80%, 100% { transform: scale(1); opacity: 0.7; }
-      40% { transform: scale(1.4); opacity: 1; }
-    }
-    .nav-tagline {
-      font-size: 0.85rem;
-      color: #94A3B8;
-      font-weight: 400;
-    }
-    .form-wrap {
-      flex: 1 1 auto;
-      position: relative;
-      width: 100%;
-    }
-    .form-wrap iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    @media (max-width: 600px) {
-      header.nav { padding: 0 18px; }
-      .nav-logo { font-size: 1.2rem; }
-      .nav-tagline { display: none; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noindex">
+<title>6Heroes Assessment</title>
+<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.0 -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--card:#FFFFFF;--err:#B42318}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--navy);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:620px;margin:0 auto;padding:20px 18px 40px;min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;min-height:28px}
+.brand{font-family:'DM Serif Display',Georgia,serif;font-size:20px;letter-spacing:.3px}
+.back{background:none;border:0;color:var(--muted);font:500 14px Inter,sans-serif;cursor:pointer;padding:6px 0}
+.back[hidden]{display:none}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar>i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s}
+.count{font-size:12px;color:var(--muted);margin-bottom:18px;min-height:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 20px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#9A7400;margin-bottom:10px}
+h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;margin:0 0 14px}
+h2{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:23px;line-height:1.3;margin:0 0 12px}
+p{line-height:1.55;margin:0 0 12px}
+.sit{font-size:15px;color:#3B4456;line-height:1.55;margin-bottom:14px}
+.q{font-size:18px;font-weight:600;line-height:1.45;margin:0 0 18px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 14px;font:500 15px/1.4 Inter,sans-serif;color:var(--navy);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:#CFC8B8}
+.opt.sel{border-color:var(--gold);background:#FFF8E1}
+.opt .n{flex:0 0 30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.opt.sel .n{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.btn{display:inline-block;width:100%;background:var(--navy);color:#fff;border:0;border-radius:12px;padding:15px 18px;font:600 16px Inter,sans-serif;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.45;cursor:default}
+.hint{font-size:13px;color:var(--muted);line-height:1.5}
+label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=text],input[type=email]{width:100%;padding:13px 12px;border:1.5px solid var(--line);border-radius:10px;font:16px Inter,sans-serif;color:var(--navy);background:#fff}
+input:focus{outline:none;border-color:var(--gold)}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:14px;line-height:1.5}
+.check input{margin-top:3px;width:18px;height:18px;accent-color:var(--navy)}
+.err{color:var(--err);font-size:14px;margin-top:10px;min-height:18px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+a{color:var(--navy)}
+pre{white-space:pre-wrap;word-break:break-word;font-size:11px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;max-height:60vh;overflow:auto}
+.list{margin:0 0 14px;padding-left:18px;line-height:1.6}
+</style>
 </head>
 <body>
-  <header class="nav">
-    <div class="nav-logo">
-      <div class="logo-dots">
-        <span></span><span></span><span></span>
-        <span></span><span></span><span></span>
-      </div>
-      6Heroes
-    </div>
-    <span class="nav-tagline">Dein Heldenprofil</span>
-  </header>
-  <div class="form-wrap">
-    <iframe
-      data-tally-src="https://tally.so/r/J90ZAR?transparentBackground=1"
-      width="100%" height="100%" frameborder="0"
-      marginheight="0" marginwidth="0"
-      title="6Heroes Assessment"></iframe>
-  </div>
+<div class="wrap">
+  <div class="top"><div class="brand">6Heroes</div><button class="back" id="back" hidden>Zurück</button></div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="count" id="count"></div>
+  <div id="view"></div>
+</div>
+<script>
+var WEBHOOK_URL = 'HIER_WEBHOOK_URL_EINFUEGEN';
+var DONE_URL = 'https://6heroes.de/profil-wird-erstellt.html';
+var DATENSCHUTZ_URL = 'https://6heroes.de/datenschutz.html';
+var ASSESSMENT_VERSION = '2.0', TIEBANK_VERSION = '1.1';
+var STORE_KEY = '6h_assessment_v2';
+var ORDER_A = [15,11,7,13,19,12,23,4,16,8,14,22,3,6,20,10,24,2,18,21,9,17,5,1];
+var ORDER_C1 = [47,51,40,48,45,46,43,50,44,41,49,42];
+var ORDER_C2 = [62,53,59,60,56,55,57,58,54,63,52,61];
+var TEST = /[?&]test=1/.test(location.search);
+var DATA = {"likert": [{"q": 1, "hero": "innovator", "text": "Wenn mich ein Thema interessiert, beginne ich häufig, eigene Ideen und Konzepte dazu zu entwickeln, auch wenn mich niemand darum gebeten hat."}, {"q": 2, "hero": "innovator", "text": "Wenn ich sehe, wie etwas bisher gemacht wird, fallen mir häufig Möglichkeiten ein, wie man es grundsätzlich anders oder neu gestalten könnte."}, {"q": 3, "hero": "innovator", "text": "Ich habe Freude daran, mich mit anderen Menschen zusammenzusetzen, Ideen auszutauschen und daraus gemeinsam neue Konzepte zu entwickeln."}, {"q": 4, "hero": "innovator", "text": "Es macht mich zufrieden, eine interessante neue Idee ausgearbeitet zu haben, selbst wenn noch nicht feststeht, ob sie jemals umgesetzt wird."}, {"q": 5, "hero": "commander", "text": "Wenn mehrere gute Möglichkeiten zur Auswahl stehen, übernehme ich gern die Initiative, um gemeinsam eine Entscheidung herbeizuführen."}, {"q": 6, "hero": "commander", "text": "Wenn bei einem gemeinsamen Vorhaben noch vieles offen ist, fällt mir besonders auf, welche Entscheidungen noch getroffen werden müssen, damit es weitergeht."}, {"q": 7, "hero": "commander", "text": "Wenn ich mit anderen etwas organisiere, mache ich gern konkrete Vorschläge, stimme das weitere Vorgehen ab und bringe die nächsten Schritte in Gang."}, {"q": 8, "hero": "commander", "text": "Es gibt mir ein gutes Gefühl, wenn ich eine Entscheidung getroffen habe und dadurch ein Vorhaben sichtbar vorankommt."}, {"q": 9, "hero": "strategist", "text": "Bei größeren Vorhaben beschäftige ich mich gern damit, wie die einzelnen Schritte zusammenhängen und wie man sie sinnvoll aufeinander abstimmen kann."}, {"q": 10, "hero": "strategist", "text": "Wenn ich mich mit einem neuen Vorhaben beschäftige, fallen mir häufig frühzeitig Abhängigkeiten oder mögliche Schwierigkeiten im Ablauf auf."}, {"q": 11, "hero": "strategist", "text": "Bevor ich ein größeres Vorhaben beginne, verschaffe ich mir gern einen Überblick über die Aufgaben, ihre Reihenfolge und die benötigten Ressourcen."}, {"q": 12, "hero": "strategist", "text": "Ich empfinde es als befriedigend, wenn ich für ein kompliziertes Vorhaben einen durchdachten Plan entwickelt habe, bei dem alles sinnvoll ineinandergreift."}, {"q": 13, "hero": "sage", "text": "Wenn mich ein Thema interessiert, möchte ich häufig nicht nur wissen, wie etwas funktioniert, sondern auch verstehen, warum es so funktioniert."}, {"q": 14, "hero": "sage", "text": "Wenn Menschen eine Situation unterschiedlich beurteilen, frage ich mich häufig, welche Erfahrungen, Annahmen oder Hintergründe hinter ihren Sichtweisen stehen."}, {"q": 15, "hero": "sage", "text": "Ich beschäftige mich gern ausführlicher mit den Ursachen und Zusammenhängen eines Problems, auch wenn eine schnelle praktische Lösung bereits möglich wäre."}, {"q": 16, "hero": "sage", "text": "Es ist für mich besonders befriedigend, wenn ich nach längerem Nachdenken plötzlich einen Zusammenhang wirklich verstehe, der mir vorher unklar war."}, {"q": 17, "hero": "guardian", "text": "Es ist mir ein persönliches Anliegen, dass Menschen, die mir wichtig sind, sich sicher fühlen und sich auf meine Unterstützung verlassen können."}, {"q": 18, "hero": "guardian", "text": "Wenn ich mit mehreren Menschen zusammen bin, bemerke ich häufig, wenn sich jemand unwohl fühlt, überfordert wirkt oder Unterstützung gebrauchen könnte."}, {"q": 19, "hero": "guardian", "text": "Wenn wir etwas gemeinsam unternehmen, berücksichtige ich gern die unterschiedlichen Bedürfnisse der Beteiligten und achte darauf, dass niemand unnötig belastet wird."}, {"q": 20, "hero": "guardian", "text": "Es gibt mir ein gutes Gefühl, wenn ich dazu beigetragen habe, dass jemand sich geschützt, unterstützt oder gut aufgehoben fühlt."}, {"q": 21, "hero": "explorer", "text": "Wenn sich mir die Gelegenheit bietet, etwas Unbekanntes selbst auszuprobieren oder zu erleben, nutze ich diese Möglichkeit häufig aus eigenem Interesse."}, {"q": 22, "hero": "explorer", "text": "In einer neuen Umgebung fallen mir häufig interessante Dinge auf, die ich mir gern näher anschauen oder selbst ausprobieren möchte."}, {"q": 23, "hero": "explorer", "text": "Wenn ich ein neues Werkzeug, eine Anwendung oder eine Aktivität kennenlerne, beginne ich gern damit, selbst etwas auszuprobieren und zu schauen, was ich dabei entdecke."}, {"q": 24, "hero": "explorer", "text": "Besonders schöne Momente sind für mich solche, in denen ich etwas selbst entdeckt, erlebt oder zum ersten Mal ausprobiert habe."}], "sit": [{"q": 25, "title": "Ein Sommerfest organisieren", "situation": "Du planst mit Freunden ein Sommerfest. Ihr habt genügend Zeit und verschiedene gute Ideen.", "question": "Was würdest du lieber übernehmen?", "a": "Ich schlage vor, dass wir uns für eine Idee entscheiden. Anschließend würde ich mit den anderen festlegen, wer welche Aufgaben übernimmt.", "b": "Ich würde gern mit den anderen weitere Ideen entwickeln und daraus ein eigenes, vielleicht ungewöhnliches Festkonzept gestalten.", "aHero": "commander", "bHero": "innovator"}, {"q": 26, "title": "Einen Städtetrip planen", "situation": "Du planst mit drei Freunden einen viertägigen Städtetrip. Unterkünfte, Anreisemöglichkeiten und Sehenswürdigkeiten stehen bereits zur Auswahl.", "question": "Was würdest du lieber machen?", "a": "Ich würde konkrete Vorschläge machen, welche Unterkunft und Anreise wir wählen, und mit den anderen verteilen, wer die Buchungen übernimmt.", "b": "Ich würde Reiserouten, Fahrzeiten und Sehenswürdigkeiten vergleichen und daraus einen durchgängigen Ablaufplan für die vier Tage entwickeln.", "aHero": "commander", "bHero": "strategist"}, {"q": 27, "title": "Einer Freundin bei einer Entscheidung helfen", "situation": "Eine Freundin überlegt, ob sie einen Fotografie- oder Töpferkurs besuchen soll. Beide passen gut zu ihr. Sie fragt dich nach deiner Meinung.", "question": "Wie würdest du ihr lieber helfen?", "a": "Ich würde die Unterschiede mit ihr besprechen und ihr anschließend eine konkrete Empfehlung geben, damit sie sich entscheiden kann.", "b": "Ich würde mit ihr herausfinden, was sie an beiden Hobbys reizt und welche Wünsche hinter ihrem Interesse stehen.", "aHero": "commander", "bHero": "sage"}, {"q": 28, "title": "Ein gemeinsamer Gartentag", "situation": "Du organisierst mit Nachbarn einen Gartentag im Innenhof. Ihr möchtet Blumen pflanzen, Beete anlegen und Sitzplätze aufbauen.", "question": "Was würdest du lieber übernehmen?", "a": "Ich würde mit den Nachbarn besprechen, welche Arbeiten ihnen liegen, und darauf achten, dass sich niemand übernimmt und alle Unterstützung bekommen.", "b": "Ich würde mit den anderen entscheiden, welche Arbeiten wir durchführen, und festlegen, wer welche Aufgabe übernimmt.", "aHero": "guardian", "bHero": "commander"}, {"q": 29, "title": "Eine Fahrradtour", "situation": "Du möchtest mit zwei Freunden eine Fahrradtour unternehmen. Es gibt mehrere schöne Ziele und unbekannte Wege in der Umgebung.", "question": "Wie würdest du den Tag lieber gestalten?", "a": "Ich würde einfach losfahren und unterwegs neue Wege, Orte und Aussichtspunkte entdecken.", "b": "Ich würde mit den Freunden ein Ausflugsziel auswählen, eine Route festlegen und anschließend mit der Tour starten.", "aHero": "explorer", "bHero": "commander"}, {"q": 30, "title": "Einen Raum neu gestalten", "situation": "Du möchtest einen Raum neu einrichten, der künftig zum Arbeiten und für deine Hobbys geeignet sein soll.", "question": "Womit würdest du dich lieber beschäftigen?", "a": "Ich würde verschiedene neue Einrichtungsideen entwickeln, ungewöhnliche Kombinationen ausprobieren und eigene Raumkonzepte entwerfen.", "b": "Ich würde den Raum und die Möbel ausmessen, verschiedene Grundrisse erstellen und eine funktionierende Raumaufteilung planen.", "aHero": "innovator", "bHero": "strategist"}, {"q": 31, "title": "Eine Ausstellung über die Zukunft", "situation": "Du besuchst eine Ausstellung über das Leben in zukünftigen Städten. Danach unterhältst du dich mit einem Freund darüber.", "question": "Welches Gespräch würde dich mehr interessieren?", "a": "Gemeinsam eigene Ideen entwickeln, wie Wohnungen, Verkehr und öffentliche Plätze in einer Stadt der Zukunft gestaltet werden könnten.", "b": "Darüber sprechen, warum die vorgestellten Stadtmodelle funktionieren könnten und welche Auswirkungen sie auf das Zusammenleben hätten.", "aHero": "innovator", "bHero": "sage"}, {"q": 32, "title": "Treffen mit Freunden gestalten", "situation": "Du triffst dich regelmäßig mit Freunden. Gemeinsam überlegt ihr, wie ihr eure Treffen künftig gestalten möchtet.", "question": "Womit würdest du dich lieber beschäftigen?", "a": "Ich würde neue Ideen für unsere Treffen entwickeln und daraus ein eigenes Konzept für gemeinsame Abende gestalten.", "b": "Ich würde mit den Freunden besprechen, was jedem wichtig ist, damit sich alle wohlfühlen und niemand zu kurz kommt.", "aHero": "innovator", "bHero": "guardian"}, {"q": 33, "title": "Eine neue KI-Anwendung kennenlernen", "situation": "Du möchtest am Wochenende eine neue KI-Anwendung kennenlernen, mit der sich kleine Programme erstellen lassen.", "question": "Was würde dir mehr Freude machen?", "a": "Ich würde die Anwendung direkt öffnen, Funktionen ausprobieren und entdecken, was sich damit alles machen lässt.", "b": "Ich würde gern mit einem Freund Ideen für neue Anwendungen entwickeln und daraus ein eigenes Konzept entwerfen.", "aHero": "explorer", "bHero": "innovator"}, {"q": 34, "title": "Eine Zimmerpflanze", "situation": "Eine deiner Zimmerpflanzen bekommt gelbe Blätter. Du möchtest herausfinden, wie du sie wieder gesund bekommst.", "question": "Was würde dich mehr interessieren?", "a": "Ich würde Licht, Wasserbedarf und Pflegeanforderungen prüfen und daraus einen passenden Pflegeplan entwickeln.", "b": "Ich würde genauer verstehen wollen, welche Vorgänge in der Pflanze gelbe Blätter verursachen und wie die verschiedenen Faktoren zusammenwirken.", "aHero": "strategist", "bHero": "sage"}, {"q": 35, "title": "Einen Ausflug vorbereiten", "situation": "Du planst mit fünf Freunden einen Tagesausflug in einen Naturpark. Verschiedene geeignete Strecken stehen zur Auswahl.", "question": "Womit würdest du dich lieber beschäftigen?", "a": "Ich würde Wanderwege, Fahrzeiten und Einkehrmöglichkeiten vergleichen und daraus einen sinnvollen Tagesablauf entwickeln.", "b": "Ich würde die unterschiedlichen Wünsche und Bedürfnisse der Freunde berücksichtigen, damit alle einen angenehmen Tag verbringen.", "aHero": "strategist", "bHero": "guardian"}, {"q": 36, "title": "Eine unbekannte Stadt", "situation": "Du bist zum ersten Mal für einen Tag in einer interessanten Stadt und möchtest sie erkunden.", "question": "Wie würdest du vorgehen?", "a": "Ich würde Sehenswürdigkeiten und Wege vergleichen und eine Route mit passenden Zwischenstopps zusammenstellen.", "b": "Ich würde einfach loslaufen und spontan interessante Straßen, Märkte oder Cafés entdecken.", "aHero": "strategist", "bHero": "explorer"}, {"q": 37, "title": "Ein Freund sucht ein Hobby", "situation": "Ein guter Freund möchte ein neues Hobby anfangen und erzählt dir von seinen Überlegungen.", "question": "Worüber würdest du lieber mit ihm sprechen?", "a": "Ich würde genauer verstehen wollen, warum er ein neues Hobby sucht und welche Wünsche oder Erfahrungen dahinterstehen.", "b": "Ich würde ihn dabei unterstützen, etwas zu finden, mit dem er sich wohlfühlt und das ihm persönlich guttut.", "aHero": "sage", "bHero": "guardian"}, {"q": 38, "title": "Ein Keramikkurs", "situation": "Du besuchst einen Keramikkurs. Du kannst etwas über Ton und seine Verarbeitung lernen oder direkt selbst damit arbeiten.", "question": "Was würde dich mehr reizen?", "a": "Ich würde gern verstehen, warum sich verschiedene Tonarten unterschiedlich verhalten und was beim Brennen passiert.", "b": "Ich würde direkt den Ton in die Hände nehmen, verschiedene Formen ausprobieren und sehen, was daraus entsteht.", "aHero": "sage", "bHero": "explorer"}, {"q": 39, "title": "Ein Tag in der Natur", "situation": "Du verbringst mit zwei guten Freunden einen Tag in einem Naturpark mit Seen, Wegen und Aussichtspunkten.", "question": "Worauf würdest du dich besonders freuen?", "a": "Auf einen schönen gemeinsamen Tag, bei dem sich alle wohlfühlen, wir aufeinander Rücksicht nehmen und niemand zu kurz kommt.", "b": "Darauf, unbekannte Wege zu erkunden, neue Orte zu entdecken und unterwegs besondere Eindrücke zu sammeln.", "aHero": "guardian", "bHero": "explorer"}], "c1": [{"q": 40, "hero": "innovator", "dim": "inner", "text": "Wenn ein Vorhaben ins Stocken gerät oder Schwierigkeiten auftreten, beschäftigt mich zunehmend die Frage, ob es nicht eine ganz neue Möglichkeit gibt, das Problem zu lösen."}, {"q": 41, "hero": "innovator", "dim": "action", "text": "Ich beginne häufiger, eigene neue Ideen oder Lösungsansätze zu entwickeln, statt ausschließlich an der bisherigen Vorgehensweise weiterzuarbeiten."}, {"q": 42, "hero": "commander", "dim": "inner", "text": "Wenn die Anforderungen steigen, ertrage ich es nicht, wenn Entscheidungen ungeklärt bleiben und uns daran hindern könnten, voranzukommen."}, {"q": 43, "hero": "commander", "dim": "action", "text": "Ich versuche häufiger, selbst klare Entscheidungen voranzutreiben, damit wir handlungsfähig bleiben und die nächsten Schritte umsetzen können."}, {"q": 44, "hero": "strategist", "dim": "inner", "text": "Wenn immer mehr Aufgaben und Termine zusammenkommen, werde ich zunehmend unruhig, wenn ich nicht mehr überblicke, wie die einzelnen Schritte zusammenpassen."}, {"q": 45, "hero": "strategist", "dim": "action", "text": "Ich versuche häufiger, die anstehenden Aufgaben genau zu planen und in eine sinnvolle Reihenfolge zu bringen, damit ich den Überblick behalte."}, {"q": 46, "hero": "sage", "dim": "inner", "text": "Wenn etwas schiefläuft und die Ursache auf den ersten Blick klar erscheint, beschäftigt mich stärker als sonst die Frage, welche Ursachen und Zusammenhänge tatsächlich dahinterstecken."}, {"q": 47, "hero": "sage", "dim": "action", "text": "Ich gehe einer Erklärung häufiger genauer auf den Grund, auch wenn ich bereits eine plausible Antwort gefunden habe."}, {"q": 48, "hero": "guardian", "dim": "inner", "text": "Wenn sich jemand beschwert oder ein Konflikt entsteht, beschäftigt mich zunehmend die Sorge, dass meine Mitmenschen oder meine Beziehungen zu ihnen dadurch Schaden nehmen könnten."}, {"q": 49, "hero": "guardian", "dim": "action", "text": "Bei Beschwerden oder Konflikten versuche ich häufiger, durch mein Handeln Menschen oder wichtige Beziehungen vor Schaden zu bewahren."}, {"q": 50, "hero": "explorer", "dim": "inner", "text": "Wenn steigende Anforderungen dazu führen, dass immer mehr Abläufe und Aufgaben festgelegt sind, fühle ich mich zunehmend eingeengt."}, {"q": 51, "hero": "explorer", "dim": "action", "text": "Ich suche häufiger nach Gelegenheiten, etwas Neues selbst auszuprobieren oder zu erleben, statt mich ausschließlich an die vorgegebenen Abläufe zu halten."}], "c2": [{"q": 52, "hero": "innovator", "dim": "inner", "text": "Wenn ein Problem trotz längerer Bemühungen bestehen bleibt, lässt mich der Gedanke zunehmend nicht mehr los, dass es dafür eine völlig andere Lösung geben müsste."}, {"q": 53, "hero": "innovator", "dim": "action", "text": "Ich beginne immer häufiger, neue Ideen und Konzepte auszuarbeiten, obwohl ich bereits an einer anderen Lösung arbeite, die noch nicht abgeschlossen ist."}, {"q": 54, "hero": "commander", "dim": "inner", "text": "Wenn über längere Zeit wichtige Entscheidungen von anderen abhängen, werde ich zunehmend unruhig, weil ich kaum Einfluss darauf habe, wie es weitergeht."}, {"q": 55, "hero": "commander", "dim": "action", "text": "Ich versuche häufiger, wichtige Entscheidungen selbst zu übernehmen oder direkt zu beeinflussen, auch wenn andere dafür verantwortlich sind."}, {"q": 56, "hero": "strategist", "dim": "inner", "text": "Wenn trotz sorgfältiger Planung immer wieder neue Schwierigkeiten auftauchen, lassen mich mögliche Fehler oder übersehene Risiken zunehmend schwerer los."}, {"q": 57, "hero": "strategist", "dim": "action", "text": "Ich überprüfe und überarbeite meine Pläne immer wieder, auch wenn die nächsten Schritte eigentlich schon klar sind."}, {"q": 58, "hero": "sage", "dim": "inner", "text": "Wenn ich für eine schwierige Situation keine wirklich schlüssige Erklärung finde, lässt mich die Frage nach den tatsächlichen Ursachen kaum noch los."}, {"q": 59, "hero": "sage", "dim": "action", "text": "Ich beschäftige mich immer wieder mit denselben Fragen und suche nach weiteren Erklärungen, auch wenn ich bereits genügend Informationen habe, um eine erste Einschätzung vorzunehmen."}, {"q": 60, "hero": "guardian", "dim": "inner", "text": "Wenn Konflikte oder Schwierigkeiten über längere Zeit bestehen bleiben, lässt mich die Sorge um betroffene Menschen oder wichtige Beziehungen zunehmend schwerer los."}, {"q": 61, "hero": "guardian", "dim": "action", "text": "Ich stelle häufiger eigene Aufgaben oder Bedürfnisse zurück, um Menschen oder wichtige Beziehungen vor Schaden zu bewahren."}, {"q": 62, "hero": "explorer", "dim": "inner", "text": "Wenn ich über längere Zeit durch feste Aufgaben und Verpflichtungen beansprucht werde, fällt es mir zunehmend schwer, die damit verbundenen Einschränkungen meiner Freiheit auszuhalten."}, {"q": 63, "hero": "explorer", "dim": "action", "text": "Ich unterbreche häufiger eine begonnene Tätigkeit, um etwas Neues auszuprobieren oder zu erleben, auch wenn die ursprüngliche Aufgabe noch nicht abgeschlossen ist."}], "tb1": [{"id": "S1-TB01", "situation": "Ein Vorhaben kommt ins Stocken und mehrere Lösungswege sind möglich.", "question": "Was beschäftigt dich stärker?", "a": "Welche Entscheidung müssen wir jetzt treffen, damit es wieder vorangeht?", "b": "Welche ganz neue Lösung könnten wir entwickeln, damit es wieder vorangeht?", "aHero": "commander", "bHero": "innovator"}, {"id": "S1-TB02", "situation": "Mehrere Aufgaben laufen parallel und zunehmend bleiben Punkte ungeklärt.", "question": "Was ist dir wichtiger?", "a": "Die offenen Entscheidungen zu klären, damit wir wieder handlungsfähig sind.", "b": "Die einzelnen Schritte und Abhängigkeiten zu ordnen, damit wir wieder einen verlässlichen Plan haben.", "aHero": "commander", "bHero": "strategist"}, {"id": "S1-TB03", "situation": "Nach einem unerwarteten Problem liegt bereits eine plausible Erklärung vor.", "question": "Was beschäftigt dich stärker?", "a": "Wie entscheiden wir jetzt, welche Richtung wir einschlagen?", "b": "Welche tieferen Ursachen und Zusammenhänge stecken tatsächlich hinter dem Problem?", "aHero": "commander", "bHero": "sage"}, {"id": "S1-TB04", "situation": "Bei einem gemeinsamen Vorhaben entsteht ein Konflikt. Die Beteiligten werden angespannter.", "question": "Was beschäftigt dich stärker?", "a": "Wie es den Beteiligten damit geht und ob das Miteinander darunter leidet.", "b": "Welche Entscheidung müssen wir treffen, damit wir die Situation klären und weiterkommen?", "aHero": "guardian", "bHero": "commander"}, {"id": "S1-TB05", "situation": "Ein geplanter Ablauf funktioniert nicht wie erwartet. Es stehen verschiedene Alternativen offen.", "question": "Was möchtest du eher?", "a": "Andere Möglichkeiten direkt ausprobieren und selbst erleben, welcher Weg sich eröffnet.", "b": "Eine klare Entscheidung treffen, welchen Weg wir nun einschlagen.", "aHero": "explorer", "bHero": "commander"}, {"id": "S1-TB06", "situation": "Die Vorbereitung eines Vorhabens wird komplizierter als erwartet.", "question": "Was möchtest du eher?", "a": "Ein neues Konzept entwickeln, das andere Möglichkeiten eröffnet.", "b": "Die einzelnen Schritte neu planen, damit alles wieder sinnvoll zusammenpasst.", "aHero": "innovator", "bHero": "strategist"}, {"id": "S1-TB07", "situation": "Eine bisherige Lösung funktioniert zwar, überzeugt dich aber nicht vollständig.", "question": "Was beschäftigt dich stärker?", "a": "Welche neue Lösung könnte ich an ihrer Stelle entwickeln?", "b": "Warum funktioniert die bisherige Lösung so, wie sie funktioniert, und was steckt dahinter?", "aHero": "innovator", "bHero": "sage"}, {"id": "S1-TB08", "situation": "Bei einem gemeinsamen Vorhaben nehmen die Spannungen zwischen den Beteiligten zu.", "question": "Was beschäftigt dich stärker?", "a": "Ob das Miteinander unter den Spannungen leidet und wie es den Einzelnen damit geht.", "b": "Welche neue Idee könnte ich entwickeln, um die Situation anders zu gestalten?", "aHero": "guardian", "bHero": "innovator"}, {"id": "S1-TB09", "situation": "Eine vertraute Vorgehensweise bringt dich nicht weiter. Du kannst dich mit neuen Möglichkeiten beschäftigen.", "question": "Was würde dir eher entsprechen?", "a": "Unbekannte Möglichkeiten direkt ausprobieren und dabei eigene Erfahrungen sammeln.", "b": "Eine ganz neue Idee entwickeln und daraus ein eigenes Lösungskonzept gestalten.", "aHero": "explorer", "bHero": "innovator"}, {"id": "S1-TB10", "situation": "Ein Ablauf funktioniert nicht wie erwartet. Eine erste Erklärung für das Problem liegt vor.", "question": "Was beschäftigt dich stärker?", "a": "Wie kann ich die Schritte und Abhängigkeiten neu planen, damit der Ablauf funktioniert?", "b": "Welche tieferen Ursachen könnten hinter dem Problem stecken?", "aHero": "strategist", "bHero": "sage"}, {"id": "S1-TB11", "situation": "Bei einem gemeinsamen Vorhaben geraten Aufgaben und Erwartungen durcheinander.", "question": "Was ist dir wichtiger?", "a": "Einen verlässlichen Plan zu entwickeln, in dem die einzelnen Aufgaben zusammenpassen.", "b": "Darauf zu achten, wie es den Beteiligten mit dem Durcheinander geht.", "aHero": "strategist", "bHero": "guardian"}, {"id": "S1-TB12", "situation": "Eine unerwartete Änderung bringt deinen bisherigen Plan durcheinander.", "question": "Was möchtest du eher?", "a": "Die neue Situation ordnen und einen passenden Ablauf planen.", "b": "Die neue Situation direkt erkunden und ausprobieren, welche Möglichkeiten sich ergeben.", "aHero": "strategist", "bHero": "explorer"}, {"id": "S1-TB13", "situation": "Jemand äußert Kritik und die Stimmung zwischen den Beteiligten wird angespannter.", "question": "Was beschäftigt dich stärker?", "a": "Welche Gründe und Erfahrungen stecken tatsächlich hinter der Kritik?", "b": "Ob die Kritik das Miteinander zwischen den Beteiligten belastet.", "aHero": "sage", "bHero": "guardian"}, {"id": "S1-TB14", "situation": "Du probierst eine neue Tätigkeit aus, aber sie funktioniert nicht wie erwartet.", "question": "Was möchtest du eher?", "a": "Genauer verstehen, warum es nicht funktioniert und welche Zusammenhänge dahinterstecken.", "b": "Direkt andere Varianten ausprobieren und selbst erleben, was damit möglich ist.", "aHero": "sage", "bHero": "explorer"}, {"id": "S1-TB15", "situation": "Ein gemeinsamer Ausflug entwickelt sich anders als ursprünglich geplant.", "question": "Was beschäftigt dich stärker?", "a": "Dass sich alle Beteiligten weiterhin sicher und gut aufgehoben fühlen.", "b": "Was ich dadurch Neues entdecken oder erleben könnte.", "aHero": "guardian", "bHero": "explorer"}], "tb2": [{"id": "S2-TB01", "situation": "Ein Vorhaben kommt seit längerer Zeit kaum voran, obwohl bereits verschiedene Wege ausprobiert wurden.", "question": "Was lässt dich schwerer los?", "a": "Der Gedanke, dass wir eine grundsätzlich neue Lösung entwickeln müssten.", "b": "Der Gedanke, dass wir endlich eine klare Entscheidung treffen und die Richtung bestimmen müssten.", "aHero": "innovator", "bHero": "commander"}, {"id": "S2-TB02", "situation": "Viele offene Aufgaben und wiederkehrende Schwierigkeiten belasten dich bereits seit Wochen.", "question": "Was versuchst du zunehmend?", "a": "Abläufe und Abhängigkeiten genauer durchzuplanen, um wieder Verlässlichkeit zu gewinnen.", "b": "Die entscheidenden Punkte selbst festzulegen, um wieder Einfluss auf die Entwicklung zu gewinnen.", "aHero": "strategist", "bHero": "commander"}, {"id": "S2-TB03", "situation": "Eine Schwierigkeit bleibt über längere Zeit bestehen. Erste Erklärungen liegen vor, aber eine endgültige Lösung fehlt.", "question": "Was lässt dich schwerer los?", "a": "Dass ich die tatsächlichen Ursachen noch nicht vollständig verstanden habe.", "b": "Dass noch keine klare Entscheidung getroffen wurde, wie es weitergehen soll.", "aHero": "sage", "bHero": "commander"}, {"id": "S2-TB04", "situation": "Ein Konflikt zieht sich über Wochen und betrifft mehrere Menschen.", "question": "Was wird dir zunehmend wichtiger?", "a": "Eine verbindliche Entscheidung herbeizuführen, damit die Situation wieder vorankommt.", "b": "Ob das Miteinander zwischen den Beteiligten dauerhaft Schaden nimmt.", "aHero": "commander", "bHero": "guardian"}, {"id": "S2-TB05", "situation": "Wiederkehrende Vorgaben und Verpflichtungen schränken dich über längere Zeit ein.", "question": "Was fehlt dir stärker?", "a": "Selbst entscheiden zu können, in welche Richtung es weitergeht.", "b": "Freiraum zu haben, um neue Dinge unmittelbar selbst auszuprobieren und zu erleben.", "aHero": "commander", "bHero": "explorer"}, {"id": "S2-TB06", "situation": "Ein Vorhaben muss über längere Zeit immer wieder angepasst werden, weil neue Schwierigkeiten auftauchen.", "question": "Was beschäftigt dich zunehmend?", "a": "Wie ich die Abläufe so planen kann, dass die einzelnen Schritte endlich zuverlässig ineinandergreifen.", "b": "Welches völlig neue Gesamtkonzept ich entwickeln könnte, um einen anderen Weg einzuschlagen.", "aHero": "strategist", "bHero": "innovator"}, {"id": "S2-TB07", "situation": "Eine bisherige Vorgehensweise liefert auch nach längeren Bemühungen nicht das gewünschte Ergebnis.", "question": "Was lässt dich schwerer los?", "a": "Welche tieferen Ursachen und Zusammenhänge ich möglicherweise noch nicht verstanden habe.", "b": "Welche grundsätzlich neue Lösung ich stattdessen entwickeln könnte.", "aHero": "sage", "bHero": "innovator"}, {"id": "S2-TB08", "situation": "Wiederkehrende Konflikte erschweren seit längerer Zeit ein gemeinsames Vorhaben.", "question": "Was wird für dich zunehmend wichtiger?", "a": "Eine neue Idee zu entwickeln, die ganz andere Lösungswege eröffnet.", "b": "Ob die anhaltenden Konflikte das Miteinander zwischen den Beteiligten belasten.", "aHero": "innovator", "bHero": "guardian"}, {"id": "S2-TB09", "situation": "Dein Alltag wird seit Wochen von ähnlichen Aufgaben und wiederkehrenden Schwierigkeiten geprägt.", "question": "Was fehlt dir zunehmend?", "a": "Raum, um eigene neue Ideen und Konzepte zu entwickeln.", "b": "Raum, um etwas Unbekanntes unmittelbar selbst zu erleben und auszuprobieren.", "aHero": "innovator", "bHero": "explorer"}, {"id": "S2-TB10", "situation": "Ein komplizierter Ablauf funktioniert trotz mehrerer Korrekturen weiterhin nicht zufriedenstellend.", "question": "Was beschäftigt dich stärker?", "a": "Welche tieferen Ursachen und Zusammenhänge ich noch nicht vollständig verstanden habe.", "b": "Wie ich einen verlässlichen Plan entwickeln kann, bei dem alle Schritte und Abhängigkeiten zusammenpassen.", "aHero": "sage", "bHero": "strategist"}, {"id": "S2-TB11", "situation": "Bei einem gemeinsamen Vorhaben bestehen seit längerer Zeit Unsicherheiten und Schwierigkeiten.", "question": "Was beschäftigt dich zunehmend?", "a": "Wie es den Beteiligten geht und ob ihr Vertrauen zueinander leidet.", "b": "Wie ich Risiken und Abhängigkeiten durch eine genauere Planung beherrschbar machen kann.", "aHero": "guardian", "bHero": "strategist"}, {"id": "S2-TB12", "situation": "Dein Alltag ist seit längerer Zeit schwer vorhersehbar. Gewohnte Abläufe funktionieren nicht zuverlässig.", "question": "Was fehlt dir stärker?", "a": "Die Freiheit, neue Möglichkeiten unmittelbar selbst zu erkunden und auszuprobieren.", "b": "Ein durchdachter Plan, der mir Orientierung und Verlässlichkeit gibt.", "aHero": "explorer", "bHero": "strategist"}, {"id": "S2-TB13", "situation": "Ein zwischenmenschlicher Konflikt bleibt trotz mehrerer Gespräche bestehen.", "question": "Was beschäftigt dich zunehmend?", "a": "Wie es den Beteiligten geht und ob das Miteinander weiter darunter leidet.", "b": "Welche tieferen Gründe den Konflikt immer wieder auslösen und was tatsächlich dahintersteckt.", "aHero": "guardian", "bHero": "sage"}, {"id": "S2-TB14", "situation": "Eine neue Tätigkeit funktioniert auch nach mehreren Versuchen nicht so, wie du es dir vorgestellt hast.", "question": "Was möchtest du zunehmend?", "a": "Andere Möglichkeiten unmittelbar ausprobieren und dabei eigene Erfahrungen sammeln.", "b": "Die Ursachen und Zusammenhänge genau verstehen, um zu begreifen, warum es nicht funktioniert.", "aHero": "explorer", "bHero": "sage"}, {"id": "S2-TB15", "situation": "Dein Alltag wird seit Wochen von vielen Verpflichtungen bestimmt. Für andere Dinge bleibt wenig Raum.", "question": "Was lässt dich schwerer los?", "a": "Der Gedanke, dass ich kaum noch Möglichkeiten habe, etwas Neues selbst zu entdecken und zu erleben.", "b": "Der Gedanke, dass wichtige Menschen oder Beziehungen durch die anhaltende Belastung zu kurz kommen könnten.", "aHero": "explorer", "bHero": "guardian"}]};
+</script>
+<script>
+/* 6Heroes Assessment 2.0 - Scoring (Pilotgewichtung 70/30, Stress 3:2, TieBank V1.1) */
+var HEROES = ['innovator','commander','strategist','sage','guardian','explorer'];
+var HERO_LABEL = {innovator:'Innovator',commander:'Commander',strategist:'Strategist',sage:'Sage',guardian:'Guardian',explorer:'Explorer'};
+var SCORING_VERSION = '2.0';
+var SKIP_TB_WHEN_LOW_SIGNAL = true;
+
+function pairKey(a, b){ return [a, b].sort().join('|'); }
+
+/* Direkter Paarvergleich aus Teil B: liefert Sieger-Held oder null */
+function sitWinner(DATA, answers, a, b){
+  var k = pairKey(a, b);
+  for (var i = 0; i < DATA.sit.length; i++){
+    var s = DATA.sit[i];
+    if (pairKey(s.aHero, s.bHero) === k){
+      var v = answers['q' + s.q];
+      if (v === 'A') return s.aHero;
+      if (v === 'B') return s.bHero;
+      return null;
+    }
+  }
+  return null;
+}
+
+function tbForPair(bank, a, b){
+  var k = pairKey(a, b);
+  for (var i = 0; i < bank.length; i++) if (pairKey(bank[i].aHero, bank[i].bHero) === k) return bank[i];
+  return null;
+}
+
+function allPairs(list){
+  var p = [];
+  for (var i = 0; i < list.length; i++) for (var j = i + 1; j < list.length; j++) p.push([list[i], list[j]]);
+  return p;
+}
+
+/* SHA-256 -> gleichverteilter Index (Rejection Sampling auf 32 Bit) */
+async function sha256Bytes(str){
+  var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return new Uint8Array(buf);
+}
+async function hashPick(responseId, position, candidates){
+  var c = candidates.slice().sort();
+  var n = c.length;
+  var limit = Math.floor(4294967296 / n) * n;
+  for (var round = 0; round < 50; round++){
+    var b = await sha256Bytes(responseId + '|' + position + '|' + c.join(',') + '|' + SCORING_VERSION + (round ? '|' + round : ''));
+    for (var off = 0; off + 4 <= b.length; off += 4){
+      var v = ((b[off] << 24) >>> 0) + (b[off+1] << 16) + (b[off+2] << 8) + b[off+3];
+      if (v < limit) return c[v % n];
+    }
+  }
+  return c[0];
+}
+
+/* ---------- Stress ---------- */
+function stressScores(items, answers){
+  var s = {};
+  HEROES.forEach(function(h){ s[h] = {inner:0, action:0, score:0}; });
+  items.forEach(function(it){
+    var v = Number(answers['q' + it.q]) || 0;
+    s[it.hero][it.dim] = v;
+  });
+  HEROES.forEach(function(h){ s[h].score = 3 * s[h].inner + 2 * s[h].action; });
+  return s;
+}
+
+/* Liefert Zwischenstand einer Stressphase: benoetigte Tiebreaker-Fragen und ggf. Ergebnis */
+function stressState(items, answers, bank, tbAnswers){
+  var sc = stressScores(items, answers);
+  var low = items.every(function(it){ return Number(answers['q' + it.q]) <= 3; });
+  var max = Math.max.apply(null, HEROES.map(function(h){ return sc[h].score; }));
+  var c = HEROES.filter(function(h){ return sc[h].score === max; });
+  var step = 'score';
+  if (c.length > 1){
+    var mi = Math.max.apply(null, c.map(function(h){ return sc[h].inner; }));
+    c = c.filter(function(h){ return sc[h].inner === mi; });
+    step = 'inner';
+  }
+  var st = {scores:sc, low:low, candidates:c.slice(), needed:[], winner:null, residual:null, wins:null, method:step};
+  if (c.length === 1){ st.winner = c[0]; return st; }
+  if (low && SKIP_TB_WHEN_LOW_SIGNAL){ st.residual = c; st.method = 'low_signal'; return st; }
+  st.needed = allPairs(c).map(function(p){ return tbForPair(bank, p[0], p[1]); });
+  var open = st.needed.filter(function(q){ return !tbAnswers[q.id]; });
+  if (open.length){ st.method = 'pending'; return st; }
+  var wins = {}; c.forEach(function(h){ wins[h] = 0; });
+  st.needed.forEach(function(q){ var w = tbAnswers[q.id] === 'A' ? q.aHero : q.bHero; wins[w]++; });
+  var mw = Math.max.apply(null, c.map(function(h){ return wins[h]; }));
+  var top = c.filter(function(h){ return wins[h] === mw; });
+  st.wins = wins; st.method = 'tiebreaker';
+  if (top.length === 1) st.winner = top[0]; else st.residual = top;
+  return st;
+}
+
+/* ---------- Basis / Zweit ---------- */
+function baseScores(DATA, answers){
+  var s = {};
+  HEROES.forEach(function(h){ s[h] = {likert:0, wins:0}; });
+  DATA.likert.forEach(function(it){ s[it.hero].likert += Number(answers['q' + it.q]) || 0; });
+  DATA.sit.forEach(function(it){
+    var v = answers['q' + it.q];
+    if (v === 'A') s[it.aHero].wins++; else if (v === 'B') s[it.bHero].wins++;
+  });
+  HEROES.forEach(function(h){
+    var x = s[h];
+    x.key = 35 * (x.likert - 4) + 48 * x.wins;            /* ganzzahlig, gleiche Rangfolge */
+    x.likertIndex = (x.likert - 4) / 16 * 100;
+    x.sitIndex = x.wins / 5 * 100;
+    x.score = Math.round((0.7 * x.likertIndex + 0.3 * x.sitIndex) * 10) / 10;
+  });
+  return s;
+}
+
+function groupBy(list, fn){
+  var g = [], m = {};
+  list.forEach(function(h){ var k = fn(h); if (!(k in m)){ m[k] = g.length; g.push({k:k, items:[]}); } g[m[k]].items.push(h); });
+  g.sort(function(a, b){ return b.k - a.k; });
+  return g.map(function(x){ return x.items; });
+}
+
+async function baseRanking(DATA, answers, responseId, log){
+  var sc = baseScores(DATA, answers);
+  var order = [], weak = false;
+  var groups = groupBy(HEROES, function(h){ return sc[h].key; });
+  for (var gi = 0; gi < groups.length; gi++){
+    var g = groups[gi];
+    var pos = order.length;
+    if (g.length === 1 || pos >= 2){ order = order.concat(g.slice().sort()); continue; }
+    /* Gleichstand auf relevanter Position: direkte Vergleiche aus Q25-Q39 */
+    var w = {}; g.forEach(function(h){ w[h] = 0; });
+    allPairs(g).forEach(function(p){ var x = sitWinner(DATA, answers, p[0], p[1]); if (x) w[x]++; });
+    var sub = groupBy(g, function(h){ return w[h]; });
+    var entry = {position:'basis_zweit', candidates:g.slice().sort(), method:'direkt', wins:w};
+    for (var si = 0; si < sub.length; si++){
+      var sg = sub[si], p2 = order.length;
+      if (sg.length === 1 || p2 >= 2){ order = order.concat(sg.slice().sort()); continue; }
+      weak = true;
+      var rest = sg.slice();
+      var posNames = ['basis', 'zweit'];
+      while (rest.length && order.length < 2){
+        var name = posNames[order.length];
+        var pick = await hashPick(responseId, name, rest);
+        log.push({position:name, candidates:rest.slice().sort(), method:'hash', result:HERO_LABEL[pick]});
+        order.push(pick);
+        rest = rest.filter(function(h){ return h !== pick; });
+      }
+      order = order.concat(rest.sort());
+    }
+    entry.result = order.slice(pos, Math.min(order.length, 2)).map(function(h){ return HERO_LABEL[h]; });
+    log.push(entry);
+  }
+  return {scores:sc, order:order, weak:weak};
+}
+
+/* ---------- Gesamtauswertung ---------- */
+async function evaluate(DATA, answers, tbAnswers, responseId){
+  var log = [];
+  var base = await baseRanking(DATA, answers, responseId, log);
+  async function phase(name, items, bank){
+    var st = stressState(items, answers, bank, tbAnswers);
+    var hero = st.winner, weak = st.low;
+    if (st.candidates.length > 1){
+      var e = {position:name, candidates:st.candidates.slice().sort(), method:st.method};
+      if (st.wins) e.wins = st.wins;
+      if (!hero){
+        hero = await hashPick(responseId, name, st.residual);
+        weak = true;
+        e.residual = st.residual.slice().sort();
+        e.method_final = 'hash';
+      }
+      e.result = HERO_LABEL[hero];
+      log.push(e);
+    }
+    return {hero:hero, weak:weak, scores:st.scores, low:st.low};
+  }
+  var s1 = await phase('stress1', DATA.c1, DATA.tb1);
+  var s2 = await phase('stress2', DATA.c2, DATA.tb2);
+  return {base:base, s1:s1, s2:s2, log:log,
+          basis:base.order[0], zweit:base.order[1], stress1:s1.hero, stress2:s2.hero};
+}
+
+if (typeof module !== 'undefined') module.exports = {evaluate:evaluate, stressState:stressState, baseScores:baseScores, hashPick:hashPick, HEROES:HEROES};
+
+</script>
+<script>
+(function(){
+var LIKERT = ['Trifft überhaupt nicht zu','Trifft eher nicht zu','Teils, teils','Trifft eher zu','Trifft vollständig zu'];
+var CHANGE = ['Deutlich seltener als sonst','Etwas seltener als sonst','Unverändert','Etwas häufiger als sonst','Deutlich häufiger als sonst'];
+var byQ = {};
+['likert','sit','c1','c2'].forEach(function(k){ DATA[k].forEach(function(x){ byQ[x.q] = x; }); });
+
+function uuid(){
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  var b = crypto.getRandomValues(new Uint8Array(16)); b[6] = (b[6] & 15) | 64; b[8] = (b[8] & 63) | 128;
+  var h = Array.prototype.map.call(b, function(x){ return ('0' + x.toString(16)).slice(-2); }).join('');
+  return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
+}
+var S = load() || {id:uuid(), answers:{}, tb:{}, step:'intro', started:new Date().toISOString()};
+function load(){ try { var x = sessionStorage.getItem(STORE_KEY); return x ? JSON.parse(x) : null; } catch(e){ return null; } }
+function save(){ try { sessionStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e){} }
+function clearStore(){ try { sessionStorage.removeItem(STORE_KEY); } catch(e){} }
+
+function allAnswered(list){ return list.every(function(it){ return S.answers['q' + it.q] != null; }); }
+
+function sequence(){
+  var s = ['intro','introA'];
+  ORDER_A.forEach(function(q){ s.push('q' + q); });
+  s.push('introB'); DATA.sit.forEach(function(x){ s.push('q' + x.q); });
+  s.push('introC1'); ORDER_C1.forEach(function(q){ s.push('q' + q); });
+  if (allAnswered(DATA.c1)){
+    var st1 = stressState(DATA.c1, S.answers, DATA.tb1, S.tb);
+    if (st1.needed.length){ s.push('introTB1'); st1.needed.forEach(function(q){ s.push('tb:' + q.id); }); }
+  }
+  s.push('introC2'); ORDER_C2.forEach(function(q){ s.push('q' + q); });
+  if (allAnswered(DATA.c2)){
+    var st2 = stressState(DATA.c2, S.answers, DATA.tb2, S.tb);
+    if (st2.needed.length){ s.push('introTB2'); st2.needed.forEach(function(q){ s.push('tb:' + q.id); }); }
+  }
+  s.push('final');
+  return s;
+}
+function tbById(id){ return DATA.tb1.concat(DATA.tb2).filter(function(q){ return q.id === id; })[0]; }
+function isAnswered(key){
+  if (key.indexOf('tb:') === 0) return !!S.tb[key.slice(3)];
+  if (/^q\d+$/.test(key)) return S.answers[key] != null;
+  return true;
+}
+
+var view = document.getElementById('view');
+function esc(t){ return String(t).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+function progress(seq, idx){
+  var qs = seq.filter(function(k){ return k.indexOf('tb:') === 0 || /^q\d+$/.test(k); });
+  var done = qs.filter(isAnswered).length;
+  document.getElementById('bar').style.width = Math.round(done / qs.length * 100) + '%';
+  var pos = qs.indexOf(seq[idx]);
+  document.getElementById('count').textContent = pos >= 0 ? ('Frage ' + (pos + 1) + ' von ' + qs.length) : '';
+  document.getElementById('back').hidden = idx === 0 || S.step === 'sending';
+}
+
+function go(key){ S.step = key; save(); render(); window.scrollTo(0, 0); }
+function next(){
+  var seq = sequence(), i = seq.indexOf(S.step);
+  go(seq[Math.min(i + 1, seq.length - 1)]);
+}
+document.getElementById('back').onclick = function(){
+  var seq = sequence(), i = seq.indexOf(S.step);
+  if (i > 0) go(seq[i - 1]);
+};
+
+function introCard(kicker, title, paras, btn){
+  view.innerHTML = '<div class="card"><div class="kicker">' + esc(kicker) + '</div><h1>' + esc(title) + '</h1>' +
+    paras.map(function(p){ return '<p>' + p + '</p>'; }).join('') +
+    '<button class="btn" id="nx">' + esc(btn || 'Weiter') + '</button></div>';
+  document.getElementById('nx').onclick = next;
+}
+
+function scaleCard(kicker, sitText, qText, labels, current, onPick){
+  var h = '<div class="card"><div class="kicker">' + esc(kicker) + '</div>' +
+    (sitText ? '<div class="sit">' + esc(sitText) + '</div>' : '') +
+    '<div class="q">' + esc(qText) + '</div><div class="opts">';
+  labels.forEach(function(l, i){
+    var val = l.v;
+    h += '<button class="opt' + (String(current) === String(val) ? ' sel' : '') + '" data-v="' + esc(val) + '"><span class="n">' + esc(l.n) + '</span><span>' + esc(l.t) + '</span></button>';
+  });
+  view.innerHTML = h + '</div></div>';
+  Array.prototype.forEach.call(view.querySelectorAll('.opt'), function(b){
+    b.onclick = function(){
+      Array.prototype.forEach.call(view.querySelectorAll('.opt'), function(x){ x.classList.remove('sel'); });
+      b.classList.add('sel');
+      var v = b.getAttribute('data-v');
+      if (view.getAttribute('data-lock')) return; view.setAttribute('data-lock','1');
+      setTimeout(function(){ view.removeAttribute('data-lock'); onPick(v); }, 180);
+    };
+  });
+}
+
+function render(){
+  var seq = sequence();
+  if (seq.indexOf(S.step) < 0 && S.step !== 'sending') S.step = firstOpen(seq);
+  var idx = seq.indexOf(S.step);
+  progress(seq, idx);
+  var k = S.step;
+  if (k === 'intro') return introCard('Assessment', 'Finde heraus, was dich antreibt.', [
+      'Du beantwortest 63 kurze Fragen. Das dauert etwa 12 bis 15 Minuten.',
+      'Es gibt keine richtigen oder falschen Antworten. Antworte so, wie du wirklich bist, nicht wie du gern wärst.',
+      'Am Ende gibst du deinen Vornamen und deine E-Mail-Adresse an. Danach bekommst du eine E-Mail, mit der du dein Profil öffnest.'
+    ].concat(TEST ? ['<button class="btn" id="fill" style="background:#9A7400">Test: zufällig ausfüllen</button>'] : []), 'Los geht\'s') , testHook();
+  if (k === 'introA') return introCard('Teil 1 von 3', 'Deine natürlichen Verhaltensweisen', [esc('Die folgenden Aussagen beschreiben unterschiedliche Arten, wie Menschen denken, handeln und sich mit Dingen beschäftigen. Gib an, wie sehr die jeweilige Aussage auf dich persönlich zutrifft.'), esc('Denke dabei an dein typisches Verhalten im Alltag, wenn du dich nicht außergewöhnlich unter Druck fühlst.')]);
+  if (k === 'introB') return introCard('Teil 2 von 3', 'Wie würdest du vorgehen?', [esc('Stell dir die folgenden Alltagssituationen vor. Du kannst jeweils zwischen zwei sinnvollen Vorgehensweisen wählen. Was würdest du persönlich lieber tun?'), esc('Auch wenn dir beide Möglichkeiten gefallen, entscheide dich bitte für eine.')]);
+  if (k === 'introC1') return introCard('Teil 3 von 3', 'Wenn die Anforderungen steigen', [esc('Denke an Situationen, in denen mehrere Anforderungen gleichzeitig zunehmen. Du merkst, dass du angespannter wirst, kannst deinen Alltag aber noch weitgehend bewältigen.'), esc('Wie verändern sich die folgenden Gedanken, Gefühle und Verhaltensweisen gegenüber deinem normalen Zustand?')]);
+  if (k === 'introC2') return introCard('Teil 3 von 3', 'Wenn die Belastung anhält', [esc('Denke nun an Phasen, in denen du über längere Zeit stark gefordert bist. Die Belastung hält an, und deine gewohnten Strategien helfen dir nicht mehr so gut wie sonst.'), esc('Wie verändern sich die folgenden Gedanken, Gefühle und Verhaltensweisen gegenüber deinem normalen Zustand?')]);
+  if (k === 'introTB1') return introCard('Kurze Zusatzfrage', 'Damit dein Ergebnis eindeutig wird', [esc('Zwei oder mehr Antworten lagen bei dir gleichauf. Mit wenigen Zusatzfragen können wir das klären.'), esc('Denke an Situationen, in denen die Anforderungen steigen und du angespannter wirst, sie aber noch weitgehend bewältigen kannst. Welche der beiden inneren Reaktionen trifft eher auf dich zu? Entscheide dich bitte für eine, auch wenn du beide nachvollziehen kannst.')]);
+  if (k === 'introTB2') return introCard('Kurze Zusatzfrage', 'Damit dein Ergebnis eindeutig wird', [esc('Auch hier lagen Antworten gleichauf. Mit wenigen Zusatzfragen können wir das klären.'), esc('Denke an Phasen, in denen du über längere Zeit stark belastet bist und deine gewohnten Vorgehensweisen nicht mehr so gut helfen. Welche der beiden inneren Reaktionen wird in solchen Phasen bei dir stärker?')]);
+  if (k === 'final') return renderFinal();
+  if (k === 'sending') return renderSending();
+  if (k.indexOf('tb:') === 0){
+    var tq = tbById(k.slice(3));
+    return scaleCard('Zusatzfrage', tq.situation, tq.question, [{v:'A',n:'A',t:tq.a},{v:'B',n:'B',t:tq.b}], S.tb[tq.id], function(v){ S.tb[tq.id] = v; next(); });
+  }
+  var q = byQ[+k.slice(1)];
+  if (q.a){
+    return scaleCard(q.title, q.situation, q.question, [{v:'A',n:'A',t:q.a},{v:'B',n:'B',t:q.b}], S.answers[k], function(v){ S.answers[k] = v; next(); });
+  }
+  var labels = (q.dim ? CHANGE : LIKERT).map(function(t, i){ return {v:i + 1, n:i + 1, t:t}; });
+  var kick = q.dim ? (q.q <= 51 ? 'Wenn die Anforderungen steigen' : 'Wenn die Belastung anhält') : 'Wie sehr trifft das zu?';
+  scaleCard(kick, '', q.text, labels, S.answers[k], function(v){ S.answers[k] = Number(v); next(); });
+}
+function firstOpen(seq){ for (var i = 0; i < seq.length; i++) if (!isAnswered(seq[i])) return seq[i]; return 'final'; }
+
+function testHook(){
+  var f = document.getElementById('fill'); if (!f) return;
+  f.onclick = function(){
+    DATA.likert.concat(DATA.c1, DATA.c2).forEach(function(it){ S.answers['q' + it.q] = 1 + Math.floor(Math.random() * 5); });
+    DATA.sit.forEach(function(it){ S.answers['q' + it.q] = Math.random() < .5 ? 'A' : 'B'; });
+    S.tb = {}; go(firstOpen(sequence()));
+  };
+}
+
+function renderFinal(){
+  var open = sequence().filter(function(k){ return !isAnswered(k); });
+  if (open.length){ return go(open[0]); }
+  view.innerHTML = '<div class="card"><div class="kicker">Geschafft</div><h1>Fast fertig.</h1>' +
+    '<p>Wohin dürfen wir dir den Link zu deinem Profil schicken?</p>' +
+    '<label class="f" for="vn">Vorname</label><input type="text" id="vn" autocomplete="given-name" maxlength="60" value="' + esc(S.vorname || '') + '">' +
+    '<label class="f" for="em">E-Mail-Adresse</label><input type="email" id="em" autocomplete="email" maxlength="120" value="' + esc(S.email || '') + '">' +
+    '<div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off"></div>' +
+    '<label class="check"><input type="checkbox" id="ds"><span>Ich habe die <a href="' + DATENSCHUTZ_URL + '" target="_blank" rel="noopener noreferrer">Datenschutzhinweise</a> gelesen. Meine Antworten werden ausgewertet, um mein Heldenprofil zu erstellen.</span></label>' +
+    '<div class="err" id="err"></div>' +
+    '<button class="btn" id="send">Profil erstellen</button>' +
+    '<p class="hint" style="margin-top:14px">Wir nutzen deine E-Mail-Adresse nur für dein Profil und die Bestätigung. Kein Newsletter ohne deine ausdrückliche Zustimmung.</p></div>';
+  document.getElementById('send').onclick = submit;
+}
+
+function renderSending(){
+  view.innerHTML = '<div class="card"><div class="kicker">Einen Moment</div><h1>Dein Profil wird erstellt.</h1><p>Das dauert nur wenige Sekunden.</p><div class="err" id="err"></div><div id="retry"></div><div id="dbg"></div></div>';
+}
+
+async function submit(){
+  var vn = document.getElementById('vn').value.trim();
+  var em = document.getElementById('em').value.trim().toLowerCase();
+  var err = document.getElementById('err');
+  if (document.getElementById('website').value) return;
+  if (!vn){ err.textContent = 'Bitte gib deinen Vornamen an.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ err.textContent = 'Bitte prüfe deine E-Mail-Adresse.'; return; }
+  if (!document.getElementById('ds').checked){ err.textContent = 'Bitte bestätige die Datenschutzhinweise.'; return; }
+  S.vorname = vn; S.email = em; save();
+  go('sending');
+  var payload;
+  try { payload = await buildPayload(); }
+  catch(e){ document.getElementById('err').textContent = 'Die Auswertung ist fehlgeschlagen. Bitte lade die Seite neu.'; return; }
+  if (TEST){
+    document.getElementById('dbg').innerHTML = '<p class="hint">Testmodus: nichts wurde gesendet.</p><pre>' + esc(JSON.stringify(payload, null, 2)) + '</pre>';
+    return;
+  }
+  send(payload);
+}
+
+function send(payload){
+  fetch(WEBHOOK_URL, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)})
+    .then(function(r){ if (!r.ok) throw new Error('HTTP ' + r.status); clearStore(); location.replace(DONE_URL); })
+    .catch(function(){
+      document.getElementById('err').textContent = 'Das Senden hat nicht geklappt. Deine Antworten sind noch da.';
+      var r = document.getElementById('retry');
+      r.innerHTML = '<button class="btn" id="again">Erneut senden</button>';
+      document.getElementById('again').onclick = function(){ r.innerHTML = ''; document.getElementById('err').textContent = ''; send(payload); };
+    });
+}
+
+async function buildPayload(){
+  var r = await evaluate(DATA, S.answers, S.tb, S.id);
+  var L = function(h){ return HERO_LABEL[h]; };
+  var scores = {basis:{}, stress1:{}, stress2:{}};
+  HEROES.forEach(function(h){
+    var b = r.base.scores[h];
+    scores.basis[L(h)] = {likert_summe:b.likert, siege:b.wins, likert_index:Math.round(b.likertIndex*10)/10, situations_index:b.sitIndex, score:b.score};
+    scores.stress1[L(h)] = {inneres:r.s1.scores[h].inner, handlung:r.s1.scores[h].action, score:r.s1.scores[h].score};
+    scores.stress2[L(h)] = {inneres:r.s2.scores[h].inner, handlung:r.s2.scores[h].action, score:r.s2.scores[h].score};
+  });
+  scores.basis_rangfolge = r.base.order.map(L);
+  var raw = {};
+  for (var i = 1; i <= 63; i++) raw['q' + i] = S.answers['q' + i];
+  var p = {
+    response_id: S.id,
+    assessment_version: ASSESSMENT_VERSION,
+    tiebank_version: TIEBANK_VERSION,
+    scoring_version: SCORING_VERSION,
+    vorname: S.vorname,
+    email: S.email,
+    datenschutz_bestaetigt: 'ja',
+    datenschutz_zeit: new Date().toISOString(),
+    gestartet: S.started,
+    basisheld: L(r.basis),
+    zweitheld: L(r.zweit),
+    stressheld1: L(r.stress1),
+    stressheld2: L(r.stress2),
+    basis_signal_schwach: r.base.weak ? 'ja' : 'nein',
+    stress1_signal_schwach: r.s1.weak ? 'ja' : 'nein',
+    stress2_signal_schwach: r.s2.weak ? 'ja' : 'nein',
+    scores_json: JSON.stringify(scores),
+    raw_answers_json: JSON.stringify({answers:raw, tiebreaker:S.tb}),
+    tiebreak_log: JSON.stringify(r.log)
+  };
+  HEROES.forEach(function(h){ p['score_' + h] = r.base.scores[h].score; });
+  return p;
+}
+
+if (S.step === 'sending') S.step = 'final';
+render();
+})();
+</script>
 </body>
 </html>
