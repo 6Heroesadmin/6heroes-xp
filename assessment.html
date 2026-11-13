@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex">
 <title>6Heroes Assessment</title>
-<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.3 Webhook V2 -->
+<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.4 Tiebreaker max 3 Helden -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--card:#FFFFFF;--err:#B42318}
@@ -74,6 +74,7 @@ var HEROES = ['innovator','commander','strategist','sage','guardian','explorer']
 var HERO_LABEL = {innovator:'Innovator',commander:'Commander',strategist:'Strategist',sage:'Sage',guardian:'Guardian',explorer:'Explorer'};
 var SCORING_VERSION = '2.0';
 var SKIP_TB_WHEN_LOW_SIGNAL = true;
+var MAX_TB_CANDIDATES = 3;   /* ab 4 gleichstehenden Helden keine Zusatzfragen */
 
 function pairKey(a, b){ return [a, b].sort().join('|'); }
 
@@ -150,6 +151,7 @@ function stressState(items, answers, bank, tbAnswers){
   var st = {scores:sc, low:low, candidates:c.slice(), needed:[], winner:null, residual:null, wins:null, method:step};
   if (c.length === 1){ st.winner = c[0]; return st; }
   if (low && SKIP_TB_WHEN_LOW_SIGNAL){ st.residual = c; st.method = 'low_signal'; return st; }
+  if (c.length > MAX_TB_CANDIDATES){ st.residual = c; st.method = 'zu_viele_kandidaten'; return st; }
   st.needed = allPairs(c).map(function(p){ return tbForPair(bank, p[0], p[1]); });
   var open = st.needed.filter(function(q){ return !tbAnswers[q.id]; });
   if (open.length){ st.method = 'pending'; return st; }
