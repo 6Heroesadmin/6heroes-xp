@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex">
 <title>6Heroes Assessment</title>
-<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.0 -->
+<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.3 Webhook V2 -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--card:#FFFFFF;--err:#B42318}
@@ -56,10 +56,11 @@ pre{white-space:pre-wrap;word-break:break-word;font-size:11px;background:#fff;bo
   <div id="view"></div>
 </div>
 <script>
-var WEBHOOK_URL = 'HIER_WEBHOOK_URL_EINFUEGEN';
+var WEBHOOK_URL = 'https://hook.eu1.make.com/dbyoch76kpvll1mlsldor6ghd9o33y3p';
 var DONE_URL = 'https://6heroes.de/profil-wird-erstellt.html';
 var DATENSCHUTZ_URL = 'https://6heroes.de/datenschutz.html';
 var ASSESSMENT_VERSION = '2.0', TIEBANK_VERSION = '1.1';
+var OPTIN_TEXT = 'Ja, ich möchte motivierende E-Mails und Erfolgs-Benachrichtigungen von 6Heroes erhalten. Abbestellen jederzeit möglich.';
 var STORE_KEY = '6h_assessment_v2';
 var ORDER_A = [15,11,7,13,19,12,23,4,16,8,14,22,3,6,20,10,24,2,18,21,9,17,5,1];
 var ORDER_C1 = [47,51,40,48,45,46,43,50,44,41,49,42];
@@ -395,6 +396,7 @@ function renderFinal(){
     '<label class="f" for="em">E-Mail-Adresse</label><input type="email" id="em" autocomplete="email" maxlength="120" value="' + esc(S.email || '') + '">' +
     '<div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off"></div>' +
     '<label class="check"><input type="checkbox" id="ds"><span>Ich habe die <a href="' + DATENSCHUTZ_URL + '" target="_blank" rel="noopener noreferrer">Datenschutzhinweise</a> gelesen. Meine Antworten werden ausgewertet, um mein Heldenprofil zu erstellen.</span></label>' +
+    '<label class="check"><input type="checkbox" id="optin"' + (S.optin ? ' checked' : '') + '><span>' + esc(OPTIN_TEXT) + ' <span class="hint">(freiwillig)</span></span></label>' +
     '<div class="err" id="err"></div>' +
     '<button class="btn" id="send">Profil erstellen</button>' +
     '<p class="hint" style="margin-top:14px">Wir nutzen deine E-Mail-Adresse nur für dein Profil und die Bestätigung. Kein Newsletter ohne deine ausdrückliche Zustimmung.</p></div>';
@@ -413,7 +415,7 @@ async function submit(){
   if (!vn){ err.textContent = 'Bitte gib deinen Vornamen an.'; return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ err.textContent = 'Bitte prüfe deine E-Mail-Adresse.'; return; }
   if (!document.getElementById('ds').checked){ err.textContent = 'Bitte bestätige die Datenschutzhinweise.'; return; }
-  S.vorname = vn; S.email = em; save();
+  S.vorname = vn; S.email = em; S.optin = document.getElementById('optin').checked; save();
   go('sending');
   var payload;
   try { payload = await buildPayload(); }
@@ -458,6 +460,9 @@ async function buildPayload(){
     email: S.email,
     datenschutz_bestaetigt: 'ja',
     datenschutz_zeit: new Date().toISOString(),
+    email_optin: S.optin ? 'ja' : 'nein',
+    email_optin_text: S.optin ? OPTIN_TEXT : '',
+    email_optin_zeit: S.optin ? new Date().toISOString() : '',
     gestartet: S.started,
     basisheld: L(r.basis),
     zweitheld: L(r.zweit),
@@ -470,7 +475,18 @@ async function buildPayload(){
     raw_answers_json: JSON.stringify({answers:raw, tiebreaker:S.tb}),
     tiebreak_log: JSON.stringify(r.log)
   };
-  HEROES.forEach(function(h){ p['score_' + h] = r.base.scores[h].score; });
+  var legacy = {scores:{}, stress:{}, stress2:{}, version:ASSESSMENT_VERSION};
+  HEROES.forEach(function(h){
+    var b15 = Math.round((1 + r.base.scores[h].score / 25) * 100) / 100;
+    var s1 = Math.round(r.s1.scores[h].score / 5 * 100) / 100;
+    var s2 = Math.round(r.s2.scores[h].score / 5 * 100) / 100;
+    p['score_' + h] = r.base.scores[h].score;   /* 0-100 */
+    p['b15_' + h] = b15;                         /* 1-5, gleiche Rangfolge */
+    p['s1_' + h] = s1;                           /* 1-5 */
+    p['s2_' + h] = s2;                           /* 1-5 */
+    legacy.scores[HERO_LABEL[h]] = b15; legacy.stress[HERO_LABEL[h]] = s1; legacy.stress2[HERO_LABEL[h]] = s2;
+  });
+  p.result_json = JSON.stringify(legacy);
   return p;
 }
 
