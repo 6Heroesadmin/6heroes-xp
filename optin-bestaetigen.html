@@ -6,7 +6,7 @@
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex">
 <title>6Heroes – E-Mails bestätigen</title>
-<!-- Build: 2026-11-12 Double-Opt-in v1.1 Webhook -->
+<!-- Build: 2026-11-12 Double-Opt-in v1.2 Fehlerfall -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--err:#B42318}
@@ -58,6 +58,7 @@ var OPTIN_TEXT = 'Ja, ich möchte motivierende E-Mails und Erfolgs-Benachrichtig
         if (!r.ok) throw new Error();
         var status = ''; try { status = JSON.parse(r.body).status; } catch(e){ status = r.body.trim(); }
         if (status === 'ok') return show('Bestätigt', 'Danke, das hat geklappt.', 'Du bekommst ab jetzt motivierende E-Mails und Erfolgs-Benachrichtigungen. Abmelden kannst du dich jederzeit im Account oder über den Link in jeder E-Mail.', '<a class="btn" href="' + APP_URL + '">Zur App</a>');
+        if (status !== 'unbekannt'){ b.disabled = false; document.getElementById('err').textContent = 'Die Bestätigung konnte gerade nicht verarbeitet werden. Bitte versuche es in ein paar Minuten noch einmal.'; return; }
         show('Schon erledigt', 'Dieser Link ist nicht mehr gültig.', 'Entweder hast du schon bestätigt, oder der Link ist abgelaufen. Du kannst die E-Mails jederzeit im Account aktivieren.', '<a class="btn" href="' + APP_URL + '">Zur App</a>');
       })
       .catch(function(){ b.disabled = false; document.getElementById('err').textContent = 'Das hat nicht geklappt. Bitte versuche es noch einmal.'; });
