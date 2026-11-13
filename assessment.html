@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex">
 <title>6Heroes Assessment</title>
-<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.4 Tiebreaker max 3 Helden -->
+<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.5 ohne Vorname -->
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--card:#FFFFFF;--err:#B42318}
@@ -356,7 +356,7 @@ function render(){
   if (k === 'intro') return introCard('Assessment', 'Finde heraus, was dich antreibt.', [
       'Du beantwortest 63 kurze Fragen. Das dauert etwa 12 bis 15 Minuten.',
       'Es gibt keine richtigen oder falschen Antworten. Antworte so, wie du wirklich bist, nicht wie du gern wärst.',
-      'Am Ende gibst du deinen Vornamen und deine E-Mail-Adresse an. Danach bekommst du eine E-Mail, mit der du dein Profil öffnest.'
+      'Am Ende gibst du deine E-Mail-Adresse an. Danach bekommst du eine E-Mail, mit der du dein Profil öffnest.'
     ].concat(TEST ? ['<button class="btn" id="fill" style="background:#9A7400">Test: zufällig ausfüllen</button>'] : []), 'Los geht\'s') , testHook();
   if (k === 'introA') return introCard('Teil 1 von 3', 'Deine natürlichen Verhaltensweisen', [esc('Die folgenden Aussagen beschreiben unterschiedliche Arten, wie Menschen denken, handeln und sich mit Dingen beschäftigen. Gib an, wie sehr die jeweilige Aussage auf dich persönlich zutrifft.'), esc('Denke dabei an dein typisches Verhalten im Alltag, wenn du dich nicht außergewöhnlich unter Druck fühlst.')]);
   if (k === 'introB') return introCard('Teil 2 von 3', 'Wie würdest du vorgehen?', [esc('Stell dir die folgenden Alltagssituationen vor. Du kannst jeweils zwischen zwei sinnvollen Vorgehensweisen wählen. Was würdest du persönlich lieber tun?'), esc('Auch wenn dir beide Möglichkeiten gefallen, entscheide dich bitte für eine.')]);
@@ -394,7 +394,6 @@ function renderFinal(){
   if (open.length){ return go(open[0]); }
   view.innerHTML = '<div class="card"><div class="kicker">Geschafft</div><h1>Fast fertig.</h1>' +
     '<p>Wohin dürfen wir dir den Link zu deinem Profil schicken?</p>' +
-    '<label class="f" for="vn">Vorname</label><input type="text" id="vn" autocomplete="given-name" maxlength="60" value="' + esc(S.vorname || '') + '">' +
     '<label class="f" for="em">E-Mail-Adresse</label><input type="email" id="em" autocomplete="email" maxlength="120" value="' + esc(S.email || '') + '">' +
     '<div class="hp" aria-hidden="true"><input type="text" id="website" tabindex="-1" autocomplete="off"></div>' +
     '<label class="check"><input type="checkbox" id="ds"><span>Ich habe die <a href="' + DATENSCHUTZ_URL + '" target="_blank" rel="noopener noreferrer">Datenschutzhinweise</a> gelesen. Meine Antworten werden ausgewertet, um mein Heldenprofil zu erstellen.</span></label>' +
@@ -410,14 +409,12 @@ function renderSending(){
 }
 
 async function submit(){
-  var vn = document.getElementById('vn').value.trim();
   var em = document.getElementById('em').value.trim().toLowerCase();
   var err = document.getElementById('err');
   if (document.getElementById('website').value) return;
-  if (!vn){ err.textContent = 'Bitte gib deinen Vornamen an.'; return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em)){ err.textContent = 'Bitte prüfe deine E-Mail-Adresse.'; return; }
   if (!document.getElementById('ds').checked){ err.textContent = 'Bitte bestätige die Datenschutzhinweise.'; return; }
-  S.vorname = vn; S.email = em; S.optin = document.getElementById('optin').checked; save();
+  S.email = em; S.optin = document.getElementById('optin').checked; save();
   go('sending');
   var payload;
   try { payload = await buildPayload(); }
@@ -458,7 +455,7 @@ async function buildPayload(){
     assessment_version: ASSESSMENT_VERSION,
     tiebank_version: TIEBANK_VERSION,
     scoring_version: SCORING_VERSION,
-    vorname: S.vorname,
+    vorname: '',
     email: S.email,
     datenschutz_bestaetigt: 'ja',
     datenschutz_zeit: new Date().toISOString(),
