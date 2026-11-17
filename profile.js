@@ -1,7 +1,11 @@
+/* Build 2026-11-17 v1.1: liefert zusätzlich profilFrei (Users.Profil_Sichtbar = Abo oder Einmalkauf).
+   E-Mail und ID werden für die Airtable-Formel entschärft (Anführungszeichen und Backslash). */
+const q = v => String(v || '').replace(/\\/g, '').replace(/["']/g, '');
+
 exports.handler = async function(event) {
   const qp = event.queryStringParameters || {};
-  const profileId = qp.id;
-  const email = qp.email;
+  const profileId = q(qp.id);
+  const email = q(qp.email).trim();
   const token = process.env.AIRTABLE_TOKEN;
 
   if (!profileId && !email) {
@@ -91,19 +95,22 @@ exports.handler = async function(event) {
       nettos[key] = (num === null || Number.isNaN(num)) ? null : num;
     }
 
-    // 3. Is_Paid_Now aus Users via UserID_LU_Text (unverändert).
+    // 3. Is_Paid_Now und Profil_Sichtbar aus Users via UserID_LU_Text.
     let isPaid = false;
-    const userEmail = f['UserID_LU_Text'] || email;
+    let profilFrei = false;
+    const userEmail = q(f['UserID_LU_Text'] || email);
     if (userEmail) {
       const userFilter = encodeURIComponent(`{UserID}='${userEmail}'`);
-      const usersUrl = `https://api.airtable.com/v0/${BASE_ID}/Users?filterByFormula=${userFilter}&fields[]=Is_Paid_Now`;
+      const usersUrl = `https://api.airtable.com/v0/${BASE_ID}/Users?filterByFormula=${userFilter}&fields[]=Is_Paid_Now&fields[]=Profil_Sichtbar`;
       const usersRes = await fetch(usersUrl, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (usersRes.ok) {
         const usersData = await usersRes.json();
         if (usersData.records && usersData.records.length > 0) {
-          isPaid = !!usersData.records[0].fields['Is_Paid_Now'];
+          const uf = usersData.records[0].fields;
+          isPaid = !!uf['Is_Paid_Now'];
+          profilFrei = isPaid || Number(uf['Profil_Sichtbar']) === 1;
         }
       }
     }
@@ -122,6 +129,7 @@ exports.handler = async function(event) {
         s1_url:      f['S1_URL']    || '#',
         s2_url:      f['S2_URL']    || '#',
         isPaid:      isPaid,
+        profilFrei:  profilFrei,
         upgrade_url: UPGRADE_URL,
       })
     };
