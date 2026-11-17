@@ -146,8 +146,8 @@ function boot(render){
 async function render(){
   const q=new URLSearchParams(location.search);
   let s1=cap((q.get('stress1')||'').trim()), s2=cap((q.get('stress2')||'').trim());
-  let paid=q.get('paid')!=='0';
-  let __d=null;if(!(s1&&s2)||!q.get('basis')){const d=await getProfile();window.__prof=d;if(d&&!(s1&&s2)){s1=s1||cap(d.s1||'');s2=s2||cap(d.s2||'');if(typeof d.isPaid==='boolean')paid=d.isPaid;}}
+  let paid=q.has('profil')?q.get('profil')==='1':q.get('paid')!=='0';
+  let __d=null;if(!(s1&&s2)||!q.get('basis')){const d=await getProfile();window.__prof=d;if(d&&!(s1&&s2)){s1=s1||cap(d.s1||'');s2=s2||cap(d.s2||'');/* 2026-11-17: vollständiges Profil (Abo oder Einmalkauf) über profilFrei, sonst isPaid */if(typeof d.profilFrei==='boolean')paid=d.profilFrei;else if(typeof d.isPaid==='boolean')paid=d.isPaid;}}
   let k1=(s1||'commander').toLowerCase(), k2=(s2||'commander').toLowerCase();
   if(!STRESS.heroes[k1]) k1='commander'; if(!STRESS.heroes[k2]) k2='commander';
   const same=(k1===k2);
