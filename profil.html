@@ -62,7 +62,9 @@ const UPGRADE_URL='https://6heroes.de/preise.html';
 /* Preisseite mit E-Mail und Namen im Fragment (#): geht an keinen Server und in keinen Referer; preise.html entfernt es sofort und füllt damit nur die Ablefy-Bezahlseite vor. */
 function upgradeLink(){const h=new URLSearchParams();const q=new URLSearchParams(location.search);const e=(q.get('email')||'').trim(),v=(q.get('name')||'').trim(),n=(q.get('nachname')||'').trim();if(e)h.set('email',e);if(v)h.set('vorname',v);if(n)h.set('nachname',n);const s=h.toString();return s?UPGRADE_URL+'#'+s:UPGRADE_URL;}
 
-/* Build: 2026-11-12 Mein Profil v1.1 (Preise vorausfuellen; URL-Parameter nachname nur für die Preisseite) */
+/* Build: 2026-11-17 Mein Profil v1.2 (vollständiges Profil auch per Einmalkauf: profilFrei bzw. URL-Parameter profil=1) */
+/* Vollständiges Profil: profilFrei (Abo oder Einmalkauf), sonst Fallback auf isPaid */
+const voll=d=>(d.profilFrei!==undefined&&d.profilFrei!==null)?!!d.profilFrei:!!d.isPaid;
 const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account'};
 const HC={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
 const HL={commander:'Commander',explorer:'Explorer',innovator:'Innovator',guardian:'Guardian',sage:'Sage',strategist:'Strategist'};
@@ -140,7 +142,7 @@ function row(o){
     +(o.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
 }
 function render(d){
-  const b=norm(d.base),z=norm(d.second),s1=norm(d.s1),s2=norm(d.s2),paid=!!d.isPaid;
+  const b=norm(d.base),z=norm(d.second),s1=norm(d.s1),s2=norm(d.s2),paid=voll(d);
   const marks={};[[b,'B'],[z,'Z'],[s1,'S1'],[s2,'S2']].forEach(p=>{(marks[p[0]]=marks[p[0]]||[]).push(p[1])});
   const cn=COMBO_NAME[b+'_'+z]||'Deine Helden-Kombination';
   let h='<div class="head">'+(P.get('hideTitle')==='1'?'<span></span>':'<h1>Mein Profil</h1>')+'<a class="gear" href="'+LINKS.account+'" target="_top" aria-label="Account und Einstellungen">'+GEAR+'</a></div>';
@@ -156,7 +158,7 @@ function render(d){
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
 async function init(){
   const app=document.getElementById('app');
-  let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1'};
+  let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1',profilFrei:P.has('profil')?P.get('profil')==='1':undefined};
   const email=(P.get('email')||'').trim();
   if((!d.base||!d.second||!d.s1||!d.s2)&&email){
     try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(r.ok)d=await r.json();}catch(e){console.warn(e)}

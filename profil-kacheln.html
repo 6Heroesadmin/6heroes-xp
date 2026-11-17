@@ -125,7 +125,8 @@ function stressTile(s1,s2,locked){
 function init(){
   const p=new URLSearchParams(location.search);
   const b=nh(p.get('basis')),z=nh(p.get('zweit')),s1=nh(p.get('stress1')),s2=nh(p.get('stress2'));
-  const paid=p.get('paid')==='1';
+  /* 2026-11-17: profil=1 (Einmalkauf oder Abo) schaltet frei, paid=1 bleibt als Fallback */
+  const paid=p.get('profil')==='1'||(!p.has('profil')&&p.get('paid')==='1');
   const c=document.getElementById('content');
   if(!b||!z||!s1||!s2){c.className='error';c.textContent='Profil konnte nicht geladen werden.';postHeight();return;}
   c.outerHTML='<div class="grid">'

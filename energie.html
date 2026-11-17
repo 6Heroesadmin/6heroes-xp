@@ -409,7 +409,8 @@ function getParams() {
     zweit:   p.get('zweit')   || '',
     stress1: p.get('stress1') || '',
     stress2: p.get('stress2') || '',
-    isPaid:  p.get('paid') === '1',
+    /* 2026-11-17: profil=1 (Einmalkauf oder Abo) schaltet frei, paid=1 bleibt als Fallback */
+    isPaid:  p.has('profil') ? p.get('profil') === '1' : p.get('paid') === '1',
   };
 }
 
@@ -460,7 +461,7 @@ async function loadData() {
       zweit:   d.second || '',
       stress1: d.s1     || '',
       stress2: d.s2     || '',
-      isPaid:  !!d.isPaid,
+      isPaid:  (d.profilFrei !== undefined && d.profilFrei !== null) ? !!d.profilFrei : !!d.isPaid,
     };
   } catch (e) {
     console.warn('Energie-Profil-Fetch fehlgeschlagen:', e);

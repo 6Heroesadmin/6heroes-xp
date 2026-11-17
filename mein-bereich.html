@@ -117,6 +117,9 @@ const COMBO_NAME = {
 const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const LOCK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>';
+/* Build: 2026-11-17 Mein Bereich v1.1: Heldenkarten folgen dem vollständigen Profil, Verlauf/Erfolge/Langzeitprofil/Ziel bleiben Abo */
+/* Vollständiges Profil: profilFrei (Abo oder Einmalkauf), sonst Fallback auf isPaid */
+const voll=d=>(d.profilFrei!==undefined&&d.profilFrei!==null)?!!d.profilFrei:!!d.isPaid;
 const P=new URLSearchParams(location.search);
 const norm=s=>String(s||'').trim().toLowerCase();
 function wheel(m,name){
@@ -146,17 +149,17 @@ function row(o){
     +(o.locked?'<span class="lk">'+LOCK+'<span>Freischalten</span></span>':'<span class="chev"></span>')+'</a>';
 }
 function render(d){
-  const b=norm(d.base),z=norm(d.second),s1=norm(d.s1),s2=norm(d.s2),paid=!!d.isPaid;
+  const b=norm(d.base),z=norm(d.second),s1=norm(d.s1),s2=norm(d.s2),paid=!!d.isPaid,vp=voll(d);
   const marks={};[[b,'B'],[z,'Z'],[s1,'S1'],[s2,'S2']].forEach(p=>{(marks[p[0]]=marks[p[0]]||[]).push(p[1])});
   const cn=COMBO_NAME[b+'_'+z]||'Euer Zusammenspiel';
   const g=(c)=>'linear-gradient(135deg,'+HC[b]+','+HC[z]+')';
   let h='<div class="head">'+(P.get('hideTitle')==='1'?'<span></span>':'<h1>Mein Bereich</h1>')+'<a class="gear" href="'+LINKS.account+'" target="_top" aria-label="Account und Einstellungen">'+GEAR+'</a></div>';
   h+='<div class="wheel">'+wheel(marks,P.get('name'))+'</div>';
   h+='<div class="label">Deine Helden</div><div class="stack">';
-  h+=row({eb:'Dein Basisheld',nm:HL[b],ds:HOOK[b],dot:'B',bg:HC[b],dark:b==='innovator',url:LINKS.basis,free:!paid});
-  h+=row({eb:'Dein Zweitheld',nm:HL[z],ds:HERO_SHORT[HL[z]].line,dot:'Z',bg:HC[z],dark:z==='innovator',url:LINKS.zweit,locked:!paid});
-  h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!paid});
-  h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!paid});
+  h+=row({eb:'Dein Basisheld',nm:HL[b],ds:HOOK[b],dot:'B',bg:HC[b],dark:b==='innovator',url:LINKS.basis,free:!vp});
+  h+=row({eb:'Dein Zweitheld',nm:HL[z],ds:HERO_SHORT[HL[z]].line,dot:'Z',bg:HC[z],dark:z==='innovator',url:LINKS.zweit,locked:!vp});
+  h+=row({eb:'Zusammenspiel',nm:cn,ds:'Wie sich '+HL[b]+' und '+HL[z]+' in dir gegenseitig färben.',dot:'B+Z',bg:g(),url:LINKS.kombi,locked:!vp});
+  h+=row({eb:'Unter Druck',nm:'Deine Stresshelden',ds:'So reagierst du, wenn es eng wird: '+HL[s1]+' zuerst, dann '+HL[s2]+'.',dot:'S',bg:'linear-gradient(135deg,'+HC[s1]+','+HC[s2]+')',url:LINKS.stress,locked:!vp});
   h+='</div>';
   h+='<div class="label">Dein aktuelles Ziel</div><div class="stack" id="zkBox">'+(paid?'<div class="row" style="justify-content:center;color:var(--mute);font-size:14px">Dein Ziel wird geladen …</div>':zielkarte(null,false))+'</div>';
   h+='<div class="label">Dein Verlauf</div><div class="stack">'+row({eb:'',nm:'Was du getan hast',ds:'Deine Heldentaten und Wochenrückblicke der letzten 60 Tage, nach Wochen geordnet.',dot:'V',bg:'#5A6272',url:LINKS.verlauf,locked:!paid})+'</div>';
@@ -218,7 +221,7 @@ async function ladeEntwicklung(email){
 function postHeight(){const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);parent.postMessage({type:'6heroes:setHeight',height:h,frame:__FRAME_ID__},'*');}
 async function init(){
   const app=document.getElementById('app');
-  let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1'};
+  let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1',profilFrei:P.has('profil')?P.get('profil')==='1':undefined};
   const email=(P.get('email')||'').trim();
   if((!d.base||!d.second||!d.s1||!d.s2)&&email){
     try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(r.ok)d=await r.json();}catch(e){console.warn(e)}
