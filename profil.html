@@ -58,11 +58,11 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const PROFILE_FN='/.netlify/functions/profile';
 const APP='https://app.6heroes.de';
-const UPGRADE_URL='https://6heroes.de/preise.html';
+const UPGRADE_URL='https://6heroes.de/preise/';
 /* Preisseite mit E-Mail und Namen im Fragment (#): geht an keinen Server und in keinen Referer; preise.html entfernt es sofort und füllt damit nur die Ablefy-Bezahlseite vor. */
 function upgradeLink(){const h=new URLSearchParams();const q=new URLSearchParams(location.search);const e=(q.get('email')||'').trim(),v=(q.get('name')||'').trim(),n=(q.get('nachname')||'').trim();if(e)h.set('email',e);if(v)h.set('vorname',v);if(n)h.set('nachname',n);const s=h.toString();return s?UPGRADE_URL+'#'+s:UPGRADE_URL;}
 
-/* Build: 2026-11-17 Mein Profil v1.2 (vollständiges Profil auch per Einmalkauf: profilFrei bzw. URL-Parameter profil=1) */
+/* Build: 2026-11-23 Mein Profil v1.3 (k = Seiten_Schluessel an profile.js; Preise-Link /preise/) */
 /* Vollständiges Profil: profilFrei (Abo oder Einmalkauf), sonst Fallback auf isPaid */
 const voll=d=>(d.profilFrei!==undefined&&d.profilFrei!==null)?!!d.profilFrei:!!d.isPaid;
 const LINKS={basis:APP+'/basisheld',zweit:APP+'/zweitheld',kombi:APP+'/kombihelden',stress:APP+'/stresshelden',account:APP+'/account'};
@@ -161,7 +161,7 @@ async function init(){
   let d={base:P.get('basis'),second:P.get('zweit'),s1:P.get('stress1'),s2:P.get('stress2'),isPaid:P.get('paid')==='1',profilFrei:P.has('profil')?P.get('profil')==='1':undefined};
   const email=(P.get('email')||'').trim();
   if((!d.base||!d.second||!d.s1||!d.s2)&&email){
-    try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(r.ok)d=await r.json();}catch(e){console.warn(e)}
+    try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email)+'&k='+encodeURIComponent((new URLSearchParams(location.search)).get('k')||''));if(r.ok)d=await r.json();}catch(e){console.warn(e)}
   }
   if(![d.base,d.second,d.s1,d.s2].every(x=>HC[norm(x)])){app.className='wrap ready error';app.textContent='Profil konnte nicht geladen werden.';postHeight();return;}
   app.innerHTML=render(d);app.classList.add('ready');postHeight();

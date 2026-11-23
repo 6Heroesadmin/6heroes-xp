@@ -115,6 +115,7 @@ const STRESS={"intro":"Jeder Mensch hat zwei Stresshelden – einen für die Ala
 
 
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
+/* Build: 2026-11-23 Stress-Detail: k = Seiten_Schluessel an profile.js */
 const PROFILE_FN='/.netlify/functions/profile';
 const PROFILE_URL='https://app.6heroes.de/mein-profil';
 const HERO_COLOR={commander:'#0B63CE',explorer:'#F0672A',innovator:'#F2B705',guardian:'#1F9D62',sage:'#C0266A',strategist:'#475569'};
@@ -130,7 +131,7 @@ function postHeight(){const h=Math.max(document.body.scrollHeight,document.body.
 async function getProfile(){
   const p=new URLSearchParams(location.search);const email=(p.get('email')||'').trim();
   if(!email) return null;
-  try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email));if(!r.ok) throw new Error(r.status);return await r.json();}
+  try{const r=await fetch(PROFILE_FN+'?email='+encodeURIComponent(email)+'&k='+encodeURIComponent((new URLSearchParams(location.search)).get('k')||''));if(!r.ok) throw new Error(r.status);return await r.json();}
   catch(e){console.warn('Profil-Fetch fehlgeschlagen:',e);return null;}
 }
 function boot(render){
