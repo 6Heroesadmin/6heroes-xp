@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meine Entwicklung – 6Heroes</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts.css">
 <style>
 :root{--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--card:#fff;--bg:#F7F5F0}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -77,7 +75,7 @@ h1{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(
 // URL-Parameter: email, k (Seiten_Schluessel), frame, name, nachname (nur für die Preisseite). Vorschau: ?demo=abo|neu|frei, Diagnose ?debug=1
 var __FRAME_ID__=(new URLSearchParams(location.search)).get('frame')||'';
 const APP='https://app.6heroes.de';
-const UPGRADE_URL='https://6heroes.de/preise.html';
+const UPGRADE_URL='https://6heroes.de/preise/';
 /* Preisseite mit E-Mail und Namen im Fragment (#): geht an keinen Server und in keinen Referer; preise.html entfernt es sofort und füllt damit nur die Ablefy-Bezahlseite vor. */
 function upgradeLink(){const h=new URLSearchParams();const q=new URLSearchParams(location.search);const e=(q.get('email')||'').trim(),v=(q.get('name')||'').trim(),n=(q.get('nachname')||'').trim();if(e)h.set('email',e);if(v)h.set('vorname',v);if(n)h.set('nachname',n);const s=h.toString();return s?UPGRADE_URL+'#'+s:UPGRADE_URL;}
 
