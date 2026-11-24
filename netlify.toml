@@ -8,3 +8,14 @@
   for = "/fonts/*"
   [headers.values]
     Access-Control-Allow-Origin = "https://app.6heroes.de"
+[[redirects]]
+  from = "/"
+  to = "https://6heroes.de/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/index.html"
+  to = "https://6heroes.de/"
+  status = 301
+  force = true
