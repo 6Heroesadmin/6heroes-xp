@@ -70,7 +70,7 @@ details p{padding:0 18px 16px;font-size:14.5px;color:var(--ink)}
 <div class="wrap" id="app"></div>
 <div class="toast" id="toast"></div>
 <script>
-// Build: 2026-11-10 Account v1.1 (Intro, Zurück zu Mein Profil)
+// Build: 2026-11-24 Account v1.2 (Tarif und Laufzeit)
 var LADEN_URL='https://hook.eu1.make.com/of52cgp12ejzxiyqy6othv7yv3huq4g9';
 var AKTION_URL='https://hook.eu1.make.com/ue9m1kpl3xefyxuqsjpnqj7p6fhce8q1';
 var LOAD_TOKEN='20569c7734eae0c5da881e2d0221959e';
@@ -179,11 +179,17 @@ async function aktion(felder){
 // ---------- Bausteine ----------
 function sw(k){var on=D[k]==='ja';return '<button class="sw'+(on?' on':'')+'" data-sw="'+k+'" aria-pressed="'+on+'" aria-label="Schalter"></button>';}
 function offen(k){return D[k]===''?'<em>Noch nicht festgelegt</em>':'';}
+function tarifName(p){p=String(p||'').toLowerCase();if(p.indexOf('12')>-1)return '12 Monate';if(p.indexOf('6 monate')>-1)return '6 Monate';if(p.indexOf('monatlich')>-1)return 'Monatlich';return '';}
+function extras(){var e=[];if(D.vollprofil==='ja')e.push('Vollständiges Profil: dauerhaft freigeschaltet');var g=parseInt(D.guthaben,10);if(g>0)e.push('Coach-Pass: '+g+(g===1?' Durchlauf':' Durchläufe')+' übrig');return e.length?'<p class="sub">'+e.map(esc).join('<br>')+'</p>':'';}
 function zugangKarte(){
-  if(D.zugang==='abo') return '<div class="card"><span class="pill">Aktiv</span><b style="font-size:17px">6Heroes Premium</b><p class="sub">Abgerechnet über unseren Zahlungsanbieter Ablefy.</p>'
+  var t=tarifName(D.tarif);
+  if(D.zugang==='abo') return '<div class="card"><span class="pill">Aktiv</span><b style="font-size:17px">6Heroes Premium'+(t?' · '+esc(t):'')+'</b>'
+    +(D.bis?'<p class="sub">Bezahlt bis '+tag(D.bis)+'. Ohne Kündigung verlängert sich dein Abo automatisch.</p>':'')
+    +extras()+'<p class="sub">Abgerechnet über unseren Zahlungsanbieter Ablefy.</p>'
     +(D.abo_url?'<div class="btns" style="margin-top:6px"><button class="btn sec" data-go="kuendigen">Abo kündigen oder ändern</button></div>':'<p class="note">Den Link zur Verwaltung deines Abos findest du in deiner Kaufbestätigung von Ablefy.</p>')+'</div>';
   if(D.zugang==='team') return '<div class="card"><span class="pill">Aktiv</span><b style="font-size:17px">6Heroes Premium über dein Team</b><p class="sub">Dein Zugang läuft über dein Team. Fragen dazu beantwortet dir dein Ansprechpartner.</p></div>';
-  return '<div class="card gelb"><span class="pill grey">Basisprofil</span><b style="font-size:17px">Hol dir deinen täglichen Coach</b><p class="sub">Täglicher Coach, alle deine Helden, Verlauf, Erfolge und Langzeitprofil.</p><div class="btns" style="margin-top:6px"><a class="btn" href="'+PREIS_URL+'" target="_top">Jetzt freischalten</a></div></div>';
+  if(D.bis&&D.tarif) return '<div class="card gelb"><span class="pill grey">Kein aktives Abo</span><b style="font-size:17px">Dein Zugang lief bis zum '+tag(D.bis)+'</b><p class="sub">Mit einem neuen Abo hast du wieder den Coach ohne Begrenzung, das Training an deinem Entwicklungsziel, Rückblicke und Langzeitprofil. Deine Daten sind noch da.</p>'+extras()+'<div class="btns" style="margin-top:6px"><a class="btn" href="'+PREIS_URL+'" target="_top">Angebote ansehen</a></div></div>';
+  return '<div class="card gelb"><span class="pill grey">Basisprofil</span><b style="font-size:17px">Hol dir deinen täglichen Coach</b><p class="sub">Täglicher Coach, alle deine Helden, Verlauf, Erfolge und Langzeitprofil.</p>'+extras()+'<div class="btns" style="margin-top:6px"><a class="btn" href="'+PREIS_URL+'" target="_top">Jetzt freischalten</a></div></div>';
 }
 function menu(){
   return '<div class="label">Einstellungen</div><div class="list">'
@@ -213,7 +219,7 @@ var S={
    +'<div class="label">Magst du uns sagen, warum? (freiwillig)</div><div style="display:flex;flex-direction:column;gap:8px">'
    +GRUENDE.map(function(g){return '<button class="opt'+(GRUND===g[0]?' on':'')+'" data-grund="'+g[0]+'"><i></i>'+g[1]+'</button>';}).join('')+'</div>'
    +'<div style="margin-top:10px"><textarea id="ktext" maxlength="1500" placeholder="Möchtest du noch etwas ergänzen? (freiwillig)"></textarea></div>'
-   +'<div class="card" style="margin-top:14px"><b>Was danach passiert</b><p class="sub">Dein Zugang läuft bis zum Ende der bezahlten Laufzeit weiter. Danach bleibt dein Basisprofil erhalten, deine Einträge bleiben gespeichert, falls du wiederkommst.</p></div>'
+   +'<div class="card" style="margin-top:14px"><b>Was danach passiert</b><p class="sub">Dein Zugang läuft bis zum Ende der bezahlten Laufzeit weiter'+(D.bis?', mindestens bis zum '+tag(D.bis):'')+'. Danach bleibt dein Basisprofil erhalten, deine Einträge bleiben gespeichert, falls du wiederkommst.</p></div>'
    +'<div class="btns"><button class="btn" id="zuAblefy">Weiter zu Ablefy</button><button class="btn sec" data-go="uebersicht">Abo behalten</button></div><p class="note" style="margin-top:10px">Ablefy öffnet sich in einem neuen Fenster. Danach kommst du hierher zurück.</p>';
  },
  einw:function(){
@@ -319,7 +325,7 @@ async function start(){
   try{D=await laden();draw();}catch(e){console.warn('Account laden:',e);fehler(e);}
 }
 function demo(art){
-  return {vorname:'Lena',email:'lena@beispiel.de',seit:'2026-08-12',zugang:art==='team'?'team':(art==='ohne'?'ohne':'abo'),abo_url:'https://myablefy.com/',ki:'ja',profil:'',antworten:'ja',woche:'ja',mail:'ja',push:'',news:'',textversion:'1',reset_am:'',loesch_offen:''};
+  return {vorname:'Lena',email:'lena@beispiel.de',seit:'2026-08-12',zugang:art==='team'?'team':(art==='ohne'?'ohne':'abo'),abo_url:'https://myablefy.com/',tarif:(art==='ohne'?'':'6Heroes 12 Monate'),bis:(art==='team'?'':'2027-11-24'),vollprofil:(art==='team'?'':'ja'),guthaben:(art==='ohne'?'3':''),ki:'ja',profil:'',antworten:'ja',woche:'ja',mail:'ja',push:'',news:'',textversion:'1',reset_am:'',loesch_offen:''};
 }
 window.addEventListener('load',start);
 window.addEventListener('resize',postHeight);
