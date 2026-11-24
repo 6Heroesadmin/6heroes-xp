@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Zugang abgelaufen – 6Heroes</title>
+<!-- Build 2026-11-24 Zugang abgelaufen v1 -->
+<link rel="stylesheet" href="/fonts.css">
+<style>
+  :root{--bg:#F7F5F0;--ink:#20293A;--mute:#5A6272;--line:#E4DFD4;--gold:#F2B705;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,Arial,Helvetica,sans-serif;font-size:16px;line-height:1.55;}
+  .wrap{max-width:640px;margin:0 auto;padding:40px 20px 48px;}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mute);margin:0 0 10px;}
+  h1{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:40px;line-height:46px;margin:0 0 16px;}
+  .lead{font-size:17px;line-height:27px;margin:0 0 28px;}
+  .card{background:#FFFFFF;border:1px solid var(--line);border-radius:20px;padding:24px 26px;margin:0 0 20px;}
+  .card h2{font-size:18px;font-weight:600;line-height:24px;margin:0 0 8px;}
+  .card p{margin:0;color:var(--ink);}
+  ul{list-style:none;margin:6px 0 0;padding:0;}
+  li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);}
+  li:last-child{border-bottom:0;}
+  li svg{flex:0 0 20px;margin-top:3px;}
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0 24px;}
+  .btn{display:inline-block;text-decoration:none;font-weight:600;font-size:17px;line-height:24px;
+    padding:14px 28px;border-radius:12px;border:2px solid var(--gold);background:var(--gold);color:var(--ink);}
+  .btn:hover{background:var(--ink);border-color:var(--ink);color:#FFFFFF;}
+  .note{font-size:14px;line-height:21px;color:var(--mute);margin:0;}
+  .note a{color:var(--ink);}
+  @media (max-width:520px){h1{font-size:32px;line-height:38px;}.wrap{padding-top:28px;}.btn{width:100%;text-align:center;}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="eyebrow">Dein Zugang</p>
+  <h1>Dein Zugang ist abgelaufen.</h1>
+  <p class="lead">Der volle Zugang zu 6Heroes ist gerade pausiert. Deine Daten bleiben gespeichert: Mit einem neuen Abo ist alles wieder da, auch deine Rückblicke, dein Langzeitprofil und dein Entwicklungsziel.</p>
+
+  <div class="card">
+    <h2>Was du weiter nutzen kannst</h2>
+    <ul>
+      <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20293A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Dein Basisprofil mit deinem Basishelden</span></li>
+      <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20293A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Dein vollständiges Profil, wenn du es dauerhaft freigeschaltet hast (Einzelkauf oder 6- bzw. 12-Monats-Paket)</span></li>
+      <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#20293A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Durchläufe mit dem 6Hero Coach aus deinem Coach-Pass-Guthaben</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Weitermachen</h2>
+    <p>Wähl ein Abo oder einen Einzelkauf, der zu dir passt. Nach der Zahlung schalten wir deinen Zugang automatisch wieder frei, meist innerhalb weniger Minuten.</p>
+  </div>
+
+  <div class="actions">
+    <a class="btn" href="https://6heroes.de/preise/" target="_top" rel="noopener">Angebote ansehen</a>
+  </div>
+
+  <p class="note">Bitte verwende beim Kauf dieselbe E-Mail-Adresse wie in der App. Fragen? Schreib uns an <a href="mailto:admin@6heroes.de">admin@6heroes.de</a>.</p>
+</main>
+<script>
+(function(){
+  var frame = (new URLSearchParams(location.search)).get('frame') || 'zugang-abgelaufen';
+  function send(){
+    try{
+      var h = Math.ceil(document.documentElement.scrollHeight);
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({type:'6heroes:setHeight', height:h, frame:frame}, 'https://app.6heroes.de');
+      }
+    }catch(e){}
+  }
+  window.addEventListener('load', send);
+  window.addEventListener('resize', send);
+  if ('ResizeObserver' in window) { new ResizeObserver(send).observe(document.body); }
+})();
+</script>
+</body>
+</html>
