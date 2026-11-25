@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex">
 <title>6Heroes Assessment</title>
-<!-- Build: 2026-11-12 Assessment V2.0 / TieBank V1.1 / v1.5 ohne Vorname -->
+<!-- Build: 2026-11-25 Assessment V2.0 / TieBank V1.1 / v1.6 Herkunft -->
 <link rel="stylesheet" href="/fonts.css">
 <style>
 :root{--bg:#F7F5F0;--navy:#20293A;--gold:#F2B705;--muted:#6B7280;--line:#E5E1D8;--card:#FFFFFF;--err:#B42318}
@@ -268,6 +268,14 @@ function uuid(){
   return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20);
 }
 var S = load() || {id:uuid(), answers:{}, tb:{}, step:'intro', started:new Date().toISOString()};
+/* Herkunft: Kennung aus dem Link (?q=...), nur Kleinbuchstaben, Ziffern, Bindestrich, max. 40 Zeichen. Kein Cookie. */
+(function(){
+  try {
+    var q = (new URLSearchParams(location.search)).get('q') || '';
+    q = q.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 40);
+    if (q && !S.herkunft) { S.herkunft = q; save(); }
+  } catch(e){}
+})();
 function load(){ try { var x = sessionStorage.getItem(STORE_KEY); return x ? JSON.parse(x) : null; } catch(e){ return null; } }
 function save(){ try { sessionStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch(e){} }
 function clearStore(){ try { sessionStorage.removeItem(STORE_KEY); } catch(e){} }
@@ -463,6 +471,7 @@ async function buildPayload(){
     email_optin_text: S.optin ? OPTIN_TEXT : '',
     email_optin_zeit: S.optin ? new Date().toISOString() : '',
     gestartet: S.started,
+    herkunft: S.herkunft || '',
     basisheld: L(r.basis),
     zweitheld: L(r.zweit),
     stressheld1: L(r.stress1),
