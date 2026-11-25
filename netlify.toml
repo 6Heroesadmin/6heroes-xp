@@ -1,13 +1,13 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "ALLOWALL"
-    Content-Security-Policy = "frame-ancestors *"
+    Content-Security-Policy = "frame-ancestors 'self' https://app.6heroes.de https://6heroes.de"
 
 [[headers]]
   for = "/fonts/*"
   [headers.values]
     Access-Control-Allow-Origin = "https://app.6heroes.de"
+
 [[redirects]]
   from = "/"
   to = "https://6heroes.de/"
